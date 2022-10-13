@@ -22,7 +22,7 @@ vim.g.mapleader = ";"
 map("i", "jj", "<esc>", opts)
 
 -- save quickly
-map("n", ";w", ":w<CR>", d("Save buffer"))
+--map("n", ";w", ":w<CR>", d("Save buffer"))
 
 --Easier split navigations, just ctrl-j instead of ctrl-w then j
 map("n", "<C-J>", "<C-W><C-J>", opts)
@@ -41,6 +41,35 @@ map("n", "<leader>d", ":bd<cr>", opts)
 -- Set alt + j/k to switch lines of texts or simply move them
 map("n", "<A-k>", ':let save_a=@a<Cr><Up>"add"ap<Up>:let @a=save_a<Cr>', opts)
 map("n", "<A-j>", ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>', opts)
+
+map("n", "<leader><C-l>", "<Cmd>!clear<CR>", opts)
+vim.cmd([[
+  inoremap <A-h> <left>
+  inoremap <A-j> <down>
+  inoremap <A-k> <up>
+  inoremap <A-l> <right>
+]])
+
+vim.cmd([[
+  cnoremap <A-h> <left>
+  cnoremap <A-j> <down>
+  cnoremap <A-k> <up>
+  cnoremap <A-l> <right>
+]])
+
+--vim.cmd([[
+--  cnoremap <C-A> <Home>
+--  cnoremap <C-F> <Right>
+--  cnoremap <C-B> <Left>
+--  cnoremap <C-E> <End>
+--]])
+
+vim.cmd([[
+  snoremap <A-h> <left>
+  snoremap <A-j> <down>
+  snoremap <A-k> <up>
+  snoremap <A-l> <right>
+]])
 
 -- move block easily
 map("n", "<", "<<", d("Decrease indent"))
@@ -142,6 +171,10 @@ function! ToggleHiddenAll()
     endif
 endfunction
 nnoremap <S-h> :call ToggleHiddenAll()<CR>
+]])
+
+vim.cmd([[
+  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
 ]])
 
 -------------- Telescope --------------

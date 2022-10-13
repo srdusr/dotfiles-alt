@@ -1,5 +1,14 @@
 --[[init.]]
---
+-- ========================================================================== --
+-- ==                            DEPENDENCIES                              == --
+-- ========================================================================== --
+
+-- ripgrep    - https://github.com/BurntSushi/ripgrep
+-- fd         - https://github.com/sharkdp/fd
+-- git        - https://git-scm.com/
+-- make       - https://www.gnu.org/software/make/
+-- c compiler - gcc or tcc or zig
+
 -- Initialize config with this one liner in the terminal
 --nvim --headless -c 'call mkdir(stdpath("config"), "p") | exe "edit" stdpath("config") . "/init.lua" | write | quit'
 --
@@ -44,7 +53,7 @@ require("plugins.toggleterm")
 --require("plugins.floatterm")
 require("plugins.autopairs")
 --require("plugins.vimspector")
-require("plugins.mason")
+--require("plugins.mason")
 --require("plugins.dap")
 require("plugins.colorizer")
 require("plugins.prettier")
@@ -53,7 +62,7 @@ require("plugins.gitsigns")
 require("plugins.neoscroll")
 require("plugins.lsp")
 --require("plugins.lspconfig")
---require("plugins.lspsaga")
+require("plugins.lspsaga")
 --require("plugins.lspkind")
 --require("plugins.lsp-colors")
 require("plugins.null-ls")

@@ -1,43 +1,69 @@
+
 local fn = vim.fn
-local api = vim.api
 local keymap = vim.keymap
-local lsp = vim.lsp
 
 local utils = require("utils")
 
 local custom_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+local status, saga = pcall(require, "lspsaga")
+if not status then
+  return
+end
+
 	-- Mappings.
 	local map = function(mode, l, r, opts)
 		opts = opts or {}
 		opts.silent = true
+    opts.noremap = true
 		opts.buffer = bufnr
 		keymap.set(mode, l, r, opts)
 	end
-
-	map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
-	map("n", "<C-]>", vim.lsp.buf.definition)
-	map("n", "K", vim.lsp.buf.hover)
-	map("n", "<C-k>", vim.lsp.buf.signature_help)
-	map("n", "<space>rn", vim.lsp.buf.rename, { desc = "varialbe rename" })
-	map("n", "gr", vim.lsp.buf.references, { desc = "show references" })
-	map("n", "[d", vim.diagnostic.goto_prev, { desc = "previous diagnostic" })
-	map("n", "]d", vim.diagnostic.goto_next, { desc = "next diagnostic" })
-	map("n", "<space>q", function()
-		vim.diagnostic.setqflist({ open = true })
-	end, { desc = "put diagnostic to qf" })
-	map("n", "<space>ca", vim.lsp.buf.code_action, { desc = "LSP code action" })
-	map("n", "<space>wa", vim.lsp.buf.add_workspace_folder, { desc = "add workspace folder" })
-	map("n", "<space>wr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
-	map("n", "<space>wl", function()
-		inspect(vim.lsp.buf.list_workspace_folders())
-	end, { desc = "list workspace folder" })
+--map("n", "gd", "<Cmd>Lspsaga lsp_finder<CR>") -- Press "o" to open the reference location
+--map("n", "gp", "<Cmd>Lspsaga peek_definition<CR>")
+--	--map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
+--  map("n", "<C-]>", vim.lsp.buf.definition)
+--	map("n", "K", vim.lsp.buf.hover)
+--	map("n", "<C-k>", vim.lsp.buf.signature_help)
+--	map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "varialble rename" })
+--	map("n", "gr", vim.lsp.buf.references, { desc = "show references" })
+--	map("n", "[d", vim.diagnostic.goto_prev, { desc = "previous diagnostic" })
+--	map("n", "]d", vim.diagnostic.goto_next, { desc = "next diagnostic" })
+--	map("n", "<leader>q", function()
+--		vim.diagnostic.setqflist({ open = true })
+--	end, { desc = "put diagnostic to qf" })
+--	--map.('n', '<space>q', vim.diagnostic.setloclist)
+--	map("n", "ga", vim.lsp.buf.code_action, { desc = "LSP code action" })
+--	map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, { desc = "add workspace folder" })
+--	map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
+--	map("n", "<leader>wl", function()
+--		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+--	end, { desc = "list workspace folder" })
+--	map("n", "gs", "vim.lsp.buf.document_symbol()<cr>")
+--	map("n", "gw", "vim.lsp.buf.workspace_symbol()<cr>", { desc = "list workspace folder" })
+--	--map("n", "gs", ":lua vim.lsp.buf.document_symbol()<cr>")
+--	map("n", "gt", ":lua vim.lsp.buf.type_definition()<cr>")
+--	map("n", "gD", ":lua vim.lsp.buf.declaration()<cr>") -- most lsp servers don't implement textDocument/Declaration, so gD is useless for now.
+--	map("n", "gi", ":lua vim.lsp.buf.implementation()<cr>")
+--	map("n", "go", ":lua vim.diagnostic.open_float()<cr>")
+--	map("n", "gk", "<Cmd>Lspsaga diagnostic_jump_prev<CR>")
+--	map("n", "gj", "<Cmd>Lspsaga diagnostic_jump_next<CR>")
 
 	-- Set some key bindings conditional on server capabilities
 	if client.server_capabilities.documentFormattingProvider then
 		map("n", "<space>f", vim.lsp.buf.format, { desc = "format code" })
 	end
 
-	api.nvim_create_autocmd("CursorHold", {
+	-- add rust specific keymappings
+	if client.name == "rust_analyzer" then
+		map("n", "<leader>rr", "<cmd>RustRunnables<CR>")
+		map("n", "<leader>ra", "<cmd>RustHoverAction<CR>")
+	end
+
+	-- Diagnostic position
+	vim.api.nvim_create_autocmd("CursorHold", {
 		buffer = bufnr,
 		callback = function()
 			local float_opts = {
@@ -52,7 +78,7 @@ local custom_attach = function(client, bufnr)
 				vim.b.diagnostics_pos = { nil, nil }
 			end
 
-			local cursor_pos = api.nvim_win_get_cursor(0)
+			local cursor_pos = vim.api.nvim_win_get_cursor(0)
 			if
 				(cursor_pos[1] ~= vim.b.diagnostics_pos[1] or cursor_pos[2] ~= vim.b.diagnostics_pos[2])
 				and #vim.diagnostic.get() > 0
@@ -64,7 +90,7 @@ local custom_attach = function(client, bufnr)
 		end,
 	})
 
-	-- The blow command will highlight the current variable and its usages in the buffer.
+	-- The below command will highlight the current variable and its usages in the buffer.
 	if client.server_capabilities.documentHighlightProvider then
 		vim.cmd([[
       hi! link LspReferenceRead Visual
@@ -80,19 +106,19 @@ local custom_attach = function(client, bufnr)
 
 	if vim.g.logging_level == "debug" then
 		local msg = string.format("Language server %s started!", client.name)
-		vim.notify(msg, vim.log.levels.DEBUG, { title = "Nvim-config" })
+		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
 	end
 end
 
-local capabilities = lsp.protocol.make_client_capabilities()
+local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").update_capabilities(capabilities)
 capabilities.textDocument.completion.completionItem.snippetSupport = true
+capabilities.offsetEncoding = { "utf-16" }
 
 local lspconfig = require("lspconfig")
 
 if utils.executable("pylsp") then
 	lspconfig.pylsp.setup({
-		on_attach = custom_attach,
 		settings = {
 			pylsp = {
 				plugins = {
@@ -111,7 +137,7 @@ if utils.executable("pylsp") then
 		capabilities = capabilities,
 	})
 else
-	vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+	vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Server?" })
 end
 
 -- if utils.executable('pyright') then
@@ -120,7 +146,7 @@ end
 --     capabilities = capabilities
 --   }
 -- else
---   vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Nvim-config'})
+--   vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Server?'})
 -- end
 
 if utils.executable("clangd") then
@@ -133,7 +159,7 @@ if utils.executable("clangd") then
 		},
 	})
 else
-	vim.notify("clangd not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+	vim.notify("clangd not found!", vim.log.levels.WARN, { title = "Server?" })
 end
 
 -- set up vim-language-server
@@ -146,7 +172,7 @@ if utils.executable("vim-language-server") then
 		capabilities = capabilities,
 	})
 else
-	vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Nvim-config" })
+	vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Server?" })
 end
 
 -- set up bash-language-server
@@ -158,7 +184,6 @@ if utils.executable("bash-language-server") then
 end
 
 if utils.executable("lua-language-server") then
-	-- settings for lua-language-server can be found on https://github.com/sumneko/lua-language-server/wiki/Settings .
 	lspconfig.sumneko_lua.setup({
 		on_attach = custom_attach,
 		settings = {
@@ -173,8 +198,6 @@ if utils.executable("lua-language-server") then
 				},
 				workspace = {
 					-- Make the server aware of Neovim runtime files,
-					-- see also https://github.com/sumneko/lua-language-server/wiki/Libraries#link-to-workspace .
-					-- Lua-dev.nvim also has similar settings for sumneko lua, https://github.com/folke/lua-dev.nvim/blob/main/lua/lua-dev/sumneko.lua .
 					library = {
 						fn.stdpath("data") .. "/site/pack/packer/opt/emmylua-nvim",
 						fn.stdpath("config"),
@@ -188,40 +211,58 @@ if utils.executable("lua-language-server") then
 	})
 end
 
--- Change diagnostic signs.
---fn.sign_define("DiagnosticSignError", { text = "✗", texthl = "DiagnosticSignError" })
---fn.sign_define("DiagnosticSignWarn", { text = "!", texthl = "DiagnosticSignWarn" })
---fn.sign_define("DiagnosticSignInformation", { text = "", texthl = "DiagnosticSignInfo" })
---fn.sign_define("DiagnosticSignHint", { text = "", texthl = "DiagnosticSignHint" })
+--lspconfig.sumneko_lua.setup({
+--  single_file_support = true,
+--  on_attach = function(client, bufnr)
+--    print('hello')
+--    lspconfig.util.default_config.on_attach(client, bufnr)
+--  end
+--})
+require('lspconfig')['rust_analyzer'].setup{
+    on_attach = custom_attach,
+  	flags = {
+			debounce_text_changes = 500,
+		},
 
--- global config for diagnostic
+    -- Server-specific settings...
+    settings = {
+      ["rust-analyzer"] = {}
+    }
+}
+-- Global config for diagnostic
 vim.diagnostic.config({
 	underline = false,
-	virtual_text = false,
+	virtual_text = true,
 	signs = true,
 	severity_sort = true,
+	float = {
+    focusable = true, --
+    style = "minimal", --
+		--border = "rounded",
+    border = "shadow",
+		source = "always",
+		header = "",
+		prefix = "",
+	},
 })
 
-lsp.handlers["textDocument/publishDiagnostics"] = lsp.with(lsp.diagnostic.on_publish_diagnostics, {
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
 	underline = false,
 	virtual_text = false,
 	signs = true,
 	update_in_insert = false,
 })
+--vim.lsp.buf.definition
+--vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
 --local signs = { Error = " ", Warn = " ", Info = "􀅴 ", Hint = " " }
-local signs = { Error = "✘", Warn = "▲", Info = "", Hint = "⚑" }
+--local signs = { Error = "✘", Warn = "▲", Info = "🛈 ", Hint = "⚑" }
+local signs = { Error = "✘", Warn = "▲", Info = "􀅳", Hint = "⚑" }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
-
---sign({name = 'DiagnosticSignError', text = '✘'})
---sign({name = 'DiagnosticSignWarn', text = '▲'})
---sign({name = 'DiagnosticSignHint', text = '⚑'})
---sign({name = 'DiagnosticSignInfo', text = ''})
-
--- Change border of documentation hover window, See https://github.com/neovim/neovim/pull/13998.
-lsp.handlers["textDocument/hover"] = lsp.with(vim.lsp.handlers.hover, {
-	border = "rounded",
-})

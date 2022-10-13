@@ -6,6 +6,7 @@ local colors = {
 	bg = nil,
 	nobg = nil,
 	white = "#f8f8f2",
+  black = "#000000",
 	darkgray = "#23232e",
 	gray = "#2d2b3a",
 	lightgray = "#d6d3ea",
@@ -87,7 +88,7 @@ local ViMode = {
 		},
 	},
 	provider = function(self)
-		return " %2(" .. self.mode_names[self.mode] .. "%)"
+		return "  %2(" .. self.mode_names[self.mode] .. "%) "
 	end,
 	hl = function(self)
 		local color = self:mode_color()
@@ -527,7 +528,7 @@ local help_file_name = {
 }
 
 -- Cursor position: Ruler
-local Ruler = {
+--local Ruler = {
 	-- %l = current line number
 	-- %L = number of lines in the buffer
 	-- %c = column number
@@ -545,22 +546,38 @@ local Ruler = {
 	--provider = "%6(%l:%1.5c/%L%) ",
 	--provider = "%3(%l:%1.5c/%L%)  ",
 	--provider = "%7(%l/%3L%):%2c ",
-	provider = "%7(%l:%c%) ",
+--	provider = "%7(%l:%c%) ",
 	--provider = "%l:%c ",
 	--hl = { fg = utils.get_highlight("Statusline").fg, bold = true },
-	hl = { fg = colors.darkgray, bold = true },
-}
-
+--	hl = { fg = colors.darkgray, bold = true },
+--}
+local leftruler = { Space, Align }
+local rightruler = { Align, Space }
 local cursor_location = {
-	{ provider = "%l/%L|%c ", hl = { bold = true } },
-	{
-		provider = " %P ",
-		hl = function(self)
-			local color = self:mode_color()
-			return { fg = color, bold = true }
-		end,
-	},
+  --{ provider = "", hl = { fg = utils.get_highlight("StatusLine").bg, bold = true } },
+--	{ provider = "%<%-05.10(%l:%c%)", hl = { fg = colors.darkgray, bold = true } },
+--	{ provider = "  ", hl = { fg = colors.darkgray, bold = true } },
+  --{ provider = "%P %=%<%(%l,%c)" },
+  --{ provider = "   %w%-8.(%l,%c%)%>" },
+  { provider = " %1(%4l:%-3(%c%) %)%*", hl = { fg = colors.black, bold = true } },
 }
+local Ruler = { cursor_location }
+
+	--utils.make_flexible_component(
+	--	3,
+	--	{ Ruler, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+	--	{ provider = "%<" }
+	--),
+--local cursor_location = {
+--	{ provider = "%7(%l:%c%) ", hl = { bold = true } },
+--	{
+--		provider = " ",
+--		hl = function(self)
+--			local color = self:mode_color()
+--			return { fg = color, bold = true }
+--		end,
+--	},
+--}
 
 local WordCount = {
 	condition = function()
@@ -787,14 +804,14 @@ local StatusLine = {
 			v = colors.purple,
 			V = colors.purple,
 			["\22"] = colors.purple,
-			c = colors.red,
+			c = colors.orange,
 			s = colors.purple,
 			S = colors.purple,
 			["\19"] = colors.purple,
-			R = colors.orange,
-			r = colors.orange,
-			["!"] = colors.red,
-			t = colors.red,
+			R = colors.red,
+			r = colors.red,
+			["!"] = colors.orange,
+			t = colors.orange,
 		},
 		mode_color = function(self)
 			local mode = conditions.is_active() and vim.fn.mode() or "n"
@@ -813,7 +830,57 @@ local StatusLine = {
 	DefaultStatusline,
 }
 
--- WinBar
+
+--
+--- WinBar
+--
+local WinbarFileNameBlock = {
+	-- let's first set up some attributes needed by this component and it's children
+	init = function(self)
+		self.filename = vim.api.nvim_buf_get_name(0)
+	end,
+	hl = { bg = colors.bg },
+}
+
+--local WinbarFileName = {
+--	provider = function(self)
+--		-- self.filename will be defined later, just keep looking at the example!
+--		local filename = self.filename
+--		filename = filename == "" and "No Name" or vim.fn.fnamemodify(filename, ":t")
+--		return filename
+--	end,
+--	hl = function()
+--		return { fg = colors.gray, italic = true }
+--	end,
+--}
+local WinbarFileName = {
+	provider = function(self)
+		-- first, trim the pattern relative to the current directory. For other
+		-- options, see :h filename-modifers
+		local filename = vim.fn.fnamemodify(self.filename, ":.")
+		if filename == "" then
+			return "No Name"
+		end
+		-- now, if the filename would occupy more than 1/4th of the available
+		-- space, we trim the file path to its initials
+		-- See Flexible Components section below for dynamic truncation
+		if not conditions.width_percent_below(#filename, 0.25) then
+			filename = vim.fn.pathshorten(filename)
+		end
+		return filename
+	end,
+	--hl = { fg = utils.get_highlight("Statusline").fg, bold = false, bg = colors.bg },
+	hl = { fg = colors.gray, bold = false, bg = colors.bg },
+}
+
+WinbarFileNameBlock = utils.insert(
+	WinbarFileNameBlock,
+	FileIcon,
+	utils.insert(WinbarFileName), -- a new table where FileName is a child of FileNameModifier
+	unpack(FileFlags), -- A small optimisation, since their parent does nothing
+	{ provider = "%<" } -- this means that the statusline is cut here when there's not enough space
+)
+
 vim.api.nvim_create_autocmd("User", {
 	pattern = "HeirlineInitWinbar",
 	callback = function(args)
@@ -888,7 +955,8 @@ local Center = {
 		condition = function()
 			return not conditions.is_active()
 		end,
-		utils.surround({ "", "" }, colors.nobg, { Space }),
+		--utils.surround({ "", "" }, colors.nobg, { FileIcon, { WinbarFileName, hl = { fg = colors.gray } }, FileFlags } ),
+		utils.surround({ "", "" }, colors.nobg, { WinbarFileNameBlock } ),
 	},
 	-- A winbar for regular files
 	utils.surround({ "", "" }, colors.nobg, { FileNameBlock }),
@@ -896,6 +964,7 @@ local Center = {
 
 --local WinBar = { Align, Center, Align }
 local WinBar = { Space, Center }
+
 
 -- TabLine
 local TablineBufnr = {
@@ -1020,12 +1089,10 @@ end, { Tab, TablineFileNameBlock, TablineCloseButton })
 
 local BufferLine = utils.make_buflist(
 	TablineBufferBlock,
-	{ provider = "", hl = { fg = colors.white } }, -- left truncation, optional (defaults to "<")
-	{ provider = "", hl = { fg = colors.white } } -- right trunctation, also optional (defaults to ...... yep, ">")
-	-- by the way, open a lot of buffers and try clicking them and here's some
-	-- free icons  ;)
+	{ provider = "􀰎 ", hl = { fg = colors.white } }, -- left truncation, optional (defaults to "<")
+	{ provider = " 􀰓", hl = { fg = colors.white } } -- right trunctation, also optional (defaults to ...... yep, ">")
+	-- by the way, open a lot of buffers and try clicking them ;)
 )
-
 -- TabList
 local Tabpage = {
 	provider = function(self)

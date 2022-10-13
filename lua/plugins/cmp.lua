@@ -30,7 +30,7 @@ local kind_icons = {
 	Function = "",
 	Constructor = "⚙️",
 	Field = "",
-	Variable = "",
+	Variable = "",
 	Class = "ﴯ",
 	Interface = "",
 	Module = "",
@@ -112,10 +112,10 @@ cmp.setup({
 	},
 })
 
-vim.cmd([[
-  set completeopt=menuone,noinsert,noselect
-  highlight! default link CmpItemKind CmpItemMenuDefault
-]])
+--vim.cmd([[
+--  set completeopt=menuone,noinsert,noselect
+--  highlight! default link CmpItemKind CmpItemMenuDefault
+--]])
 
 cmp.setup.cmdline("/", {
 	mapping = cmp.mapping.preset.cmdline(),

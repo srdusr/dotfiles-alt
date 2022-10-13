@@ -44,6 +44,84 @@ packer.init({
 return packer.startup(function(use)
 	use("wbthomason/packer.nvim") -- Have packer manage itself
 
+  use("nvim-lua/plenary.nvim") -- Useful lua functions used ny lots of plugins
+	--use("jose-elias-alvarez/null-ls.nvim")
+
+    -- lsp
+    use {
+      "williamboman/mason.nvim",
+      "williamboman/mason-lspconfig.nvim",
+      "neovim/nvim-lspconfig",
+    }
+    require("mason").setup()
+    local mason_lspconfig = require("mason-lspconfig")
+    mason_lspconfig.setup({
+      ensure_installed = {
+        "pylsp",
+        "pyright",
+        "clangd",
+        "vim-language-server",
+        "bash-language-server",
+        "lua-language-server",
+        "sumneko_lua",
+      }
+    })
+    use { "j-hui/fidget.nvim",
+      config = function()
+        require("fidget").setup()
+      end
+    }
+    use { "folke/trouble.nvim",
+      config = function()
+        require("trouble").setup()
+      end
+    }
+    use({
+      "https://git.sr.ht/~whynothugo/lsp_lines.nvim", -- See also: https://github.com/Maan2003/lsp_lines.nvim
+      config = function()
+        require("lsp_lines").setup()
+
+        -- disable virtual_text since it's redundant due to lsp_lines.
+        vim.diagnostic.config({
+          virtual_text = false,
+        })
+      end,
+    })
+    use { "simrat39/symbols-outline.nvim",
+      config = function()
+        require("symbols-outline").setup({
+          auto_close = true,
+        })
+      end
+    }
+    use { "kosayoda/nvim-lightbulb", requires = { "antoinemadec/FixCursorHold.nvim" } }
+    use "folke/lsp-colors.nvim"
+    use "mfussenegger/nvim-lint"
+    use "weilbith/nvim-code-action-menu"
+    use "simrat39/rust-tools.nvim"
+    use { "saecki/crates.nvim",
+      requires = { "nvim-lua/plenary.nvim" },
+      config = function()
+        require("crates").setup()
+      end,
+    }
+    use "lvimuser/lsp-inlayhints.nvim" -- rust-tools already provides this feature, but gopls doesn't
+
+    -- null-ls
+    use { "jose-elias-alvarez/null-ls.nvim",
+      config = function()
+        require("null-ls").setup({
+          sources = {
+            require("null-ls").builtins.diagnostics.checkmake, -- https://github.com/mrtazz/checkmake
+          }
+        })
+      end
+    }
+  	use({
+		"SmiteshP/nvim-navic",
+		requires = "neovim/nvim-lspconfig",
+	})
+
 	-- nvimlsp plugins
 	--use({
 	--  "williamboman/mason.nvim",
@@ -54,30 +132,24 @@ return packer.startup(function(use)
 	--    })
 	--  end,
 	--})
-	use("williamboman/mason.nvim")
-	use("williamboman/mason-lspconfig.nvim")
-	use("neovim/nvim-lspconfig")
-	use("williamboman/nvim-lsp-installer")
-	use("glepnir/lspsaga.nvim")
-	use("nvim-lua/lsp-status.nvim")
-	--use({
-	--  "glepnir/lspsaga.nvim",
-	--  branch = "main",
-	--  config = function()
-	--    local saga = require("lspsaga")
-
-	--    saga.init_lsp_saga({
-	--      -- your configuration
-	--    })
-	--  end,
-	--})
-	-- use("nvim-lua/popup.nvim")
-	use("nvim-lua/plenary.nvim") -- Useful lua functions used ny lots of plugins
-	use("jose-elias-alvarez/null-ls.nvim")
+	--use("williamboman/mason.nvim")
+	--use("williamboman/mason-lspconfig.nvim")
+	--use("neovim/nvim-lspconfig")
+	--use("williamboman/nvim-lsp-installer")
+	--use("glepnir/lspsaga.nvim")
+	--use("nvim-lua/lsp-status.nvim")
 	use({
-		"SmiteshP/nvim-navic",
-		requires = "neovim/nvim-lspconfig",
+	  "glepnir/lspsaga.nvim",
+	  branch = "main",
+	  config = function()
+	    local saga = require("lspsaga")
+
+	    saga.init_lsp_saga({
+	      -- your configuration
+	    })
+	  end,
 	})
+	-- use("nvim-lua/popup.nvim")
 	--use("SmiteshP/nvim-gps")
 	--  autocomplete plugins
 	use("hrsh7th/nvim-cmp")
@@ -130,10 +202,10 @@ return packer.startup(function(use)
 	use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" })
 	-- statusline plugins
 	--use("nvim-lualine/lualine.nvim")
-	use({
-		"nvim-lualine/lualine.nvim",
-		requires = { "kyazdani42/nvim-web-devicons", opt = true },
-	})
+	--use({
+	--	"nvim-lualine/lualine.nvim",
+	--	requires = { "kyazdani42/nvim-web-devicons", opt = true },
+	--})
 	--use({
 	--	"folke/trouble.nvim",
 	--	requires = "kyazdani42/nvim-web-devicons",
@@ -179,7 +251,6 @@ return packer.startup(function(use)
 	-- UI
 	use("karb94/neoscroll.nvim")
 	use("folke/which-key.nvim")
-	use("folke/lsp-colors.nvim")
 	use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
 	use("norcalli/nvim-colorizer.lua")
 	use("folke/zen-mode.nvim")
@@ -201,16 +272,13 @@ return packer.startup(function(use)
 	--use("lukas-reineke/indent-blankline.nvim")
 	use("kyazdani42/nvim-web-devicons")
 	-- Colorschemes
-	use("Mofiqul/vscode.nvim")
 	use("gruvbox-community/gruvbox")
 	use("srcery-colors/srcery-vim")
 	use("tomasr/molokai")
 	use("ayu-theme/ayu-vim")
 	--use("sjl/badwolf")
 	use("joshdick/onedark.vim")
-	use("folke/tokyonight.nvim")
 	use("everblush/everblush.nvim")
-	use("sainnhe/edge")
 	use("EdenEast/nightfox.nvim")
 	use("bluz71/vim-nightfly-guicolors")
 	--use({ "shaunsingh/oxocarbon.nvim", run = "./install.sh" })

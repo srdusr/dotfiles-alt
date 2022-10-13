@@ -34,7 +34,7 @@ vim.opt.inccommand = "split" --
 vim.opt.ttyfast = true -- Faster redrawing.
 vim.opt.lazyredraw = true -- Only redraw when necessary
 vim.opt.keywordprg = ":help" -- :help options
---vim.opt.ruler = true --
+vim.opt.ruler = true --
 vim.opt.errorbells = false --
 vim.opt.list = true -- Show non-printable characters.
 vim.opt.showmatch = true --
@@ -124,7 +124,8 @@ vim.opt.pumheight = 10 -- pop up menu height
 
 -- Better Completion
 vim.opt.complete = { ".", "w", "b", "u", "t" } --
-vim.opt.completeopt = { "longest,menuone,preview" } --
+--vim.opt.completeopt = { "longest,menuone,preview" } --
+vim.opt.completeopt = {'menu', 'menuone', 'noselect'}
 --vim.opt.completeopt = { "menuone", "noselect" }   -- mostly just for cmp
 --vim.opt.completeopt = { "menu", "menuone", "noselect" } --
 
