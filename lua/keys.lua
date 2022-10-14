@@ -193,7 +193,7 @@ map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').current_buffer_fuz
 --map("n", "<leader>fz", ":FZF<CR>", opts)
 --map("t", [[<Esc><Esc>]], [[<C-\><C-N>]], opts)
 --map("n", "ff", ":NvimTreeToggle<CR>", {})
-map("n", "<leader>ff", ":NvimTreeToggle<CR>", {})
+map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
 --  This <Esc><Esc> avoids crashing fzf menu running in TERMINAL MODE (:q if you do)
 -- Find files in config dirs
 --key_map("n", "<leader>e", ":lua require('plugins.telescope').find_configs()<CR>",  opts)
@@ -369,7 +369,7 @@ map("n", "<leader>.", ":unhide<CR>", opts)
 ---- Open the current file in the default program (on Mac this should just be just `open`)
 --keymap('n', '<leader>x', ':!xdg-open %<cr><cr>')
 
---keymap("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>", opts)
+map("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>", opts)
 --keymap("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files cwd=..()<cr>", opts)
 --keymap('n', '<leader>k', ':nohlsearch<CR>')
 --

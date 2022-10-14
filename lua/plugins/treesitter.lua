@@ -11,26 +11,21 @@ treesitter.setup {
     disable = {},
     --disable = { "python", "css" }
   },
-  --ensure_installed = {
-  --  "c",
-  --  "zsh",
-  --  "lua"
-  --  --"rust",
-  --  --"php",
-  --  --"json",
-  --  --"yaml",
-  --  --"swift",
-  --  --"css",
-  --  --"html",
-  --  --"toml",
-  --  --"tsx",
-  --},
-  ensure_installed = "all", -- one of "all" or a list of languages
+  ensure_installed = {
+    "c",
+    "bash",
+    "lua",
+    "rust",
+  },
+  --ensure_installed = "all", -- one of "all" or a list of languages
   --ignore_install = { "" }, -- List of parsers to ignore installing
-
   autotag = {
     enable = true,
   },
+  efactor = {
+    highlight_definitions = { enable = true },
+    highlight_current_scope = { enable = true }
+  }
 }
 --vim.opt.foldmethod = "expr"
 --vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
