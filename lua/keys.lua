@@ -38,6 +38,10 @@ map("n", "<leader>n", ":bn<cr>", opts)
 map("n", "<leader>p", ":bp<cr>", opts)
 map("n", "<leader>d", ":bd<cr>", opts)
 
+-- Disable default completion.
+map('i', '<C-n>', '<Nop>', opts)
+map('i', '<C-p>', '<Nop>', opts)
+
 -- Set alt + j/k to switch lines of texts or simply move them
 map("n", "<A-k>", ':let save_a=@a<Cr><Up>"add"ap<Up>:let @a=save_a<Cr>', opts)
 map("n", "<A-j>", ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>', opts)
@@ -190,6 +194,7 @@ map(
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>", opts)
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>", opts)
 
+  map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>", opts)
 --map("n", "<leader>fz", ":FZF<CR>", opts)
 --map("t", [[<Esc><Esc>]], [[<C-\><C-N>]], opts)
 --map("n", "ff", ":NvimTreeToggle<CR>", {})
@@ -197,9 +202,9 @@ map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
 --  This <Esc><Esc> avoids crashing fzf menu running in TERMINAL MODE (:q if you do)
 -- Find files in config dirs
 --key_map("n", "<leader>e", ":lua require('plugins.telescope').find_configs()<CR>",  opts)
-map("n", "<leader>f.", "<cmd>lua require('plugins.telescope').find_configs({})<cr>", opts)
+--map("n", "<leader>f.", "<cmd>lua require('plugins.telescope').find_configs({})<cr>", opts)
 map("n", "<leader>ft", "<cmd>lua require('plugins.telescope').file_explorer({})<cr>", opts)
-map("n", "<leader>fd", "<cmd>lua require('plugins.telescope').find_notes({})<cr>", opts)
+--map("n", "<leader>fd", "<cmd>lua require('plugins.telescope').find_notes({})<cr>", opts)
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>", opts)
 -- registers picker
 map("n", "<leader>r", "<cmd>lua require('telescope.builtin').registers({})<CR>", opts)
@@ -475,7 +480,6 @@ vim.cmd([[
 --    desc = "Search symbols",
 --  }
 --  maps.n["<leader>lR"] = { function() require("telescope.builtin").lsp_references() end, desc = "Search references" }
---  maps.n["<leader>lD"] = { function() require("telescope.builtin").diagnostics() end, desc = "Search diagnostics" }
 --end
 --
 ---- Terminal

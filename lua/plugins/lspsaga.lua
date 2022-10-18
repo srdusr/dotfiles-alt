@@ -21,7 +21,7 @@ require "lspsaga".init_lsp_saga {
         enable = false,
         sign = false,
         sign_priority = 20, --
-        virtual_text = true,
+        virtual_text = false,
     },
     finder_icons = {
         def = "  ",
@@ -118,13 +118,13 @@ local opts = { noremap = true, silent = true }
 map("n", "gd", "<CMD>Lspsaga peek_definition<CR>", opts)
 --map("n", "gp", "<Cmd>Lspsaga peek_definition<CR>", opts)
 map("n", "gi", "<CMD>Lspsaga lsp_finder<CR>", opts)
---map("n", "gh", "<CMD>Lspsaga hover_doc<CR>", opts)
+map("n", "gh", "<CMD>Lspsaga hover_doc<CR>", opts)
 map("n", "gs", "<CMD>Lspsaga signature_help<CR>", opts)
-map("n", "ga",    "<CMD>Lspsaga code_action<CR>",             opts)
-map("v", "ga",    "<CMD><C-u>Lspsaga range_code_action<CR>",  opts)
-map("n", "gl",    "<CMD>Lspsaga show_line_diagnostics<CR>",   opts)
-map("n", "go",    "<CMD>Lspsaga open_floaterm fish<CR>", opts)
-map("n", ";D",    "<CMD>Lspsaga show_cursor_diagnostics<CR>", opts)
+map("n", "ga", "<CMD>Lspsaga code_action<CR>",             opts)
+map("v", "ga", "<CMD><C-u>Lspsaga range_code_action<CR>",  opts)
+map("n", "gl", "<CMD>Lspsaga show_line_diagnostics<CR>",   opts)
+--map("n", "go", "<CMD>Lspsaga open_floaterm zsh<CR>", opts)
+map("n", ";D", "<CMD>Lspsaga show_cursor_diagnostics<CR>", opts)
 map("n", "<gr>", "<CMD>Lspsaga rename<CR>",               opts)
 map("n", "gk", "<CMD>Lspsaga diagnostic_jump_prev<CR>", opts)
 map("n", "gj", "<CMD>Lspsaga diagnostic_jump_next<CR>", opts)

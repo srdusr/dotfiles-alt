@@ -1,4 +1,3 @@
-local utils = require("utils")
 local fn = vim.fn
 
 -- Automatically install packer
@@ -60,33 +59,46 @@ return packer.startup(function(use)
         "pylsp",
         "pyright",
         "clangd",
-        "vim-language-server",
-        "bash-language-server",
-        "lua-language-server",
+        --"vim-language-server",
+        --"bash-language-server",
+        --"lua-language-server",
         "sumneko_lua",
       }
     })
-    use { "j-hui/fidget.nvim",
+    use({ "j-hui/fidget.nvim",
       config = function()
         require("fidget").setup()
       end
-    }
-    use { "folke/trouble.nvim",
-      config = function()
-        require("trouble").setup()
-      end
-    }
-    use({
-      "https://git.sr.ht/~whynothugo/lsp_lines.nvim", -- See also: https://github.com/Maan2003/lsp_lines.nvim
-      config = function()
-        require("lsp_lines").setup()
-
-        -- disable virtual_text since it's redundant due to lsp_lines.
-        vim.diagnostic.config({
-          virtual_text = false,
-        })
-      end,
     })
+    --use({ "folke/trouble.nvim",
+    --  config = function()
+    --    require("trouble").setup({ position = "right", })
+    --  end
+    --})
+  	--use({
+		--"folke/trouble.nvim",
+		--requires = "kyazdani42/nvim-web-devicons",
+		--config = function()
+		--	require("trouble").setup({
+    --    postion = "top",
+		--		-- your configuration comes here
+		--		-- or leave it empty to use the default settings
+		--		-- refer to the configuration section below
+		--	})
+		--end,
+    --})
+
+    --use({
+    --  "https://git.sr.ht/~whynothugo/lsp_lines.nvim", -- See also: https://github.com/Maan2003/lsp_lines.nvim
+    --  config = function()
+    --    require("lsp_lines").setup()
+
+    --    -- disable virtual_text since it's redundant due to lsp_lines.
+    --    vim.diagnostic.config({
+    --      virtual_text = false,
+    --    })
+    --  end,
+    --})
     use { "simrat39/symbols-outline.nvim",
       config = function()
         require("symbols-outline").setup({
@@ -95,7 +107,7 @@ return packer.startup(function(use)
       end
     }
     use { "kosayoda/nvim-lightbulb", requires = { "antoinemadec/FixCursorHold.nvim" } }
-    use "folke/lsp-colors.nvim"
+    --use("folke/lsp-colors.nvim")
     use "mfussenegger/nvim-lint"
     use "weilbith/nvim-code-action-menu"
     use "simrat39/rust-tools.nvim"
@@ -105,10 +117,10 @@ return packer.startup(function(use)
         require("crates").setup()
       end,
     }
-    use "lvimuser/lsp-inlayhints.nvim" -- rust-tools already provides this feature, but gopls doesn't
+    --use "lvimuser/lsp-inlayhints.nvim" -- rust-tools already provides this feature, but gopls doesn't
 
     -- null-ls
-    use { "jose-elias-alvarez/null-ls.nvim",
+    use({ "jose-elias-alvarez/null-ls.nvim",
       config = function()
         require("null-ls").setup({
           sources = {
@@ -116,7 +128,7 @@ return packer.startup(function(use)
           }
         })
       end
-    }
+    })
   	use({
 		"SmiteshP/nvim-navic",
 		requires = "neovim/nvim-lspconfig",
@@ -138,17 +150,17 @@ return packer.startup(function(use)
 	--use("williamboman/nvim-lsp-installer")
 	--use("glepnir/lspsaga.nvim")
 	--use("nvim-lua/lsp-status.nvim")
-	use({
-	  "glepnir/lspsaga.nvim",
-	  branch = "main",
-	  config = function()
-	    local saga = require("lspsaga")
+	--use({
+	--  "glepnir/lspsaga.nvim",
+	--  branch = "main",
+	--  config = function()
+	--    local saga = require("lspsaga")
 
-	    saga.init_lsp_saga({
-	      -- your configuration
-	    })
-	  end,
-	})
+	--    saga.init_lsp_saga({
+	--      -- your configuration
+	--    })
+	--  end,
+	--})
 	-- use("nvim-lua/popup.nvim")
 	--use("SmiteshP/nvim-gps")
 	--  autocomplete plugins

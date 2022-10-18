@@ -118,9 +118,10 @@ vim.opt.ignorecase = true -- ignore case in search patterns UNLESS /C or capital
 vim.opt.smartcase = true -- smart case
 vim.opt.synmaxcol = 200 -- Only highlight the first 200 columns.
 vim.opt.winblend = 30
+--vim.opt.winblend = 5
 vim.opt.wildoptions = "pum" --
---vim.opt.pumblend = 5 --
-vim.opt.pumblend=15
+vim.opt.pumblend = 5 --
+--vim.opt.pumblend=15
 vim.opt.pumheight = 10 -- pop up menu height
 
 -- Better Completion
