@@ -18,8 +18,8 @@
 --end
 --local stdpath = vim.fn.stdpath
 local api = vim.api
-local utils = require("utils")
-
+local utils = require("user.utils")
+vim.g.snippets = "luasnip"
 -- check if we have the latest stable version of nvim
 local expected_ver = "0.8.0"
 local nvim_ver = utils.get_nvim_version()
@@ -38,47 +38,52 @@ end)
 -- IMPORTS
 require("impatient")
 
-require("utils")
-require("keys") -- Keymaps
-require("opts") -- Options
-require("pack") -- Plugins
---require("mods") -- Modules/functions
---require("deps") -- Plugins
-require("plugins.treesitter")
-require("plugins.telescope")
-require("plugins.nvim-tree")
---require("scripts")
-require("plugins.cmp")
-require("plugins.toggleterm")
---require("plugins.floatterm")
-require("plugins.autopairs")
---require("plugins.vimspector")
---require("plugins.mason")
---require("plugins.dap")
-require("plugins.colorizer")
-require("plugins.prettier")
-require("plugins.git")
-require("plugins.gitsigns")
-require("plugins.neoscroll")
-require("plugins.lsp")
---require("plugins.lspconfig")
---require("plugins.lspsaga")
---require("plugins.lspkind")
-require("plugins.null-ls")
-require("plugins.web-devicons")
-require("plugins.zen-mode")
-require("plugins.colorscheme")
---require("plugins.lsp-colors")
+--for k, v in pairs(package.loaded) do
+for k in pairs(package.loaded) do
+  if string.match(k, "^user") then
+    package.loaded[k] = nil
+  end
+end
+
+require("user.utils")
+require("user.keys") -- Keymaps
+require("user.opts") -- Options
+require("user.pack") -- Plugins
+require("user.reload")
+--requirdkfse("mods") -- Modules/functions
+--requirdkfe("deps") -- Plugins
+require("user.treesitter")
+require("user.telescope")
+require("user.nvim-tree")
+--requirdfke("scripts")
+require("user.cmp")
+require("user.luasnip")
+require("user.toggleterm")
+--requirdfe("user.floatterm")
+require("user.autopairs")
+--requirdfe("user.vimspector")
+--requirdfe("user.mason")
+--requirdfe("user.dap")
+require("user.colorizer")
+require("user.prettier")
+require("user.git")
+require("user.gitsigns")
+require("user.neoscroll")
+require("user.lsp")
+--requirdfe("user.lspconfig")
+--requirdfe("user.lspsaga")
+--requirdfe("user.lspkind")
+require("user.null-ls")
+require("user.web-devicons")
+require("user.zen-mode")
+require("user.colorscheme")
+--requirdfe("user.lsp-colors")
 --vim.opt.laststatus = 3
 
-require("plugins.heirline")
---require("plugins.lualine")
---require("plugins.tabline")
---require("plugins.bufferline")
---require("plugins.airline")
---require("plugins.feline")
---require("plugins.winbar")
+require("user.heirline")
 
+--vim.api.nvim_command("luafile '/home/sxrdusr/.config/nvim/lua/user/heirline.lua'")
+--vim.api.nvim_command(':luafile ~/.config/nvim/lua/user/heirline.lua')
 ---- Hide statusline by setting laststatus and cmdheight to 0.
 --vim.o.ls = 0
 --vim.o.ch = 0
@@ -113,6 +118,7 @@ require("plugins.heirline")
 --}) do
 --	vim.g["loaded_" .. builtin] = status
 --end
+
 
 --local core_conf_files = {
 --  "globals.lua", -- some global settings
