@@ -53,6 +53,7 @@ vim.opt.ttimeoutlen = 10 --
 -- Indent/tab
 vim.opt.breakindent = true --
 vim.opt.autoindent = true -- Indent according to previous line.
+vim.opt.copyindent = true -- Copy indent from the previous line
 vim.opt.smarttab = false --
 vim.opt.tabstop = 2 --
 vim.opt.expandtab = true -- Indent according to previous line.

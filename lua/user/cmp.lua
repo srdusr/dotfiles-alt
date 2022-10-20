@@ -1,7 +1,7 @@
 
 -- Setup nvim-cmp.
---vim.opt.completeopt = "menu,menuone,noselect"
-vim.g.completeopt = "menu,menuone,noselect,noinsert"
+vim.opt.completeopt = "menu,menuone,noselect"
+--vim.g.completeopt = "menu,menuone,noselect,noinsert"
 local cmp_status_ok, cmp = pcall(require, "cmp")
 if not cmp_status_ok then
 	return
@@ -39,7 +39,7 @@ require("symbols-outline").setup(opts)
 --	exclude = {},
 --})
 
-require("luasnip.loaders.from_vscode").lazy_load()
+--require("luasnip.loaders.from_vscode").lazy_load()
 local lspkind = require("lspkind")
 local kind_icons = {
   Text = "",
@@ -70,17 +70,24 @@ local kind_icons = {
 }
 cmp.setup({
 	snippet = {
-		expand = function(args)
-			require("luasnip").lsp_expand(args.body)
-		end,
+		--expand = function(args)
+		--	require("luasnip").lsp_expand(args.body)
+		--end,
+    expand = function(args)
+      local luasnip = require("luasnip")
+      if not luasnip then
+          return
+      end
+      luasnip.lsp_expand(args.body)
+    end,
 	},
 	mapping = cmp.mapping.preset.insert({
 --		["<CR>"] = cmp.mapping.confirm({
 --			behavior = cmp.ConfirmBehavior.Replace,
 --			select = true,
 --		}),
-    ["<C-k>"] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
-    ["<C-j>"] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
+    --["<C-k>"] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
+    --["<C-j>"] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
     ['<C-y>'] = cmp.mapping.confirm({ select = true }),
 		--["<C-e>"] = cmp.mapping.close(),
     ['<C-e>'] = cmp.mapping({
@@ -102,10 +109,12 @@ cmp.setup({
 
   sources = cmp.config.sources({
 		{ name = "path" },
-		{ name = "nvim_lua" },
+		--{ name = "nvim_lua" },
 		{ name = "gh_issues" },
 		{ name = "nvim_lsp", keyword_length = 3 },
-		{ name = "luasnip", keyword_length = 4 },
+		{ name = 'luasnip', option = { use_show_condition = false } },
+		--{ name = "luasnip" },
+		--{ name = "luasnip", keyword_length = 4 },
 		--{ name = "buffer", keyword_length = 3 },
     { name = "buffer", option = { get_bufnrs = function()
       return vim.api.nvim_list_bufs()
@@ -144,11 +153,11 @@ cmp.setup({
     format = lspkind.cmp_format {
       with_text = true,
       menu = {
-        buffer = "[buf]",
         nvim_lsp = "[LSP]",
+        luasnip = "[snip]",
+        buffer = "[buf]",
         nvim_lua = "[api]",
         path = "[path]",
-        luasnip = "[snip]",
         gh_issues = "[issues]",
       },
     },
@@ -198,7 +207,7 @@ cmp.setup({
     experimental = {
       ghost_text = true,
       hl_group = 'Nontext',
-      native_menu = false,
+      --native_menu = false,
     },
 
     view = {
@@ -236,8 +245,8 @@ cmp.setup.cmdline({ '/', '?' }, {
 
 cmp.setup.cmdline(":", {
   mapping = {
-    ["<C-k>"] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
-    ["<C-j>"] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
+    ["<C-p>"] = cmp.mapping(cmp.mapping.select_prev_item(), { 'i', 'c' }),
+    ["<C-n>"] = cmp.mapping(cmp.mapping.select_next_item(), { 'i', 'c' }),
     ["<C-y>"] = cmp.mapping(cmp.mapping.confirm({ select = true }), { 'i', 'c' }),
     ["<C-e>"] = cmp.mapping(cmp.mapping.close(), { 'i', 'c' }),
     ["<C-u>"] = cmp.mapping(cmp.mapping.scroll_docs(-4), { 'i', 'c' }),

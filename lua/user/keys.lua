@@ -1,17 +1,24 @@
 --[[ key.lua ]]
 
 -- Shorten function name
-local map = vim.api.nvim_set_keymap
+--local keymap = vim.api.nvim_set_keymap
+local keymap = vim.keymap
 
-local function new_desc(d)
-  return { desc = d }
-end
+--local function new_desc(d)
+--  return { desc = d }
+--end
+--
+--local d = new_desc
 
-local d = new_desc
+--local opts = { noremap = true, silent = true }
+local term_opts = { noremap = true, silent = false }
+	local map = function(mode, l, r, opts)
+		opts = opts or {}
+		opts.silent = true
+    opts.noremap = true
+		keymap.set(mode, l, r, opts)
+	end
 
-local opts = { noremap = true, silent = true }
-
-local term_opts = { silent = true }
 
 --------------- Standard Operations ---------------
 -- Semi-colon as leader key
@@ -19,12 +26,12 @@ vim.g.mapleader = ";"
 --vim.g.maplocalleader = ";"
 
 -- "jj" to exit insert-mode
-map("i", "jj", "<esc>", opts)
+map("i", "jj", "<esc>")
 
 -- save quickly
 --map("n", ";w", ":w<CR>", d("Save buffer"))
 
---map("n", "<leader>so", ":luafile %<CR>", opts)
+--map("n", "<leader>so", ":luafile %<CR>")
 
 --vim.cmd([[
 --let $my_vimrc = $localappdata.'/nvim/init.lua'
@@ -32,32 +39,40 @@ map("i", "jj", "<esc>", opts)
 --]])
 
 --vim.api.nvim_set_keymap("n", "<leader><CR>", "<cmd>lua ReloadConfig()<CR>", { noremap = true, silent = false })
-vim.api.nvim_set_keymap("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", { noremap = true, silent = false })
+map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", print ("Nvim configuration reloaded"))
+--
+--  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
+
 --vim.api.nvim_set_keymap('n', '<Leader>qr',  '<cmd>:lua require("plugins.telescope").reload()<CR>', { noremap = true, silent = true })
 
 --Easier split navigations, just ctrl-j instead of ctrl-w then j
-map("n", "<C-J>", "<C-W><C-J>", opts)
-map("n", "<C-K>", "<C-W><C-K>", opts)
-map("n", "<C-L>", "<C-W><C-L>", opts)
-map("n", "<C-H>", "<C-W><C-H>", opts)
+--map("n", "<C-J>", "<C-W><C-J>")
+--map("n", "<C-K>", "<C-W><C-K>")
+--map("n", "<C-L>", "<C-W><C-L>")
+--map("n", "<C-H>", "<C-W><C-H>")
 
 -- Combine buffers list with buffer name
-map("n", "<Leader>b", ":buffers<CR>:buffer<Space>", opts)
+map("n", "<Leader>b", ":buffers<CR>:buffer<Space>")
 
 -- Map buffer next, prev and delete to <leader+(n/p/d)>
-map("n", "<leader>n", ":bn<cr>", opts)
-map("n", "<leader>p", ":bp<cr>", opts)
-map("n", "<leader>d", ":bd<cr>", opts)
+map("n", "<leader>n", ":bn<cr>")
+map("n", "<leader>p", ":bp<cr>")
+map("n", "<leader>d", ":bd<cr>")
 
 -- Disable default completion.
-map('i', '<C-n>', '<Nop>', opts)
-map('i', '<C-p>', '<Nop>', opts)
+map('i', '<C-n>', '<Nop>')
+map('i', '<C-p>', '<Nop>')
 
 -- Set alt + j/k to switch lines of texts or simply move them
-map("n", "<A-k>", ':let save_a=@a<Cr><Up>"add"ap<Up>:let @a=save_a<Cr>', opts)
-map("n", "<A-j>", ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>', opts)
+map("n", "<A-k>", ':let save_a=@a<Cr><Up>"add"ap<Up>:let @a=save_a<Cr>')
+map("n", "<A-j>", ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>')
 
-map("n", "<leader><C-l>", "<Cmd>!clear<CR>", opts)
+map("i", "<C-l>", "<Del>")
+
+map("n", "<leader><C-l>", "<Cmd>!clear<CR>")
+
+map("n", "<leader>y", ":BufferPick<CR>")
+
 vim.cmd([[
   inoremap <A-h> <left>
   inoremap <A-j> <down>
@@ -87,74 +102,74 @@ vim.cmd([[
 ]])
 
 -- move block easily
-map("n", "<", "<<", d("Decrease indent"))
-map("n", ">", ">>", d("Increase indent"))
-map("x", "<", "<gv", d("Increase indent"))
-map("x", ">", ">gv", d("Decrease indent"))
+map("n", "<", "<<", term_opts)
+map("n", ">", ">>", term_opts)
+map("x", "<", "<gv", term_opts)
+map("x", ">", ">gv", term_opts)
 
 -- Resize Panes
-map("n", "<Leader>+", ":resize +5<CR>", opts)
-map("n", "<Leader>-", ":resize -5<CR>", opts)
-map("n", "<Leader><", ":vertical resize +5<CR>", opts)
-map("n", "<Leader>>", ":vertical resize -5<CR>", opts)
-map("n", "<Leader>=", "<C-w>=", opts)
+map("n", "<Leader>+", ":resize +5<CR>")
+map("n", "<Leader>-", ":resize -5<CR>")
+map("n", "<Leader><", ":vertical resize +5<CR>")
+map("n", "<Leader>>", ":vertical resize -5<CR>")
+map("n", "<Leader>=", "<C-w>=")
 
 -- New tab
-map("n", "<C-T>e", ":tabedit", opts)
+map("n", "<C-T>e", ":tabedit")
 
 -- create tab like window
-map("n", "<C-T>h", ":tabprevious<CR>", d("Goto previous tab"))
-map("n", "<C-T>l", ":tabnext<CR>", d("Goto next tab"))
-map("n", "<C-T>n", ":tabnew<CR>", d("Create a new tab"))
+map("n", "<C-T>h", ":tabprevious<CR>")
+map("n", "<C-T>l", ":tabnext<CR>")
+map("n", "<C-T>n", ":tabnew<CR>")
 
 -- Vim TABs
-map("n", "<leader>1", "1gt<CR>", opts)
-map("n", "<leader>2", "2gt<CR>", opts)
-map("n", "<leader>3", "3gt<CR>", opts)
-map("n", "<leader>4", "4gt<CR>", opts)
-map("n", "<leader>5", "5gt<CR>", opts)
-map("n", "<leader>6", "6gt<CR>", opts)
-map("n", "<leader>7", "7gt<CR>", opts)
-map("n", "<leader>8", "8gt<CR>", opts)
-map("n", "<leader>9", "9gt<CR>", opts)
-map("n", "<leader>0", "10gt<CR>", opts)
+map("n", "<leader>1", "1gt<CR>")
+map("n", "<leader>2", "2gt<CR>")
+map("n", "<leader>3", "3gt<CR>")
+map("n", "<leader>4", "4gt<CR>")
+map("n", "<leader>5", "5gt<CR>")
+map("n", "<leader>6", "6gt<CR>")
+map("n", "<leader>7", "7gt<CR>")
+map("n", "<leader>8", "8gt<CR>")
+map("n", "<leader>9", "9gt<CR>")
+map("n", "<leader>0", "10gt<CR>")
 
 -- Split window
-map("n", "<leader>h", ":split<CR>", opts)
-map("n", "<leader>v", ":vsplit<CR>", opts)
-map("n", "<leader>c", "<C-w>c", opts)
+map("n", "<leader>h", ":split<CR>")
+map("n", "<leader>v", ":vsplit<CR>")
+map("n", "<leader>c", "<C-w>c")
 
 -- Toggle set number
-map("n", "<leader>$", ":NumbersToggle<CR>", opts)
-map("n", "<leader>%", ":NumbersOnOff<CR>", opts)
+map("n", "<leader>$", ":NumbersToggle<CR>")
+map("n", "<leader>%", ":NumbersOnOff<CR>")
 
 -- Change mode to executable
-map("n", "<leader>x", ":!chmod +x %<CR>", opts)
+map("n", "<leader>x", ":!chmod +x %<CR>")
 
 -- Paste without replace clipboard
-map("v", "p", '"_dP', opts)
+map("v", "p", '"_dP')
 
 -- Paste end of line
---map("n", ",", "$p", opts)
+--map("n", ",", "$p")
 vim.cmd([[
   nmap , $p
 ]])
 
 -- Select entire buffer
-map("v", "<aa>", "gg<S-v>G", opts)
+map("v", "<aa>", "gg<S-v>G")
 
 -- Delete without changing the registers
---map('n', 'x', '"_x', opts)
+--map('n', 'x', '"_x')
 
 -- Select all text in current buffer
 --map('n', '<leader>a', ':keepjumps normal! ggVG<cr>')
 
 -- Swap two pieces of text, use x to cut in visual mode, then use Ctrl-x in
 -- visual mode to select text to swap with
-map("v", "<C-X>", "<Esc>`.``gvP``P", opts)
+map("v", "<C-X>", "<Esc>`.``gvP``P")
 
 -- Search and replace
-map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c', opts)
+map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 --vnoremap ; :call Get_visual_selection()<cr>
 --
 --function! Get_visual_selection()
@@ -192,40 +207,45 @@ vim.cmd([[
   map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
 ]])
 
+-- Execute this file
+--map("n", "<leader><leader>x", ":call scripts#save_and_exec()<CR>", print("save & exec"))
+vim.cmd([[
+  " Execute this file
+  nnoremap <leader><leader>x :call scripts#save_and_exec()<CR>\|:echom "save & exec . . ."<CR>
+
+]])
 -------------- Telescope --------------
 --Telescope find_files cwd=..
-map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>", opts)
+map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>")
 map(
 	"n",
 	"<leader>ft",
-	"<cmd>lua require('telescope.builtin').builtin(require('telescope.themes').get_dropdown({}))<cr>",
-	opts
-)
+	"<cmd>lua require('telescope.builtin').builtin(require('telescope.themes').get_dropdown({}))<cr>")
 
-map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>", opts)
-map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>", opts)
+map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
+map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 
-  map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>", opts)
---map("n", "<leader>fz", ":FZF<CR>", opts)
---map("t", [[<Esc><Esc>]], [[<C-\><C-N>]], opts)
+  map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
+--map("n", "<leader>fz", ":FZF<CR>")
+--map("t", [[<Esc><Esc>]], [[<C-\><C-N>]])
 --map("n", "ff", ":NvimTreeToggle<CR>", {})
 map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
 --  This <Esc><Esc> avoids crashing fzf menu running in TERMINAL MODE (:q if you do)
 -- Find files in config dirs
 --key_map("n", "<leader>e", ":lua require('plugins.telescope').find_configs()<CR>",  opts)
---map("n", "<leader>f.", "<cmd>lua require('plugins.telescope').find_configs({})<cr>", opts)
-map("n", "<leader>ft", "<cmd>lua require('plugins.telescope').file_explorer({})<cr>", opts)
---map("n", "<leader>fd", "<cmd>lua require('plugins.telescope').find_notes({})<cr>", opts)
-map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>", opts)
+--map("n", "<leader>f.", "<cmd>lua require('plugins.telescope').find_configs({})<cr>")
+map("n", "<leader>ft", "<cmd>lua require('plugins.telescope').file_explorer({})<cr>")
+--map("n", "<leader>fd", "<cmd>lua require('plugins.telescope').find_notes({})<cr>")
+map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>")
 -- registers picker
-map("n", "<leader>r", "<cmd>lua require('telescope.builtin').registers({})<CR>", opts)
+map("n", "<leader>r", "<cmd>lua require('telescope.builtin').registers({})<CR>")
 -- find files including gitignored
 --keymap(
 --  "n",
 --  "<leader>fg",
---  "<cmd>lua require('telescope.builtin').find_files({find_command={'fd','--no-ignore-vcs'}})<CR>", opts)
+--  "<cmd>lua require('telescope.builtin').find_files({find_command={'fd','--no-ignore-vcs'}})<CR>")
 -- open available commands & run it
-map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands({results_title='Commands Results'})<CR>", opts)
+map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands({results_title='Commands Results'})<CR>")
 
 -------------- Autopairs --------------
 Toggle_autopairs = function()
@@ -259,7 +279,7 @@ vim.cmd([[
   endfunction
   nnoremap <leader>tb :call Toggle_transparent_background()<CR>
 ]])
---keymap('n', '<leader>tb', ':Toggle_transparent_background<CR>', opts)
+--keymap('n', '<leader>tb', ':Toggle_transparent_background<CR>')
 
 -- Toggle zoom
 vim.cmd([[
@@ -276,10 +296,10 @@ vim.cmd([[
   endfunction
   command! ZoomToggle call s:ZoomToggle()
  ]])
-map("n", "<leader>z", ":ZoomToggle<CR>", opts)
+map("n", "<leader>z", ":ZoomToggle<CR>")
 -- "Zoom" a split window into a tab and/or close it
---keymap('n', '<Leader>,', ':tabnew %<CR>', opts)
---keymap('n', '<Leader>.', ':tabclose<CR>', opts)
+--keymap('n', '<Leader>,', ':tabnew %<CR>')
+--keymap('n', '<Leader>.', ':tabclose<CR>')
 
 -- Open last closed buffer
 vim.cmd([[
@@ -303,7 +323,7 @@ vim.cmd([[
       execute 'b ' . last_buf
   endfunction
  ]])
-map("n", "<C-t>", ":call OpenLastClosed() <CR>", opts)
+map("n", "<C-t>", ":call OpenLastClosed() <CR>")
 
 -- Tabularize
 vim.cmd([[
@@ -329,8 +349,8 @@ vim.cmd([[
 --EasyAlign /--/
 --:'<,'>Tabularize /--
 
-map("n", "<leader>,", ":hide<CR>", opts)
-map("n", "<leader>.", ":unhide<CR>", opts)
+map("n", "<leader>,", ":hide<CR>")
+map("n", "<leader>.", ":unhide<CR>")
 
 --" Clean trailing whitespace
 --nnoremap <leader>ww mz:%s/\s\+$//<cr>:let @/=''<cr>`z
@@ -339,12 +359,12 @@ map("n", "<leader>.", ":unhide<CR>", opts)
 --vim.api.nvim_create_user_command('W', 'w !sudo tee > /dev/null %', {})
 
 -- Copy and Paste with <C-c> and <C-v>
---keymap('n', '<expr> p', (v:register =--= '"' && &clipboard =~ 'unnamed' ? '"*p' : '"' . v:register . 'p')'', opts)
+--keymap('n', '<expr> p', (v:register =--= '"' && &clipboard =~ 'unnamed' ? '"*p' : '"' . v:register . 'p')'')
 -- Use command :Vb for Visual Block or <C-q> since <C-v> is used for Copy
 --command! Vb normal! <C-v>
 -- Map <w!!> to save/edit a root permission/read-only file, only works in
 -- traditional vim and not neovim
---keymap('c', 'w!! %!sudo tee > /dev/null', opts)
+--keymap('c', 'w!! %!sudo tee > /dev/null')
 --" Copying text to the system clipboard.
 --"
 --" For some reason Vim no longer wants to talk to the OS X pasteboard through "*.
@@ -385,8 +405,8 @@ map("n", "<leader>.", ":unhide<CR>", opts)
 ---- Open the current file in the default program (on Mac this should just be just `open`)
 --keymap('n', '<leader>x', ':!xdg-open %<cr><cr>')
 
-map("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>", opts)
---keymap("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files cwd=..()<cr>", opts)
+map("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files()<cr>")
+--keymap("n", "<leader>ff", "<cmd>lua require('telescope.builtin').find_files cwd=..()<cr>")
 --keymap('n', '<leader>k', ':nohlsearch<CR>')
 --
 --"This unsets the "last search pattern" register by hitting return
@@ -407,8 +427,8 @@ vim.cmd([[
 ---- http://ddrscott.github.io/blog/2016/yank-without-jank/
 --keymap('v', 'y', 'myy`y')
 --keymap('v', 'Y', 'myY`y')
---keymap("n", "<C-q>", ":q<cr>", opts)
---keymap("n", "<C-M-q>", ":qa!<cr>", opts)
+--keymap("n", "<C-q>", ":q<cr>")
+--keymap("n", "<C-M-q>", ":qa!<cr>")
 
 --" Sort lines
 --nnoremap <leader>s vip:!sort<cr>
@@ -525,7 +545,7 @@ vim.cmd([[
 --  ALE: toggle _ALE activity
 --keymap('n', '<leader>a',[[:ALEToggle<CR>]])
 
---keymap('n', '<Leader>cd', ':call fzf#run({'source': 'fd -t d -H . ~', 'sink': 'cd'})<CR>', opts)
--- ":lua require('neogen').generate()<CR>", opts)
---keymap("n", "<leader>ww", ":set wrap!<CR>", opts)
+--keymap('n', '<Leader>cd', ':call fzf#run({'source': 'fd -t d -H . ~', 'sink': 'cd'})<CR>')
+-- ":lua require('neogen').generate()<CR>")
+--keymap("n", "<leader>ww", ":set wrap!<CR>")
 --

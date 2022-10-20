@@ -174,7 +174,8 @@ return packer.startup(function(use)
 	use("saadparwaiz1/cmp_luasnip")
 
 	-- snippets
-	use("L3MON4D3/LuaSnip") --snippet engine
+	--use("L3MON4D3/LuaSnip") --snippet engine
+  use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"})
 	use("rafamadriz/friendly-snippets") -- a bunch of snippets to use
 	--use("github/copilot.vim")
 	--use({
@@ -301,7 +302,7 @@ return packer.startup(function(use)
 
 	-- Utilities
 	use("nathom/filetype.nvim")
-	use("christoomey/vim-tmux-navigator")
+	--use("christoomey/vim-tmux-navigator")
 	--use("preservim/vimux")
 	use("myusuf3/numbers.vim")
 	use("windwp/nvim-autopairs")
