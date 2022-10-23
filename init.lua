@@ -39,51 +39,58 @@ end)
 require("impatient")
 
 --for k, v in pairs(package.loaded) do
-for k in pairs(package.loaded) do
-  if string.match(k, "^user") then
-    package.loaded[k] = nil
-  end
-end
+--for k in pairs(package.loaded) do
+--  if string.match(k, "^user") then
+--    package.loaded[k] = nil
+--  end
+--end
 
+--for k, v in pairs(package.loaded) do
+--  if string.match(k, "^user" ) then
+--    package.loaded[k] = nil
+--  else string.match(v, "^plugins" )
+--    package.loaded[v] = nil
+--  end
+--end
 require("user.utils")
 require("user.keys") -- Keymaps
 require("user.opts") -- Options
 require("user.pack") -- Plugins
-require("user.reload")
+--require("user.reload")
 --requirdkfse("mods") -- Modules/functions
 --requirdkfe("deps") -- Plugins
-require("user.treesitter")
-require("user.telescope")
-require("user.nvim-tree")
+require("plugins.treesitter")
+require("plugins.telescope")
+require("plugins.nvim-tree")
 --requirdfke("scripts")
-require("user.cmp")
-require("user.luasnip")
-require("user.toggleterm")
---requirdfe("user.floatterm")
-require("user.autopairs")
---requirdfe("user.vimspector")
---requirdfe("user.mason")
---requirdfe("user.dap")
-require("user.colorizer")
-require("user.prettier")
-require("user.git")
-require("user.gitsigns")
-require("user.neoscroll")
-require("user.lsp")
---requirdfe("user.lspconfig")
---requirdfe("user.lspsaga")
---requirdfe("user.lspkind")
-require("user.null-ls")
-require("user.web-devicons")
-require("user.zen-mode")
-require("user.colorscheme")
---requirdfe("user.lsp-colors")
+require("plugins.cmp")
+require("plugins.luasnip")
+--require("plugins.toggleterm")
+--requirdfe("plugins.floatterm")
+require("plugins.autopairs")
+--requirdfe("plugins.vimspector")
+--requirdfe("plugins.mason")
+--requirdfe("plugins.dap")
+require("plugins.colorizer")
+require("plugins.prettier")
+require("plugins.git")
+require("plugins.gitsigns")
+require("plugins.neoscroll")
+require("plugins.lsp")
+--requirdfe("plugins.lspconfig")
+--requirdfe("plugins.lspsaga")
+--requirdfe("plugins.lspkind")
+require("plugins.null-ls")
+require("plugins.web-devicons")
+require("plugins.zen-mode")
+require("plugins.colorscheme")
+--requirdfe("plugins.lsp-colors")
 --vim.opt.laststatus = 3
 
-require("user.heirline")
+require("plugins.heirline")
 
---vim.api.nvim_command("luafile '/home/sxrdusr/.config/nvim/lua/user/heirline.lua'")
---vim.api.nvim_command(':luafile ~/.config/nvim/lua/user/heirline.lua')
+--vim.api.nvim_command("luafile '/home/sxrdusr/.config/nvim/lua/plugins/heirline.lua'")
+--vim.api.nvim_command(':luafile ~/.config/nvim/lua/plugins/heirline.lua')
 ---- Hide statusline by setting laststatus and cmdheight to 0.
 --vim.o.ls = 0
 --vim.o.ch = 0

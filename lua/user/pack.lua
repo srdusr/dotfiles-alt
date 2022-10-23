@@ -43,6 +43,7 @@ packer.init({
 return packer.startup(function(use)
 	use("wbthomason/packer.nvim") -- Have packer manage itself
 
+	use("lewis6991/impatient.nvim")
   use("nvim-lua/plenary.nvim") -- Useful lua functions used ny lots of plugins
 	--use("jose-elias-alvarez/null-ls.nvim")
 
@@ -175,7 +176,7 @@ return packer.startup(function(use)
 
 	-- snippets
 	--use("L3MON4D3/LuaSnip") --snippet engine
-  use({"L3MON4D3/LuaSnip", tag = "v<CurrentMajor>.*"})
+  use("L3MON4D3/LuaSnip")
 	use("rafamadriz/friendly-snippets") -- a bunch of snippets to use
 	--use("github/copilot.vim")
 	--use({
@@ -302,7 +303,7 @@ return packer.startup(function(use)
 
 	-- Utilities
 	use("nathom/filetype.nvim")
-	--use("christoomey/vim-tmux-navigator")
+	use("christoomey/vim-tmux-navigator")
 	--use("preservim/vimux")
 	use("myusuf3/numbers.vim")
 	use("windwp/nvim-autopairs")
@@ -310,20 +311,30 @@ return packer.startup(function(use)
 	use("dinhhuy258/git.nvim") -- For git blame & browse
 	use("kyazdani42/nvim-tree.lua")
 	use("numToStr/Comment.nvim")
-	use("akinsho/toggleterm.nvim")
+	--use("akinsho/toggleterm.nvim")
 	--use("godlygeek/tabular")
 	--use("Vonr/align.nvim")
 	--use("junegunn/vim-easy-align")
 	--use("dstein64/vim-startuptime")
 	use("tweekmonster/startuptime.vim")
-	use("lewis6991/impatient.nvim")
 	-- use("luukvbaal/stabilize.nvim")
-	--use({
-	--  "ggandor/leap.nvim",
-	--  config = function()
-	--    require("leap").set_default_keymaps()
-	--  end,
-	--})
+  --use("rhysd/clever-f.vim")
+  --use("ggandor/lightspeed.nvim") -- use 'cl' and 'cc' instead of 's' and 'S' respectively
+  --use("ggandor/leap.nvim")
+	use({
+	  "ggandor/leap.nvim",
+	  config = function()
+	    require("leap").set_default_keymaps()
+      --vim.keymap.set('n', '-', '<Plug>(leap-forward)', {})
+      --vim.keymap.set('n', '_', '<Plug>(leap-backward)', {})
+	  end,
+	})
+  use({ "ggandor/flit.nvim",
+    config = function()
+      require("flit").setup()
+    end,
+  })
+
 	--use("Shatur/neovim-session-manager")
 	--use("rmagatti/auto-session")
 	--use("rmagatti/session-lens")

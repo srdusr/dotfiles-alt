@@ -26,7 +26,7 @@ vim.g.mapleader = ";"
 --vim.g.maplocalleader = ";"
 
 -- "jj" to exit insert-mode
-map("i", "jj", "<esc>")
+map("i", "kk", "<esc>")
 
 -- save quickly
 --map("n", ";w", ":w<CR>", d("Save buffer"))
@@ -40,16 +40,17 @@ map("i", "jj", "<esc>")
 
 --vim.api.nvim_set_keymap("n", "<leader><CR>", "<cmd>lua ReloadConfig()<CR>", { noremap = true, silent = false })
 map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", print ("Nvim configuration reloaded"))
---
+
+map("n", "<Leader>tc", ":lua require('user.utils').toggle_completion()<CR>")
 --  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
 
 --vim.api.nvim_set_keymap('n', '<Leader>qr',  '<cmd>:lua require("plugins.telescope").reload()<CR>', { noremap = true, silent = true })
 
 --Easier split navigations, just ctrl-j instead of ctrl-w then j
---map("n", "<C-J>", "<C-W><C-J>")
---map("n", "<C-K>", "<C-W><C-K>")
---map("n", "<C-L>", "<C-W><C-L>")
---map("n", "<C-H>", "<C-W><C-H>")
+map("n", "<C-J>", "<C-W><C-J>")
+map("n", "<C-K>", "<C-W><C-K>")
+map("n", "<C-L>", "<C-W><C-L>")
+map("n", "<C-H>", "<C-W><C-H>")
 
 -- Combine buffers list with buffer name
 map("n", "<Leader>b", ":buffers<CR>:buffer<Space>")
@@ -151,12 +152,12 @@ map("v", "p", '"_dP')
 
 -- Paste end of line
 --map("n", ",", "$p")
-vim.cmd([[
-  nmap , $p
-]])
+--vim.cmd([[
+--  nmap , $p
+--]])
 
 -- Select entire buffer
-map("v", "<aa>", "gg<S-v>G")
+--map("v", "<aa>", "gg<S-v>G")
 
 -- Delete without changing the registers
 --map('n', 'x', '"_x')
@@ -349,8 +350,8 @@ vim.cmd([[
 --EasyAlign /--/
 --:'<,'>Tabularize /--
 
-map("n", "<leader>,", ":hide<CR>")
-map("n", "<leader>.", ":unhide<CR>")
+--map("n", "<leader>,", ":hide<CR>")
+--map("n", "<leader>.", ":unhide<CR>")
 
 --" Clean trailing whitespace
 --nnoremap <leader>ww mz:%s/\s\+$//<cr>:let @/=''<cr>`z
