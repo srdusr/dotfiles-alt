@@ -228,7 +228,14 @@ table.insert(snippets, mySecondSnippet)
 local myFirstAutoSnippet = s("automatic", { t("This was auto triggered") })
 table.insert(autosnippets, myFirstAutoSnippet)
 
-local mySecondAutoSnippet = s({ trig = "normal", regTrig = true }, { t("This was auto triggered") })
+local mySecondAutoSnippet = s({ trig = "digit(%d)(%d)", regTrig = true }, {
+  f(function(_, snip)
+    return snip.captures[1] .. " + "
+  end),
+  f(function(_, snip)
+    return snip.captures[2]
+  end),
+})
 table.insert(autosnippets, mySecondAutoSnippet)
 
 

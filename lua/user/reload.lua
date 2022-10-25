@@ -8,18 +8,18 @@
 --  dofile(vim.env.MYVIMRC)
 --  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
 --end
-function _G.ReloadConfig()
+--function _G.ReloadConfig()
   --dofile(vim.env.MYVIMRC)
  -- dofile(vim.fn.stdpath('config') .. '/init.lua')
     --dofile(vim.fn.stdpath('user') .. '/init.lua')
-  require("plenary.reload").reload_module("user", true)
+ -- require("plenary.reload").reload_module("user", true)
   --dofile("/home/sxrdusr/.config/nvim/lua/user/keys.lua")
   --dofile("/home/sxrdusr/.config/nvim/lua/user/mods.lua")
   --dofile("/home/sxrdusr/.config/nvim/lua/user/opts.lua")
   --dofile("/home/sxrdusr/.config/nvim/lua/user/pack.lua")
   --dofile("/home/sxrdusr/.config/nvim/lua/user/utils.lua")
-  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
-end
+  --vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
+--end
 --P = function(v)
 --  print(vim.inspect(v))
 --  return v

@@ -26,7 +26,14 @@ vim.g.mapleader = ";"
 --vim.g.maplocalleader = ";"
 
 -- "jj" to exit insert-mode
-map("i", "kk", "<esc>")
+map("i", "jk", "<esc>")
+
+map("n", "<leader>m", ":messages<CR>")
+
+-- Print last error message or use these commands | v:errmsgv | :statusmsg | :h execute() |
+--nnoremap <silent><leader>x :put =trim(execute(input(':', '', 'command')))<CR>
+-- Press <leader>x, then enter your command, such as 5mess and press <Enter>. The last five message lines will be added to the current buffer.
+-- useful to copy error message when vim start
 
 -- save quickly
 --map("n", ";w", ":w<CR>", d("Save buffer"))
@@ -38,8 +45,33 @@ map("i", "kk", "<esc>")
 --nnoremap <leader>so :source $my_vimrc<cr>
 --]])
 
+-- Toggle between folds
+--utils.map("n", "<F2>", "&foldlevel ? 'zM' : 'zR'", { expr = true })
+
+-- Move to the next and previous item in the quickfixlist
+--utils.map("n", "]c", "<Cmd>cnext<CR>")
+--utils.map("n", "[c", "<Cmd>cprevious<CR>")
+
+-- Use space to toggle fold
+--utils.map("n", "<Space>", "za")
+
+-- Hitting ESC when inside a terminal to get into normal mode
+--utils.map("t", "<Esc>", [[<C-\><C-N>]])
+
+-- select last change
+--nnoremap gV `[v`]
+
+
+--map("n", "<leader><CR>", ":runtime! /lua/plugins/*.lua<CR> | :runtime! /lua/user/*.lua<CR> | :luafile ~/.config/nvim/init.lua<CR>", print ("Nvim reloaded"))
+--map("n", "<leader><CR>", ":lua require('init').unload_lua_namespace()<CR>", print ("Nvim reloaded"))
+--map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO))
+--map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :lua require("notify")("completion off")")
+--map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", vim.api.nvim_echo({{'first chunk and ', 'None'}, {'second chunk to echo', 'None'}}, false, {}))
+--map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", print ("Nvim config loading..."))
+--map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echo ('hello') | <C-l><CR>")
+map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>")
+--map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>")
 --vim.api.nvim_set_keymap("n", "<leader><CR>", "<cmd>lua ReloadConfig()<CR>", { noremap = true, silent = false })
-map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", print ("Nvim configuration reloaded"))
 
 map("n", "<Leader>tc", ":lua require('user.utils').toggle_completion()<CR>")
 --  vim.notify("Nvim configuration reloaded!", vim.log.levels.INFO)
@@ -168,6 +200,39 @@ map("v", "p", '"_dP')
 -- Swap two pieces of text, use x to cut in visual mode, then use Ctrl-x in
 -- visual mode to select text to swap with
 map("v", "<C-X>", "<Esc>`.``gvP``P")
+
+-- Keep Visual mode selection when indenting text
+--utils.map("x", ">", ">gv")
+--utils.map("x", "<", "<gv")
+
+-- Make visual pasting a word to not update the unnamed register
+-- Thus, allowing us to repeatedly paste the word. {"_ : black-hole register}
+--utils.map("v", "p", [["_dP]])
+
+-- Whole-word search
+--utils.map("n", "<leader>/", ":/\\<\\><Left><Left>", { silent = false })
+
+-- EasyAlign keybindings
+-- 'vipga' starts interactive EasyAlign in visual mode
+-- 'gaip' starts interactive EasyAlign for text/motion object
+--utils.map({ "n", "x" }, "ga", "<Plug>(EasyAlign)")
+--utils.map({ "n", "x" }, "<leader>ga", "<Plug>(LiveEasyAlign)")
+
+-- Set a mark when moving more than 5 lines upwards/downards
+-- this will populate the jumplist enabling us to jump back with Ctrl-O
+--utils.map("n", "k", [[(v:count > 5 ? "m'" . v:count : "") . 'k']], { expr = true })
+--utils.map("n", "j", [[(v:count > 5 ? "m'" . v:count : "") . 'j']], { expr = true })
+
+-- Zoom toggle a buffer in a new tab
+--utils.map("n", "<leader>z", function()
+--    require("tt.helper").zoomToggleNewTab()
+--end, { desc = "Zoom toggle a buffer in a new tab" })
+
+-- Hitting ESC when inside a terminal to get into normal mode
+--utils.map("t", "<Esc>", [[<C-\><C-N>]])
+
+
+
 
 -- Search and replace
 map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')

@@ -10,14 +10,17 @@ end
 vim.api.nvim_command("syntax on")
 vim.api.nvim_command("highlight Normal guibg=none")
 vim.api.nvim_command("highlight SignColumn guibg=none")
+
 vim.api.nvim_command("highlight TabLine guibg=#333842 gui=bold")
+vim.api.nvim_command("highlight TabLineSel guibg=#333842 gui=bold")
+
 --vim.api.nvim_command("highlight TabLine guibg=none gui=bold")
 --vim.api.nvim_command("highlight StatusLine guibg=#333842 gui=bold")
 --vim.api.nvim_command("highlight StatusLine guibg=#333842 guifg=#d6d3ea gui=bold")
 --vim.api.nvim_command("highlight StatusLine guibg=none gui=bold")
 --vim.api.nvim_command("highlight TabLineNC guibg=none gui=bold")
 --vim.api.nvim_command("highlight TabLineSel guibg=#bd93f9 gui=bold")
-vim.api.nvim_command("highlight TabLineSel guibg=#333842 gui=bold")
+vim.api.nvim_command("highlight Title guibg=none gui=bold")
 vim.api.nvim_command("highlight TabLineFill guibg=none gui=bold")
 vim.api.nvim_command("highlight WinBar guibg=none gui=bold")
 vim.api.nvim_command("highlight NormalFloat guibg=none")
