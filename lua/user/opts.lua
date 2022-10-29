@@ -94,7 +94,7 @@ vim.opt.report = 0 -- Always report changed lines.
 ---- bottom of the split. A quick fix is to just set the statusline
 ---- to empty whitespace (it can't be an empty string because then
 ---- it'll get replaced by the default stline).
-vim.opt.stl = " "
+--vim.opt.stl = " "
 
 -- Backup/undo
 vim.opt.backup = false --
@@ -153,9 +153,10 @@ vim.opt.listchars = { tab = "▸ ", trail = "·" } --
 --vim.opt.fillchars:append({ eob = " " }) -- remove the ~ from end of buffer
 vim.opt.modeline = true --
 vim.opt.modelines = 3 -- modelines (comments that set vim options on a per-file basis)
-vim.opt.modelineexpr = true
+--vim.opt.modelineexpr = true
 --vim.opt.nofoldenable = true                       -- turn folding off
 --vim.opt.foldenable = false -- turn folding off
+vim.o.showtabline = 2
 
 -- Highlights
 vim.opt.incsearch = true -- Highlight while searching with / or ?.
