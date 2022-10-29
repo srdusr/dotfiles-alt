@@ -1,6 +1,6 @@
 -- Colorscheme
 -- ayu gruvbox molokai onedark srcery everblush vscode edge nightfly doom-one
-local colorscheme = "onedark"
+local colorscheme = "doom-one"
 local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
 if not status_ok then
 	vim.notify("colorscheme " .. colorscheme .. " not found!")
@@ -17,7 +17,7 @@ vim.api.nvim_command("highlight TabLine guibg=#333842 gui=bold")
 --vim.api.nvim_command("highlight StatusLine guibg=none gui=bold")
 --vim.api.nvim_command("highlight TabLineNC guibg=none gui=bold")
 --vim.api.nvim_command("highlight TabLineSel guibg=#bd93f9 gui=bold")
---vim.api.nvim_command("highlight TabLineSel guibg=#333842 gui=bold")
+vim.api.nvim_command("highlight TabLineSel guibg=#333842 gui=bold")
 vim.api.nvim_command("highlight TabLineFill guibg=none gui=bold")
 vim.api.nvim_command("highlight WinBar guibg=none gui=bold")
 vim.api.nvim_command("highlight NormalFloat guibg=none")
