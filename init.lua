@@ -32,16 +32,14 @@
 -- See startup time
 --nvim --startuptime startup.log -c exit && tail -100 startup.log
 
+-- Load impatient
 local impatient_ok, impatient = pcall(require, "impatient")
 if impatient_ok then
 	impatient.enable_profile()
 end
 
---local stdpath = vim.fn.stdpath
+-- Check if we have the latest stable version of nvim
 local utils = require("user.utils")
-vim.g.snippets = "luasnip"
-
--- check if we have the latest stable version of nvim
 local expected_ver = "0.8.0"
 local nvim_ver = utils.get_nvim_version()
 
@@ -58,10 +56,8 @@ vim.schedule(function()
 	vim.cmd("silent! rsh")
 end)
 
--- IMPORTS
---require("impatient")
 
--- Load/reload modules here
+-- Load/reload modules
 local modules = {
   "user.pack", -- Packer plugin manager
   "user.opts", -- Options
@@ -90,7 +86,6 @@ local modules = {
   --"plugins.dap",
   --"plugins.toggleterm",
   --"plugins.floatterm",
-  vim.notify("Nvim configuration reloaded!") -- print this when reloaded
 }
 
 -- Refresh module cache
@@ -98,6 +93,9 @@ for k, v in pairs(modules) do
   package.loaded[v] = nil
   require(v)
 end
+
+-- Snippets
+vim.g.snippets = "luasnip"
 
 -- Improve speed by disabling some default plugins/modules
 local builtins = {
