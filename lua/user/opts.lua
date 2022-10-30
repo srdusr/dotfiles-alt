@@ -10,7 +10,8 @@ vim.cmd([[
 ]])
 
 -- Environment
-vim.opt.shell = "zsh" --
+--vim.opt.shell = "zsh" --
+vim.o.shell = "/bin/zsh"
 vim.scriptencoding = "utf-8" --
 vim.opt.encoding = "utf-8" --
 vim.opt.fileencoding = "utf-8" --

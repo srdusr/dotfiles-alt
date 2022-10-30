@@ -7,7 +7,7 @@ local utils = require("user.utils")
 local custom_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
+--vim.lsp.protocol.CompletionItemKind = {}
 	-- Mappings.
 	local map = function(mode, l, r, opts)
 		opts = opts or {}
@@ -149,25 +149,36 @@ map('n', '<Leader>m', ':call v:lua.toggle_diagnostics()<CR>')
 --	})
 
 	-- The below command will highlight the current variable and its usages in the buffer.
-	if client.server_capabilities.documentHighlightProvider then
-		vim.cmd([[
-      hi! link LspReferenceRead Visual
-      hi! link LspReferenceText Visual
-      hi! link LspReferenceWrite Visual
-      augroup lsp_document_highlight
-        autocmd! * <buffer>
-        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
-        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
-      augroup END
-    ]])
-	end
+--	if client.server_capabilities.documentHighlightProvider then
+--		vim.cmd([[
+--      hi! link LspReferenceRead Visual
+--      hi! link LspReferenceText Visual
+--      hi! link LspReferenceWrite Visual
+--      augroup lsp_document_highlight
+--        autocmd! * <buffer>
+--        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
+--        autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
+--        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
+--      augroup END
+--    ]])
+--	end
 
-	if vim.g.logging_level == "debug" then
-		local msg = string.format("Language server %s started!", client.name)
-		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
-	end
+    -- Only highlight if compatible with the language
+--  if client.resolved_capabilities.document_highlight then
+--    vim.cmd('augroup LspHighlight')
+--    vim.cmd('autocmd!')
+--    vim.cmd('autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()')
+--    vim.cmd('autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()')
+--    vim.cmd('augroup END')
+--  end
+
+--	if vim.g.logging_level == "debug" then
+--		local msg = string.format("Language server %s started!", client.name)
+--		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
+--	end
+-- suppress error messages from lang servers
 end
-
+vim.lsp.set_log_level("debug")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
 capabilities.textDocument.completion.completionItem.snippetSupport = true
