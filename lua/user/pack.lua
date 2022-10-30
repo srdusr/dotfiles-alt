@@ -107,6 +107,7 @@ return packer.startup(function(use)
         })
       end
     }
+    use "antoinemadec/FixCursorHold.nvim"
     use { "kosayoda/nvim-lightbulb", requires = { "antoinemadec/FixCursorHold.nvim" } }
     --use("folke/lsp-colors.nvim")
     use "mfussenegger/nvim-lint"
@@ -121,15 +122,22 @@ return packer.startup(function(use)
     --use "lvimuser/lsp-inlayhints.nvim" -- rust-tools already provides this feature, but gopls doesn't
 
     -- null-ls
-    use({ "jose-elias-alvarez/null-ls.nvim",
-      config = function()
-        require("null-ls").setup({
-          sources = {
-            require("null-ls").builtins.diagnostics.checkmake, -- https://github.com/mrtazz/checkmake
-          }
-        })
-      end
-    })
+    --use({ "jose-elias-alvarez/null-ls.nvim",
+    --  config = function()
+    --    require("null-ls").setup({
+    --      sources = {
+    --        require("null-ls").builtins.diagnostics.checkmake, -- https://github.com/mrtazz/checkmake
+    --      }
+    --    })
+    --  end
+    --})
+  	use({
+		"jose-elias-alvarez/null-ls.nvim",
+		config = function()
+			require("null-ls").setup()
+		end,
+		requires = { "nvim-lua/plenary.nvim" },
+	})
   	use({
 		"SmiteshP/nvim-navic",
 		requires = "neovim/nvim-lspconfig",
