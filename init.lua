@@ -39,7 +39,6 @@ if impatient_ok then
 end
 
 -- Check if we have the latest stable version of nvim
-local opts = { noremap = true, silent = true, buffer = true }
 local utils = require("user.utils")
 local expected_ver = "0.8.0"
 local nvim_ver = utils.get_nvim_version()
