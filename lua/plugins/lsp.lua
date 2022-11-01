@@ -70,7 +70,9 @@ function _G.toggle_diagnostics()
     vim.diagnostic.enable()
   end
 end
-map('n', '<Leader>m', ':call v:lua.toggle_diagnostics()<CR>')
+
+--map('n', '<Leader>m', ':call v:lua.toggle_diagnostics()<CR>')
+
 --vim.g.diagnostics_active = true
 --function _G.toggle_diagnostics()
 --  if vim.g.diagnostics_active then
@@ -104,6 +106,35 @@ map('n', '<Leader>m', ':call v:lua.toggle_diagnostics()<CR>')
 		map("n", "<leader>rr", "<cmd>RustRunnables<CR>")
 		map("n", "<leader>ra", "<cmd>RustHoverAction<CR>")
 	end
+
+-- Highlight symbol under cursor
+
+-- Add the following to your on_attach (this allows checking server capabilities to avoid calling invalid commands.
+
+if client.server_capabilities.document_highlight then
+  vim.cmd [[
+    hi! LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+    hi! LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+    hi! LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+  ]]
+  vim.api.nvim_create_augroup('lsp_document_highlight', {
+    clear = false
+  })
+  vim.api.nvim_clear_autocmds({
+    buffer = bufnr,
+    group = 'lsp_document_highlight',
+  })
+  vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+    group = 'lsp_document_highlight',
+    buffer = bufnr,
+    callback = vim.lsp.buf.document_highlight,
+  })
+  vim.api.nvim_create_autocmd('CursorMoved', {
+    group = 'lsp_document_highlight',
+    buffer = bufnr,
+    callback = vim.lsp.buf.clear_references,
+  })
+end
 
 --For diagnostics for specific cursor position
 --vim.api.nvim_create_autocmd("CursorHold", {
@@ -162,7 +193,7 @@ map('n', '<Leader>m', ':call v:lua.toggle_diagnostics()<CR>')
 --      augroup END
 --    ]])
 --	end
-
+--
     -- Only highlight if compatible with the language
 --  if client.resolved_capabilities.document_highlight then
 --    vim.cmd('augroup LspHighlight')
@@ -172,10 +203,10 @@ map('n', '<Leader>m', ':call v:lua.toggle_diagnostics()<CR>')
 --    vim.cmd('augroup END')
 --  end
 
---	if vim.g.logging_level == "debug" then
---		local msg = string.format("Language server %s started!", client.name)
---		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
---	end
+	if vim.g.logging_level == "debug" then
+		local msg = string.format("Language server %s started!", client.name)
+		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
+	end
 -- suppress error messages from lang servers
 end
 vim.lsp.set_log_level("debug")
@@ -395,7 +426,7 @@ function! ToggleDiagnosticsOpenFloat()
         augroup END
     endif
 endfunction
-nnoremap <leader>a :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
+nnoremap <leader>m :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
 ]])
 
 --vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
@@ -577,33 +608,4 @@ end
 --  sign define DiagnosticSignInfo text= texthl=DiagnosticSignInfo linehl= numhl=DiagnosticLineNrInfo
 --  sign define DiagnosticSignHint text= texthl=DiagnosticSignHint linehl= numhl=DiagnosticLineNrHint
 --]]
-
--- Highlight symbol under cursor
-
--- Add the following to your on_attach (this allows checking server capabilities to avoid calling invalid commands.
-
---if client.resolved_capabilities.document_highlight then
---  vim.cmd [[
---    hi! LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
---    hi! LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
---    hi! LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
---  ]]
---  vim.api.nvim_create_augroup('lsp_document_highlight', {
---    clear = false
---  })
---  vim.api.nvim_clear_autocmds({
---    buffer = bufnr,
---    group = 'lsp_document_highlight',
---  })
---  vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
---    group = 'lsp_document_highlight',
---    buffer = bufnr,
---    callback = vim.lsp.buf.document_highlight,
---  })
---  vim.api.nvim_create_autocmd('CursorMoved', {
---    group = 'lsp_document_highlight',
---    buffer = bufnr,
---    callback = vim.lsp.buf.clear_references,
---  })
---end
 
