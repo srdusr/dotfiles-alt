@@ -61,6 +61,16 @@ map("n", "<leader>m", ":messages<CR>")
 -- select last change
 --nnoremap gV `[v`]
 
+--map("n", "<esc>", function()
+--  notify.dismiss()
+--  vim.cmd.noh()
+--end)
+
+--"nnore fast [e]dit and [s]ourcing .[v]imrc
+--nnoremap <leader>ev :edit $MYVIMRC<CR>
+--"fast macro
+--nnoremap @ <cmd>set lazyredraw <bar> execute 'noautocmd norm! ' . v:count1 . '@' . getcharstr() <bar> set nolazyredraw<cr>
+--xnoremap @ :<C-U>set lazyredraw <bar> execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<bar> set nolazyredraw<cr>
 
 --map("n", "<leader><CR>", ":runtime! /lua/plugins/*.lua<CR> | :runtime! /lua/user/*.lua<CR> | :luafile ~/.config/nvim/init.lua<CR>", print ("Nvim reloaded"))
 --map("n", "<leader><CR>", ":lua require('init').unload_lua_namespace()<CR>", print ("Nvim reloaded"))
