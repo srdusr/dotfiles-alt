@@ -129,5 +129,10 @@ end
 vim.g.do_filetype_nvim = 1
 vim.g.did_load_filetypes = 0
 
-
+--vim.cmd[[
+--if maparg('<C-L>', 'n') ==# ''
+--  nnoremap <silent> <C-L> :set lz!<CR>:nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>:set lz!<CR>
+--endif]]
+--vim.cmd[[autocmd VimEnter * set nolazyredraw lazyredraw]]
+--vim.cmd[[autocmd VimEnter * redraw!]]
 
