@@ -7,6 +7,8 @@ vim.cmd([[
     let g:clipbrdDefaultReg = '+'
     "set nocompatible
     "autocmd FileType lua set comments=s1:---,m:--,ex:--
+    nnoremap @ <cmd>execute "noautocmd norm! " . v:count1 . "@" . getcharstr()<cr>  " Fast macros without lazyredraw
+    xnoremap @ :<C-U>execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<cr>
 ]])
 
 -- Environment
@@ -35,7 +37,7 @@ vim.opt.autoread = true -- reload files if changed externally
 vim.opt.display = "lastline" -- Show as much as possible of the last line.
 vim.opt.inccommand = "split" --
 vim.opt.ttyfast = true -- Faster redrawing.
-vim.opt.lazyredraw = true -- Only redraw when necessary
+--vim.opt.lazyredraw = true -- Only redraw when necessary
 vim.opt.keywordprg = ":help" -- :help options
 vim.opt.ruler = true --
 vim.opt.errorbells = false --
@@ -68,7 +70,7 @@ vim.opt.smartindent = true -- smart indent
 
 -- Column/statusline/Cl
 vim.opt.number = true --
---vim.opt.title = true --
+vim.opt.title = true --
 --vim.opt.colorcolumn = "+1" --
 vim.opt.signcolumn = "yes:1" -- always show the sign column
 --vim.opt.signcolumn = "yes:" .. vim.o.numberwidth
