@@ -312,7 +312,7 @@ return packer.startup(function(use)
 	-- Utilities
 	use("nathom/filetype.nvim")
 	use("christoomey/vim-tmux-navigator")
-	--use("preservim/vimux")
+	use("preservim/vimux")
 	use("myusuf3/numbers.vim")
 	use("windwp/nvim-autopairs")
 	use("lewis6991/gitsigns.nvim")
