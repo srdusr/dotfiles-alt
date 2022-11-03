@@ -979,12 +979,13 @@ local WinBar = { Space, Center }
 
 
 -- TabLine
-local TablineBufnr = {
-	provider = function(self)
-		return tostring(self.bufnr) .. "."
-	end,
-	hl = { fg = colors.white, bold = false },
-}
+--local TablineBufnr = {
+--	provider = function(self)
+--		return tostring(self.bufnr) .. "."
+--	end,
+--	hl = { fg = colors.white, bold = false },
+----	hl = "Comment",
+--}
 
 -- we redefine the filename component, as we probably only want the tail and not the relative path
 local TablineFileName = {
@@ -1061,7 +1062,7 @@ local TablineFileNameBlock = {
 		end,
 		name = "heirline_tabline_buffer_callback",
 	},
-	TablineBufnr,
+	--TablineBufnr,
 	TablineFileIcon,
 	TablineFileName,
 	TablineFileFlags,
