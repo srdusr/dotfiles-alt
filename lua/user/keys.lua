@@ -80,6 +80,7 @@ map("n", "<leader>m", ":messages<CR>")
 --map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>", print ("Nvim config loading..."))
 --map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echo ('hello') | <C-l><CR>")
 map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>")
+map("n", "<leader>u", ":echo '' | redraw<CR>") --clear messages
 --map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR>")
 --vim.api.nvim_set_keymap("n", "<leader><CR>", "<cmd>lua ReloadConfig()<CR>", { noremap = true, silent = false })
 
