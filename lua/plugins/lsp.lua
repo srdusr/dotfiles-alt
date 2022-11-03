@@ -422,11 +422,11 @@ function! ToggleDiagnosticsOpenFloat()
     " Enable if toggled on
     if g:DiagnosticsOpenFloat
         augroup OpenFloat
-            autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,}) print ("vim.diagnostic.open_float enabled . . .")
+            autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,}) print ("vim.diagnostic.open_float enabled...")
         augroup END
     endif
 endfunction
-nnoremap <leader>m :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
+nnoremap <leader>o :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
 ]])
 
 --vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
