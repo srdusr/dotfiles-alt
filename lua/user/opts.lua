@@ -20,6 +20,7 @@ vim.opt.fileencoding = "utf-8" --
 vim.g.python3_host_prog = "/usr/bin/python3" --
 vim.g.loaded_python3_provider = 1 --
 vim.g.sh_noisk = 1 -- iskeyword word boundaries when editing a 'sh' file
+vim.o.autochdir = true
 --vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,resize,winpos,terminal,globals" --
 
 -- Colors
