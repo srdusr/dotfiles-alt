@@ -97,6 +97,7 @@ map("n", "<C-H>", "<C-W><C-H>")
 
 -- Combine buffers list with buffer name
 map("n", "<Leader>b", ":buffers<CR>:buffer<Space>")
+--map("n", "<leader>b", ":ls<cr>:b<space>")
 
 -- Map buffer next, prev and delete to <leader+(n/p/d)>
 map("n", "<leader>n", ":bn<cr>")
@@ -291,6 +292,10 @@ vim.cmd([[
   nnoremap <leader><leader>x :call scripts#save_and_exec()<CR>\|:echom "save & exec . . ."<CR>
 
 ]])
+
+-------------- FZF --------------
+map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
+
 -------------- Telescope --------------
 --Telescope find_files cwd=..
 map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>")
@@ -298,6 +303,13 @@ map(
 	"n",
 	"<leader>ft",
 	"<cmd>lua require('telescope.builtin').builtin(require('telescope.themes').get_dropdown({}))<cr>")
+
+--  maps.n["<leader>fF"] = {
+--    function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end,
+--    desc = "Search all files",
+--    <cmd>Telescope find_files hidden=true<cr>
+--map("n", "<leader>fh", "<cme>lua require('telecsope.builtin').file_files hidden=true<cr>")
+map("n", "<leader>fF", function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end)
 
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
