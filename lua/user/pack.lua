@@ -212,7 +212,8 @@ return packer.startup(function(use)
 	--	end,
 	--	requires = "nvim-treesitter/nvim-treesitter",
 	--})
-	use({ "junegunn/fzf", run = ":call fzf#install()" })
+	--use({ "junegunn/fzf", run = ":call fzf#install()" })
+	use('ibhagwan/fzf-lua')
 	-- telescope plugins
 	use("nvim-telescope/telescope.nvim")
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
