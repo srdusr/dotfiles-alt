@@ -25,3 +25,37 @@ keymap('n', 'K', ':lua vim.lsp.buf.hover()<cr>', opts)
 keymap('n', '<c-k>', ':lua vim.lsp.buf.signature_help()<cr>', opts)
 keymap('n', '<leader>af', ':lua vim.lsp.buf.code_action()<cr>', opts)
 keymap('n', '<leader>rn', ':lua vim.lsp.buf.rename()<cr>', opts)
+
+
+
+--local mason = require("mason")
+--
+--local options = {
+--  ensure_installed = { "lua-language-server" }, -- not an option from mason.nvim
+--
+--  ui = {
+--    icons = {
+--      package_pending = " ",
+--      package_installed = " ",
+--      package_uninstalled = " ﮊ",
+--    },
+--
+--    keymaps = {
+--      toggle_server_expand = "<CR>",
+--      install_server = "i",
+--      update_server = "u",
+--      check_server_version = "c",
+--      update_all_servers = "U",
+--      check_outdated_servers = "C",
+--      uninstall_server = "X",
+--      cancel_installation = "<C-c>",
+--    },
+--  },
+--
+--  max_concurrent_installers = 10,
+--}
+--
+--
+--
+--mason.setup(options)
+
