@@ -224,6 +224,17 @@ return packer.startup(function(use)
 	use("nvim-telescope/telescope-file-browser.nvim")
 	-- search emoji and other symbols
 	use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" })
+	--use({
+  --"princejoogie/dir-telescope.nvim",
+  --requires = {"nvim-telescope/telescope.nvim"},
+  --config = function()
+  --  require("dir-telescope").setup({
+  --    hidden = true,
+  --    respect_gitignore = true,
+  --  })
+  --end,
+  --})
+  use("airblade/vim-rooter")
 	-- statusline plugins
 	--use("nvim-lualine/lualine.nvim")
 	--use({
