@@ -81,7 +81,8 @@ return packer.startup(function(use)
 		--requires = "kyazdani42/nvim-web-devicons",
 		--config = function()
 		--	require("trouble").setup({
-    --    postion = "top",
+    --    --postion = "top",
+    --    postion = "right",
 		--		-- your configuration comes here
 		--		-- or leave it empty to use the default settings
 		--		-- refer to the configuration section below
@@ -218,7 +219,7 @@ return packer.startup(function(use)
 	use("nvim-telescope/telescope.nvim")
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })
 	use("tami5/sqlite.lua")
-	use("nvim-telescope/telescope-frecency.nvim")
+	--use("nvim-telescope/telescope-frecency.nvim")
 	use("nvim-telescope/telescope-ui-select.nvim")
 	use("nvim-telescope/telescope-media-files.nvim")
 	use("nvim-telescope/telescope-file-browser.nvim")
