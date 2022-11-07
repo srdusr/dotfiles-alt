@@ -1,29 +1,67 @@
+local M = {}
 local status_ok, telescope = pcall(require, "telescope")
 if not status_ok then
 	return
 end
-local actions = require("telescope.actions")
-local builtin = require("telescope.builtin")
 
-local function telescope_buffer_dir()
-	return vim.fn.expand("%:p:h")
-end
+
+--local actions = require("telescope.actions")
+--local builtin = require("telescope.builtin")
+
+--local themes = require("telescope.themes")
+--local utils = require("telescope.utils")
+local actions = require("telescope.actions")
+--local action_state = require("telescope.actions.state")
+--local layout_actions = require("telescope.actions.layout")
 
 telescope.load_extension("fzf")
 telescope.load_extension("file_browser")
-require("telescope").load_extension("file_browser")
+require("telescope").load_extension "file_browser"
+--require("telescope").load_extension("file_browser")
 local fb_actions = require("telescope").extensions.file_browser.actions
 --telescope.load_extension('media_files')
 
 telescope.setup({
 	defaults = {
-		--
+    vimgrep_arguments = {
+      "rg",
+      "--color=never",
+      "--no-heading",
+      "--with-filename",
+      "--line-number",
+      "--column",
+      "--smart-case",
+      "--hidden",
+      "--fixed-strings",
+      "--trim",
+    },
 		prompt_prefix = " ",
 		selection_caret = " ",
-		path_display = { "smart" },
-		--
+		entry_prefix = "  ",
+		path_display = { "tail" },
+    --path_display = { "truncate" },
+		--path_display = { "smart" },
+		file_ignore_patterns = {
+			"packer_compiled.lua",
+			"%.DS_Store",
+			"%.git/",
+			"%.spl",
+			"%.log",
+			"%[No Name%]", -- new files / sometimes folders (netrw)
+			"/$", -- ignore folders (netrw)
+			"node_modules",
+			"%.png",
+			"%.zip",
+			"%.pxd",
+      "^.vim/",
+      "^.local/",
+      "^.cache/",
+      "^downloads/",
+      --"^node_modules/",
+      --"^undodir/",
+		},
 		mappings = {
-			i = {
+					i = {
 				["<C-n>"] = actions.cycle_history_next,
 				["<C-p>"] = actions.cycle_history_prev,
 
@@ -31,6 +69,9 @@ telescope.setup({
 				["<C-k>"] = actions.move_selection_previous,
 
 				["<C-c>"] = actions.close,
+				["<Esc>"] = actions.close, -- close w/ one esc
+				--["<Esc>"] = "close", -- close w/ one esc
+				["<?>"] = actions.which_key, -- keys from pressing <C-/>
 
 				["<Down>"] = actions.move_selection_next,
 				["<Up>"] = actions.move_selection_previous,
@@ -52,13 +93,21 @@ telescope.setup({
 				["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
 				["<C-l>"] = actions.complete_tag,
 				["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
+				--["<C-o>"] = function(prompt_bufnr)
+				--	local selection = require("telescope.actions.state").get_selected_entry()
+				--	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+				--	require("telescope.actions").close(prompt_bufnr)
+				--	-- Depending on what you want put `cd`, `lcd`, `tcd`
+				--	vim.cmd(string.format("silent lcd %s", dir))
+				--end,
 			},
 
 			n = {
 				["<esc>"] = actions.close,
+        ["<q>"] = actions.close,
 				["<CR>"] = actions.select_default,
 				["<C-x>"] = actions.select_horizontal,
-				["<C-v>"] = actions.select_vertical,
+				["<C-y>"] = actions.select_vertical,
 				["<C-t>"] = actions.select_tab,
 
 				["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
@@ -84,25 +133,110 @@ telescope.setup({
 				["<PageDown>"] = actions.results_scrolling_down,
 
 				["?"] = actions.which_key,
-				["cd"] = function(prompt_bufnr)
-					local selection = require("telescope.actions.state").get_selected_entry()
-					local dir = vim.fn.fnamemodify(selection.path, ":p:h")
-					require("telescope.actions").close(prompt_bufnr)
-					-- Depending on what you want put `cd`, `lcd`, `tcd`
-					vim.cmd(string.format("silent lcd %s", dir))
-				end,
+				--["<C-o>"] = function(prompt_bufnr)
+				--	local selection = require("telescope.actions.state").get_selected_entry()
+				--	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+				--	require("telescope.actions").close(prompt_bufnr)
+				--	-- Depending on what you want put `cd`, `lcd`, `tcd`
+				--	vim.cmd(string.format("silent lcd %s", dir))
+				--end,
 			},
 		},
 	},
-	pickers = {
-		-- Default configuration for builtin pickers goes here:
-		-- picker_name = {
-		--   picker_config_key = value,
-		--   ...
-		-- }
-		-- Now the picker_config_key will be applied every time you call this
-		-- builtin picker
-	},
+    preview = {
+      filesize_limit = 3,
+      timeout = 250,
+    },
+    selection_strategy = "reset",
+    sorting_strategy = "ascending",
+    scroll_strategy = "limit",
+    color_devicons = true,
+		layout_strategy = 'horizontal',
+		layout_config = {
+			horizontal = {
+				height = 0.95,
+				preview_cutoff = 70,
+				width = 0.92,
+				preview_width = {0.55, max = 50}
+			},
+			bottom_pane = {
+				height = 12,
+				preview_cutoff = 70,
+				prompt_position = "bottom",
+			},
+		},
+  pickers = {
+    live_grep = {
+      disable_coordinates = true,
+      layout_config = {
+        horizontal = {
+          preview_width = 0.55,
+        },
+      },
+    },
+  },
+	--pickers = {
+		--lsp_references = {
+		--	prompt_prefix='⬅️',
+		--	show_line=false,
+		--	trim_text=true,
+		--	include_declaration=false,
+		--	initial_mode = "normal",
+		--},
+		--lsp_definitions = {
+		--	prompt_prefix='➡️',
+		--	show_line=false,
+		--	trim_text=true,
+		--	initial_mode = "normal",
+		--},
+		--lsp_document_symbols = {
+		--	prompt_prefix='* ',
+		--	show_line = false,
+		--},
+		--treesitter = {
+		--	prompt_prefix=' ',
+		--	show_line = false,
+		--},
+		--find_files = {
+		--	cwd='%:p:h',
+		--	prompt_prefix=' ',
+		--	hidden = true,
+		--	follow = true,
+		--},
+		--keymaps = { prompt_prefix='? ' },
+		--oldfiles = { prompt_prefix=' ' },
+		--highlights = { prompt_prefix=' ' },
+		--git_files = {
+		--	prompt_prefix=' ',
+		--	show_untracked = true,
+		--	path_display = { "tail" },
+		--},
+		--buffers = {
+		--	prompt_prefix=' ',
+		--	ignore_current_buffer = true,
+		--	initial_mode = "normal",
+		--	sort_mru = true,
+		--},
+		--live_grep = {
+		--	cwd='%:p:h',
+		--	disable_coordinates=true,
+		--	prompt_title='Search in Folder',
+		--	prompt_prefix=' ',
+		--},
+		--spell_suggest = {
+		--	initial_mode = "normal",
+		--	prompt_prefix = "暈",
+		--	theme = "cursor",
+		--	layout_config = { cursor = { width = 0.3 } }
+		--},
+		--colorscheme = {
+		--	enable_preview = true,
+		--	prompt_prefix = '',
+		--	results_title = '',
+		--	layout_strategy = "bottom_pane",
+		--},
+	--},
+
 	extensions = {
 		file_browser = {
 			theme = "dropdown",
@@ -114,110 +248,53 @@ telescope.setup({
 					["<C-w>"] = function()
 						vim.cmd("normal vbd")
 					end,
+          --["<C-h>"] = fb_actions.goto_parent_dir,
 				},
 				["n"] = {
 					-- your custom normal mode mappings
 					["N"] = fb_actions.create,
-					["h"] = fb_actions.goto_parent_dir,
-					["/"] = function()
-						vim.cmd("startinsert")
-					end,
+					--["<C-h>"] = fb_actions.goto_parent_dir,
+					--["/"] = function()
+					--	vim.cmd("startinsert")
+					--end,
 				},
-			},
-		},
-
-		media_files = {
-			-- filetypes whitelist
-			-- defaults to {"png", "jpg", "mp4", "webm", "pdf"}
-			filetypes = { "png", "webp", "jpg", "jpeg" },
-			find_cmd = "rg", -- find command (defaults to `fd`)
-		},
-		-- Your extension configuration goes here:
-		-- extension_name = {
-		--   extension_config_key = value,
-		-- }
-		-- please take a look at the readme of the extension you want to configure
-	},
+      },
+    },
+		--["ui-select"] = { -- mostly code actions
+		--	initial_mode = "normal",
+		--	prompt_prefix = "  ",
+		--	results_title = '',
+		--	layout_strategy = "bottom_pane",
+		--	sorting_strategy = "ascending",
+		--	layout_config = { bottom_pane = { height = 8 } },
+		--},
+    ["ui-select"] = {
+      require("telescope.themes").get_dropdown({}),
+    },
+  },
 })
 
-telescope.load_extension("file_browser")
+--------------------------------------------------------------------------------
 
---vim.keymap.set("n", ";f", function()
---	builtin.find_files({
---		no_ignore = false,
---		hidden = true,
---	})
---end)
-vim.keymap.set("n", ";r", function()
-	builtin.live_grep()
-end)
-vim.keymap.set("n", "\\\\", function()
-	builtin.buffers()
-end)
-vim.keymap.set("n", ";t", function()
-	builtin.help_tags()
-end)
-vim.keymap.set("n", ";;", function()
-	builtin.resume()
-end)
-vim.keymap.set("n", ";e", function()
-	builtin.diagnostics()
-end)
---vim.keymap.set("n", "sf", function()
---	telescope.extensions.file_browser.file_browser({
---		path = "%:p:h",
---		cwd = telescope_buffer_dir(),
---		respect_gitignore = false,
---		hidden = true,
---		grouped = true,
---		previewer = false,
---		initial_mode = "normal",
---		layout_config = { height = 40 },
---	})
---end)
+-- have to be loaded after telescope config
+--require("telescope").load_extension("ui-select") -- use telescope for selections like code actions
+telescope.load_extension("ui-select")
 
-local M = {}
-
-function M.reload()
-  local function get_module_name(s)
-    local module_name;
-
-    module_name = s:gsub("%.lua", "")
-    module_name = module_name:gsub("%/", ".")
-    module_name = module_name:gsub("%.init", "")
-
-    return module_name
-  end
-
-  local prompt_title = "~ neovim modules ~"
-
-  -- sets the path to the lua folder
-  local path = "~/.config/nvim/lua"
-
-  local opts = {
-    prompt_title = prompt_title,
-    cwd = path,
-
-    attach_mappings = function(_, map)
-     -- Adds a new map to ctrl+e.
-      map("i", "<c-e>", function(_)
-        -- these two a very self-explanatory
-        local entry = require("telescope.actions.state").get_selected_entry()
-        local name = get_module_name(entry.value)
-
-        -- call the helper method to reload the module
-        -- and give some feedback
-        R(name)
-        P(name .. " RELOADED!!!")
-      end)
-
-      return true
-    end
-  }
-
-  -- call the builtin method to list files
-  require('telescope.builtin').find_files(opts)
+function M.file_explorer()
+  require("telescope.builtin").file_browser({
+    prompt_title = "File Browser",
+    cwd = "~",
+    layout_strategy = "horizontal",
+  })
 end
 
-return M;
+function M.grep_current_dir()
+  local buffer_dir = require("telescope.utils").buffer_dir()
+  local opts = {
+    prompt_title = "Live Grep in " .. buffer_dir,
+    cwd = buffer_dir,
+  }
+  require("telescope.builtin").live_grep(opts)
+end
 
+return M
