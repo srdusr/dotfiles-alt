@@ -299,10 +299,10 @@ map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
 -------------- Telescope --------------
 --Telescope find_files cwd=..
 map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>")
-map(
-	"n",
-	"<leader>ft",
-	"<cmd>lua require('telescope.builtin').builtin(require('telescope.themes').get_dropdown({}))<cr>")
+--map(
+--	"n",
+--	"<leader>ft",
+--	"<cmd>lua require('telescope.builtin').builtin(require('telescope.themes').get_dropdown({}))<cr>")
 
 --  maps.n["<leader>fF"] = {
 --    function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end,
@@ -310,11 +310,11 @@ map(
 --    <cmd>Telescope find_files hidden=true<cr>
 --map("n", "<leader>fh", "<cme>lua require('telecsope.builtin').file_files hidden=true<cr>")
 map("n", "<leader>fF", function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end)
-
+--map("n", "<leader>fe", ":lua require('telescope.builtin').file_browser({cwd = '.'})<CR>")
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-
-  map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
+map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
+map("n", "<leader>fp", "<cmd>Telescope pickers<cr>")
 --map("n", "<leader>fz", ":FZF<CR>")
 --map("t", [[<Esc><Esc>]], [[<C-\><C-N>]])
 --map("n", "ff", ":NvimTreeToggle<CR>", {})
@@ -323,7 +323,7 @@ map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
 -- Find files in config dirs
 --key_map("n", "<leader>e", ":lua require('plugins.telescope').find_configs()<CR>",  opts)
 --map("n", "<leader>f.", "<cmd>lua require('plugins.telescope').find_configs({})<cr>")
-map("n", "<leader>ft", "<cmd>lua require('plugins.telescope').file_explorer({})<cr>")
+--map("n", "<leader>ft", "<cmd>lua require('plugins.telescope').file_explorer({})<cr>")
 --map("n", "<leader>fd", "<cmd>lua require('plugins.telescope').find_notes({})<cr>")
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>")
 -- registers picker
@@ -334,7 +334,7 @@ map("n", "<leader>r", "<cmd>lua require('telescope.builtin').registers({})<CR>")
 --  "<leader>fg",
 --  "<cmd>lua require('telescope.builtin').find_files({find_command={'fd','--no-ignore-vcs'}})<CR>")
 -- open available commands & run it
-map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands({results_title='Commands Results'})<CR>")
+--map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands({results_title='Commands Results'})<CR>")
 
 -------------- Autopairs --------------
 Toggle_autopairs = function()
