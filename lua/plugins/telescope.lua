@@ -15,8 +15,9 @@ local actions = require("telescope.actions")
 --local layout_actions = require("telescope.actions.layout")
 
 telescope.load_extension("fzf")
-telescope.load_extension("file_browser")
+--telescope.load_extension("file_browser")
 require("telescope").load_extension "file_browser"
+require('telescope').load_extension('changed_files')
 --require("telescope").load_extension("file_browser")
 local fb_actions = require("telescope").extensions.file_browser.actions
 --telescope.load_extension('media_files')
@@ -279,6 +280,57 @@ telescope.setup({
 -- have to be loaded after telescope config
 --require("telescope").load_extension("ui-select") -- use telescope for selections like code actions
 telescope.load_extension("ui-select")
+
+function M.find_configs()
+  require("telescope.builtin").find_files {
+    hidden = true,
+    --no_ignore = true,
+    prompt_title = " Find Configs",
+    results_title = "Config Files",
+    path_display = { "smart" },
+    search_dirs = {
+      "~/.config/nvim",
+      "~/.config/zsh",
+      "~/.config/tmux",
+      "~/.config/X11",
+      "~/.config/alacritty",
+    },
+    -- cwd = "~/.config/nvim/",
+    file_ignore_patterns = {
+      "~/.config/nvim/startup.log",
+      "~/.config/nvim/plugin/packer_compiled.lua",
+      "~/.config/tmux/resurrect/",
+      "~/.config/tmux/plugins/",
+    },
+    layout_strategy = "horizontal",
+    layout_config = { preview_width = 0.65, width = 0.75 },
+  }
+end
+
+function M.grep_notes()
+  local opts = {}
+  opts.hidden = true
+  opts.search_dirs = {
+    "~/documents/notes/",
+  }
+  opts.prompt_prefix = "   "
+  opts.prompt_title = " Grep Notes"
+  opts.path_display = { "smart" }
+  require("telescope.builtin").live_grep(opts)
+end
+
+function M.find_notes()
+  require("telescope.builtin").find_files {
+    prompt_title = " Find Notes",
+    path_display = { "smart" },
+    search_dirs = {
+      "~/documents",
+    },
+    --cwd = "~documents/notes",
+    layout_strategy = "horizontal",
+    layout_config = { preview_width = 0.65, width = 0.75 },
+  }
+end
 
 function M.file_explorer()
   require("telescope.builtin").file_browser({
