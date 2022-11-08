@@ -48,7 +48,7 @@ local kind_icons = {
   Constructor = "", --"⚙️",
   Field = "",
   Variable = "",
-  Class = "",
+  Class = "ﴯ",
   Interface = "",
   Module = "",
   Property = "",
@@ -168,6 +168,12 @@ cmp.setup({
     --end
     --}},
     { name = "cmp_git"},
+    { name = "spell"},
+    { name = "zsh" },
+    { name = "treesitter" },
+    { name = "calc" },
+    { name = "nvim_lsp_signature_help" },
+    --{ name = "cmdline" },
     --{ name = 'treesitter' },
 		--{ name = "cmdline", keyword_pattern = [=[[^[:blank:]\!]*]=] }, --exclamation mark hangs a bit without this
 		--{name = 'luasnip', keyword_length = 2},
@@ -205,6 +211,13 @@ cmp.setup({
         nvim_lua = "[api]",
         path = "[path]",
         gh_issues = "[issues]",
+        spell = "[spell]",
+        zsh = "[zsh]",
+        treesitter = "[treesitter]",
+        calc = "[calc]",
+        nvim_lsp_signature_help = "[signature]",
+        cmdline = "[cmd]"
+
       },
     },
   --},
@@ -251,7 +264,7 @@ cmp.setup({
   event = {},
 
     experimental = {
-      ghost_text = true,
+      ghost_text = true, -- this feature conflicts with copilot.vim's preview.
       hl_group = 'Nontext',
       --native_menu = false,
     },
