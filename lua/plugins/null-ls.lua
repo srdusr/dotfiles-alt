@@ -2,66 +2,32 @@ local null_ls_status_ok, null_ls = pcall(require, "null-ls")
 if not null_ls_status_ok then
 	return
 end
-
----- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/formatting
-local formatting = null_ls.builtins.formatting
----- https://github.com/jose-elias-alvarez/null-ls.nvim/tree/main/lua/null-ls/builtins/diagnostics
-local diagnostics = null_ls.builtins.diagnostics
+--[[null-ls.]]
 --
---local completion = null_ls.builtins.completion
-local codeactions = null_ls.builtins.code_actions
-
-----null_ls.setup({
-----	debug = false,
-----	sources = {
-----		formatting.prettier.with({ extra_args = { "--no-semi", "--single-quote", "--jsx-single-quote" } }),
-----		formatting.black.with({ extra_args = { "--fast" } }),
-----		formatting.stylua,
-----    -- diagnostics.flake8
-----	},
-----})
---require("null-ls").setup({
---	sources = {
---		require("null-ls").builtins.formatting.stylua,
---		require("null-ls").builtins.diagnostics.eslint,
---		require("null-ls").builtins.completion.spell,
---	},
---})
-
---null_ls.setup({
---	sources = {
---		formatting.prettier.with({
---			filetypes = { "html", "css", "javascript", "javascriptreact", "markdown", "json", "yaml" },
---		}),
---		formatting.black,
---		formatting.eslint_d,
---		formatting.stylua,
---		formatting.shfmt.with({
---			filetypes = { "bash", "zsh", "sh" },
---		}),
+-- null-language-server i.e. a sort of language server which does not provide any services such as formatting and diagnostics you expect from a language server. Instead it will need to install corresponding external “sources” and then hook these sources into the neovim lsp client through null-ls.
 --
---		diagnostics.eslint_d,
---		diagnostics.luacheck,
---		diagnostics.mdl,
---		diagnostics.vint,
---
---		codeactions.eslint_d,
---	},
---	on_attach = function(client)
---		if client.resolved_capabilities.document_formatting then
---			vim.cmd("autocmd BufWritePre <buffer> lua vim.lsp.buf.format()")
---		end
---	end,
---})
 
 null_ls.setup({
 	debug = true,
 	sources = {
-		formatting.prettierd,
-		formatting.stylua,
-		formatting.shfmt.with({
+		require("null-ls").builtins.formatting.stylua, -- lua formatting
+		require("null-ls").builtins.formatting.prettier.with({ -- markdown, html/js formatting
+			filetypes = { "html", "css", "javascript", "javascriptreact", "markdown", "json", "yaml" },
+		}),
+		require("null-ls").builtins.formatting.shfmt.with({ -- shell script formatting
 			filetypes = { "bash", "zsh", "sh" },
 		}),
+		require("null-ls").builtins.diagnostics.shellcheck, -- shell script diagnostics
+    require("null-ls").builtins.code_actions.shellcheck, -- shell script code actions
+    --require("null-ls").builtins.formatting.black,
+		--require("null-ls").builtins.formatting.prettierd,
+		--require("null-ls").builtins.diagnostics.luacheck,
+		--require("null-ls").builtins.diagnostics.eslint,
+		--require("null-ls").builtins.diagnostics.eslint_d,
+		--require("null-ls").builtins.diagnostics.mdl,
+		--require("null-ls").builtins.diagnostics.vint,
+		--require("null-ls").builtins.codeactions.eslint_d,
+    --require("null-ls").builtins.completion.spell,
 	},
 	on_attach = function(client, bufnr)
 		if client.server_capabilities.document_formatting then
