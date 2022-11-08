@@ -178,10 +178,14 @@ return packer.startup(function(use)
 	use("hrsh7th/cmp-nvim-lsp")
 	use("hrsh7th/cmp-buffer")
 	use("hrsh7th/cmp-path")
-  use("petertriho/cmp-git")
 	use("hrsh7th/cmp-cmdline")
-	use("onsails/lspkind-nvim")
+  use("petertriho/cmp-git")
+	use("tamago324/cmp-zsh")
+	use("f3fora/cmp-spell")
+	use("hrsh7th/cmp-calc")
 	use("saadparwaiz1/cmp_luasnip")
+	use("hrsh7th/cmp-nvim-lsp-signature-help")
+	use("onsails/lspkind-nvim")
 
 	-- snippets
 	--use("L3MON4D3/LuaSnip") --snippet engine
