@@ -299,6 +299,9 @@ map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
 -------------- Telescope --------------
 --Telescope find_files cwd=..
 map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>")
+map("n", "<leader>cf", "<cmd>Telescope changed_files<cr>")
+map("n", "<leader>fk", "<cmd>lua require('telescope.builtin').keymaps()<cr>")
+map("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 --map(
 --	"n",
 --	"<leader>ft",
@@ -315,6 +318,13 @@ map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
 map("n", "<leader>fp", "<cmd>Telescope pickers<cr>")
+
+-- find notes
+map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])
+-- search notes
+map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]])
+-- Find files in config dirs
+map("n", "<leader>f.", [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]])
 --map("n", "<leader>fz", ":FZF<CR>")
 --map("t", [[<Esc><Esc>]], [[<C-\><C-N>]])
 --map("n", "ff", ":NvimTreeToggle<CR>", {})
