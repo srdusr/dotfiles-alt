@@ -29,7 +29,7 @@ vim.g.mapleader = ";"
 map("i", "jk", "<esc>")
 
 map("n", "<leader>m", ":messages<CR>")
-
+map("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
 -- Print last error message or use these commands | v:errmsgv | :statusmsg | :h execute() |
 --nnoremap <silent><leader>x :put =trim(execute(input(':', '', 'command')))<CR>
 -- Press <leader>x, then enter your command, such as 5mess and press <Enter>. The last five message lines will be added to the current buffer.
