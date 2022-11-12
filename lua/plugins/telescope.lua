@@ -284,7 +284,7 @@ telescope.load_extension("ui-select")
 function M.find_configs()
   require("telescope.builtin").find_files {
     hidden = true,
-    --no_ignore = true,
+    no_ignore = false,
     prompt_title = " Find Configs",
     results_title = "Config Files",
     path_display = { "smart" },
@@ -298,9 +298,12 @@ function M.find_configs()
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
       "~/.config/nvim/startup.log",
-      "~/.config/nvim/plugin/packer_compiled.lua",
-      "~/.config/tmux/resurrect/",
-      "~/.config/tmux/plugins/",
+      "packer_compiled.lua",
+      "resurrect",
+      "tmux/plugins",
+      --"^~/.config/tmux/plugins",
+      "%.txt",
+      ".git",
     },
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
