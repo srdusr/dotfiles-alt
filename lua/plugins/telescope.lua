@@ -294,6 +294,8 @@ function M.find_configs()
       "~/.config/tmux",
       "~/.config/X11",
       "~/.config/alacritty",
+      "~/.config/bspwm",
+      "~/.config/sxhkd",
     },
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
