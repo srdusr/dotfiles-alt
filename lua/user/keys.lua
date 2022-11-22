@@ -243,7 +243,8 @@ map("v", "<C-X>", "<Esc>`.``gvP``P")
 -- Hitting ESC when inside a terminal to get into normal mode
 --utils.map("t", "<Esc>", [[<C-\><C-N>]])
 
-
+-- markdown-preview
+map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
 
 
 -- Search and replace
