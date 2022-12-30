@@ -335,6 +335,7 @@ return packer.startup(function(use)
 	use("windwp/nvim-autopairs")
 	use("lewis6991/gitsigns.nvim")
 	use("dinhhuy258/git.nvim") -- For git blame & browse
+  use("kdheepak/lazygit.nvim")
 	use("kyazdani42/nvim-tree.lua")
 	use("numToStr/Comment.nvim")
 	--use("akinsho/toggleterm.nvim")
