@@ -93,6 +93,8 @@ map("n", "<Leader>tc", ":lua require('user.utils').toggle_completion()<CR>")
 --if is_available "toggleterm.nvim" then
 --  local toggle_term_cmd = astronvim.toggle_term_cmd
 map("n", "<leader>gg", ":LazyGit<CR>")
+map("n", "<leader>tt", ":ToggleTerm<CR>")
+
 --  maps.n["<C-\\>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
 --  maps.n["<leader>gg"] = { function() toggle_term_cmd "lazygit" end, desc = "ToggleTerm lazygit" }
 --  maps.n["<leader>tn"] = { function() toggle_term_cmd "node" end, desc = "ToggleTerm node" }
