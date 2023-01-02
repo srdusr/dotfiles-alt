@@ -95,6 +95,25 @@ map("n", "<Leader>tc", ":lua require('user.utils').toggle_completion()<CR>")
 map("n", "<leader>gg", ":LazyGit<CR>")
 map("n", "<leader>tt", "<cmd>ToggleTerm<cr>")
 
+---- Fugitive git bindings
+map("n", "<leader>ga", ":Git add %:p<CR><CR>")
+--map("n", "<leader>gs", ":Gstatus<CR>")
+map("n", "<leader>gc", ":Gcommit -v -q<CR>")
+map("n", "<leader>gt", ":Gcommit -v -q %:p<CR>")
+--map("n", "<leader>gd", ":Gdiff<CR>")
+map("n", "<leader>ge", ":Gedit<CR>")
+--map("n", "<leader>gr", ":Gread<Cj>")
+map("n", "<leader>gw", ":Gwrite<CR><CR>")
+map("n", "<leader>gl", ":silent! Glog<CR>:bot copen<CR>")
+--map("n", "<leader>gp", ":Ggrep<Space>")
+--map("n", "<Leader>gp", ":Git push<CR>")
+--map("n", "<Leader>gb", ":Gblame<CR>")
+map("n", "<leader>gm", ":Gmove<Space>")
+--map("n", "<leader>gb", ":Git branch<Space>")
+--map("n", "<leader>go", ":Git checkout<Space>")
+--map("n", "<leader>gps", ":Dispatch! git push<CR>")
+--map("n", "<leader>gpl", ":Dispatch! git pull<CR>")
+
 --  maps.n["<C-\\>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
 --  maps.n["<leader>gg"] = { function() toggle_term_cmd "lazygit" end, desc = "ToggleTerm lazygit" }
 --  maps.n["<leader>tn"] = { function() toggle_term_cmd "node" end, desc = "ToggleTerm node" }
