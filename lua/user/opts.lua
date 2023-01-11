@@ -118,7 +118,7 @@ vim.opt.backup = false --
 vim.opt.backupskip = { "/tmp/*", "/private/tmp/*" } --
 
 -- Format
-vim.opt.textwidth = 80 --
+--vim.opt.textwidth = 80 --
 vim.cmd([[let &t_Cs = "\e[4:3m"]]) -- Undercurl
 vim.cmd([[let &t_Ce = "\e[4:0m"]]) --
 vim.opt.path:append({ "**" }) -- Finding files - Search down into subfolder
