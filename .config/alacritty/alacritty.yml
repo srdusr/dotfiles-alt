@@ -30,11 +30,25 @@ scrolling:
 
 
 font:
-    normal:
-        family: JetBrains Mono Medium
+  normal:
+    family: JetBrains Mono Medium
+    #family: Fira Mono Regular
     #family: UbuntuMono Nerd Font Regular
-    size: 8.5
+    #family: monospace
+  size: 8.5
+  offset:
+    x: 0
+    y: 0
+  glyph_offset:
+    x: 0
+    y: 0
+  builtin_box_drawing: true
     #size: 8.5
+
+  # Glyph offset determines the locations of the glyphs within their cells with
+  # the default being at the bottom. Increase the x offset to move the glyph to
+  # the right, increase the y offset to move the glyph upward.
+
 key_bindings:
 - { key: V, mods: Control, action: Paste }
 - { key: C, mods: Control, action: Copy }
