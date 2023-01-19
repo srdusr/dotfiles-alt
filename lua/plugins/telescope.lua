@@ -294,6 +294,7 @@ function M.find_configs()
       "~/.config/tmux",
       "~/.config/X11",
       "~/.config/alacritty",
+      "~/.config/wezterm",
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
