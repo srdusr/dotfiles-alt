@@ -294,6 +294,7 @@ function M.find_configs()
       "~/.config/tmux",
       "~/.config/X11",
       "~/.config/alacritty",
+      "~/.config/wezterm",
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
@@ -315,7 +316,7 @@ end
 
 function M.grep_notes()
   local opts = {}
-  opts.hidden = true
+  opts.hidden = false
   opts.search_dirs = {
     "~/documents/notes/",
   }
@@ -327,9 +328,11 @@ end
 
 function M.find_notes()
   require("telescope.builtin").find_files {
+    hidden = false,
     prompt_title = " Find Notes",
     path_display = { "smart" },
     search_dirs = {
+      "~/documents/notes/private/",
       "~/documents/notes",
     },
     --cwd = "~documents/notes",

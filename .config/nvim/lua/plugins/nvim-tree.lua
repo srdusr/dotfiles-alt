@@ -10,6 +10,9 @@ end
 
 local tree_cb = nvim_tree_config.nvim_tree_callback
 
+-- To see mappings `g?` on nvim-tree
+-- To see default mappings `:nvim-tree-default-mappings`
+
 nvim_tree.setup({
   update_focused_file = {
     enable = true,
