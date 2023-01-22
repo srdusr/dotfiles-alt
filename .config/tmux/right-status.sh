@@ -46,4 +46,14 @@ usage="$usedRam/$totalRam"
 #echo "cpu:$getCPU% | mem:$pct% ($usage""G)"
 echo "cpu:$getCPU% | mem:$pct% |"
 
+#if
+#  [[ `tmux show-option -w status-right` ]];
+#then
+#  echo ""
+#  echo "cpu:$getCPU% | mem:$pct% |"
+#else
+#fi
+
+#  tmux set -ag status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,}     #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black]#( ~/.config/tmux/right-status.sh ) %H:%M | %d-%b-%y "
+#  tmux set -ag status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,}     #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black] %H:%M | %d-%b-%y "
 
