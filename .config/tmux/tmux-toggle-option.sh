@@ -20,36 +20,8 @@
 #tmux display-message "monitor activity: $OPTION_NAME $OPTION_VALUE"
 #tmux set-option -w $OPTION_NAME $OPTION_VALUE > /dev/null
 
-
-#if
-#  [[ `tmux set -ag status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black]#( ~/.config/tmux/right-status.sh ) %H:%M | %d-%b-%y " == true` ]]
-#then 
-#  tmux set -u status-right && tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black] %H:%M | %d-%b-%y ";
-#elif
-#  [[ `tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black] %H:%M | %d-%b-%y " == true` ]]
-#then
-#  tmux set -u status-right && tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black]#( ~/.config/tmux/right-status.sh ) %H:%M | %d-%b-%y ";
-#else
-#  tmux set -u status-right && tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black] %H:%M | %d-%b-%y "
-#fi
-
-
-#if
-#  [[ `tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black]#( ~/.config/tmux/right-status.sh ) %H:%M | %d-%b-%y " == true` ]];
-#then 
-#  tmux set -u status-right && tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black]#( ~/.config/tmux/right-status.sh ) %H:%M | %d-%b-%y "
-#elif
-#  [[ `tmux set -u status-right && tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black] %H:%M | %d-%b-%y " == true` ]];
-#then
-#  tmux set -u status-right && tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,} #[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black] %H:%M | %d-%b-%y "
-#fi
-if [[ `tmux set -g status-left "#[bg=#50fa7b,fg=black] ❐ #S #( ~/.config/tmux/left-status.sh ) #[fg=#50fa7b,bg=default]" == true` ]]; then 
-  tmux set -g status-left "#[bg=#50fa7b,fg=black] ❐ #S #[fg=#50fa7b,bg=default]"
-elif 
-  [[ `tmux set -g status-left "#[bg=#50fa7b,fg=black] ❐ #S #[fg=#50fa7b,bg=default]" == true` ]]; then 
-  tmux set -g status-left "#[bg=#50fa7b,fg=black] ❐ #S #( ~/.config/tmux/left-status.sh ) #[fg=#50fa7b,bg=default]"
-else 
-  tmux set -g status-left "#[bg=#50fa7b,fg=black] ❐ #S #[fg=#50fa7b,bg=default]" &
+if [ $(tmux show-option -A status-left) != 'status-left* "#[fg=#50fa7b,bg=default] #[bg=#50fa7b,fg=black]❐ #S #[fg=#50fa7b,bg=default]"' ]; then
+  tmux set -g status-left "#[fg=#50fa7b,bg=default] #[bg=#50fa7b,fg=black]❐ #S #[fg=#50fa7b,bg=default] ";
+else
+  tmux set -g status-left "#[fg=#50fa7b,bg=default]#[bg=#50fa7b,fg=black] ❐ #S #( ~/.config/tmux/left-status.sh ) #[fg=#50fa7b,bg=default]" && tmux set -g status-right "#[fg=#50fa7b,bg=default] #{?client_prefix,#[reverse] Prefix #[noreverse] ,}#[bg=default,fg=#50fa7b]#[bg=#50fa7b,fg=black] #( ~/.config/tmux/right-status.sh ) %d-%b-%y | %H:%M #[bg=default,fg=#50fa7b]";
 fi
-
-
