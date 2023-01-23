@@ -5,7 +5,7 @@ function ip-address() {
     for file in /sys/class/net/*; do
         iface=$(basename $file);
         read status < $file/operstate;
-        [ "$status" == "up" ] && ip addr show $iface | awk '/inet /{printf $2" "}'
+        [ "$status" == "up" ] && ip addr show $iface | awk '/inet /{printf $2""}'
     done
 }
 
