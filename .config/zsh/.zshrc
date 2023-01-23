@@ -394,9 +394,16 @@ alias cp='cp -i'
 alias ln='ln -i'
 alias rm='rm -i'
 
-# suspend(sleep)/hibernate and lock screen if using systemctl
+# Suspend(sleep)/hibernate and lock screen if using systemctl
 alias suspend='systemctl suspend && betterlockscreen --lock dimblur'
 alias hibernate='systemctl hibernate'
+
+# Tmux layout
+openSession () {
+    tmux split-window -h -t
+    tmux split-window -v -t
+    tmux resize-pane -U 5 
+}
 
 ##########    Source Plugins, should be last    ##########
 
