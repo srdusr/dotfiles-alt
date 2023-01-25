@@ -62,7 +62,7 @@ bspc rule -a Zathura state=floating
 #eww daemon &
 
 # SCRATCHPAD
-bspc rule -a scratch sticky=on state=floating rectangle=575x320+393+370
+bspc rule -a scratchpad sticky=on state=floating rectangle=575x320+393+370
 
 # Heads Up Display (scratchpad)
 bspc rule -a Heads-Up-Display sticky=on state=floating rectangle=360x160+990+40
