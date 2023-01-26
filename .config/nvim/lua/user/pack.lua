@@ -44,7 +44,7 @@ return packer.startup(function(use)
 	use("wbthomason/packer.nvim") -- Have packer manage itself
 
 	use("lewis6991/impatient.nvim")
-  use("nvim-lua/plenary.nvim") -- Useful lua functions used ny lots of plugins
+  use("nvim-lua/plenary.nvim") -- Useful lua functions used by lots of plugins
 	--use("jose-elias-alvarez/null-ls.nvim")
 
     -- lsp
@@ -329,7 +329,7 @@ return packer.startup(function(use)
 
 	-- Utilities
 	use("nathom/filetype.nvim")
-	use("christoomey/vim-tmux-navigator")
+	--use("christoomey/vim-tmux-navigator")
 	use("preservim/vimux")
 	use("myusuf3/numbers.vim")
 	use("windwp/nvim-autopairs")
@@ -368,6 +368,21 @@ return packer.startup(function(use)
 	--use("rmagatti/session-lens")
 	--use("ahmedkhalf/project.nvim")
 	--use("aserowy/tmux.nvim")
+	--use({
+  --  "aserowy/tmux.nvim",
+  --  config = function() return require("tmux").setup() {
+  --    copy_sync = {
+  --      enable = false,
+  --    },
+  --  }
+  --  end,
+  --})
+  use({
+    'numToStr/Navigator.nvim',
+    config = function()
+        require('Navigator').setup()
+    end,
+  })
 	--use("wakatime/vim-wakatime")
 	--use("tpope/vim-eunuch")
 	-- Handy unix command inside Vim (Rename, Move etc.)

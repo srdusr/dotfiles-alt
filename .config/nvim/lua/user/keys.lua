@@ -21,9 +21,15 @@ local term_opts = { noremap = true, silent = false }
 
 
 --------------- Standard Operations ---------------
+
 -- Semi-colon as leader key
 vim.g.mapleader = ";"
---vim.g.maplocalleader = ";"
+
+-- Jump to next match on line using `.` instead of `;` NOTE: commented out in favour of "ggandor/flit.nvim"
+--map("n", ".", ";")
+
+-- Repeat last command using `<Space>` instead of `.` NOTE: commented out in favour of "ggandor/flit.nvim"
+--map("n", "<Space>", ".")
 
 -- "jj" to exit insert-mode
 map("i", "jj", "<esc>")
@@ -127,10 +133,34 @@ map("n", "<leader>gm", ":Gmove<Space>")
 --end
 --
 --Easier split navigations, just ctrl-j instead of ctrl-w then j
-map("n", "<C-J>", "<C-W><C-J>")
-map("n", "<C-K>", "<C-W><C-K>")
-map("n", "<C-L>", "<C-W><C-L>")
-map("n", "<C-H>", "<C-W><C-H>")
+--map("n", "<C-J>", "<C-W><C-J>")
+--map("n", "<C-K>", "<C-W><C-K>")
+--map("n", "<C-L>", "<C-W><C-L>")
+--map("n", "<C-H>", "<C-W><C-H>")
+
+-- Tmux navigation (aserowy/tmux.nvim)
+--map("n", "<C-h>", ":lua require'tmux'.move_left()<cr>")
+--map("n", "<C-j>", ":lua require'tmux'.move_bottom()<cr>")
+--map("n", "<C-k>", ":lua require'tmux'.move_top()<cr>")
+--map("n", "<C-l>", ":lua require'tmux'.move_right()<cr>")
+map('n', '<C-h>', '<CMD>NavigatorLeft<CR>')
+map('n', '<C-l>', '<CMD>NavigatorRight<CR>')
+map('n', '<C-k>', '<CMD>NavigatorUp<CR>')
+map('n', '<C-j>', '<CMD>NavigatorDown<CR>')
+
+-- set line wrap
+map("n", "<M-z>", function()
+	local wrap_status = vim.api.nvim_exec("set wrap ?", true)
+
+	if wrap_status == "nowrap" then
+		vim.api.nvim_command("set wrap linebreak")
+		print("Wrap enabled")
+	else
+		vim.api.nvim_command("set wrap nowrap")
+		print("Wrap disabled")
+	end
+end, { silent = true })
+
 
 -- Combine buffers list with buffer name
 map("n", "<Leader>b", ":buffers<CR>:buffer<Space>")
