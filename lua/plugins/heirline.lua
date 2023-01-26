@@ -1175,7 +1175,12 @@ local TabLine = {
 	TabPages,
 }
 
-require("heirline").setup(StatusLine, WinBar, TabLine)
+require("heirline").setup({
+    statusline = StatusLine,
+    winbar = WinBar,
+    tabline = TabLine,
+    --statuscolumn = StatusColumn
+})
 
 -- Yep, with heirline we're driving manual!
 --vim.cmd([[au FileType * if index(['wipe', 'delete', 'unload'], &bufhidden) >= 0 | set nobuflisted | endif]])
