@@ -18,6 +18,7 @@ vim.cmd([[
 
 -- Fast macros without lazyredraw
 vim.cmd([[
+    set re=0
     nnoremap @ <cmd>execute "noautocmd norm! " . v:count1 . "@" . getcharstr()<cr>
     xnoremap @ :<C-U>execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<cr>
 ]])
@@ -237,12 +238,12 @@ vim.cmd([[                                        " Only show in insert mode
 ]])
 
 -- Line Return
-vim.cmd([[                                        " Return to the same line when we reopen a file
-  augroup line_return
-      au!
-      au BufReadPost *
-          \ if line("'\"") > 0 && line("'\"") <= line("$") |
-          \     execute 'normal! g`"zvzz' |
-          \ endif
-  augroup END
-]])
+--vim.cmd([[                                        " Return to the same line when we reopen a file
+--  augroup line_return
+--      au!
+--      au BufReadPost *
+--          \ if line("'\"") > 0 && line("'\"") <= line("$") |
+--          \     execute 'normal! g`"zvzz' |
+--          \ endif
+--  augroup END
+--]])

@@ -1,16 +1,6 @@
-local status, treesitter = pcall(require, "nvim-treesitter.configs")
-if (not status) then return end
+require'nvim-treesitter.configs'.setup {
+  -- A list of parser names, or "all" (the four listed parsers should always be installed)
 
-treesitter.setup {
-  highlight = {
-    enable = true,
-    disable = {},
-  },
-  indent = {
-    enable = true,
-    disable = {},
-    --disable = { "python", "css" }
-  },
   ensure_installed = {
     "c",
     "bash",
@@ -19,13 +9,20 @@ treesitter.setup {
   },
   --ensure_installed = "all", -- one of "all" or a list of languages
   --ignore_install = { "" }, -- List of parsers to ignore installing
+  sync_install = false,
+  auto_install = true,
+  highlight = {
+    enable = false,
+    disable = {},
+  },
+  indent = {
+    enable = true,
+    disable = {},
+    --disable = { "python", "css" }
+  },
   autotag = {
     enable = true,
   },
-  efactor = {
-    highlight_definitions = { enable = true },
-    highlight_current_scope = { enable = true }
-  }
 }
 --vim.opt.foldmethod = "expr"
 --vim.opt.foldexpr = "nvim_treesitter#foldexpr()"
