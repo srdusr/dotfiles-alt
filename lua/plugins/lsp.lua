@@ -426,7 +426,7 @@ function! ToggleDiagnosticsOpenFloat()
         augroup END
     endif
 endfunction
-nnoremap <leader>o :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
+nnoremap <leader>to :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
 ]])
 
 --vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
