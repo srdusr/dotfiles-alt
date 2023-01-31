@@ -71,31 +71,6 @@ function _G.toggle_diagnostics()
   end
 end
 
---map('n', '<Leader>m', ':call v:lua.toggle_diagnostics()<CR>')
-
---vim.g.diagnostics_active = true
---function _G.toggle_diagnostics()
---  if vim.g.diagnostics_active then
---    vim.g.diagnostics_active = false
---    vim.lsp.diagnostic.clear(0)
---      vim.cmd([[exe "normal ii\<Esc>x"]])
---    vim.lsp.handlers["textDocument/publishDiagnostics"] = function() end
---  else
---    vim.g.diagnostics_active = true
---    vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(
---      vim.lsp.diagnostic.on_publish_diagnostics, {
---        virtual_text = true,
---        signs = true,
---        underline = true,
---        update_in_insert = false,
---      }
---    )
---  end
---end
---
---map("n", "<leader>i", ":call v:lua.toggle_diagnostics()<CR>")
-
-
 	-- Set some key bindings conditional on server capabilities
 	if client.server_capabilities.documentFormattingProvider then
 		map("n", "<space>f", vim.lsp.buf.format, { desc = "format code" })
@@ -135,73 +110,6 @@ if client.server_capabilities.document_highlight then
     callback = vim.lsp.buf.clear_references,
   })
 end
-
---For diagnostics for specific cursor position
---vim.api.nvim_create_autocmd("CursorHold", {
---  buffer = bufnr,
---  callback = function()
---    local opts = {
---      focusable = false,
---      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
---      border = 'rounded',
---      source = 'always',
---      prefix = ' ',
---      scope = 'cursor',
---    }
---    vim.diagnostic.open_float(nil, opts)
---  end
---})
-	-- Diagnostic position
---	vim.api.nvim_create_autocmd("CursorHold", {
---		buffer = bufnr,
---		callback = function()
---			local float_opts = {
---				focusable = false,
---				close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
---				border = "rounded",
---				source = "always", -- show source in diagnostic popup window
---				prefix = " ",
---			}
---
---			if not vim.b.diagnostics_pos then
---				vim.b.diagnostics_pos = { nil, nil }
---			end
---
---			local cursor_pos = vim.api.nvim_win_get_cursor(0)
---			if
---				(cursor_pos[1] ~= vim.b.diagnostics_pos[1] or cursor_pos[2] ~= vim.b.diagnostics_pos[2])
---				and #vim.diagnostic.get() > 0
---			then
---				vim.diagnostic.open_float(nil, float_opts)
---			end
---
---			vim.b.diagnostics_pos = cursor_pos
---		end,
---	})
-
-	-- The below command will highlight the current variable and its usages in the buffer.
---	if client.server_capabilities.documentHighlightProvider then
---		vim.cmd([[
---      hi! link LspReferenceRead Visual
---      hi! link LspReferenceText Visual
---      hi! link LspReferenceWrite Visual
---      augroup lsp_document_highlight
---        autocmd! * <buffer>
---        autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()
---        autocmd CursorHoldI <buffer> lua vim.lsp.buf.document_highlight()
---        autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()
---      augroup END
---    ]])
---	end
---
-    -- Only highlight if compatible with the language
---  if client.resolved_capabilities.document_highlight then
---    vim.cmd('augroup LspHighlight')
---    vim.cmd('autocmd!')
---    vim.cmd('autocmd CursorHold <buffer> lua vim.lsp.buf.document_highlight()')
---    vim.cmd('autocmd CursorMoved <buffer> lua vim.lsp.buf.clear_references()')
---    vim.cmd('augroup END')
---  end
 
 	if vim.g.logging_level == "debug" then
 		local msg = string.format("Language server %s started!", client.name)
@@ -348,59 +256,6 @@ vim.diagnostic.config({
     update_in_insert = false, -- default to false
     severity_sort = false, -- default to false
 })
--- Show line diagnostics automatically in hover window
---vim.o.updatetime = 250
---vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})]]
---vim.cmd ([[ noremap <leader>a :autocmd! CursorHold,CursorHoldI <CR>]])
-
---vim.cmd [[ noremap <leader>a :autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})<CR>]]
---local diagnostics_active = true
---local toggle_diagnostics = function()
---  diagnostics_active = not diagnostics_active
---  if diagnostics_active then
---    vim.o.updatetime = 250
---    vim.cmd ([[autocmd! CursorHold,CursorHoldI <CR>]])
---    --vim.diagnostic.open_float(nil, {focus=false})
---  else
---    vim.o.updatetime = 250
---    vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
---    --vim.diagnostic.hide()
---    --vim.diagnostic.disable()
---  end
---end
---vim.keymap.set("n", "<leader>a", toggle_diagnostics)
-
---function LspDiagnosticsFocus()
---    vim.api.nvim_command('set eventignore=WinLeave')
---    vim.api.nvim_command('autocmd CursorMoved <buffer> ++once set eventignore=""')
---    vim.diagnostic.open_float(nil, {focusable = false, scope = 'line', close_events = {"CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre", "WinLeave"}})
---end
---vim.api.nvim_set_keymap('', '<Leader>a', '<Cmd>lua LspDiagnosticsFocus()<CR>', {silent = true})
-    --vim.o.updatetime = 250
-
---    vim.o.updatetime = 250
-----vim.o.updatetime = 250
-----vim.cmd [[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})]]
-----local diagnostics_active = true
---local toggle_diagnostics = function()
---  --diagnostics_active = not diagnostics_active
---  --if diagnostics_active then
---  --if vim.diagnostic.open_float() == true then
---  if vim.api.nvim_exec([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]]
---, true) then
---  vim.api.nvim_exec([[autocmd! CursorHold,CursorHoldI ]]
---, true)
---  else
---    vim.o.updatetime = 250
---  vim.api.nvim_exec([[autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focus=false})]], true)
---  end
---end
---vim.keymap.set("n", "<leader>a", toggle_diagnostics)
---
---vim.api.nvim_create_autocmd('CursorHold', {
---      vim.diagnostic.open_float(nil, {focus=false})
---
---})
 
 vim.o.updatetime = 250
 vim.cmd[[ 
@@ -426,52 +281,9 @@ function! ToggleDiagnosticsOpenFloat()
         augroup END
     endif
 endfunction
-nnoremap <leader>o :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
+nnoremap <leader>to :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
 ]])
 
---vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
---  vim.lsp.handlers.hover, {
---    signs = true,
---    underline = false,    
---    virtual_text = false,
---    show_diagnostic_autocmds = {'InsertLeave', 'TextChanged'},
---    diagnostic_delay = 500
---  })
---vim.cmd [[autocmd CursorHold * lua vim.diagnostic.open_float(0, {scope="cursor", close_events = {"CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre", "WinLeave"}})]]
-
---function LspDiagnosticsFocus()
---    vim.api.nvim_command('set eventignore=WinLeave')
---    vim.api.nvim_command('autocmd CursorMoved <buffer> ++once set eventignore=""')
---    vim.diagnostic.open_float(nil, {focusable = false, scope = 'line', close_events = {"CursorMoved", "CursorMovedI", "BufHidden", "InsertCharPre", "WinLeave"}})
---end
---vim.api.nvim_set_keymap('', '<Leader>a', '<Cmd>lua LspDiagnosticsFocus()<CR>', {silent = true})
-
---local diagnostics_active = true
---map('n', '<leader>a', function()
---  diagnostics_active = not diagnostics_active
---  if diagnostics_active then
---    vim.diagnostic.show()
---  else
---    vim.diagnostic.hide()
---  end
---end)
-
--- Global config for diagnostic
---vim.diagnostic.config({
---	underline = false,
---	virtual_text = false,
---	signs = true,
---	severity_sort = true,
---	float = {
---    focusable = true, --
---    style = "minimal", --
---		--border = "rounded",
---    border = "shadow",
---		source = "always",
---		header = "",
---		prefix = "",
---	},
---})
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
 	underline = true,
@@ -487,125 +299,11 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { 
 
 vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
---local signs = { Error = " ", Warn = " ", Info = "􀅴 ", Hint = " " }
---local signs = { Error = "✘", Warn = "▲", Info = "🛈 ", Hint = "⚑" }
-local signs = { Error = "✘", Warn = "▲", Info = "􀅳", Hint = "⚑" }
+--local signs = { Error = "✘", Warn = "▲", Info = "􀅳", Hint = "⚑" }
+local signs = { Error = " ", Warn = "▲", Info = "􀅳", Hint = "⚑" }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
 	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
 end
 
-
----- Location information about the last message printed. The format is
----- `(did print, buffer number, line number)`.
---local last_echo = { false, -1, -1 }
---
----- The timer used for displaying a diagnostic in the commandline.
---local echo_timer = nil
---
----- The timer after which to display a diagnostic in the commandline.
---local echo_timeout = 250
---
----- The highlight group to use for warning messages.
---local warning_hlgroup = 'WarningMsg'
---
----- The highlight group to use for error messages.
---local error_hlgroup = 'ErrorMsg'
---
----- If the first diagnostic line has fewer than this many characters, also add
----- the second line to it.
---local short_line_limit = 20
---
----- Shows the current line's diagnostics in a floating window.
---function show_line_diagnostics()
---  vim
---    .lsp
---    .diagnostic
---    .show_line_diagnostics({ severity_limit = 'Warning' }, vim.fn.bufnr(''))
---end
---
----- Prints the first diagnostic for the current line.
---function echo_diagnostic()
---  if echo_timer then
---    echo_timer:stop()
---  end
---
---  echo_timer = vim.defer_fn(
---    function()
---      local line = vim.fn.line('.') - 1
---      local bufnr = vim.api.nvim_win_get_buf(0)
---
---      if last_echo[1] and last_echo[2] == bufnr and last_echo[3] == line then
---        return
---      end
---
---      local diags = vim
---        .lsp
---        .diagnostic
---        .get_line_diagnostics(bufnr, line, { severity_limit = 'Warning' })
---
---      if #diags == 0 then
---        -- If we previously echo'd a message, clear it out by echoing an empty
---        -- message.
---        if last_echo[1] then
---          last_echo = { false, -1, -1 }
---
---          vim.api.nvim_command('echo ""')
---        end
---
---        return
---      end
---
---      last_echo = { true, bufnr, line }
---
---      local diag = diags[1]
---      local width = vim.api.nvim_get_option('columns') - 15
---      local lines = vim.split(diag.message, "\n")
---      local message = lines[1]
---      local trimmed = false
---
---      if #lines > 1 and #message <= short_line_limit then
---        message = message .. ' ' .. lines[2]
---      end
---
---      if width > 0 and #message >= width then
---        message = message:sub(1, width) .. '...'
---      end
---
---      local kind = 'warning'
---      local hlgroup = warning_hlgroup
---
---      if diag.severity == vim.lsp.protocol.DiagnosticSeverity.Error then
---        kind = 'error'
---        hlgroup = error_hlgroup
---      end
---
---      local chunks = {
---        { kind .. ': ', hlgroup },
---        { message }
---      }
---
---      vim.api.nvim_echo(chunks, false, {})
---    end,
---    echo_timeout
---  )
---end
---vim.cmd([[
---  autocmd CursorMoved * :lua echo_diagnostic()
---]])
--- Highlight line number instead of having icons in sign column
-
--- See the properties of the signs with sign list.
-
---vim.cmd [[
---  highlight! DiagnosticLineNrError guibg=#51202A guifg=#FF0000 gui=bold
---  highlight! DiagnosticLineNrWarn guibg=#51412A guifg=#FFA500 gui=bold
---  highlight! DiagnosticLineNrInfo guibg=#1E535D guifg=#00FFFF gui=bold
---  highlight! DiagnosticLineNrHint guibg=#1E205D guifg=#0000FF gui=bold
---
---  sign define DiagnosticSignError text= texthl=DiagnosticSignError linehl= numhl=DiagnosticLineNrError
---  sign define DiagnosticSignWarn text= texthl=DiagnosticSignWarn linehl= numhl=DiagnosticLineNrWarn
---  sign define DiagnosticSignInfo text= texthl=DiagnosticSignInfo linehl= numhl=DiagnosticLineNrInfo
---  sign define DiagnosticSignHint text= texthl=DiagnosticSignHint linehl= numhl=DiagnosticLineNrHint
---]]
 
