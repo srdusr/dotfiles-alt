@@ -25,6 +25,7 @@ vim.cmd([[
 
 -- Environment
 --vim.opt.shell = "zsh" --
+vim.o.updatetime = 250
 vim.o.shell = "/bin/zsh"
 vim.scriptencoding = "utf-8" --
 vim.opt.encoding = "utf-8" --
