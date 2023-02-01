@@ -257,7 +257,6 @@ vim.diagnostic.config({
     severity_sort = false, -- default to false
 })
 
-vim.o.updatetime = 250
 vim.cmd[[ 
 augroup OpenFloat
         autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
