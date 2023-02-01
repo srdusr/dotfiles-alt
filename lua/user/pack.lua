@@ -15,7 +15,7 @@ if fn.empty(fn.glob(install_path)) > 0 then
 	vim.cmd([[packadd packer.nvim]])
 end
 
--- Autocommand that reloads neovim whenever you save the plugins.lua file
+-- Autocommand that reloads neovim whenever you save this file
 vim.cmd([[
   augroup packer_user_config
     autocmd!
@@ -29,9 +29,10 @@ if not status_ok then
 	return
 end
 
--- Have packer use a popup window
+-- Have packer use a popup window and set a maximum number of jobs
 packer.init({
 	auto_reload_compiled = true,
+	max_jobs = 90,
 	display = {
 		open_fn = function()
 			return require("packer.util").float({ border = "rounded" })
