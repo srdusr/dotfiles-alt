@@ -3,7 +3,6 @@ local ui = vim.api.nvim_list_uis()[1]
 local bufnr = vim.api.nvim_create_buf(false, true)
 local win = vim.api.nvim_open_win(bufnr, true, {
   --relative = "editor",
-  --relative = "win",
   relative = "cursor",
   width = ui.width,
   height = ui.height,
