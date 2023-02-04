@@ -371,7 +371,7 @@ function gsp
         config subtree pull --prefix=$PREFIX $REMOTE $BRANCH
     done
 }
-alias vi='nvim'
+alias vi='vim'
 alias nv='nvim'
 alias trash="gio trash"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
