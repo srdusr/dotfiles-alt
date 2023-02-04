@@ -91,8 +91,8 @@ map("n", "<leader>[", ":tabprev<CR>")
 map("n", "<leader>]", ":tabnext<CR>")
 
 -- "Zoom" a split window into a tab and/or close it
-map("n", "<Leader>,", ":tabnew %<CR>")
-map("n", "<Leader>.", ":tabclose<CR>")
+--map("n", "<Leader>,", ":tabnew %<CR>")
+--map("n", "<Leader>.", ":tabclose<CR>")
 
 -- Vim TABs
 map("n", "<leader>1", "1gt<CR>")
@@ -263,53 +263,14 @@ vim.cmd([[
  ]])
 map("n", "<C-t>", ":call OpenLastClosed() <CR>")
 
--- Function to quickly open/hide terminal window inside vim
--- Terminal operation  when
--- 1. terminal is open in split window, it closes the window (terminal still
---    running)
--- 2. terminal open in buffer, it moves window into split window
--- 3. no termial instance running then it opens new terminal instance in split
---    window
-local function Term()
-  local terminal_buffer_number = vim.fn.bufnr("term://")
-  local terminal_window_number = vim.fn.bufwinnr("term://")
-  local window_count = vim.fn.winnr("$")
-
-  if terminal_window_number > 0 and window_count > 1 then
-    vim.fn.execute(terminal_window_number .. "wincmd c")
-  elseif terminal_buffer_number > 0 and terminal_buffer_number ~= vim.fn.bufnr("%") then
-    vim.fn.execute("sb " .. terminal_buffer_number)
-  elseif terminal_buffer_number == vim.fn.bufnr("%") then
-    vim.fn.execute("bprevious | sb " .. terminal_buffer_number .. " | wincmd p")
-  else
-    vim.fn.execute("sp term://zsh")
-  end
-end
-
-vim.api.nvim_create_user_command("Term", Term, {
-  desc = "Open terminal window",
-})
-
-map("n", "<C-w>g", vim.cmd.Term)
-map("t", "<C-w>g", "<C-\\><C-n>")
-
---map("n", "<M-b>",function
-----local window_id = 
---  local Toggle_float = vim.api.nvim_win_get_config()
---if vim.api.nvim_win_get_config(window_id).relative ~= '' then
---    vim.api.nvim_command("nvim_win_close()")
---  -- window with this window_id is floating
---end
---end
---)
 
 ---------------- Plugin Operations ----------------
 -- Packer
-map("n", "<leader>pc", "<cmd>PackerCompile<cr>")
-map("n", "<leader>pi", "<cmd>PackerInstall<cr>")
-map("n", "<leader>ps", "<cmd>PackerSync<cr>")
-map("n", "<leader>pS", "<cmd>PackerStatus<cr>")
-map("n", "<leader>pu", "<cmd>PackerUpdate<cr>")
+map("n", "<leader>Pc", "<cmd>PackerCompile<cr>")
+map("n", "<leader>Pi", "<cmd>PackerInstall<cr>")
+map("n", "<leader>Ps", "<cmd>PackerSync<cr>")
+map("n", "<leader>PS", "<cmd>PackerStatus<cr>")
+map("n", "<leader>Pu", "<cmd>PackerUpdate<cr>")
 
 -- Tmux navigation (aserowy/tmux.nvim)
 map('n', '<C-h>', '<CMD>NavigatorLeft<CR>')
