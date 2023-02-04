@@ -152,7 +152,7 @@ map("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
 map('n', '<leader>o', ':!xdg-open %<cr><cr>')
 
 -- Unsets the 'last search pattern' register by hitting return
-map("n", "<CR>", "!silent :noh<CR><CR>")
+--map("n", "<CR>", "!silent :noh<CR><CR>")
 
 -- Toggle completion
 map("n", "<Leader>tc", ":lua require('user.utils').toggle_completion()<CR>")
@@ -266,11 +266,11 @@ map("n", "<C-t>", ":call OpenLastClosed() <CR>")
 
 ---------------- Plugin Operations ----------------
 -- Packer
-map("n", "<leader>pc", "<cmd>PackerCompile<cr>")
-map("n", "<leader>pi", "<cmd>PackerInstall<cr>")
-map("n", "<leader>ps", "<cmd>PackerSync<cr>")
-map("n", "<leader>pS", "<cmd>PackerStatus<cr>")
-map("n", "<leader>pu", "<cmd>PackerUpdate<cr>")
+map("n", "<leader>Pc", "<cmd>PackerCompile<cr>")
+map("n", "<leader>Pi", "<cmd>PackerInstall<cr>")
+map("n", "<leader>Ps", "<cmd>PackerSync<cr>")
+map("n", "<leader>PS", "<cmd>PackerStatus<cr>")
+map("n", "<leader>Pu", "<cmd>PackerUpdate<cr>")
 
 -- Tmux navigation (aserowy/tmux.nvim)
 map('n', '<C-h>', '<CMD>NavigatorLeft<CR>')
@@ -358,23 +358,23 @@ end
 map("n", "<leader>ww", ":lua Toggle_autopairs()<CR>", term_opts)
 
 -- Tabularize
-vim.cmd([[
-  vnoremap <expr> <Leader>mm ':Tabularize /^\s*\S.*\zs' . split(&commentstring, '%s')[0] . "<CR>"
-  nnoremap <expr> <Leader>mm ':Tabularize /^\s*\S.*\zs' . split(&commentstring, '%s')[0] . "<CR>"
-  "nnoremap <leader>i mc40A <esc>080lDgelD`cP
-  "vnoremap <leader>ii mc0f-20i<Space><Esc>`cdt=j
-]])
+--vim.cmd([[
+--  vnoremap <expr> <Leader>mm ':Tabularize /^\s*\S.*\zs' . split(&commentstring, '%s')[0] . "<CR>"
+--  nnoremap <expr> <Leader>mm ':Tabularize /^\s*\S.*\zs' . split(&commentstring, '%s')[0] . "<CR>"
+--  "nnoremap <leader>i mc40A <esc>080lDgelD`cP
+--  "vnoremap <leader>ii mc0f-20i<Space><Esc>`cdt=j
+--]])
 
 -- EasyAlign
-vim.cmd([[
-  " Start interactive EasyAlign in visual mode (e.g. vipga)
-  xmap ga <Plug>(EasyAlign)
-  " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-  nmap ga <Plug>(EasyAlign)
-  if !exists('g:easy_align_delimiters')
-    let g:easy_align_delimiters = {}
-  endif
-  let g:easy_align_delimiters['--'] = { 'pattern': '--', 'ignore_groups': ['String'] }
-  nnoremap <F1> 21A <Esc>d21\|
-  imap <F1> <Esc><F1>a
-]])
+--vim.cmd([[
+--  " Start interactive EasyAlign in visual mode (e.g. vipga)
+--  xmap ga <Plug>(EasyAlign)
+--  " Start interactive EasyAlign for a motion/text object (e.g. gaip)
+--  nmap ga <Plug>(EasyAlign)
+--  if !exists('g:easy_align_delimiters')
+--    let g:easy_align_delimiters = {}
+--  endif
+--  let g:easy_align_delimiters['--'] = { 'pattern': '--', 'ignore_groups': ['String'] }
+--  nnoremap <F1> 21A <Esc>d21\|
+--  imap <F1> <Esc><F1>a
+--]])
