@@ -23,6 +23,14 @@ vim.cmd([[
     xnoremap @ :<C-U>execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<cr>
 ]])
 
+-- Stop annoying auto commenting on new lines
+vim.cmd [[
+  augroup annoying
+    au!
+    au BufEnter * set fo-=c fo-=r fo-=o
+  augroup end
+]]
+
 -- Environment
 --vim.opt.shell = "zsh" --
 vim.o.updatetime = 250
