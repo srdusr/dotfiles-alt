@@ -148,14 +148,14 @@ else
 	vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Server?" })
 end
 
--- if utils.executable('pyright') then
---   lspconfig.pyright.setup{
---     on_attach = custom_attach,
---     capabilities = capabilities
---   }
--- else
---   vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Server?'})
--- end
+--if utils.executable('pyright') then
+--  lspconfig.pyright.setup{
+--    on_attach = custom_attach,
+--    capabilities = capabilities
+--  }
+--else
+--  vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Server?'})
+--end
 
 if utils.executable("clangd") then
 	lspconfig.clangd.setup({
@@ -171,25 +171,25 @@ else
 end
 
 -- set up vim-language-server
-if utils.executable("vim-language-server") then
-	lspconfig.vimls.setup({
-		on_attach = custom_attach,
-		flags = {
-			debounce_text_changes = 500,
-		},
-		capabilities = capabilities,
-	})
-else
-	vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Server?" })
-end
-
--- set up bash-language-server
-if utils.executable("bash-language-server") then
-	lspconfig.bashls.setup({
-		on_attach = custom_attach,
-		capabilities = capabilities,
-	})
-end
+--if utils.executable("vim-language-server") then
+--	lspconfig.vimls.setup({
+--		on_attach = custom_attach,
+--		flags = {
+--			debounce_text_changes = 500,
+--		},
+--		capabilities = capabilities,
+--	})
+--else
+--	vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Server?" })
+--end
+--
+---- set up bash-language-server
+--if utils.executable("bash-language-server") then
+--	lspconfig.bashls.setup({
+--		on_attach = custom_attach,
+--		capabilities = capabilities,
+--	})
+--end
 
 if utils.executable("lua-language-server") then
 	lspconfig.sumneko_lua.setup({
