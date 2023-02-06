@@ -338,7 +338,8 @@ map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
 map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
 
 -- Markdown-preview
-map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
+map("n", "<leader>md", "<Plug>:Glow")
+--map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
 
 -- Autopairs
 Toggle_autopairs = function()
