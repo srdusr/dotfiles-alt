@@ -1,28 +1,15 @@
 local M = {}
-local status_ok, telescope = pcall(require, "telescope")
-if not status_ok then
-	return
-end
-
-
---local actions = require("telescope.actions")
---local builtin = require("telescope.builtin")
-
---local themes = require("telescope.themes")
---local utils = require("telescope.utils")
+-- Shorten function names
 local actions = require("telescope.actions")
---local action_state = require("telescope.actions.state")
---local layout_actions = require("telescope.actions.layout")
-
-telescope.load_extension("fzf")
---telescope.load_extension("file_browser")
-require("telescope").load_extension "file_browser"
-require('telescope').load_extension('changed_files')
---require("telescope").load_extension("file_browser")
 local fb_actions = require("telescope").extensions.file_browser.actions
---telescope.load_extension('media_files')
+local builtin = require("telescope.builtin")
+local themes = require("telescope.themes")
+local utils = require("telescope.utils")
+local action_state = require("telescope.actions.state")
+local layout_actions = require("telescope.actions.layout")
 
-telescope.setup({
+
+require('telescope').setup({
 	defaults = {
     vimgrep_arguments = {
       "rg",
@@ -261,25 +248,18 @@ telescope.setup({
 				},
       },
     },
-		--["ui-select"] = { -- mostly code actions
-		--	initial_mode = "normal",
-		--	prompt_prefix = "  ",
-		--	results_title = '',
-		--	layout_strategy = "bottom_pane",
-		--	sorting_strategy = "ascending",
-		--	layout_config = { bottom_pane = { height = 8 } },
-		--},
-    ["ui-select"] = {
-      require("telescope.themes").get_dropdown({}),
-    },
   },
 })
 
 --------------------------------------------------------------------------------
 
--- have to be loaded after telescope config
---require("telescope").load_extension("ui-select") -- use telescope for selections like code actions
-telescope.load_extension("ui-select")
+-- Load extensions:
+-- have to be loaded after telescope setup/config
+require('telescope').load_extension('fzf')
+require('telescope').load_extension('ui-select')
+require("telescope").load_extension("file_browser")
+require('telescope').load_extension('changed_files')
+require('telescope').load_extension('media_files')
 
 function M.find_configs()
   require("telescope.builtin").find_files {
