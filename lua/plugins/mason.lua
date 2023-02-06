@@ -1,23 +1,19 @@
-local status, mason = pcall(require, "mason")
-if (not status) then return end
-local status2, lspconfig = pcall(require, "mason-lspconfig")
-if (not status2) then return end
-local status3, lspconfig = pcall(require, "lspconfig")
-if (not status3) then return end
+-- Setup mason so it can manage external tooling
+require('mason').setup()
 
-mason.setup({
+-- Ensure the servers above are installed
 
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "pylsp",
+    "pyright",
+    "clangd",
+    "sumneko_lua",
+    "vim-language-server",
+  }
 })
 
-lspconfig.setup {
-    ensure_installed = {
-      "pylsp",
-      "pyright",
-      "clangd",
-      "sumneko_lua",
-      "vim-language-server",
-    }
-}
+
 local keymap = vim.api.nvim_set_keymap
 local opts = { noremap = true }
 
