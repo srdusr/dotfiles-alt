@@ -4,62 +4,50 @@ local keymap = vim.keymap
 
 local utils = require("user.utils")
 
-local custom_attach = function(client, bufnr)
-  -- Enable completion triggered by <c-x><c-o>
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
---vim.lsp.protocol.CompletionItemKind = {}
-	-- Mappings.
-	local map = function(mode, l, r, opts)
-		opts = opts or {}
-		opts.silent = true
+-- Use an on_attach function to only map the following keys
+-- after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+	-- Mappings
+  local map = function(mode, l, r, opts)
+  	opts = opts or {}
+  	opts.silent = true
     opts.noremap = true
-		opts.buffer = bufnr
-		keymap.set(mode, l, r, opts)
-	end
---map("n", "gd", "<Cmd>Lspsaga lsp_finder<CR>") -- Press "o" to open the reference location
---map("n", "gp", "<Cmd>Lspsaga peek_definition<CR>")
---	--map("n", "gd", vim.lsp.buf.definition, { desc = "go to definition" })
-  map("n", "<C-]>", vim.lsp.buf.definition)
---	map("n", "K", vim.lsp.buf.hover)
---	map("n", "<C-k>", vim.lsp.buf.signature_help)
---	map("n", "<leader>rn", vim.lsp.buf.rename, { desc = "varialble rename" })
---	map("n", "gr", vim.lsp.buf.references, { desc = "show references" })
---	map("n", "[d", vim.diagnostic.goto_prev, { desc = "previous diagnostic" })
---	map("n", "]d", vim.diagnostic.goto_next, { desc = "next diagnostic" })
-	map("n", "<leader>q", function()
-		vim.diagnostic.setqflist({ open = true })
-	end, { desc = "put diagnostic to qf" })
---	--map.('n', '<space>q', vim.diagnostic.setloclist)
---	map("n", "ga", vim.lsp.buf.code_action, { desc = "LSP code action" })
---	map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, { desc = "add workspace folder" })
---	map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, { desc = "remove workspace folder" })
---	map("n", "<leader>wl", function()
---		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
---	end, { desc = "list workspace folder" })
---	map("n", "gs", "vim.lsp.buf.document_symbol()<cr>")
---	map("n", "gw", "vim.lsp.buf.workspace_symbol()<cr>", { desc = "list workspace folder" })
---	--map("n", "gs", ":lua vim.lsp.buf.document_symbol()<cr>")
---	map("n", "gt", ":lua vim.lsp.buf.type_definition()<cr>")
---	map("n", "gD", ":lua vim.lsp.buf.declaration()<cr>") -- most lsp servers don't implement textDocument/Declaration, so gD is useless for now.
---	map("n", "gi", ":lua vim.lsp.buf.implementation()<cr>")
-	map("n", "go", ":lua vim.diagnostic.open_float()<cr>")
---	map("n", "gk", "<Cmd>Lspsaga diagnostic_jump_prev<CR>")
---	map("n", "gj", "<Cmd>Lspsaga diagnostic_jump_next<CR>")
---vim.api.nvim_set_keymap('n', '<leader>dd', '<cmd>lua vim.diagnostic.setloclist()<CR>', { noremap = true, silent = true })
-  --nnoremap("gI", vim.lsp.buf.incoming_calls, opts)
-  --
-  --nnoremap("<leader>cs", vim.lsp.buf.document_symbol, opts)
-  --nnoremap("<leader>cw", vim.lsp.buf.workspace_symbol, opts)
-  --nnoremap("<leader>rf", vim.lsp.buf.formatting, opts)
-  --require("which-key").register {
-  --  ["<leader>rf"] = "lsp: format buffer",
-  --  ["<leader>ca"] = "lsp: code action",
-  --  ["<leader>gd"] = "lsp: go to type definition",
-  --  ["gr"] = "lsp: references",
-  --  ["gi"] = "lsp: implementation",
-  --  ["gI"] = "lsp: incoming calls",
-  --}
---end
+  	opts.buffer = bufnr
+  	keymap.set(mode, l, r, opts)
+  end
+
+	map("n", "K", vim.lsp.buf.hover)
+  map("n", "gd", vim.lsp.buf.definition)
+	map("n", "gi", vim.lsp.buf.implementation)
+	map("n", "gr", vim.lsp.buf.references)
+	map("n", "gD", vim.lsp.buf.declaration()<cr>) -- most lsp servers don't implement textDocument/Declaration, so gD is useless for now.
+	map("n", "<leader>k", vim.lsp.buf.signature_help)
+	map("n", "gt", vim.lsp.buf.type_definition()<cr>)
+	map("n", "gn", vim.lsp.buf.rename)
+	map("n", "ga", vim.lsp.buf.code_action)
+  map("n", "gf", vim.lsp.buf.formatting)
+	map("n", "go", vim.diagnostic.open_float()<cr>)
+	map("n", "[d", vim.diagnostic.goto_prev)
+	map("n", "]d", vim.diagnostic.goto_next)
+	map("n", "gs", vim.lsp.buf.document_symbol()<cr>)
+	map("n", "gw", vim.lsp.buf.workspace_symbol()<cr>)
+	map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder)
+	map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder)
+	map("n", "<leader>wl", function()
+		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+	end)
+	--map("n", "<leader>q", function()
+	--	vim.diagnostic.setqflist({ open = true })
+	--end)
+	--map.('n', '<space>q', vim.diagnostic.setloclist)
+  --map("n", "gk", "<Cmd>Lspsaga diagnostic_jump_prev<CR>")
+  --map("n", "gj", "<Cmd>Lspsaga diagnostic_jump_next<CR>")
+end
+
+-- Toggle diagnostics visibility
 vim.g.diagnostics_visible = true
 function _G.toggle_diagnostics()
   if vim.g.diagnostics_visible then
@@ -82,9 +70,19 @@ end
 		map("n", "<leader>ra", "<cmd>RustHoverAction<CR>")
 	end
 
+-- this part is telling Neovim to use the lsp server
+--local servers = { 'pyright', 'tsserver', 'jdtls' }
+--for _, lsp in pairs(servers) do
+--    require('lspconfig')[lsp].setup {
+--        on_attach = on_attach,
+--        flags = {
+--          debounce_text_changes = 150,
+--        }
+--    }
+--end
 -- Highlight symbol under cursor
 
--- Add the following to your on_attach (this allows checking server capabilities to avoid calling invalid commands.
+-- Add the following to your on_attach (this allows checking server capabilities to avoid calling invalid commands.)
 
 if client.server_capabilities.document_highlight then
   vim.cmd [[
@@ -148,14 +146,14 @@ else
 	vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Server?" })
 end
 
---if utils.executable('pyright') then
---  lspconfig.pyright.setup{
---    on_attach = custom_attach,
---    capabilities = capabilities
---  }
---else
---  vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Server?'})
---end
+if utils.executable('pyright') then
+  lspconfig.pyright.setup{
+    on_attach = custom_attach,
+    capabilities = capabilities
+  }
+else
+  vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Server?'})
+end
 
 if utils.executable("clangd") then
 	lspconfig.clangd.setup({
@@ -170,26 +168,26 @@ else
 	vim.notify("clangd not found!", vim.log.levels.WARN, { title = "Server?" })
 end
 
--- set up vim-language-server
---if utils.executable("vim-language-server") then
---	lspconfig.vimls.setup({
---		on_attach = custom_attach,
---		flags = {
---			debounce_text_changes = 500,
---		},
---		capabilities = capabilities,
---	})
---else
---	vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Server?" })
---end
---
----- set up bash-language-server
---if utils.executable("bash-language-server") then
---	lspconfig.bashls.setup({
---		on_attach = custom_attach,
---		capabilities = capabilities,
---	})
---end
+-- Set up vim-language-server
+if utils.executable("vim-language-server") then
+	lspconfig.vimls.setup({
+		on_attach = custom_attach,
+		flags = {
+			debounce_text_changes = 500,
+		},
+		capabilities = capabilities,
+	})
+else
+	vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Server?" })
+end
+
+-- Set up bash-language-server
+if utils.executable("bash-language-server") then
+	lspconfig.bashls.setup({
+		on_attach = custom_attach,
+		capabilities = capabilities,
+	})
+end
 
 if utils.executable("lua-language-server") then
 	lspconfig.sumneko_lua.setup({
@@ -239,10 +237,6 @@ require("lspconfig").rust_analyzer.setup{
 }
 end
 
---vim.diagnostic.config({
---  virtual_text = false,
---	underline = true,
---})
 vim.diagnostic.config({
     underline = false,
     signs = true,
@@ -263,6 +257,7 @@ augroup OpenFloat
 
 augroup END
 ]]
+
 vim.cmd([[
 function! ToggleDiagnosticsOpenFloat()
     " Switch the toggle variable
@@ -298,11 +293,15 @@ vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { 
 
 vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
+-- this is for diagnositcs signs on the line number column
+-- use this to beautify the plain E W signs to more fun ones
+-- !important nerdfonts needs to be setup for this to work in your terminal
 --local signs = { Error = "✘", Warn = "▲", Info = "􀅳", Hint = "⚑" }
 local signs = { Error = " ", Warn = "▲", Info = "􀅳", Hint = "⚑" }
 for type, icon in pairs(signs) do
 	local hl = "DiagnosticSign" .. type
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+	--vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
+	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
 
