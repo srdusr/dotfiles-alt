@@ -1,6 +1,6 @@
 --[[ key.lua ]]
 
-
+local utils = require("user.utils")
 ------------- Shorten Function Names --------------
 local keymap = vim.keymap
 local map = function(mode, l, r, opts)
@@ -186,82 +186,16 @@ vim.cmd([[
 ]])
 
 -- Toggle transparency
-vim.cmd([[
-  let t:is_transparent = 0
-  function! Toggle_transparent_background()
-    if t:is_transparent == 0
-      hi Normal guibg=#111111 ctermbg=black
-      let t:is_transparent = 1
-    else
-      hi Normal guibg=NONE ctermbg=NONE
-      let t:is_transparent = 0
-    endif
-  endfunction
-  nnoremap <leader>tb :call Toggle_transparent_background()<CR>
-]])
---keymap('n', '<leader>tb', ':Toggle_transparent_background<CR>')
+map('n', '<leader>tb', ':call utils#Toggle_transparent_background()<CR>')
 
 -- Toggle zoom
-vim.cmd([[
-  function! s:ZoomToggle() abort
-      if exists('t:zoomed') && t:zoomed
-          execute t:zoom_winrestcmd
-          let t:zoomed = 0
-      else
-          let t:zoom_winrestcmd = winrestcmd()
-          resize
-          vertical resize
-          let t:zoomed = 1
-      endif
-  endfunction
-  command! ZoomToggle call s:ZoomToggle()
- ]])
-map("n", "<leader>z", ":ZoomToggle<CR>")
+map("n", "<leader>z", ":call utils#ZoomToggle()<CR>")
 
 -- Toggle statusline
-vim.cmd([[
-let s:hidden_all = 0
-function! ToggleHiddenAll()
-    if s:hidden_all  == 0
-        let s:hidden_all = 1
-        set noshowmode
-        set noruler
-        set laststatus=0
-        set noshowcmd
-    else
-        let s:hidden_all = 0
-        set showmode
-        set ruler
-        set laststatus=2
-        set showcmd
-    endif
-endfunction
-nnoremap <S-h> :call ToggleHiddenAll()<CR>
-]])
+map('n', '<S-h>', ':call ToggleHiddenAll()<CR>')
 
 -- Open last closed buffer
-vim.cmd([[
-  function! OpenLastClosed()
-      let last_buf = bufname('#')
-      if empty(last_buf)
-          echo "No recently closed buffer found"
-          return
-      endif
-      let result = input("Open ". last_buf . " in (n)ormal (v)split, (t)ab or (s)plit ? (n/v/t/s) : ")
-      if empty(result) || (result !=# 'v' && result !=# 't' && result !=# 's' && result !=# 'n')
-          return
-      endif
-      if result ==# 't'
-          execute 'tabnew'
-      elseif result ==# 'v'
-          execute "vsplit"
-      elseif result ==# 's'
-          execute "split"
-      endif
-      execute 'b ' . last_buf
-  endfunction
- ]])
-map("n", "<C-t>", ":call OpenLastClosed() <CR>")
+map("n", "<C-t>", ":call OpenLastClosed()<CR>")
 
 
 ---------------- Plugin Operations ----------------
@@ -342,40 +276,4 @@ map("n", "<leader>md", "<Plug>:Glow")
 --map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
 
 -- Autopairs
-Toggle_autopairs = function()
-	local ok, autopairs = pcall(require, "nvim-autopairs")
-	if ok then
-		if autopairs.state.disabled then
-			autopairs.enable()
-			print("autopairs on")
-		else
-			autopairs.disable()
-			print("autopairs off")
-		end
-	else
-		print("autopairs not available")
-	end
-end
-map("n", "<leader>ww", ":lua Toggle_autopairs()<CR>", term_opts)
-
--- Tabularize
---vim.cmd([[
---  vnoremap <expr> <Leader>mm ':Tabularize /^\s*\S.*\zs' . split(&commentstring, '%s')[0] . "<CR>"
---  nnoremap <expr> <Leader>mm ':Tabularize /^\s*\S.*\zs' . split(&commentstring, '%s')[0] . "<CR>"
---  "nnoremap <leader>i mc40A <esc>080lDgelD`cP
---  "vnoremap <leader>ii mc0f-20i<Space><Esc>`cdt=j
---]])
-
--- EasyAlign
---vim.cmd([[
---  " Start interactive EasyAlign in visual mode (e.g. vipga)
---  xmap ga <Plug>(EasyAlign)
---  " Start interactive EasyAlign for a motion/text object (e.g. gaip)
---  nmap ga <Plug>(EasyAlign)
---  if !exists('g:easy_align_delimiters')
---    let g:easy_align_delimiters = {}
---  endif
---  let g:easy_align_delimiters['--'] = { 'pattern': '--', 'ignore_groups': ['String'] }
---  nnoremap <F1> 21A <Esc>d21\|
---  imap <F1> <Esc><F1>a
---]])
+map("n", "<leader>ww", "<cmd>lua require('user.utils').Toggle_autopairs()<CR>")
