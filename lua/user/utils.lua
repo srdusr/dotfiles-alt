@@ -1,7 +1,7 @@
-local fn = vim.fn
-
 local M = {}
 
+--- Shorten Function Names
+local fn = vim.fn
 function M.executable(name)
   if fn.executable(name) > 0 then
     return true
@@ -10,7 +10,10 @@ function M.executable(name)
   return false
 end
 
---- check whether a feature exists in Nvim
+
+--------------------------------------------------
+
+--- Check whether a feature exists in Nvim
 --- @feat: string
 ---   the feature name, like `nvim-0.7` or `unix`.
 --- return: bool
@@ -22,6 +25,9 @@ M.has = function(feat)
   return false
 end
 
+
+--------------------------------------------------
+
 --- Create a dir if it does not exist
 function M.may_create_dir(dir)
   local res = fn.isdirectory(dir)
@@ -31,6 +37,10 @@ function M.may_create_dir(dir)
   end
 end
 
+
+--------------------------------------------------
+
+--- Unload lua namespace
 M['unload_lua_namespace'] = function(prefix)
   local prefix_with_dot = prefix .. '.'
   for key, value in pairs(package.loaded) do
@@ -40,7 +50,10 @@ M['unload_lua_namespace'] = function(prefix)
   end
 end
 
--- toggle cmp completion
+
+--------------------------------------------------
+
+--- Toggle cmp completion
 vim.g.cmp_toggle_flag = false -- initialize
 local normal_buftype = function()
   return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt"
@@ -69,6 +82,10 @@ M.toggle_completion = function()
   end
 end
 
+
+--------------------------------------------------
+
+--- Make sure using latest neovim version
 function M.get_nvim_version()
   local actual_ver = vim.version()
 
@@ -82,4 +99,26 @@ function M.add_pack(name)
   return status
 end
 
+
+--------------------------------------------------
+
+--- Toggle autopairs on/off (requires "windwp/nvim-autopairs")
+function M.Toggle_autopairs()
+	local ok, autopairs = pcall(require, "nvim-autopairs")
+	if ok then
+		if autopairs.state.disabled then
+			autopairs.enable()
+			print("autopairs on")
+		else
+			autopairs.disable()
+			print("autopairs off")
+		end
+	else
+		print("autopairs not available")
+	end
+end
+
 return M
+
+
+--------------------------------------------------
