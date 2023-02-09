@@ -1,16 +1,46 @@
-
+-- Shorten Function Names
 local fn = vim.fn
 local keymap = vim.keymap
-
 local utils = require("user.utils")
 
--- Use an on_attach function to only map the following keys
--- after the language server attaches to the current buffer
-local on_attach = function(client, bufnr)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
-	-- Mappings
+-- Setup mason so it can manage external tooling
+require('mason').setup()
+
+-- Mason-lspconfig
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "clangd",
+    "sumneko_lua",
+    "pylsp",
+    "pyright",
+  },
+  ui = {
+    icons = {
+      package_pending = " ",
+      package_installed = " ",
+      package_uninstalled = " ﮊ",
+    },
+    keymaps = {
+      toggle_server_expand = "<CR>",
+      install_server = "i",
+      update_server = "u",
+      check_server_version = "c",
+      update_all_servers = "U",
+      check_outdated_servers = "C",
+      uninstall_server = "X",
+      cancel_installation = "<C-c>",
+    },
+  },
+  max_concurrent_installers = 10,
+})
+
+-- Use an on_attach function to only map the following keys after the language server attaches to the current buffer
+local on_attach = function(client, bufnr)
+  -- Enable completion triggered by <c-x><c-o>
+  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+  -- Shorten function names for mappings
   local map = function(mode, l, r, opts)
   	opts = opts or {}
   	opts.silent = true
@@ -19,23 +49,26 @@ local on_attach = function(client, bufnr)
   	keymap.set(mode, l, r, opts)
   end
 
-	map("n", "K", vim.lsp.buf.hover)
-  map("n", "gd", vim.lsp.buf.definition)
-	map("n", "gi", vim.lsp.buf.implementation)
-	map("n", "gr", vim.lsp.buf.references)
-	map("n", "gD", vim.lsp.buf.declaration()<cr>) -- most lsp servers don't implement textDocument/Declaration, so gD is useless for now.
-	map("n", "<leader>k", vim.lsp.buf.signature_help)
-	map("n", "gt", vim.lsp.buf.type_definition()<cr>)
-	map("n", "gn", vim.lsp.buf.rename)
-	map("n", "ga", vim.lsp.buf.code_action)
-  map("n", "gf", vim.lsp.buf.formatting)
-	map("n", "go", vim.diagnostic.open_float()<cr>)
-	map("n", "[d", vim.diagnostic.goto_prev)
-	map("n", "]d", vim.diagnostic.goto_next)
-	map("n", "gs", vim.lsp.buf.document_symbol()<cr>)
-	map("n", "gw", vim.lsp.buf.workspace_symbol()<cr>)
-	map("n", "<leader>wa", vim.lsp.buf.add_workspace_folder)
-	map("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder)
+  local term_opts = { noremap = true, silent = false }
+  -- Mappings
+	map("n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>")
+  map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>")
+	map("n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>")
+	map("n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>")
+	map("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>") -- most lsp servers don't implement textDocument/Declaration, so gD is useless for now.
+	map("n", "<leader>k", "<Cmd>lua vim.lsp.buf.signature_help()<CR>")
+	map("n", "gt", "<Cmd>lua vim.lsp.buf.type_definition()<CR>")
+	map("n", "gn", "<Cmd>lua vim.lsp.buf.rename()<CR>")
+	map("n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>")
+  map("n", "gf", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
+	--map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
+  map("n", "go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...') | :sl! | echo ('')<CR>")
+	map("n", "[d", "<Cmd>lua vim.diagnostic.goto_prev()<CR>")
+	map("n", "]d", "<Cmd>lua vim.diagnostic.goto_next()<CR>")
+	map("n", "gs", "<Cmd>lua vim.lsp.buf.document_symbol()<CR>")
+	map("n", "gw", "<Cmd>lua vim.lsp.buf.workspace_symbol()<CR>")
+	map("n", "<leader>wa", "<Cmd>lua vim.lsp.buf.add_workspace_folder()<CR>")
+	map("n", "<leader>wr", "<Cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>")
 	map("n", "<leader>wl", function()
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end)
@@ -45,6 +78,61 @@ local on_attach = function(client, bufnr)
 	--map.('n', '<space>q', vim.diagnostic.setloclist)
   --map("n", "gk", "<Cmd>Lspsaga diagnostic_jump_prev<CR>")
   --map("n", "gj", "<Cmd>Lspsaga diagnostic_jump_next<CR>")
+
+  -- Set some key bindings conditional on server capabilities
+	if client.server_capabilities.documentFormattingProvider then
+		map("n", "<space>f", vim.lsp.buf.format)
+	end
+
+  -- Add rust specific keymappings
+	if client.name == "rust_analyzer" then
+		map("n", "<leader>rr", "<cmd>RustRunnables<CR>")
+		map("n", "<leader>ra", "<cmd>RustHoverAction<CR>")
+	end
+
+  -- this part is telling Neovim to use the lsp server
+  --local servers = { 'pyright', 'tsserver', 'jdtls' }
+  --for _, lsp in pairs(servers) do
+  --    require('lspconfig')[lsp].setup {
+  --        on_attach = on_attach,
+  --        flags = {
+  --          debounce_text_changes = 150,
+  --        }
+  --    }
+  --end
+
+  -- Add the following to your on_attach (this allows checking server capabilities to avoid calling invalid commands.)
+  -- Highlight symbol under cursor
+  if client.server_capabilities.document_highlight then
+    vim.cmd [[
+      hi! LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
+      hi! LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
+      hi! LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
+    ]]
+    vim.api.nvim_create_augroup('lsp_document_highlight', {
+      clear = false
+    })
+    vim.api.nvim_clear_autocmds({
+      buffer = bufnr,
+      group = 'lsp_document_highlight',
+    })
+    vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+      group = 'lsp_document_highlight',
+      buffer = bufnr,
+      callback = vim.lsp.buf.document_highlight,
+    })
+    vim.api.nvim_create_autocmd('CursorMoved', {
+      group = 'lsp_document_highlight',
+      buffer = bufnr,
+      callback = vim.lsp.buf.clear_references,
+    })
+  end
+
+	if vim.g.logging_level == "debug" then
+		local msg = string.format("Language server %s started!", client.name)
+		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
+	end
+
 end
 
 -- Toggle diagnostics visibility
@@ -59,62 +147,7 @@ function _G.toggle_diagnostics()
   end
 end
 
-	-- Set some key bindings conditional on server capabilities
-	if client.server_capabilities.documentFormattingProvider then
-		map("n", "<space>f", vim.lsp.buf.format, { desc = "format code" })
-	end
-
-	-- add rust specific keymappings
-	if client.name == "rust_analyzer" then
-		map("n", "<leader>rr", "<cmd>RustRunnables<CR>")
-		map("n", "<leader>ra", "<cmd>RustHoverAction<CR>")
-	end
-
--- this part is telling Neovim to use the lsp server
---local servers = { 'pyright', 'tsserver', 'jdtls' }
---for _, lsp in pairs(servers) do
---    require('lspconfig')[lsp].setup {
---        on_attach = on_attach,
---        flags = {
---          debounce_text_changes = 150,
---        }
---    }
---end
--- Highlight symbol under cursor
-
--- Add the following to your on_attach (this allows checking server capabilities to avoid calling invalid commands.)
-
-if client.server_capabilities.document_highlight then
-  vim.cmd [[
-    hi! LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-    hi! LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-    hi! LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-  ]]
-  vim.api.nvim_create_augroup('lsp_document_highlight', {
-    clear = false
-  })
-  vim.api.nvim_clear_autocmds({
-    buffer = bufnr,
-    group = 'lsp_document_highlight',
-  })
-  vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-    group = 'lsp_document_highlight',
-    buffer = bufnr,
-    callback = vim.lsp.buf.document_highlight,
-  })
-  vim.api.nvim_create_autocmd('CursorMoved', {
-    group = 'lsp_document_highlight',
-    buffer = bufnr,
-    callback = vim.lsp.buf.clear_references,
-  })
-end
-
-	if vim.g.logging_level == "debug" then
-		local msg = string.format("Language server %s started!", client.name)
-		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
-	end
--- suppress error messages from lang servers
-end
+-- Suppress error messages from lang servers
 vim.lsp.set_log_level("debug")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
@@ -148,7 +181,7 @@ end
 
 if utils.executable('pyright') then
   lspconfig.pyright.setup{
-    on_attach = custom_attach,
+    on_attach = on_attach,
     capabilities = capabilities
   }
 else
@@ -157,7 +190,7 @@ end
 
 if utils.executable("clangd") then
 	lspconfig.clangd.setup({
-		on_attach = custom_attach,
+		on_attach = on_attach,
 		capabilities = capabilities,
 		filetypes = { "c", "cpp", "cc" },
 		flags = {
@@ -171,7 +204,7 @@ end
 -- Set up vim-language-server
 if utils.executable("vim-language-server") then
 	lspconfig.vimls.setup({
-		on_attach = custom_attach,
+		on_attach = on_attach,
 		flags = {
 			debounce_text_changes = 500,
 		},
@@ -184,14 +217,14 @@ end
 -- Set up bash-language-server
 if utils.executable("bash-language-server") then
 	lspconfig.bashls.setup({
-		on_attach = custom_attach,
+		on_attach = on_attach,
 		capabilities = capabilities,
 	})
 end
 
 if utils.executable("lua-language-server") then
 	lspconfig.sumneko_lua.setup({
-		on_attach = custom_attach,
+		on_attach = on_attach,
 		settings = {
 			Lua = {
 				runtime = {
@@ -221,7 +254,7 @@ end
 if utils.executable("rust-language-server") then
 require("lspconfig").rust_analyzer.setup{
     cmd = { "rustup", "run", "nightly", "rust-analyzer" },
-    on_attach = custom_attach,
+    on_attach = on_attach,
   	flags = {
 			debounce_text_changes = 500,
 		},
@@ -251,46 +284,13 @@ vim.diagnostic.config({
     severity_sort = false, -- default to false
 })
 
-vim.cmd[[ 
-augroup OpenFloat
-        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
-
-augroup END
-]]
-
-vim.cmd([[
-function! ToggleDiagnosticsOpenFloat()
-    " Switch the toggle variable
-    let g:DiagnosticsOpenFloat = !get(g:, 'DiagnosticsOpenFloat', 1)
-
-    " Reset group
-    augroup OpenFloat
-            autocmd!
-    augroup END
-
-    " Enable if toggled on
-    if g:DiagnosticsOpenFloat
-        augroup OpenFloat
-            autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,}) print ("vim.diagnostic.open_float enabled...")
-        augroup END
-    endif
-endfunction
-nnoremap <leader>to :call ToggleDiagnosticsOpenFloat()<CR>\|:echom "vim.diagnostic.open_float disabled . . ."<CR>
-]])
-
-
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
 	underline = true,
 	virtual_text = false,
 	signs = true,
 	update_in_insert = false,
 })
-
---vim.lsp.buf.definition
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-
---vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-
 vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
 -- this is for diagnositcs signs on the line number column
