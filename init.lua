@@ -26,28 +26,18 @@
 
 -- -------------------------------------------------------------------------- --
 
--- Initialize config with this one liner in the terminal
+-- Initialize config with this one liner in the terminal (use in commandline)
 --nvim --headless -c 'call mkdir(stdpath("config"), "p") | exe "edit" stdpath("config") . "/init.lua" | write | quit'
 
--- See startup time
+-- See startup time (use in commandline)
 --nvim --startuptime startup.log -c exit && tail -100 startup.log
 
--- Load impatient
+-- Load impatient (Faster loading times)
 local impatient_ok, impatient = pcall(require, "impatient")
 if impatient_ok then
 	impatient.enable_profile()
 end
 
--- Check if we have the latest stable version of nvim
-local utils = require("user.utils")
-local expected_ver = "0.9.0"
-local nvim_ver = utils.get_nvim_version()
-
-if nvim_ver ~= expected_ver then
-	local msg = string.format("Unsupported nvim version: expect %s, but got %s instead!", expected_ver, nvim_ver)
-vim.api.nvim_err_writeln(msg)
-	return
-end
 
 -- Schedule reading shadafile to improve the startup time
 vim.opt.shadafile = "NONE"
@@ -90,11 +80,25 @@ local modules = {
   --"plugins.floatterm",
 }
 
+
 -- Refresh module cache
 for k, v in pairs(modules) do
   package.loaded[v] = nil
   require(v)
 end
+
+
+-- Check if we have the latest stable version of nvim
+local utils = require("user.utils")
+local expected_ver = "0.9.0"
+local nvim_ver = utils.get_nvim_version()
+
+if nvim_ver ~= expected_ver then
+	local msg = string.format("Unsupported nvim version: expect %s, but got %s instead!", expected_ver, nvim_ver)
+vim.api.nvim_err_writeln(msg)
+	return
+end
+
 
 -- Snippets
 vim.g.snippets = "luasnip"
@@ -130,11 +134,3 @@ for _, plugin in ipairs(builtins) do
 end
 vim.g.do_filetype_nvim = 1
 vim.g.did_load_filetypes = 0
-
---vim.cmd[[
---if maparg('<C-L>', 'n') ==# ''
---  nnoremap <silent> <C-L> :set lz!<CR>:nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>:set lz!<CR>
---endif]]
---vim.cmd[[autocmd VimEnter * set nolazyredraw lazyredraw]]
---vim.cmd[[autocmd VimEnter * redraw!]]
-
