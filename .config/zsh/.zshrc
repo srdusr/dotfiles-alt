@@ -15,6 +15,16 @@ export PATH=$HOME/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
+# If xset is availabe:
+#if xset q &>/dev/null; then
+#  xset r rate 180 40                   # Sane repeat rate
+#  xset -b                              # No bell
+#  xset -dpms                           # Keep screen on at all times
+#  xset s off                           #
+#  xset m 7/5 0                         # Pointer settings
+#  setxkbmap us -variant altgr-intl
+#fi
+
 # Allow CTRL+D to exit zsh with partial command line (non empty line)
 exit_zsh() { exit }
 zle -N exit_zsh
@@ -334,6 +344,7 @@ nnn() {
 #bindkey -s '^a' 'bc -lq\n'
 #bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
 
+# Dotfiles
 alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 #alias cfg='config subtree pull --prefx'
 #alias gsp="git subtree push --prefix=_site git@github.com:mertnuhoglu/blog_datascience.git"
@@ -371,7 +382,7 @@ function gsp
         config subtree pull --prefix=$PREFIX $REMOTE $BRANCH
     done
 }
-alias vi='vim'
+alias vi='nvim'
 alias nv='nvim'
 alias trash="gio trash"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
