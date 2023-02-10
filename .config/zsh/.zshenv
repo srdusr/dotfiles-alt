@@ -51,9 +51,9 @@ export HIST_VERIFY               # Don't execute immediately upon history expans
 export HIST_BEEP                 # Beep when accessing nonexistent history.
 
 # Other XDG Paths:
-export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
-export NVM_DIR="$XDG_DATA_HOME"/nvm
-export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
+#export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
+#export NVM_DIR="$XDG_DATA_HOME"/nvm
+#export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
 export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
 # fixing paths
 export XSERVERRC="$XDG_CONFIG_HOME"/X11/xserverrc
@@ -134,7 +134,7 @@ export QT_IM_MODULE='fcitx'
 export SDL_IM_MODULE='fcitx'
 export XMODIFIERS='@im=fcitx'
 
-
+# Source different environments
 
 
 # Start blinking
