@@ -11,7 +11,7 @@ require('mason').setup()
 require("mason-lspconfig").setup({
   ensure_installed = {
     "clangd",
-    "sumneko_lua",
+    "lua_ls",
     "pylsp",
     "pyright",
   },
@@ -223,7 +223,7 @@ if utils.executable("bash-language-server") then
 end
 
 if utils.executable("lua-language-server") then
-	lspconfig.sumneko_lua.setup({
+	lspconfig.lua_ls.setup({
 		on_attach = on_attach,
 		settings = {
 			Lua = {
