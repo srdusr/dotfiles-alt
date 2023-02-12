@@ -1,6 +1,6 @@
 --[[ key.lua ]]
 
-local utils = require("user.utils")
+local mods = require("user.mods")
 ------------- Shorten Function Names --------------
 local keymap = vim.keymap
 local map = function(mode, l, r, opts)
@@ -155,7 +155,7 @@ map('n', '<leader>o', ':!xdg-open %<cr><cr>')
 --map("n", "<CR>", "!silent :noh<CR><CR>")
 
 -- Toggle completion
-map("n", "<Leader>tc", ":lua require('user.utils').toggle_completion()<CR>")
+map("n", "<Leader>tc", ":lua require('user.mods').toggle_completion()<CR>")
 
 -- Disable default completion.
 map('i', '<C-n>', '<Nop>')
@@ -275,4 +275,4 @@ map("n", "<leader>md", "<Plug>:Glow")
 --map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
 
 -- Autopairs
-map("n", "<leader>ww", "<cmd>lua require('user.utils').Toggle_autopairs()<CR>")
+map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
