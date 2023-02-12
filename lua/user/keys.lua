@@ -216,7 +216,7 @@ map('n', '<C-j>', '<CMD>NavigatorDown<CR>')
 --map("n", "<leader>tt", "<cmd>ToggleTerm<cr>")
 
 -- LazyGit
-map("n", "<leader>gg", ":LazyGit<CR>")
+map({"n", "t"}, "<leader>gg", "<cmd>lua Lazygit_toggle()<CR>")
 
 -- Fugitive git bindings
 map("n", "<leader>ga", ":Git add %:p<CR><CR>")
@@ -237,7 +237,6 @@ map("n", "<leader>gm", ":Gmove<Space>")
 --map("n", "<leader>gps", ":Dispatch! git push<CR>")
 --map("n", "<leader>gpl", ":Dispatch! git pull<CR>")
 --  map["<C-\\>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
---  map["<leader>gg"] = { function() toggle_term_cmd "lazygit" end, desc = "ToggleTerm lazygit" }
 --  map["<leader>tn"] = { function() toggle_term_cmd "node" end, desc = "ToggleTerm node" }
 --  map["<leader>tu"] = { function() toggle_term_cmd "ncdu" end, desc = "ToggleTerm NCDU" }
 --  map["<leader>tt"] = { function() toggle_term_cmd "htop" end, desc = "ToggleTerm htop" }
