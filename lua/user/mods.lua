@@ -1,138 +1,125 @@
---vim.cmd([[
---  function RandomColorScheme()
---    let mycolors = split(globpath(&rtp,"**/colors/*.vim"),"\n") 
---    exe 'so ' . mycolors[localtime() % len(mycolors)]
---    unlet mycolors
---  endfunction
---  
---  call RandomColorScheme()
---  
---  :command NewColor call RandomColorScheme()
---]])
+local M = {}
 
---vim.cmd([[
---  function RandomColorSchemeMyPicks()
---      let mypicks = ["pyte", "fokus", "github", "peachpuff", "morning", "simple256", "xcode", "gruvbox"]
---      let mypick = mypicks[localtime() % len(mypicks)]
---      echom mypick
---      execute 'colo' mypick
---  endfunction
---
---  command NewColor call RandomColorSchemeMyPicks()
---
---  let s:use_gui = exists('g:neovide') || has('gui_running') || (has('termguicolors') && &termguicolors)
---  if (s:use_gui)
---      call RandomColorSchemeMyPicks()
---  endif
---]])
+--- Shorten Function Names
+local fn = vim.fn
+function M.executable(name)
+  if fn.executable(name) > 0 then
+    return true
+  end
 
---vim.cmd([[
---    let g:fzf_history_dir = '~/.local/share/fzf-history'
---    map <leader>z :FZF<CR>
---    map <leader>a :Files<CR>
---    map <leader>l :Lines<CR>
---    map <leader>L :BLines<CR>
---    map <leader>B :Buffers<CR>
---    map <leader>h :History:<CR>
---    nnoremap <leader>g :Rg<CR>
---    "nnoremap <leader>t :Tags<CR>
---    nnoremap <leader>m :Marks<CR>
---    " This is the default extra key bindings
---    let g:fzf_action = {
---                \ 'ctrl-t': 'tab split',
---                \ 'ctrl-x': 'split',
---                \ 'ctrl-y': 'vsplit' }
---    let g:fzf_tags_command = 'ctags -R'
---    " Border color
---    let g:fzf_layout = {'up':'~90%', 'window': { 'width': 0.8, 'height': 0.8,'yoffset':0.5,'xoffset': 0.5, 'highlight': 'Todo', 'border': 'sharp' } }
---    let $FZF_DEFAULT_OPTS = '--layout=reverse --info=inline'
---    let $FZF_DEFAULT_COMMAND="rg --files --hidden"
---    " Customize fzf colors to match your color scheme
---    let g:fzf_colors =
---                \ { 'fg':      ['fg', 'Normal'],
---                \ 'bg':      ['bg', 'Normal'],
---                \ 'hl':      ['fg', 'Comment'],
---                \ 'fg+':     ['fg', 'CursorLine', 'CursorColumn', 'Normal'],
---                \ 'bg+':     ['bg', 'CursorLine', 'CursorColumn'],
---                \ 'hl+':     ['fg', 'Statement'],
---                \ 'info':    ['fg', 'PreProc'],
---                \ 'border':  ['fg', 'Ignore'],
---                \ 'prompt':  ['fg', 'Conditional'],
---                \ 'pointer': ['fg', 'Exception'],
---                \ 'marker':  ['fg', 'Keyword'],
---                \ 'spinner': ['fg', 'Label'],
---                \ 'header':  ['fg', 'Comment'] }
---    " Get Files
---    command! -bang -nargs=? -complete=dir Files
---                \ call fzf#vim#files(<q-args>, fzf#vim#with_preview({'options': ['--layout=reverse', '--info=inline']}), <bang>0)
---    " Get text in files with Rg
---    command! -bang -nargs=* Rg
---                \ call fzf#vim#grep(
---                \   'rg --column --line-number --no-heading --color=always --smart-case '.shellescape(<q-args>), 1,
---                \   fzf#vim#with_preview(), <bang>0)
---    " Ripgrep advanced
---    function! RipgrepFzf(query, fullscreen)
---        let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case %s || true'
---        let initial_command = printf(command_fmt, shellescape(a:query))
---        let reload_command = printf(command_fmt, '{q}')
---        let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
---        call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
---    endfunction
---    command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
---    " Git grep
---    command! -bang -nargs=* GGrep
---                \ call fzf#vim#grep(
---                \   'git grep --line-number '.shellescape(<q-args>), 0,
---                \   fzf#vim#with_preview({'dir': systemlist('git rev-parse --show-toplevel')[0]}), <bang>0)
---    command! -bang FM call fzf#run(fzf#wrap({'source': 'cat ~/.fzf-marks | sed "s/.*: \(.*\)$/\1/" | sed "s#~#${HOME}#"', 'sink': 'lcd'}, <bang>0))
---]])
---
---vim.cmd([[
---    " Enable mouse scrollback
---    set mouse=a
---    tnoremap <Esc> <C-\><C-n>
---    tnoremap <c-b> <c-\><c-n>
---    function! ClearTerminal()
---        set scrollback=1
---        let &g:scrollback=1
---        echo &scrollback
---        call feedkeys("\i")
---        call feedkeys("clear\<CR>")
---        call feedkeys("\<C-\>\<C-n>")
---        call feedkeys("\i")
---        sleep 100m
---        let &scrollback=s:scroll_value
---    endfunction
---]])
---
---vim.cmd([[
---    " :Rename {newname}
---    function! RenameFile()
---        let old_name = expand('%')
---        let new_name = input('New file name: ', expand('%'), 'file')
---        if new_name != '' && new_name != old_name
---            exec ':saveas ' . new_name
---            exec ':silent !rm ' . old_name
---            redraw!
---        endif
---    endfunction
---    map <leader>re :call RenameFile()<cr>
---]])
+  return false
+end
 
---vim.cmd([[
---  " Markdown Settings
---  autocmd BufNewFile,BufReadPost *.md set filetype=markdown
---  let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'sql', 'pug']
---  let g:markdown_minlines = 100
---  let g:instant_markdown_autostart = 0
---]])
---
---vim.cmd([[
---  " On The Fly Table mode
---  function! s:isAtStartOfLine(mapping)
---    let text_before_cursor = getline('.')[0 : col('.')-1]
---    let mapping_pattern = '\V' . escape(a:mapping, '\')
---    let comment_pattern = '\V' . escape(substitute(&l:commentstring, '%s.*$', '', ''), '\')
---    return (text_before_cursor =~? '^' . ('\v(' . comment_pattern . '\v)?') . '\s*\v' . mapping_pattern . '\v$')
---  endfunction
---]])
+
+--------------------------------------------------
+
+--- Check whether a feature exists in Nvim
+--- @feat: string
+---   the feature name, like `nvim-0.7` or `unix`.
+--- return: bool
+M.has = function(feat)
+  if fn.has(feat) == 1 then
+    return true
+  end
+
+  return false
+end
+
+
+--------------------------------------------------
+
+---Determine if a value of any type is empty
+---@param item any
+---@return boolean?
+function M.empty(item)
+  if not item then return true end
+  local item_type = type(item)
+  if item_type == 'string' then return item == '' end
+  if item_type == 'number' then return item <= 0 end
+  if item_type == 'table' then return vim.tbl_isempty(item) end
+  return item ~= nil
+end
+
+--------------------------------------------------
+
+--- Create a dir if it does not exist
+function M.may_create_dir(dir)
+  local res = fn.isdirectory(dir)
+
+  if res == 0 then
+    fn.mkdir(dir, "p")
+  end
+end
+
+
+--------------------------------------------------
+
+--- Toggle cmp completion
+vim.g.cmp_toggle_flag = false -- initialize
+local normal_buftype = function()
+  return vim.api.nvim_buf_get_option(0, "buftype") ~= "prompt"
+end
+M.toggle_completion = function()
+  local ok, cmp = pcall(require, "cmp")
+  if ok then
+    local next_cmp_toggle_flag = not vim.g.cmp_toggle_flag
+    if next_cmp_toggle_flag then
+      print("completion on")
+    else
+      print("completion off")
+    end
+    cmp.setup({
+      enabled = function()
+        vim.g.cmp_toggle_flag = next_cmp_toggle_flag
+        if next_cmp_toggle_flag then
+          return normal_buftype
+        else
+          return next_cmp_toggle_flag
+        end
+      end,
+    })
+  else
+    print("completion not available")
+  end
+end
+
+
+--------------------------------------------------
+
+--- Make sure using latest neovim version
+function M.get_nvim_version()
+  local actual_ver = vim.version()
+
+  local nvim_ver_str = string.format("%d.%d.%d", actual_ver.major, actual_ver.minor, actual_ver.patch)
+  return nvim_ver_str
+end
+
+function M.add_pack(name)
+  local status, error = pcall(vim.cmd, "packadd " .. name)
+
+  return status
+end
+
+
+--------------------------------------------------
+
+--- Toggle autopairs on/off (requires "windwp/nvim-autopairs")
+function M.Toggle_autopairs()
+	local ok, autopairs = pcall(require, "nvim-autopairs")
+	if ok then
+		if autopairs.state.disabled then
+			autopairs.enable()
+			print("autopairs on")
+		else
+			autopairs.disable()
+			print("autopairs off")
+		end
+	else
+		print("autopairs not available")
+	end
+end
+
+return M
+
+
+--------------------------------------------------
