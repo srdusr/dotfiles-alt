@@ -98,11 +98,11 @@ cmp.setup({
       i = function()
         if cmp.visible() then
           cmp.abort()
-          require("user.utils").toggle_completion()
+          require("user.mods").toggle_completion()
           require("notify")("completion off")
         else
           cmp.complete()
-          require("user.utils").toggle_completion()
+          require("user.mods").toggle_completion()
           require("notify")("completion on")
         end
       end,
@@ -111,7 +111,7 @@ cmp.setup({
     --  i = function(fallback)
     --    if cmp.visible() then
     --      cmp.confirm({ behavior = cmp.ConfirmBehavior.Replace, select = false })
-    --      require("user.utils").toggle_completion()
+    --      require("user.mods").toggle_completion()
     --    else
     --      fallback()
     --    end
