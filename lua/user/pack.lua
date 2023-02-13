@@ -218,14 +218,16 @@ return packer.startup(function(use)
       require("crates").setup()
     end,
   })
-  --use({
-  --  "iamcco/markdown-preview.nvim", -- Markdown Preview
-  --  run = function() vim.fn["mkdp#util#install"]() end,
-  --})
+  use({
+    "iamcco/markdown-preview.nvim", -- Markdown Preview
+    run = function() vim.fn["mkdp#util#install"]() end,
+  })
   use({
     "ellisonleao/glow.nvim", -- Markdown Preview
     config = function()
-    require("glow").setup()
+    require("glow").setup({
+      style = "dark",
+    })
   end
   })
 
