@@ -263,6 +263,7 @@ map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])
 map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]]) -- search notes
 map("n", "<leader>f.", [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]]) -- find configs
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
+map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>") -- find media files
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
