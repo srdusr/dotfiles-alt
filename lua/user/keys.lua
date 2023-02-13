@@ -1,6 +1,5 @@
 --[[ key.lua ]]
 
-local mods = require("user.mods")
 ------------- Shorten Function Names --------------
 local keymap = vim.keymap
 local map = function(mode, l, r, opts)
