@@ -249,15 +249,15 @@ map("n", "<leader>gm", ":Gmove<Space>")
 -- Telescope
 map("n", "<leader>ff", function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end) -- find all files
 map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>") -- find files with hidden option
-map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
-map("n", "<leader>ffc", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
+map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
+map("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>")
+map("n", "<leader>ffc", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map("n", "<leader>cf", "<cmd>Telescope changed_files<cr>")
 map("n", "<leader>fp", "<cmd>Telescope pickers<cr>")
 map("n", "<leader>fr", "<cmd>lua require('telescope.builtin').registers({})<CR>") -- registers picker
 map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
-map("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map("n", "<leader>fk", "<cmd>lua require('telescope.builtin').keymaps()<cr>")
 map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]]) -- find notes
 map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]]) -- search notes
@@ -271,8 +271,8 @@ map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
 map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
 
 -- Markdown-preview
-map("n", "<leader>md", "<Plug>:Glow")
---map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
+map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
+map("n", "<leader>mg", "<CMD>Glow<CR>")
 
 -- Autopairs
 map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
