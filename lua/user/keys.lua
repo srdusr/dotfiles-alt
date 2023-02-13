@@ -189,6 +189,7 @@ map('n', '<leader>tb', ':call utils#Toggle_transparent_background()<CR>')
 
 -- Toggle zoom
 map("n", "<leader>z", ":call utils#ZoomToggle()<CR>")
+map("n", "<C-w>z", "<C-w>|<C-w>_")
 
 -- Toggle statusline
 map('n', '<S-h>', ':call ToggleHiddenAll()<CR>')
@@ -277,3 +278,6 @@ map("n", "<leader>mg", "<CMD>Glow<CR>")
 
 -- Autopairs
 map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
+
+-- Zen-mode toggle
+map("n", "<leader>zm", "<CMD>ZenMode<CR>")
