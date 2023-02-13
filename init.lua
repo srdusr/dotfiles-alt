@@ -102,6 +102,9 @@ end
 -- Snippets
 vim.g.snippets = "luasnip"
 
+-- Notifications
+vim.notify = require("notify") -- Requires plugin "rcarriga/nvim-notify"
+
 -- Improve speed by disabling some default plugins/modules
 local builtins = {
 	"gzip",
