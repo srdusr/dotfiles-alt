@@ -147,6 +147,14 @@ function _G.toggle_diagnostics()
   end
 end
 
+-- Open float for diagnostics automatically
+vim.cmd([[
+augroup OpenFloat
+        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
+
+augroup END
+]])
+
 -- Suppress error messages from lang servers
 vim.lsp.set_log_level("debug")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
