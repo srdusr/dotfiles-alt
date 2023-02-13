@@ -148,7 +148,18 @@ return packer.startup(function(use)
 	use("folke/which-key.nvim") -- 
 	use("folke/zen-mode.nvim") -- 
 	use("romainl/vim-cool") -- 
-  use "antoinemadec/FixCursorHold.nvim" -- 
+  use("antoinemadec/FixCursorHold.nvim") -- 
+  use({
+  "folke/trouble.nvim",
+  requires = "nvim-tree/nvim-web-devicons",
+  config = function()
+    require("trouble").setup {
+      -- your configuration comes here
+      -- or leave it empty to use the default settings
+      -- refer to the configuration section below
+    }
+  end
+  })
   use("airblade/vim-rooter") -- 
 	--use("vim-test/vim-test") -- 
 	--use({
