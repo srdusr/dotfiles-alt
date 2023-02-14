@@ -280,4 +280,4 @@ map("n", "<leader>mg", "<CMD>Glow<CR>")
 map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
 
 -- Zen-mode toggle
-map("n", "<leader>zm", "<CMD>ZenMode<CR>")
+map("n", "<leader>zm", "<CMD>ZenMode<CR> | :echom ('Zen Mode') | :sl! | echo ('')<CR>")
