@@ -10,7 +10,6 @@ function M.executable(name)
   return false
 end
 
-
 --------------------------------------------------
 
 --- Check whether a feature exists in Nvim
@@ -119,7 +118,26 @@ function M.Toggle_autopairs()
 	end
 end
 
-return M
+
+--------------------------------------------------
+
+--- Make vim-rooter message disappear after making it's changes
+--vim.cmd([[
+--let timer = timer_start(1000, 'LogTrigger', {})
+--func! LogTrigger(timer)
+--  silent!
+--endfunc
+--]])
+--
+--vim.cmd([[
+--function! ConfigureChDir()
+--  echo ('')
+--endfunction
+--" Call after vim-rooter changes the root dir
+--autocmd User RooterChDir :sleep! | call LogTrigger(timer) | call ConfigureChDir()
+--]])
 
 
 --------------------------------------------------
+
+return M
