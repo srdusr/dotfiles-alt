@@ -62,7 +62,7 @@ local on_attach = function(client, bufnr)
 	map("n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>")
   map("n", "gf", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
 	--map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
-  map("n", "go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...') | :sl! | echo ('')<CR>")
+  map("n", "go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
 	map("n", "[d", "<Cmd>lua vim.diagnostic.goto_prev()<CR>")
 	map("n", "]d", "<Cmd>lua vim.diagnostic.goto_next()<CR>")
 	map("n", "gs", "<Cmd>lua vim.lsp.buf.document_symbol()<CR>")
@@ -72,10 +72,10 @@ local on_attach = function(client, bufnr)
 	map("n", "<leader>wl", function()
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end)
-	--map("n", "<leader>q", function()
-	--	vim.diagnostic.setqflist({ open = true })
-	--end)
-	--map.('n', '<space>q', vim.diagnostic.setloclist)
+	map("n", "<leader>q", function()
+		vim.diagnostic.setqflist({ open = true })
+	end)
+	map("n", "<space>q", "<Cmd>lua vim.diagnostic.setloclist()<CR>")
   --map("n", "gk", "<Cmd>Lspsaga diagnostic_jump_prev<CR>")
   --map("n", "gj", "<Cmd>Lspsaga diagnostic_jump_next<CR>")
 
@@ -150,7 +150,8 @@ end
 -- Open float for diagnostics automatically
 vim.cmd([[
 augroup OpenFloat
-        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
+        " autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
+        autocmd CursorHold * lua vim.diagnostic.open_float(nil, {focusable = false,})
 
 augroup END
 ]])
