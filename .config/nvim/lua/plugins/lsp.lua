@@ -1,7 +1,7 @@
 -- Shorten Function Names
 local fn = vim.fn
 local keymap = vim.keymap
-local utils = require("user.utils")
+local mods = require("user.mods")
 
 
 -- Setup mason so it can manage external tooling
@@ -62,7 +62,7 @@ local on_attach = function(client, bufnr)
 	map("n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>")
   map("n", "gf", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
 	--map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
-  map("n", "go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...') | :sl! | echo ('')<CR>")
+  map("n", "go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
 	map("n", "[d", "<Cmd>lua vim.diagnostic.goto_prev()<CR>")
 	map("n", "]d", "<Cmd>lua vim.diagnostic.goto_next()<CR>")
 	map("n", "gs", "<Cmd>lua vim.lsp.buf.document_symbol()<CR>")
@@ -72,10 +72,10 @@ local on_attach = function(client, bufnr)
 	map("n", "<leader>wl", function()
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end)
-	--map("n", "<leader>q", function()
-	--	vim.diagnostic.setqflist({ open = true })
-	--end)
-	--map.('n', '<space>q', vim.diagnostic.setloclist)
+	map("n", "<leader>q", function()
+		vim.diagnostic.setqflist({ open = true })
+	end)
+	map("n", "<space>q", "<Cmd>lua vim.diagnostic.setloclist()<CR>")
   --map("n", "gk", "<Cmd>Lspsaga diagnostic_jump_prev<CR>")
   --map("n", "gj", "<Cmd>Lspsaga diagnostic_jump_next<CR>")
 
@@ -147,6 +147,15 @@ function _G.toggle_diagnostics()
   end
 end
 
+-- Open float for diagnostics automatically
+vim.cmd([[
+augroup OpenFloat
+        " autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
+        autocmd CursorHold * lua vim.diagnostic.open_float(nil, {focusable = false,})
+
+augroup END
+]])
+
 -- Suppress error messages from lang servers
 vim.lsp.set_log_level("debug")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
@@ -156,7 +165,7 @@ capabilities.offsetEncoding = { "utf-16" }
 
 local lspconfig = require("lspconfig")
 
-if utils.executable("pylsp") then
+if mods.executable("pylsp") then
 	lspconfig.pylsp.setup({
 		settings = {
 			pylsp = {
@@ -179,7 +188,7 @@ else
 	vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Server?" })
 end
 
-if utils.executable('pyright') then
+if mods.executable('pyright') then
   lspconfig.pyright.setup{
     on_attach = on_attach,
     capabilities = capabilities
@@ -188,7 +197,7 @@ else
   vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Server?'})
 end
 
-if utils.executable("clangd") then
+if mods.executable("clangd") then
 	lspconfig.clangd.setup({
 		on_attach = on_attach,
 		capabilities = capabilities,
@@ -202,7 +211,7 @@ else
 end
 
 -- Set up vim-language-server
-if utils.executable("vim-language-server") then
+if mods.executable("vim-language-server") then
 	lspconfig.vimls.setup({
 		on_attach = on_attach,
 		flags = {
@@ -215,14 +224,14 @@ else
 end
 
 -- Set up bash-language-server
-if utils.executable("bash-language-server") then
+if mods.executable("bash-language-server") then
 	lspconfig.bashls.setup({
 		on_attach = on_attach,
 		capabilities = capabilities,
 	})
 end
 
-if utils.executable("lua-language-server") then
+if mods.executable("lua-language-server") then
 	lspconfig.lua_ls.setup({
 		on_attach = on_attach,
 		settings = {
@@ -251,7 +260,7 @@ if utils.executable("lua-language-server") then
 end
 
 
-if utils.executable("rust-language-server") then
+if mods.executable("rust-language-server") then
 require("lspconfig").rust_analyzer.setup{
     cmd = { "rustup", "run", "nightly", "rust-analyzer" },
     on_attach = on_attach,

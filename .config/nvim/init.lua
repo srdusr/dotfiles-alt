@@ -52,8 +52,7 @@ local modules = {
   "user.pack", -- Packer plugin manager
   "user.opts", -- Options
   "user.keys", -- Keymaps
-  "user.utils", -- Utilities
-  --"user.mods", -- Modules/functions
+  "user.mods", -- Modules/functions
   --"user.deps", -- Plugins
   --"user.scripts",
   "plugins.treesitter",
@@ -89,9 +88,9 @@ end
 
 
 -- Check if we have the latest stable version of nvim
-local utils = require("user.utils")
+local mods = require("user.mods")
 local expected_ver = "0.9.0"
-local nvim_ver = utils.get_nvim_version()
+local nvim_ver = mods.get_nvim_version()
 
 if nvim_ver ~= expected_ver then
 	local msg = string.format("Unsupported nvim version: expect %s, but got %s instead!", expected_ver, nvim_ver)
@@ -102,6 +101,9 @@ end
 
 -- Snippets
 vim.g.snippets = "luasnip"
+
+-- Notifications
+vim.notify = require("notify") -- Requires plugin "rcarriga/nvim-notify"
 
 -- Improve speed by disabling some default plugins/modules
 local builtins = {

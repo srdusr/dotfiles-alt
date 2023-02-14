@@ -55,10 +55,10 @@ toggleterm.setup({
 		},
 	},
 })
-local utils = require("user.utils")
+local mods = require("user.mods")
 local float_handler = function(term)
 
-  if not utils.empty(vim.fn.mapcheck('jj', 't')) then
+  if not mods.empty(vim.fn.mapcheck('jj', 't')) then
     vim.keymap.del('t', 'jj', { buffer = term.bufnr })
     vim.keymap.del('t', '<esc>', { buffer = term.bufnr })
   end

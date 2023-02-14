@@ -1,4 +1,5 @@
 --[[ opts.lua ]]
+
 -- " Load indent files, to automatically do language-dependent indenting.
 --vim.cmd([[
 --    "filetype plugin indent on

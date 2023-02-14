@@ -260,6 +260,8 @@ require('telescope').load_extension('ui-select')
 require("telescope").load_extension("file_browser")
 require('telescope').load_extension('changed_files')
 require('telescope').load_extension('media_files')
+--require('telescope').extensions.notify.notify()
+require('telescope').load_extension('notify')
 
 function M.find_configs()
   require("telescope.builtin").find_files {

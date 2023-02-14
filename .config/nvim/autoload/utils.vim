@@ -16,11 +16,6 @@ endfunction
 "-------------------------------------------------
 
 " Toggle DiagnosticsOpenFloat
-augroup OpenFloat
-        autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
-
-augroup END
-
 function! utils#ToggleDiagnosticsOpenFloat()
     " Switch the toggle variable
     let g:DiagnosticsOpenFloat = !get(g:, 'DiagnosticsOpenFloat', 1)
@@ -33,7 +28,8 @@ function! utils#ToggleDiagnosticsOpenFloat()
     " Enable if toggled on
     if g:DiagnosticsOpenFloat
         augroup OpenFloat
-            autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
+            autocmd! CursorHold * lua vim.diagnostic.open_float(nil, {focusable = false,})
+            "autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
             "autocmd! CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,}) print ("vim.diagnostic.open_float enabled...")
         augroup END
     endif
