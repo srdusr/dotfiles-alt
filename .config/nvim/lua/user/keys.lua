@@ -283,4 +283,4 @@ map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
 map("n", "<leader>zm", "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo ('')<CR>")
 
 -- Vim-rooter
-map("n", "<leader>ro", "<CMD>Rooter<CR> | :sl! | echo ('')<CR>", term_opts)
+map("n", "<leader>ro", "<CMD>Rooter<CR> | :echom ('cd to root/project directory')<CR> | :sl! | echo ('')<CR>", term_opts)
