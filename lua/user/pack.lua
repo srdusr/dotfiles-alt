@@ -180,7 +180,13 @@ return packer.startup(function(use)
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
 	use("onsails/lspkind-nvim") -- 
-  --use("goolord/alpha-nvim") -- 
+  use({
+    'goolord/alpha-nvim',
+    requires = { 'nvim-tree/nvim-web-devicons' },
+    config = function ()
+        require'alpha'.setup(require'alpha.themes.startify'.config)
+    end
+  })
 	use("rcarriga/nvim-notify") -- Notification plugin
 	use("karb94/neoscroll.nvim") -- Faster/smooth scrolling
 	use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
