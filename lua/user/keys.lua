@@ -287,3 +287,8 @@ map("n", "<leader>ro", "<CMD>Rooter<CR> | :echom ('cd to root/project directory'
 
 -- Trouble (UI to show diagnostics)
 map("n", "<leader>t", "<CMD>TroubleToggle<CR>")
+map("n", "<leader>tw", "<CMD>TroubleToggle workspace_diagnostics<CR>")
+map("n", "<leader>td", "<CMD>TroubleToggle document_diagnostics<CR>")
+map("n", "<leader>tq", "<CMD>TroubleToggle quickfix<CR>")
+map("n", "<leader>tl", "<CMD>TroubleToggle loclist<CR>")
+map("n", "gR", "<CMD>TroubleToggle lsp_references<CR>")
