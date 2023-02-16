@@ -180,12 +180,22 @@ return packer.startup(function(use)
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
 	use("onsails/lspkind-nvim") -- 
+  --use({
+  --  'goolord/alpha-nvim',
+  --  requires = { 'nvim-tree/nvim-web-devicons' },
+  --  config = function ()
+  --      require'alpha'.setup(require'alpha.themes.startify'.config)
+  --  end
+  --})
   use({
-    'goolord/alpha-nvim',
-    requires = { 'nvim-tree/nvim-web-devicons' },
-    config = function ()
-        require'alpha'.setup(require'alpha.themes.startify'.config)
-    end
+  'glepnir/dashboard-nvim',
+  event = 'VimEnter',
+  config = function()
+    require('dashboard').setup {
+      -- config
+    }
+  end,
+  requires = {'nvim-tree/nvim-web-devicons'}
   })
 	use("rcarriga/nvim-notify") -- Notification plugin
 	use("karb94/neoscroll.nvim") -- Faster/smooth scrolling
