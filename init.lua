@@ -74,7 +74,8 @@ local modules = {
   "plugins.colorscheme",
   "plugins.heirline",
   "plugins.toggleterm",
-  "plugins.trouble"
+  "plugins.trouble",
+  "plugins.dashboard",
   --"plugins.modify-blend",
   --"plugins.dap",
   --"plugins.floatterm",
