@@ -284,3 +284,6 @@ map("n", "<leader>zm", "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo
 
 -- Vim-rooter
 map("n", "<leader>ro", "<CMD>Rooter<CR> | :echom ('cd to root/project directory')<CR> | :sl! | echo ('')<CR>", term_opts)
+
+-- Trouble (UI to show diagnostics)
+map("n", "<leader>t", "<CMD>TroubleToggle<CR>")
