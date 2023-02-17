@@ -792,7 +792,7 @@ local SpecialStatusline = {
 	condition = function()
 		return conditions.buffer_matches({
 			buftype = { "nofile", "prompt", "help", "quickfix" },
-			filetype = { "^git.*", "fugitive" },
+			filetype = { "^git.*", "fugitive", "dashboard", },
 		})
 	end,
 
@@ -801,7 +801,6 @@ local SpecialStatusline = {
 	--Align,
 	{ ViMode, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
 	{ LeftSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-	{ FileType, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
 	{ Space, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
 	{ Align, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
 	{ RightSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
@@ -979,7 +978,7 @@ local Center = {
 		condition = function()
 			return conditions.buffer_matches({
 				buftype = { "nofile", "prompt", "help", "quickfix" },
-				filetype = { "^git.*", "fugitive" },
+				filetype = { "^git.*", "fugitive", "dashboard", },
 			})
 		end,
 		init = function()

@@ -126,7 +126,9 @@ return packer.startup(function(use)
 	--use("tpope/vim-unimpaired") -- 
 	--use("vimpostor/vim-tpipeline") -- 
   use("nathom/filetype.nvim") -- 
-	use("myusuf3/numbers.vim") -- 
+	use({"myusuf3/numbers.vim", -- 
+    vim.cmd("let g:numbers_exclude = ['dashboard']")
+  })
 	use("windwp/nvim-autopairs") -- 
 	use("numToStr/Comment.nvim") -- 
 	use("akinsho/toggleterm.nvim") -- 
@@ -152,13 +154,6 @@ return packer.startup(function(use)
   use({
   "folke/trouble.nvim",
   requires = "nvim-tree/nvim-web-devicons",
-  config = function()
-    require("trouble").setup {
-      -- your configuration comes here
-      -- or leave it empty to use the default settings
-      -- refer to the configuration section below
-    }
-  end
   })
   use("airblade/vim-rooter") -- 
 	--use("vim-test/vim-test") -- 
@@ -180,12 +175,17 @@ return packer.startup(function(use)
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
 	use("onsails/lspkind-nvim") -- 
+  --use({
+  --  'goolord/alpha-nvim',
+  --  requires = { 'nvim-tree/nvim-web-devicons' },
+  --  config = function ()
+  --      require'alpha'.setup(require'alpha.themes.startify'.config)
+  --  end
+  --})
   use({
-    'goolord/alpha-nvim',
-    requires = { 'nvim-tree/nvim-web-devicons' },
-    config = function ()
-        require'alpha'.setup(require'alpha.themes.startify'.config)
-    end
+  'glepnir/dashboard-nvim',
+  event = 'VimEnter',
+  requires = {'nvim-tree/nvim-web-devicons'}
   })
 	use("rcarriga/nvim-notify") -- Notification plugin
 	use("karb94/neoscroll.nvim") -- Faster/smooth scrolling
