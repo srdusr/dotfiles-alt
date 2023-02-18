@@ -409,4 +409,6 @@ super + ctrl + w
 super + shift + w
 	artha
 
-
+# Suspend
+alt + f4
+  suspend
