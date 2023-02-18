@@ -297,6 +297,19 @@ function M.find_configs()
   }
 end
 
+function M.find_scripts()
+  require("telescope.builtin").find_files {
+    hidden = false,
+    prompt_title = " Find Notes",
+    path_display = { "smart" },
+    search_dirs = {
+      "~/.local/bin/scripts",
+    },
+    layout_strategy = "horizontal",
+    layout_config = { preview_width = 0.65, width = 0.75 },
+  }
+end
+
 function M.grep_notes()
   local opts = {}
   opts.hidden = false
