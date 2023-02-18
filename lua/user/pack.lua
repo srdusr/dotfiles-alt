@@ -130,7 +130,7 @@ return packer.startup(function(use)
     vim.cmd("let g:numbers_exclude = ['dashboard']")
   })
 	use("windwp/nvim-autopairs") -- 
-	use("numToStr/Comment.nvim") -- 
+	--use("numToStr/Comment.nvim") -- 
 	use("akinsho/toggleterm.nvim") -- 
 	use("tweekmonster/startuptime.vim") -- 
 	use({
