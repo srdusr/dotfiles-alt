@@ -69,6 +69,7 @@ return packer.startup(function(use)
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
 	use("rcarriga/nvim-dap-ui") -- UI for nvim-dap
+  use("gabrielpoca/replacer.nvim")
 
 	-- Linters/Formatters
   use({
