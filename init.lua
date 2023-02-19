@@ -58,6 +58,7 @@ local modules = {
   "plugins.treesitter",
   "plugins.telescope",
   "plugins.nvim-tree",
+  "plugins.quickfix",
   "plugins.cmp",
   "plugins.luasnip",
   "plugins.colorizer",
