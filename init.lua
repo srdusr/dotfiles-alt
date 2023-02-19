@@ -72,10 +72,10 @@ local modules = {
   "plugins.navic",
   "plugins.zen-mode",
   "plugins.colorscheme",
+  "plugins.dashboard",
   "plugins.heirline",
   "plugins.toggleterm",
   "plugins.trouble",
-  "plugins.dashboard",
   --"plugins.modify-blend",
   --"plugins.dap",
   --"plugins.floatterm",
@@ -136,5 +136,5 @@ local builtins = {
 for _, plugin in ipairs(builtins) do
 	vim.g["loaded_" .. plugin] = 1
 end
-vim.g.do_filetype_nvim = 1
+vim.g.do_filetype_lua = 1
 vim.g.did_load_filetypes = 0
