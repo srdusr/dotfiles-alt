@@ -296,3 +296,12 @@ map("n", "gR", "<CMD>TroubleToggle lsp_references<CR>")
 
 -- Replacer
 map('n', '<Leader>qr', ':lua require("replacer").run()<CR>')
+
+map("n", "<leader>q", function()
+    if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
+        require('plugins.quickfix').close()
+    else
+        require('plugins.quickfix').open()
+        --require("quickfix").open()
+    end
+end, { desc = "Toggle quickfix window" })
