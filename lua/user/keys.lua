@@ -293,3 +293,6 @@ map("n", "<leader>td", "<CMD>TroubleToggle document_diagnostics<CR>")
 map("n", "<leader>tq", "<CMD>TroubleToggle quickfix<CR>")
 map("n", "<leader>tl", "<CMD>TroubleToggle loclist<CR>")
 map("n", "gR", "<CMD>TroubleToggle lsp_references<CR>")
+
+-- Replacer
+map('n', '<Leader>qr', ':lua require("replacer").run()<CR>')
