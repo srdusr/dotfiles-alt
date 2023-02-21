@@ -25,6 +25,9 @@ null_ls.setup({
     require("null-ls").builtins.formatting.shfmt,
     require("null-ls").builtins.formatting.black,
 		require("null-ls").builtins.formatting.prettierd,
+		require("null-ls").builtins.diagnostics.cspell.with {
+    filetypes = { "python", "rust", "typescript" },
+  },
 		--require("null-ls").builtins.diagnostics.luacheck,
 		--require("null-ls").builtins.diagnostics.eslint,
 		--require("null-ls").builtins.diagnostics.eslint_d,
