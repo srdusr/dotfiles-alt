@@ -69,13 +69,11 @@ return packer.startup(function(use)
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
 	use("rcarriga/nvim-dap-ui") -- UI for nvim-dap
+  use("gabrielpoca/replacer.nvim")
 
 	-- Linters/Formatters
   use({
 		"jose-elias-alvarez/null-ls.nvim", -- Provides LSP: linters, formatters, diagnostics, code actions and etc...
-		config = function()
-			require("null-ls").setup()
-		end,
 		requires = { "nvim-lua/plenary.nvim" },
 	})
 
@@ -125,7 +123,7 @@ return packer.startup(function(use)
 	--use("tpope/vim-obsession") -- 
 	--use("tpope/vim-unimpaired") -- 
 	--use("vimpostor/vim-tpipeline") -- 
-  use("nathom/filetype.nvim") -- 
+  --use("nathom/filetype.nvim") -- 
 	use({"myusuf3/numbers.vim", -- 
     vim.cmd("let g:numbers_exclude = ['dashboard']")
   })

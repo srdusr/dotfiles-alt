@@ -9,25 +9,39 @@ end
 
 null_ls.setup({
 	debug = true,
+  disabled_filetypes = { "PKGBUILD" },
 	sources = {
 		require("null-ls").builtins.formatting.stylua, -- lua formatting
 		require("null-ls").builtins.formatting.prettier.with({ -- markdown, html/js formatting
 			filetypes = { "html", "css", "javascript", "javascriptreact", "markdown", "json", "yaml" },
 		}),
 		require("null-ls").builtins.formatting.shfmt.with({ -- shell script formatting
-			filetypes = { "bash", "zsh", "sh" },
+			filetypes = { ".bash", ".zsh", ".sh", "bash", "zsh", "sh" },
+      --filetypes = { "bash", "zsh", "sh" },
 		}),
 		require("null-ls").builtins.diagnostics.shellcheck, -- shell script diagnostics
     require("null-ls").builtins.code_actions.shellcheck, -- shell script code actions
-    --require("null-ls").builtins.formatting.black,
-		--require("null-ls").builtins.formatting.prettierd,
+		require("null-ls").builtins.diagnostics.zsh, -- shell script diagnostics
+    require("null-ls").builtins.formatting.shfmt,
+    require("null-ls").builtins.formatting.black,
+		require("null-ls").builtins.formatting.prettierd,
+		require("null-ls").builtins.diagnostics.cspell.with {
+    filetypes = { "python", "rust", "typescript" },
+  },
 		--require("null-ls").builtins.diagnostics.luacheck,
 		--require("null-ls").builtins.diagnostics.eslint,
 		--require("null-ls").builtins.diagnostics.eslint_d,
-		--require("null-ls").builtins.diagnostics.mdl,
-		--require("null-ls").builtins.diagnostics.vint,
-		--require("null-ls").builtins.codeactions.eslint_d,
-    --require("null-ls").builtins.completion.spell,
+		require("null-ls").builtins.diagnostics.mdl,
+		require("null-ls").builtins.diagnostics.vint,
+		--require("null-ls").builtins.code_actions.eslint_d,
+    require("null-ls").builtins.completion.spell,
+    require("null-ls").builtins.formatting.clang_format,
+    require("null-ls").builtins.formatting.rustfmt,
+    require("null-ls").builtins.formatting.sql_formatter,
+    require("null-ls").builtins.formatting.stylua,
+    --require("null-ls").builtins.formatting.google_java_format,
+    require("null-ls").builtins.formatting.shellharden,
+    require("null-ls").builtins.diagnostics.cppcheck,
 	},
 	on_attach = function(client, bufnr)
 		if client.server_capabilities.document_formatting then
