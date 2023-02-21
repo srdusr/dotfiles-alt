@@ -388,6 +388,7 @@ alias trash="gio trash"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
 alias ec='$EDITOR $HOME/.config/zsh/.zshrc'
 alias sc="source $HOME/.config/zsh/.zshrc"
+alias keyname="xev | sed -n 's/[ ]*state.* \([^ ]*\)).*/\1/p'"
 
 # Print previous command into a file
 getlast () {
