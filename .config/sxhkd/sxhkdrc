@@ -410,5 +410,5 @@ super + shift + w
 	artha
 
 # Suspend
-alt + f4
-  suspend
+alt + F4
+  systemctl suspend && betterlockscreen --lock dimblur
