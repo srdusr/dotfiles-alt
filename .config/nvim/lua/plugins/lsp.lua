@@ -49,7 +49,6 @@ local on_attach = function(client, bufnr)
   	keymap.set(mode, l, r, opts)
   end
 
-  local term_opts = { noremap = true, silent = false }
   -- Mappings
 	map("n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>")
   map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>")
@@ -116,15 +115,32 @@ local on_attach = function(client, bufnr)
       buffer = bufnr,
       group = 'lsp_document_highlight',
     })
-    vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-      group = 'lsp_document_highlight',
-      buffer = bufnr,
-      callback = vim.lsp.buf.document_highlight,
-    })
+    --vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
+    --  group = 'lsp_document_highlight',
+    --  buffer = bufnr,
+    --  callback = vim.lsp.buf.document_highlight,
+    --})
+    --vim.api.nvim_create_autocmd("CursorHold", {
+    --  buffer = bufnr,
+    --  callback = function()
+    --    local term_opts = {
+    --      focusable = false,
+    --      --close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+    --      close_events = { "BufLeave" },
+    --      border = 'rounded',
+    --      --source = 'always',
+    --      --prefix = ' ',
+    --      --scope = 'cursor',
+    --    }
+    --  vim.diagnostic.open_float(nil, term_opts)
+    --  end
+		--})
     vim.api.nvim_create_autocmd('CursorMoved', {
       group = 'lsp_document_highlight',
       buffer = bufnr,
       callback = vim.lsp.buf.clear_references,
+      --callback = ":silent! lua vim.lsp.buf.clear_references()",
+
     })
   end
 
@@ -228,12 +244,15 @@ if mods.executable("bash-language-server") then
 	lspconfig.bashls.setup({
 		on_attach = on_attach,
 		capabilities = capabilities,
+    debounce_text_changes = 500,
 	})
 end
 
 if mods.executable("lua-language-server") then
 	lspconfig.lua_ls.setup({
 		on_attach = on_attach,
+		capabilities = capabilities,
+    debounce_text_changes = 500,
 		settings = {
 			Lua = {
 				runtime = {
@@ -246,16 +265,11 @@ if mods.executable("lua-language-server") then
 				},
 				workspace = {
 					-- Make the server aware of Neovim runtime files,
-					library = {
-						fn.stdpath("data") .. "/site/pack/packer/opt/emmylua-nvim",
-						fn.stdpath("config"),
-					},
-					maxPreload = 2000,
+          maxPreload = 2000,
 					preloadFileSize = 50000,
 				},
 			},
 		},
-		capabilities = capabilities,
 	})
 end
 
@@ -294,13 +308,30 @@ vim.diagnostic.config({
 })
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-	underline = true,
+	underline = false,
 	virtual_text = false,
-	signs = true,
+	signs = false,
 	update_in_insert = false,
 })
 vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
 vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+
+
+-- The following settings works with the bleeding edge neovim.
+-- See https://github.com/neovim/neovim/pull/13998.
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
+  vim.lsp.handlers.hover, {
+    border = {
+       {"┌", "Normal"},
+       {"─", "Normal"},
+       {"┐", "Normal"},
+       {"│", "Normal"},
+       {"┘", "Normal"},
+       {"─", "Normal"},
+       {"└", "Normal"},
+       {"│", "Normal"}
+     }
+})
 
 -- this is for diagnositcs signs on the line number column
 -- use this to beautify the plain E W signs to more fun ones

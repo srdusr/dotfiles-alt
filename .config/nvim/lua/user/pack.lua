@@ -72,9 +72,17 @@ return packer.startup(function(use)
   use("gabrielpoca/replacer.nvim")
 
 	-- Linters/Formatters
+	use("jayp0521/mason-null-ls.nvim")
+	--use({"jayp0521/mason-null-ls.nvim",
+  --  config = function()
+  --  require('mason-null-ls.nvim').setup({
+  --    automatic_setup = true,
+  --  })
+  --  end
+  --})
   use({
 		"jose-elias-alvarez/null-ls.nvim", -- Provides LSP: linters, formatters, diagnostics, code actions and etc...
-		requires = { "nvim-lua/plenary.nvim" },
+		requires = { "jayp0521/mason-null-ls.nvim" },
 	})
 
 	-- Completion
@@ -189,11 +197,7 @@ return packer.startup(function(use)
 	use("karb94/neoscroll.nvim") -- Faster/smooth scrolling
 	use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
 	use("norcalli/nvim-colorizer.lua") -- 
-  use({ "j-hui/fidget.nvim", -- UI to show nvim-lsp progress
-    config = function()
-      require("fidget").setup()
-    end
-  })
+  use( "j-hui/fidget.nvim") -- UI to show nvim-lsp progress
   use { "simrat39/symbols-outline.nvim", -- 
     config = function()
       require("symbols-outline").setup({
