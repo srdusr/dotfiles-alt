@@ -18,7 +18,7 @@ db.setup({
 			[[  ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║]],
 			[[  ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝]],
 		},
-    disable_move = true,
+    disable_move = false,
 		shortcut = {
 			{ desc = " Plugins", group = "@property", action = "PackerStatus", key = "p" },
 			{
