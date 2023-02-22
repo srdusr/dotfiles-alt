@@ -58,7 +58,7 @@ require("null-ls").setup({
     require("null-ls").builtins.formatting.rustfmt,
     --require("null-ls").builtins.formatting.beautysh,
     require("null-ls").builtins.formatting.sql_formatter,
-    --require("null-ls").builtins.diagnostics.todo_comments,
+    require("null-ls").builtins.diagnostics.todo_comments,
     --require("null-ls").builtins.diagnostics.zsh,
     require("null-ls").builtins.hover.dictionary,
     require("null-ls").builtins.hover.printenv,
