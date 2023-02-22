@@ -151,7 +151,7 @@ local on_attach = function(client, bufnr)
 
 end
 
- Toggle diagnostics visibility
+-- Toggle diagnostics visibility
 vim.g.diagnostics_visible = true
 function _G.toggle_diagnostics()
   if vim.g.diagnostics_visible then
