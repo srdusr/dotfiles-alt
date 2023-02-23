@@ -6,8 +6,19 @@ require("null-ls").setup({
 	--debug = true,
   disabled_filetypes = { "PKGBUILD" },
   timeout_ms = 5000,
-  async = true,
+  --async = true,
   debounce = 150,
+  log = {
+    enable = true,
+    level = 'warn',
+    use_console = 'async',
+  },
+  update_in_insert = false,
+  --fallback_severity = vim.diagnostic.severity.ERROR,
+  --log_level = "warn",
+  --on_attach = nil,
+  --on_init = nil,
+  --on_exit = nil,
   sources = {
     --require("null-ls").builtins.formatting.shfmt, -- shell script formatting
     require("null-ls").builtins.diagnostics.dotenv_linter,
