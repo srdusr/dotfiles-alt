@@ -156,6 +156,7 @@ return packer.startup(function(use)
 	use("folke/which-key.nvim") -- 
 	use("folke/zen-mode.nvim") -- 
 	use("romainl/vim-cool") -- 
+	use("wfxr/minimap.vim")
   use("antoinemadec/FixCursorHold.nvim") -- 
   use({
   "folke/trouble.nvim",
