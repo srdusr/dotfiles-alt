@@ -78,6 +78,7 @@ local modules = {
   "plugins.heirline",
   "plugins.toggleterm",
   "plugins.trouble",
+  "plugins.minimap",
   --"plugins.modify-blend",
   --"plugins.dap",
   --"plugins.floatterm",
