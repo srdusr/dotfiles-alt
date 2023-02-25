@@ -309,6 +309,3 @@ end, { desc = "Toggle quickfix window" })
 
 -- Dashboard
 map("n", "<leader>db", "<CMD>Dashboard<CR>")
-
--- Minimap
-map("n", "<leader>mm", "<CMD>MinimapToggle<CR>")
