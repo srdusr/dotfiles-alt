@@ -45,6 +45,12 @@ db.setup({
 				action = "Telescope colorscheme",
 				key = "s",
 			},
+			{
+        desc = ' Config',
+        group = "Number",
+        action = ':edit ~/.config.nvim/init.lua',
+        key = "c",
+			},
 		},
 	},
 	hide = {
