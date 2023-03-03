@@ -111,6 +111,7 @@ return packer.startup(function(use)
   -- File explorer/fuzzy finder
 	use("kyazdani42/nvim-tree.lua") -- File explorer
 	use('ibhagwan/fzf-lua') -- Fuzzy finder
+	use('ThePrimeagen/harpoon')
 	use("nvim-telescope/telescope.nvim") --  Fuzzy finder with lots of features/extendabilities
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- Support fzf syntax/algorithm
 	use("nvim-telescope/telescope-ui-select.nvim") -- 
