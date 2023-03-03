@@ -72,7 +72,7 @@ return packer.startup(function(use)
   use("gabrielpoca/replacer.nvim")
 
 	-- Linters/Formatters
-	use("jayp0521/mason-null-ls.nvim")
+	use("jay-babu/mason-null-ls.nvim")
 	--use({"jayp0521/mason-null-ls.nvim",
   --  config = function()
   --  require('mason-null-ls.nvim').setup({
@@ -82,7 +82,7 @@ return packer.startup(function(use)
   --})
   use({
 		"jose-elias-alvarez/null-ls.nvim", -- Provides LSP: linters, formatters, diagnostics, code actions and etc...
-		requires = { "jayp0521/mason-null-ls.nvim" },
+		requires = { "jay-babu/mason-null-ls.nvim" },
 	})
 
 	-- Completion
@@ -208,10 +208,10 @@ return packer.startup(function(use)
   use({ "kosayoda/nvim-lightbulb", -- 
     requires = "antoinemadec/FixCursorHold.nvim",
   })
-  use({
+	use({
     "SmiteshP/nvim-navic", -- Statusline/Winbar component that uses LSP to show current code context
-		requires = "neovim/nvim-lspconfig",
-	})
+    requires = "neovim/nvim-lspconfig"
+  })
   use({
     'rebelot/heirline.nvim', -- Statusline that is highly configurable
     requires = 'kyazdani42/nvim-web-devicons',
