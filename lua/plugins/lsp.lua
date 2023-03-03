@@ -60,8 +60,8 @@ local on_attach = function(client, bufnr)
 	map("n", "gn", "<Cmd>lua vim.lsp.buf.rename()<CR>")
 	map("n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>")
   map("n", "gf", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
-	--map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
-  map("n", "go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
+	map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
+  map("n", "<leader>go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
 	map("n", "[d", "<Cmd>lua vim.diagnostic.goto_prev()<CR>")
 	map("n", "]d", "<Cmd>lua vim.diagnostic.goto_next()<CR>")
 	map("n", "gs", "<Cmd>lua vim.lsp.buf.document_symbol()<CR>")
@@ -301,7 +301,7 @@ vim.diagnostic.config({
         show_header = true,
         source = 'if_many',
         border = 'rounded',
-        focusable = false,
+        focusable = true,
     },
     update_in_insert = false, -- default to false
     severity_sort = false, -- default to false
