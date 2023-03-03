@@ -154,7 +154,7 @@ vim.opt.wrapscan = true -- " Searches wrap around end-of-file.
 --vim.opt.foldmethod = "expr" --
 vim.opt.foldmethod = "manual"
 vim.opt.foldlevel = 3
-vim.opt.confirm = true
+vim.opt.confirm = false
 vim.opt.shortmess:append("sI")
 --vim.opt.shortmess = "a"
 --vim.opt.shortmess = "sI"
