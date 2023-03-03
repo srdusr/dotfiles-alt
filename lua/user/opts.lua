@@ -248,12 +248,12 @@ vim.cmd([[                                        " Only show in insert mode
 ]])
 
 -- Line Return
---vim.cmd([[                                        " Return to the same line when we reopen a file
---  augroup line_return
---      au!
---      au BufReadPost *
---          \ if line("'\"") > 0 && line("'\"") <= line("$") |
---          \     execute 'normal! g`"zvzz' |
---          \ endif
---  augroup END
---]])
+vim.cmd([[                                        " Return to the same line when we reopen a file
+  augroup line_return
+      au!
+      au BufReadPost *
+          \ if line("'\"") > 0 && line("'\"") <= line("$") |
+          \     execute 'normal! g`"zvzz' |
+          \ endif
+  augroup END
+]])
