@@ -47,6 +47,7 @@ local sources = {
   }),
   builtins.diagnostics.eslint_d.with(eslint_opts),
   builtins.diagnostics.todo_comments,
+  builtins.diagnostics.vint,
 
   builtins.code_actions.shellcheck, -- shell script code actions
   builtins.code_actions.eslint_d.with(eslint_opts),
