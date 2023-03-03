@@ -178,6 +178,7 @@ return packer.startup(function(use)
 	use("ayu-theme/ayu-vim")
 	use("joshdick/onedark.vim")
 	use("NTBBloodbath/doom-one.nvim")
+	use("IneptusMechanicus/mechanicus.nvim")
 
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
