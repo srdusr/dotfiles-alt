@@ -281,6 +281,7 @@ function M.find_configs()
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
+      "~/.bashrc",
     },
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
