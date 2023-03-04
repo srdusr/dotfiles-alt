@@ -65,6 +65,12 @@ return packer.startup(function(use)
   use("williamboman/mason.nvim") -- Package manager to install and manage LSP servers, DAP servers, linters and formatters
   use("williamboman/mason-lspconfig.nvim") -- Bridges mason.nvim with nvim-lspconfig to help use them together
   use("neovim/nvim-lspconfig") -- Collection of LSP configs
+  use({
+  "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+  config = function()
+    require("lsp_lines").setup()
+  end,
+  })
 
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
