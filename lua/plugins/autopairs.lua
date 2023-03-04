@@ -1,4 +1,3 @@
--- Setup nvim-cmp.
 local status_ok, npairs = pcall(require, "nvim-autopairs")
 if not status_ok then
   return
@@ -18,9 +17,9 @@ npairs.setup {
   disable_filetype = { "TelescopePrompt", "spectre_panel" },
   disable_in_macro = true,
   disable_in_visualblock = true,
-  enalbe_moveright = true,
+  enable_moveright = true,
   enable_afterquote = true,  -- add bracket pairs after quote
-  enable_check_bracket_line = true,  --- check bracket in same line
+  enable_check_bracket_line = false,  --- check bracket in same line
   enable_bracket_in_quote = true, --
   break_undo = true, -- switch for basic rule break undo sequence
   fast_wrap = {
