@@ -33,10 +33,10 @@ map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nv
 map('n', 'q', function()
   local config = vim.api.nvim_win_get_config(0)
   if config.relative ~= "" then -- is_floating_window?
-    return ":close<CR>"
+    return ":silent! close!<CR>"
   elseif
     vim.o.buftype == 'quickfix' then
-    return ":close<CR>"
+    return ":quit<CR>"
   elseif
     vim.o.buftype == 'help' then
     return ":close<CR>"
