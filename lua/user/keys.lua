@@ -34,6 +34,9 @@ map('n', 'q', function()
   local config = vim.api.nvim_win_get_config(0)
   if config.relative ~= "" then -- is_floating_window?
     return ":close<CR>"
+  elseif
+    vim.o.buftype == 'quickfix' then
+    return ":close<CR>"
   else
     return "q"
   end
