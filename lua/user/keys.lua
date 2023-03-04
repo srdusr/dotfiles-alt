@@ -37,6 +37,9 @@ map('n', 'q', function()
   elseif
     vim.o.buftype == 'quickfix' then
     return ":close<CR>"
+  elseif
+    vim.o.buftype == 'help' then
+    return ":close<CR>"
   else
     return "q"
   end
