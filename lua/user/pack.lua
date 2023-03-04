@@ -71,6 +71,7 @@ return packer.startup(function(use)
     require("lsp_lines").setup()
   end,
   })
+  use("rmagatti/goto-preview")
 
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
