@@ -59,6 +59,17 @@ map("n", "<leader>d", ":bd<cr>")
 -- List marks
 map("n", "<Leader>m", ":marks<CR>")
 
+-- Messages
+map("n", "<Leader>M", ":messages<CR>")
+
+-- Clear messages
+
+-- Clear messages or just refresh/redraw the screen
+map("n", "<leader>u", ":echo '' | redraw<CR>")
+
+-- Unsets the 'last search pattern' register by hitting return
+--map("n", "<CR>", "!silent :noh<CR><CR>")
+
 -- Toggle set number
 map("n", "<leader>$", ":NumbersToggle<CR>")
 map("n", "<leader>%", ":NumbersOnOff<CR>")
@@ -157,17 +168,11 @@ map("v", "p", '"_dP')
 -- visual mode to select text to swap with
 map("v", "<C-X>", "<Esc>`.``gvP``P")
 
--- Clear messages or just refresh/redraw the screen
-map("n", "<leader>u", ":echo '' | redraw<CR>")
-
 -- Change Working Directory to current project
 map("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
 
 -- Open the current file in the default program (on Mac this should just be just `open`)
 map('n', '<leader>o', ':!xdg-open %<cr><cr>')
-
--- Unsets the 'last search pattern' register by hitting return
---map("n", "<CR>", "!silent :noh<CR><CR>")
 
 -- Toggle completion
 map("n", "<Leader>tc", ":lua require('user.mods').toggle_completion()<CR>")
