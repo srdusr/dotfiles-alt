@@ -68,6 +68,7 @@ local modules = {
   "plugins.neoscroll",
   "plugins.null-ls",
   "plugins.lsp",
+  "plugins.goto-preview",
   "plugins.autopairs",
   "plugins.web-devicons",
   "plugins.navic",
