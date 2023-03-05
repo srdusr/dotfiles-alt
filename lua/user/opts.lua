@@ -43,7 +43,7 @@ vim.g.python3_host_prog = "/usr/bin/python3" --
 vim.g.loaded_python3_provider = 1 --
 vim.g.sh_noisk = 1 -- iskeyword word boundaries when editing a 'sh' file
 vim.o.autochdir = true
---vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,resize,winpos,terminal,globals" --
+--vim.o.writeany= true
 
 -- Colors
 vim.opt.termguicolors = true
@@ -122,11 +122,14 @@ vim.opt.report = 0 -- Always report changed lines.
 ---- it'll get replaced by the default stline).
 --vim.opt.stl = " "
 
--- Backup/undo
+-- Backup/undo/swap
+local prefix = vim.env.XDG_CONFIG_HOME or vim.fn.expand("~/.config")
+vim.opt.undodir = { prefix .. "/nvim/tmp/.undo//" }
+vim.opt.backupdir = { prefix .. "/nvim/tmp/.backup//" }
+vim.opt.directory = { prefix .. "/nvim/tmp/.swp//" }
 vim.opt.backup = false --
---vim.opt.noswapfile = true                         --
---vim.opt.undofile = true                           --
-vim.opt.backupskip = { "/tmp/*", "/private/tmp/*" } --
+vim.opt.undofile = false                           --
+vim.opt.swapfile = true                         --
 
 -- Format
 --vim.opt.textwidth = 80 --
@@ -225,8 +228,12 @@ vim.opt.wildignore:append({ "*/node_modules/*" }) --
 vim.opt.shada = "!,'1000,f1,<1000,s100,:1000,/1000,h"
 
 -- Sessions
-vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+--vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+--vim.opt.sessionoptions = "curdir,folds,help,options,tabpages,winsize,winpos,terminal,globals" --
+--vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+vim.opt.sessionoptions:remove({ "blank", "buffers", "globals" })
 
+vim.opt.clipboard:append({ "unnamedplus" }) -- Install xclip or this will slowdown startup
 -- Cursorline
 vim.cmd([[                                        " Only show cursorline in the current window and in normal mode
   	augroup cline
