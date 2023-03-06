@@ -301,6 +301,7 @@ end
 function M.find_scripts()
   require("telescope.builtin").find_files {
     hidden = true,
+    no_ignore = true,
     prompt_title = " Find Notes",
     path_display = { "smart" },
     search_dirs = {
