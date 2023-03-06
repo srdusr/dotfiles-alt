@@ -29,7 +29,7 @@ map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nv
 
 
 --------------- Extended Operations ---------------
--- Use q to quit on floating windows otherwise still use it for macros
+-- Conditional 'q' to quit on floating/quickfix/help windows otherwise still use it for macros
 map('n', 'q', function()
   local config = vim.api.nvim_win_get_config(0)
   if config.relative ~= "" then -- is_floating_window?
