@@ -152,22 +152,8 @@ map("n", "<A-j>", ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>')
 -- Search and replace
 map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 
-vim.cmd([[
-let g:diff_is_open = 0
-
-function! ToggleDiff()
-  if g:diff_is_open
-    windo diffoff
-    let g:diff_is_open = 0
-  else
-    windo diffthis
-    let g:diff_is_open = 1
-  endif
-endfunction
-
-" Diff this
-nnoremap <leader>dt <cmd>call ToggleDiff()<CR>
-]])
+-- Toggle Diff
+map("n", "<leader>dt", "<Cmd>call utils#ToggleDiff()<CR>")
 
 -- Map delete to Ctrl+l
 map("i", "<C-l>", "<Del>")
