@@ -52,8 +52,8 @@ super + shift + p
 #	~/.config/eww/launch_widgets.sh
 
 # Terminal emulator
-super + Return
-	$TERMINAL
+#super + Return
+#	$TERMINAL
 
 # Browser
 super + w
@@ -358,12 +358,17 @@ alt + ctrl + Right
 # Programs
 #
 
-# Scratchpad
+# Scratchpd
 super + semicolon
 	~/.local/bin/scripts/scratchpad
 
 super + x
 	~/.local/bin/scripts/scratchpad
+
+# Dropdown
+super + Return
+	~/.local/bin/scripts/dropdown
+
 
 # Heads-Up-Display scratchpad terminal
 super + e
