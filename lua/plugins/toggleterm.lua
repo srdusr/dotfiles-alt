@@ -2,7 +2,6 @@ local status_ok, toggleterm = pcall(require, "toggleterm")
 if not status_ok then
 	return
 end
-
 toggleterm.setup({
 	--size = function(term)
 	--	if term.direction == "horizontal" then
@@ -13,6 +12,7 @@ toggleterm.setup({
 	--end,
 	--size = 20,
 	open_mapping = [[<leader>tt]],
+  --autochdir = true,
 	hide_numbers = true,
 	shade_filetypes = {},
 	shade_terminals = false,
@@ -92,6 +92,7 @@ local lazygit = Terminal:new({
     width = 150,
     height = 40
   },
+
   ---- Function to run on opening the terminal
   --on_open = function(term)
   --  vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>',
@@ -106,10 +107,42 @@ local lazygit = Terminal:new({
   --   vim.cmd("startinsert!")
   --end
 })
+local cur_cwd = vim.fn.getcwd()
 
 function Lazygit_toggle()
-  lazygit:toggle()
+   -- cwd is the root of project. if cwd is changed, change the git.
+   local cwd = vim.fn.getcwd()
+   if cwd ~= cur_cwd then
+      cur_cwd = cwd
+      lazygit:close()
+      lazygit = Terminal:new({
+        cmd = "lazygit",
+        dir = "git_dir",
+        direction = "float",
+        on_open = float_handler,
+        float_opts = {
+          border = { '╒', '═', '╕', '│', '╛', '═', '╘', '│' },
+          width = 150,
+          height = 40
+        },
+      })
+   end
+   lazygit:toggle()
 end
+--function Lazygit_toggle()
+--   lazygit:toggle()
+--end
+
+--vim.keymap.set({"n", "t"}, "<leader>gg", function()
+--  -- custom function to find the git directory for the current buffer
+--  --local git_root = project_utils.git_root() or vim.fn.getcwd()
+--  local git_root = vim.fn.getcwd()
+--
+--  lazygit.cmd = 'gitui -d ' .. git_root
+--  --"<cmd>lua lazygit_toggle()"
+--  lazygit:toggle()
+--end, { desc = 'Toggle gitui' })
+
 
 local node = Terminal:new({ cmd = "node", hidden = true })
 
