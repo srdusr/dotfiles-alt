@@ -65,6 +65,13 @@ return packer.startup(function(use)
   use("williamboman/mason.nvim") -- Package manager to install and manage LSP servers, DAP servers, linters and formatters
   use("williamboman/mason-lspconfig.nvim") -- Bridges mason.nvim with nvim-lspconfig to help use them together
   use("neovim/nvim-lspconfig") -- Collection of LSP configs
+  use({
+  "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
+  config = function()
+    require("lsp_lines").setup()
+  end,
+  })
+  use("rmagatti/goto-preview")
 
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
@@ -72,7 +79,7 @@ return packer.startup(function(use)
   use("gabrielpoca/replacer.nvim")
 
 	-- Linters/Formatters
-	use("jayp0521/mason-null-ls.nvim")
+	use("jay-babu/mason-null-ls.nvim")
 	--use({"jayp0521/mason-null-ls.nvim",
   --  config = function()
   --  require('mason-null-ls.nvim').setup({
@@ -82,7 +89,7 @@ return packer.startup(function(use)
   --})
   use({
 		"jose-elias-alvarez/null-ls.nvim", -- Provides LSP: linters, formatters, diagnostics, code actions and etc...
-		requires = { "jayp0521/mason-null-ls.nvim" },
+		requires = { "jay-babu/mason-null-ls.nvim" },
 	})
 
 	-- Completion
@@ -111,6 +118,7 @@ return packer.startup(function(use)
   -- File explorer/fuzzy finder
 	use("kyazdani42/nvim-tree.lua") -- File explorer
 	use('ibhagwan/fzf-lua') -- Fuzzy finder
+	use('ThePrimeagen/harpoon')
 	use("nvim-telescope/telescope.nvim") --  Fuzzy finder with lots of features/extendabilities
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- Support fzf syntax/algorithm
 	use("nvim-telescope/telescope-ui-select.nvim") -- 
@@ -208,10 +216,10 @@ return packer.startup(function(use)
   use({ "kosayoda/nvim-lightbulb", -- 
     requires = "antoinemadec/FixCursorHold.nvim",
   })
-  use({
+	use({
     "SmiteshP/nvim-navic", -- Statusline/Winbar component that uses LSP to show current code context
-		requires = "neovim/nvim-lspconfig",
-	})
+    requires = "neovim/nvim-lspconfig"
+  })
   use({
     'rebelot/heirline.nvim', -- Statusline that is highly configurable
     requires = 'kyazdani42/nvim-web-devicons',

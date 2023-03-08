@@ -48,20 +48,23 @@ local on_attach = function(client, bufnr)
   	opts.buffer = bufnr
   	keymap.set(mode, l, r, opts)
   end
-
   -- Mappings
 	map("n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>")
-  map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>")
-	map("n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>")
-	map("n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>")
+  --map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>")
+  map("n", "gd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>")
+	--map("n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>")
+	map("n", "gi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
+	--map("n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>")
+	map("n", "gr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>")
 	map("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>") -- most lsp servers don't implement textDocument/Declaration, so gD is useless for now.
 	map("n", "<leader>k", "<Cmd>lua vim.lsp.buf.signature_help()<CR>")
-	map("n", "gt", "<Cmd>lua vim.lsp.buf.type_definition()<CR>")
+	--map("n", "gt", "<Cmd>lua vim.lsp.buf.type_definition()<CR>")
+	map("n", "gt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>")
 	map("n", "gn", "<Cmd>lua vim.lsp.buf.rename()<CR>")
 	map("n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>")
   map("n", "gf", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
-	--map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
-  map("n", "go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
+	map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
+  map("n", "<leader>go", ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
 	map("n", "[d", "<Cmd>lua vim.diagnostic.goto_prev()<CR>")
 	map("n", "]d", "<Cmd>lua vim.diagnostic.goto_next()<CR>")
 	map("n", "gs", "<Cmd>lua vim.lsp.buf.document_symbol()<CR>")
@@ -297,11 +300,12 @@ vim.diagnostic.config({
     underline = false,
     signs = true,
     virtual_text = false,
+    virtual_lines = { only_current_line = true },
     float = {
         show_header = true,
         source = 'if_many',
         border = 'rounded',
-        focusable = false,
+        focusable = true,
     },
     update_in_insert = false, -- default to false
     severity_sort = false, -- default to false

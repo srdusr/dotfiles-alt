@@ -281,6 +281,7 @@ function M.find_configs()
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
+      "~/.bashrc",
     },
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
@@ -300,7 +301,8 @@ end
 function M.find_scripts()
   require("telescope.builtin").find_files {
     hidden = true,
-    prompt_title = " Find Notes",
+    no_ignore = true,
+    prompt_title = " Find Scripts",
     path_display = { "smart" },
     search_dirs = {
       "~/.local/bin/scripts",

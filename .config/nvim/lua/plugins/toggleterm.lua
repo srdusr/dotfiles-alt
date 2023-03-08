@@ -2,7 +2,6 @@ local status_ok, toggleterm = pcall(require, "toggleterm")
 if not status_ok then
 	return
 end
-
 toggleterm.setup({
 	--size = function(term)
 	--	if term.direction == "horizontal" then
@@ -13,6 +12,7 @@ toggleterm.setup({
 	--end,
 	--size = 20,
 	open_mapping = [[<leader>tt]],
+  --autochdir = true,
 	hide_numbers = true,
 	shade_filetypes = {},
 	shade_terminals = false,
@@ -77,12 +77,11 @@ end
 
 -- if you only want these mappings for toggle term use term://*toggleterm#* instead
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
---vim.cmd("autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()")
-
 local Terminal = require("toggleterm.terminal").Terminal
 local lazygit = Terminal:new({
   cmd = "lazygit",
   count = 5,
+  id = 1000,
   dir = "git_dir",
   direction = "float",
   on_open = float_handler,
@@ -92,6 +91,7 @@ local lazygit = Terminal:new({
     width = 150,
     height = 40
   },
+
   ---- Function to run on opening the terminal
   --on_open = function(term)
   --  vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>',
@@ -108,7 +108,25 @@ local lazygit = Terminal:new({
 })
 
 function Lazygit_toggle()
-  lazygit:toggle()
+   -- cwd is the root of project. if cwd is changed, change the git.
+   local cwd = vim.fn.getcwd()
+   if cwd ~= Cur_cwd then
+      Cur_cwd = cwd
+      lazygit:close()
+      lazygit = Terminal:new({
+        cmd = "lazygit",
+        dir = "git_dir",
+        direction = "float",
+        hidden = true,
+        on_open = float_handler,
+        float_opts = {
+          border = { '╒', '═', '╕', '│', '╛', '═', '╘', '│' },
+          width = 150,
+          height = 40
+        },
+      })
+   end
+   lazygit:toggle()
 end
 
 local node = Terminal:new({ cmd = "node", hidden = true })

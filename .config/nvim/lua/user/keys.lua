@@ -29,6 +29,22 @@ map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nv
 
 
 --------------- Extended Operations ---------------
+-- Conditional 'q' to quit on floating/quickfix/help windows otherwise still use it for macros
+map('n', 'q', function()
+  local config = vim.api.nvim_win_get_config(0)
+  if config.relative ~= "" then -- is_floating_window?
+    return ":silent! close!<CR>"
+  elseif
+    vim.o.buftype == 'quickfix' then
+    return ":quit<CR>"
+  elseif
+    vim.o.buftype == 'help' then
+    return ":close<CR>"
+  else
+    return "q"
+  end
+end, {expr = true, replace_keycodes = true})
+
 -- Combine buffers list with buffer name
 map("n", "<Leader>b", ":buffers<CR>:buffer<Space>")
 
@@ -42,6 +58,17 @@ map("n", "<leader>d", ":bd<cr>")
 
 -- List marks
 map("n", "<Leader>m", ":marks<CR>")
+
+-- Messages
+map("n", "<Leader>M", ":messages<CR>")
+
+-- Clear messages
+
+-- Clear messages or just refresh/redraw the screen
+map("n", "<leader>u", ":echo '' | redraw<CR>")
+
+-- Unsets the 'last search pattern' register by hitting return
+--map("n", "<CR>", "!silent :noh<CR><CR>")
 
 -- Toggle set number
 map("n", "<leader>$", ":NumbersToggle<CR>")
@@ -125,6 +152,9 @@ map("n", "<A-j>", ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>')
 -- Search and replace
 map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 
+-- Toggle Diff
+map("n", "<leader>dt", "<Cmd>call utils#ToggleDiff()<CR>")
+
 -- Map delete to Ctrl+l
 map("i", "<C-l>", "<Del>")
 
@@ -141,17 +171,11 @@ map("v", "p", '"_dP')
 -- visual mode to select text to swap with
 map("v", "<C-X>", "<Esc>`.``gvP``P")
 
--- Clear messages or just refresh/redraw the screen
-map("n", "<leader>u", ":echo '' | redraw<CR>")
-
 -- Change Working Directory to current project
 map("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
 
 -- Open the current file in the default program (on Mac this should just be just `open`)
 map('n', '<leader>o', ':!xdg-open %<cr><cr>')
-
--- Unsets the 'last search pattern' register by hitting return
---map("n", "<CR>", "!silent :noh<CR><CR>")
 
 -- Toggle completion
 map("n", "<Leader>tc", ":lua require('user.mods').toggle_completion()<CR>")
@@ -309,3 +333,7 @@ end, { desc = "Toggle quickfix window" })
 
 -- Dashboard
 map("n", "<leader>db", "<CMD>Dashboard<CR>")
+
+-- 
+map("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
+

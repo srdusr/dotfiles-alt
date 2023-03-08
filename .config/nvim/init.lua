@@ -26,10 +26,10 @@
 
 -- -------------------------------------------------------------------------- --
 
--- Initialize config with this one liner in the terminal (use in commandline)
+-- Initialize config with this one liner in the terminal
 --nvim --headless -c 'call mkdir(stdpath("config"), "p") | exe "edit" stdpath("config") . "/init.lua" | write | quit'
 
--- See startup time (use in commandline)
+-- Command to see startup time
 --nvim --startuptime startup.log -c exit && tail -100 startup.log
 
 -- Load impatient (Faster loading times)
@@ -68,6 +68,7 @@ local modules = {
   "plugins.neoscroll",
   "plugins.null-ls",
   "plugins.lsp",
+  "plugins.goto-preview",
   "plugins.autopairs",
   "plugins.web-devicons",
   "plugins.navic",
