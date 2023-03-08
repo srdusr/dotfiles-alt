@@ -237,10 +237,10 @@ vim.opt.wildignore:append({ "*/node_modules/*" }) --
 vim.opt.shada = "!,'1000,f1,<1000,s100,:1000,/1000,h"
 
 -- Sessions
---vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
+vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
 --vim.opt.sessionoptions = "curdir,folds,help,options,tabpages,winsize,winpos,terminal,globals" --
 --vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
-vim.opt.sessionoptions:remove({ "blank", "buffers", "globals" })
+--vim.opt.sessionoptions:remove({ "blank", "buffers", "globals" })
 
 vim.opt.clipboard:append({ "unnamedplus" }) -- Install xclip or this will slowdown startup
 -- Cursorline
