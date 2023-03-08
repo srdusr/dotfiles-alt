@@ -77,12 +77,11 @@ end
 
 -- if you only want these mappings for toggle term use term://*toggleterm#* instead
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
---vim.cmd("autocmd! TermOpen term://*toggleterm#* lua set_terminal_keymaps()")
-
 local Terminal = require("toggleterm.terminal").Terminal
 local lazygit = Terminal:new({
   cmd = "lazygit",
   count = 5,
+  id = 1000,
   dir = "git_dir",
   direction = "float",
   on_open = float_handler,
@@ -107,18 +106,18 @@ local lazygit = Terminal:new({
   --   vim.cmd("startinsert!")
   --end
 })
-local cur_cwd = vim.fn.getcwd()
 
 function Lazygit_toggle()
    -- cwd is the root of project. if cwd is changed, change the git.
    local cwd = vim.fn.getcwd()
-   if cwd ~= cur_cwd then
-      cur_cwd = cwd
+   if cwd ~= Cur_cwd then
+      Cur_cwd = cwd
       lazygit:close()
       lazygit = Terminal:new({
         cmd = "lazygit",
         dir = "git_dir",
         direction = "float",
+        hidden = true,
         on_open = float_handler,
         float_opts = {
           border = { '╒', '═', '╕', '│', '╛', '═', '╘', '│' },
@@ -129,20 +128,6 @@ function Lazygit_toggle()
    end
    lazygit:toggle()
 end
---function Lazygit_toggle()
---   lazygit:toggle()
---end
-
---vim.keymap.set({"n", "t"}, "<leader>gg", function()
---  -- custom function to find the git directory for the current buffer
---  --local git_root = project_utils.git_root() or vim.fn.getcwd()
---  local git_root = vim.fn.getcwd()
---
---  lazygit.cmd = 'gitui -d ' .. git_root
---  --"<cmd>lua lazygit_toggle()"
---  lazygit:toggle()
---end, { desc = 'Toggle gitui' })
-
 
 local node = Terminal:new({ cmd = "node", hidden = true })
 
