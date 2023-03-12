@@ -60,6 +60,7 @@ local modules = {
   "plugins.nvim-tree",
   "plugins.quickfix",
   "plugins.cmp",
+  "plugins.dap",
   "plugins.luasnip",
   "plugins.colorizer",
   "plugins.prettier",
