@@ -336,14 +336,14 @@ local dap_ok, dap = pcall(require, "dap")
 local dap_ui_ok, ui = pcall(require, "dapui")
 
 if not (dap_ok and dap_ui_ok) then
-    require("notify")("nvim-dap or dap-ui not installed!", "warning") -- nvim-notify is a separate plugin, I recommend it too!
+    require("notify")("nvim-dap or dap-ui not installed!", "warning")
   return
 end
 
 vim.fn.sign_define('DapBreakpoint', { text = '🐞' })
 
 -- Start debugging session
-vim.keymap.set("n", "<localleader>ds", function()
+map("n", "<leader>ds", function()
   dap.continue()
   ui.toggle({})
   vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false) -- Spaces buffers evenly
