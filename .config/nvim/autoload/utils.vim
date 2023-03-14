@@ -100,3 +100,19 @@ endfunction
 
 
 "-------------------------------------------------
+
+" Toggle Diff
+let g:diff_is_open = 0
+
+function! utils#ToggleDiff()
+  if g:diff_is_open
+    windo diffoff
+    let g:diff_is_open = 0
+  else
+    windo diffthis
+    let g:diff_is_open = 1
+  endif
+endfunction
+
+
+"-------------------------------------------------

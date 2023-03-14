@@ -111,7 +111,7 @@ return packer.startup(function(use)
 
 	-- Git
 	use("tpope/vim-fugitive") -- 
-	use("dinhhuy258/git.nvim") -- For git blame & browse
+	--use("dinhhuy258/git.nvim") -- For git blame & browse
   use("kdheepak/lazygit.nvim") -- Terminal UI for git commands
 	use("lewis6991/gitsigns.nvim") -- Git decorations
 

@@ -287,9 +287,10 @@ map("n", "<leader>fk", "<cmd>lua require('telescope.builtin').keymaps()<cr>")
 map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]]) -- find notes
 map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]]) -- search notes
 map("n", "<leader>f.", [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]]) -- find configs
-map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]]) -- find notes
+map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]]) -- find scripts
+map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]]) -- find projects
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
-map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>") -- find media files
+map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>") -- find notifications
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
@@ -330,6 +331,45 @@ map("n", "<leader>q", function()
         --require("quickfix").open()
     end
 end, { desc = "Toggle quickfix window" })
+
+-- Dap (debugging)
+local dap_ok, dap = pcall(require, "dap")
+local dap_ui_ok, ui = pcall(require, "dapui")
+
+if not (dap_ok and dap_ui_ok) then
+    require("notify")("nvim-dap or dap-ui not installed!", "warning")
+  return
+end
+
+vim.fn.sign_define('DapBreakpoint', { text = '🐞' })
+
+-- Start debugging session
+map("n", "<leader>ds", function()
+  dap.continue()
+  ui.toggle({})
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false) -- Spaces buffers evenly
+end)
+
+-- Set breakpoints, get variable values, step into/out of functions, etc.
+map("n", "<leader>dl", require("dap.ui.widgets").hover)
+map("n", "<leader>dc", dap.continue)
+map("n", "<leader>db", dap.toggle_breakpoint)
+map("n", "<leader>dn", dap.step_over)
+map("n", "<leader>di", dap.step_into)
+map("n", "<leader>do", dap.step_out)
+map("n", "<leader>dC", function()
+  dap.clear_breakpoints()
+  require("notify")("Breakpoints cleared", "warn")
+end)
+
+-- Close debugger and clear breakpoints
+map("n", "<leader>de", function()
+  dap.clear_breakpoints()
+  ui.toggle({})
+  dap.terminate()
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false)
+  require("notify")("Debugger session ended", "warn")
+end)
 
 -- Dashboard
 map("n", "<leader>db", "<CMD>Dashboard<CR>")
