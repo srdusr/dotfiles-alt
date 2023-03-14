@@ -64,7 +64,7 @@ local modules = {
   "plugins.luasnip",
   "plugins.colorizer",
   "plugins.prettier",
-  "plugins.git",
+  --"plugins.git",
   "plugins.gitsigns",
   "plugins.neoscroll",
   "plugins.null-ls",
