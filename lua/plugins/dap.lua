@@ -1,5 +1,5 @@
 local dap = require('dap')
-local home_path = vim.fn.expand('$HOME')
+--local home_path = vim.fn.expand('$HOME')
 
 -- Unsafe Defaults
 local mi_mode = ""
@@ -17,10 +17,21 @@ else
     error("Unsupported OS")
 end
 
+--dap.adapters.cppdbg = {
+--    type = "server",
+--    port = "${port}",
+--    executable = {
+--      command = vim.fn.stdpath("data") .. '/mason/bin/dlv',
+--      args = { "dap", "-l", "127.0.0.1:${port}" },
+--    },
+--    --command = home_path .. '/extension/debugAdapters/bin/OpenDebugAD7',
+--}
+
+-- cpp
 dap.adapters.cppdbg = {
-    id = 'cppdbg',
-    type = 'executable',
-    command = home_path .. '/extension/debugAdapters/bin/OpenDebugAD7',
+  type = 'executable',
+  command = 'OpenDebugAD7',
+  id = 'cppdbg',
 }
 
 dap.configurations.cpp = {
@@ -32,9 +43,9 @@ dap.configurations.cpp = {
             return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
         end,
         cwd = '${workspaceFolder}',
-        stopAtEntry = true,
-        MIMode = mi_mode,
-        miDebuggerPath = mi_debugger_path
+        --stopAtEntry = true,
+        --MIMode = mi_mode,
+        --miDebuggerPath = mi_debugger_path
     }
 }
 
