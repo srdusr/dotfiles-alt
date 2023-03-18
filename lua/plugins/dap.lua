@@ -39,6 +39,7 @@ dap.configurations.cpp = {
 }
 
 dap.configurations.c = dap.configurations.cpp
+dap.configurations.rust = dap.configurations.cpp
 
 dap.adapters.python = {
     type = 'executable';
