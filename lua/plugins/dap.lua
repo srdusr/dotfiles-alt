@@ -52,6 +52,26 @@ dap.configurations.cpp = {
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
 
+-- javascript
+dap.adapters.node2 = {
+  type = 'executable',
+  command = 'node-debug2-adapter',
+  args = {},
+}
+
+dap.configurations.javascript = {
+  {
+    name = 'Launch',
+    type = 'node2',
+    request = 'attach',
+    program = '${file}',
+    cwd = vim.fn.getcwd(),
+    sourceMaps = true,
+    protocol = 'inspector',
+    console = 'integratedTerminal',
+  },
+}
+
 dap.adapters.python = {
     type = 'executable';
     command = vim.trim(vim.fn.system('which python'));
