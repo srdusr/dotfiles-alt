@@ -1,72 +1,60 @@
-local dap_ok, dap = pcall(require, "dap")
-if not (dap_ok) then
-    print("nvim-dap not installed!")
-  return
+local dap = require('dap')
+local home_path = vim.fn.expand('$HOME')
+
+-- Unsafe Defaults
+local mi_mode = ""
+local mi_debugger_path = ""
+
+-- Unix
+if vim.loop.os_uname().sysname == 'Linux' then
+    mi_mode = "gdb"
+    mi_debugger_path = vim.trim(vim.fn.system('which gdb'))
+-- MacOS
+elseif vim.loop.os_uname().sysname == 'Darwin' then
+    mi_mode = "lldb"
+    mi_debugger_path = vim.trim(vim.fn.system('which lldb-mi'))
+else
+    error("Unsupported OS")
 end
 
-require('dap').set_log_level('INFO') -- Helps when configuring DAP, see logs with :DapShowLog
+dap.adapters.cppdbg = {
+    id = 'cppdbg',
+    type = 'executable',
+    command = home_path .. '/extension/debugAdapters/bin/OpenDebugAD7',
+}
 
-dap.configurations = {
-      go = {
-          {
-        type = "go", -- Which adapter to use
-        name = "Debug", -- Human readable name
-        request = "launch", -- Whether to "launch" or "attach" to program
-        program = "${file}", -- The buffer you are focused on when running nvim-dap
-      },
+dap.configurations.cpp = {
+    {
+        name = "Launch file",
+        type = "cppdbg",
+        request = "launch",
+        program = function()
+            return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
+        end,
+        cwd = '${workspaceFolder}',
+        stopAtEntry = true,
+        MIMode = mi_mode,
+        miDebuggerPath = mi_debugger_path
     }
 }
-dap.adapters.go = {
-    type = "server",
-    port = "${port}",
-    executable = {
-        command = vim.fn.stdpath("data") .. '/mason/bin/dlv',
-    args = { "dap", "-l", "127.0.0.1:${port}" },
-  },
-}
-local dap_ui_ok, ui = pcall(require, "dapui")
-if not (dap_ok and dap_ui_ok) then
-    require("notify")("dap-ui not installed!", "warning")
-  return
-end
 
-ui.setup({
-    icons = { expanded = "▾", collapsed = "▸" },
-  mappings = {
-    open = "o",
-    remove = "d",
-    edit = "e",
-    repl = "r",
-    toggle = "t",
-  },
-  expand_lines = vim.fn.has("nvim-0.7"),
-  layouts = {
+dap.configurations.c = dap.configurations.cpp
+
+dap.adapters.python = {
+    type = 'executable';
+    command = vim.trim(vim.fn.system('which python'));
+    args = { '-m', 'debugpy.adapter' };
+}
+
+dap.configurations.python = {
     {
-      elements = {
-        "scopes",
-      },
-      size = 0.3,
-      position = "right"
-      },
-    {
-      elements = {
-        "repl",
-        "breakpoints"
-        },
-      size = 0.3,
-      position = "bottom",
+        -- The first three options are required by nvim-dap
+        type = 'python'; -- the type here established the link to the adapter definition: `dap.adapters.python`
+        request = 'launch';
+        name = "Launch file";
+        -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
+        program = "${file}"; -- This configuration will launch the current file if used.
+        stopOnEntry = true,
     },
-  },
-  floating = {
-    max_height = nil,
-    max_width = nil,
-    border = "single",
-    mappings = {
-      close = { "q", "<Esc>" },
-    },
-  },
-  windows = { indent = 1 },
-  render = {
-    max_type_length = nil,
-  },
-})
+}
+
