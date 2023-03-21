@@ -383,7 +383,7 @@ map("n", "<leader>de", function()
 end)
 
 -- Dashboard
-map("n", "<leader>db", "<CMD>Dashboard<CR>")
+map("n", "<leader><Space>", "<CMD>Dashboard<CR>")
 
 -- 
 map("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
