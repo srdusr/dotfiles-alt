@@ -319,7 +319,7 @@ function M.find_projects()
     prompt_title = " Find Projects",
     path_display = { "smart" },
     search_dirs = {
-      "~/src",
+      "~/projects",
     },
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
