@@ -14,6 +14,13 @@ require("mason-lspconfig").setup({
     "lua_ls",
     "pylsp",
     "pyright",
+    "jedi_language_server",
+    "rust_analyzer",
+    "bashls",
+    --"bash-language-server",
+    "vimls"
+    --"vim-language-server",
+
   },
   ui = {
     icons = {
@@ -33,6 +40,7 @@ require("mason-lspconfig").setup({
     },
   },
   max_concurrent_installers = 10,
+  automatic_installation = true,
 })
 
 -- Use an on_attach function to only map the following keys after the language server attaches to the current buffer
