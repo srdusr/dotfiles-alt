@@ -55,12 +55,12 @@ local modules = {
   "user.mods", -- Modules/functions
   --"user.deps", -- Plugins
   --"user.scripts",
+  "plugins.colorscheme",
   "plugins.treesitter",
   "plugins.telescope",
   "plugins.nvim-tree",
   "plugins.quickfix",
   "plugins.cmp",
-  "plugins.dap",
   "plugins.luasnip",
   "plugins.colorizer",
   "plugins.prettier",
@@ -73,15 +73,14 @@ local modules = {
   "plugins.autopairs",
   "plugins.web-devicons",
   "plugins.navic",
-  "plugins.zen-mode",
-  "plugins.colorscheme",
-  "plugins.dashboard",
-  "plugins.fidget",
   "plugins.heirline",
+  "plugins.zen-mode",
+  "plugins.fidget",
   "plugins.toggleterm",
   "plugins.trouble",
-  --"plugins.modify-blend",
+  --"plugins.dashboard",
   --"plugins.dap",
+  --"plugins.modify-blend",
   --"plugins.floatterm",
 }
 
