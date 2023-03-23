@@ -51,6 +51,10 @@ export HIST_VERIFY               # Don't execute immediately upon history expans
 export HIST_BEEP                 # Beep when accessing nonexistent history.
 
 # Other XDG Paths:
+#export NVM_COMPLETION=true
+#export NVM_DIR=$HOME/".nvm"
+#[ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"  # This loads nvm
+
 #export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 #export NVM_DIR="$XDG_DATA_HOME"/nvm
 #export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
@@ -70,7 +74,8 @@ export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/ripgreprc"
 export WGETRC="$XDG_CONFIG_HOME"/wget/wgetrc
 export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
 export IPYTHONDIR="$XDG_CONFIG_HOME"/jupyter, export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
-export CARGO_HOME=$HOME/.cargo
+#export CARGO_HOME=$HOME/.cargo
+# Rust
 export PATH="$HOME/.cargo/bin:$PATH"
 #export RUSTUP_HOME=$HOME/.cargo/bin
 ## RUST
@@ -151,5 +156,4 @@ export XMODIFIERS='@im=fcitx'
 #export LESS_TERMCAP_ue=$(tput sgr0)
 # End bold, blinking, standout, underline
 #export LESS_TERMCAP_me=$(tput sgr0).
-#. "/home/sxrdusr/.local/share/cargo/env"
-. "$HOME/.cargo/env"
+#. "$HOME/.cargo/env"
