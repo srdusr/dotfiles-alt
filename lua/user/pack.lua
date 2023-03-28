@@ -205,11 +205,11 @@ return packer.startup(function(use)
   --      require'alpha'.setup(require'alpha.themes.startify'.config)
   --  end
   --})
-  --use({
-  --  'glepnir/dashboard-nvim',
-  --  event = 'VimEnter',
-  --  requires = {'nvim-tree/nvim-web-devicons'}
-  --})
+  use({
+    'glepnir/dashboard-nvim',
+    event = 'VimEnter',
+    requires = {'nvim-tree/nvim-web-devicons'}
+  })
 	use("rcarriga/nvim-notify") -- Notification plugin
 	use("karb94/neoscroll.nvim") -- Faster/smooth scrolling
 	use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
