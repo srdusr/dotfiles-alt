@@ -91,7 +91,7 @@ local modules = {
   "plugins.fidget",
   "plugins.toggleterm",
   "plugins.trouble",
-  --"plugins.dashboard",
+  "plugins.dashboard",
   --"plugins.dap",
   --"plugins.modify-blend",
   --"plugins.floatterm",
