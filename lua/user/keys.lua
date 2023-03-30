@@ -385,6 +385,6 @@ end)
 -- Dashboard
 map("n", "<leader><Space>", "<CMD>Dashboard<CR>")
 
--- 
+-- Lsp Lines toggle
 map("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
 
