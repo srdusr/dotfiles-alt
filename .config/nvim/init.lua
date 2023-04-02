@@ -26,11 +26,24 @@
 
 -- -------------------------------------------------------------------------- --
 
+-- ================================== --
+-- ==    Install neovim-nightly    == --
+-- ================================== --
+
+-- Download nvim-linux64.tar.gz:
+--$ curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
+-- Extract:
+--$ tar xzvf nvim-linux64.tar.gz
+-- Run:
+--$ ./nvim-linux64/bin/nvim
+
+-- ---------------------------------- --
+
 -- Initialize config with this one liner in the terminal
---nvim --headless -c 'call mkdir(stdpath("config"), "p") | exe "edit" stdpath("config") . "/init.lua" | write | quit'
+--$ nvim --headless -c 'call mkdir(stdpath("config"), "p") | exe "edit" stdpath("config") . "/init.lua" | write | quit'
 
 -- Command to see startup time
---nvim --startuptime startup.log -c exit && tail -100 startup.log
+--$ nvim --startuptime startup.log -c exit && tail -100 startup.log
 
 -- Load impatient (Faster loading times)
 local impatient_ok, impatient = pcall(require, "impatient")
@@ -55,12 +68,12 @@ local modules = {
   "user.mods", -- Modules/functions
   --"user.deps", -- Plugins
   --"user.scripts",
+  "plugins.colorscheme",
   "plugins.treesitter",
   "plugins.telescope",
   "plugins.nvim-tree",
   "plugins.quickfix",
   "plugins.cmp",
-  "plugins.dap",
   "plugins.luasnip",
   "plugins.colorizer",
   "plugins.prettier",
@@ -73,15 +86,14 @@ local modules = {
   "plugins.autopairs",
   "plugins.web-devicons",
   "plugins.navic",
-  "plugins.zen-mode",
-  "plugins.colorscheme",
-  "plugins.dashboard",
-  "plugins.fidget",
   "plugins.heirline",
+  "plugins.zen-mode",
+  "plugins.fidget",
   "plugins.toggleterm",
   "plugins.trouble",
-  --"plugins.modify-blend",
+  "plugins.dashboard",
   --"plugins.dap",
+  --"plugins.modify-blend",
   --"plugins.floatterm",
 }
 

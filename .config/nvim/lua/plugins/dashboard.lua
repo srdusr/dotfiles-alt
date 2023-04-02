@@ -73,10 +73,3 @@ db.setup({
 --  footer = {}  --your footer
 })
 
---vim.cmd([[
---    autocmd FileType dashboard :highlight DashboardHeader guifg='#b2b2b2'
---    autocmd FileType dashboard :highlight DashboardCenter guifg='#5f8700'
---    autocmd FileType dashboard :highlight DashboardCenterIcon guifg='#0087af'
---    autocmd FileType dashboard :highlight DashboardShortCut guifg='#ffd7ff'
---    autocmd FileType dashboard :highlight DashboardFooter guifg='#878787'
---]])

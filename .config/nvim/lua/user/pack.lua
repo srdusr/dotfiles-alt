@@ -77,6 +77,15 @@ return packer.startup(function(use)
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
 	use("rcarriga/nvim-dap-ui") -- UI for nvim-dap
   use("gabrielpoca/replacer.nvim")
+  use({
+    "jayp0521/mason-nvim-dap.nvim",
+    config = function()
+      require("mason-nvim-dap").setup({
+        automatic_installation = true,
+        ensure_installed = { "python", "cppdbg", "codelldb" },
+      })
+    end,
+  })
 
 	-- Linters/Formatters
 	use("jay-babu/mason-null-ls.nvim")
@@ -197,9 +206,9 @@ return packer.startup(function(use)
   --  end
   --})
   use({
-  'glepnir/dashboard-nvim',
-  event = 'VimEnter',
-  requires = {'nvim-tree/nvim-web-devicons'}
+    'glepnir/dashboard-nvim',
+    event = 'VimEnter',
+    requires = {'nvim-tree/nvim-web-devicons'}
   })
 	use("rcarriga/nvim-notify") -- Notification plugin
 	use("karb94/neoscroll.nvim") -- Faster/smooth scrolling

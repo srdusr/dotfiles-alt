@@ -177,6 +177,17 @@ map("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
 -- Open the current file in the default program (on Mac this should just be just `open`)
 map('n', '<leader>o', ':!xdg-open %<cr><cr>')
 
+-- URL handling
+if vim.fn.has("mac") == 1 then
+	map("", "gx", '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>', {})
+elseif vim.fn.has("unix") == 1 then
+	map("", "gx", '<Cmd>call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})<CR>', {})
+elseif vim.fn.has("wsl") == 1 then
+	map("", "gx", '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>', {})
+else
+	map[''].gx = {'<Cmd>lua print("Error: gx is not supported on this OS!")<CR>'}
+end
+
 -- Toggle completion
 map("n", "<Leader>tc", ":lua require('user.mods').toggle_completion()<CR>")
 
@@ -372,8 +383,8 @@ map("n", "<leader>de", function()
 end)
 
 -- Dashboard
-map("n", "<leader>db", "<CMD>Dashboard<CR>")
+map("n", "<leader><Space>", "<CMD>Dashboard<CR>")
 
--- 
+-- Lsp Lines toggle
 map("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
 
