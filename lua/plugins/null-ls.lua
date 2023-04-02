@@ -24,12 +24,15 @@ local sources = {
   builtins.formatting.clang_format,
   builtins.formatting.rustfmt,
   builtins.formatting.sql_formatter,
-  builtins.formatting.prettierd.with {
+  --builtins.formatting.prettierd.with {
+  --  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html", "css", "scss", "less", "graphql", "vue", "svelte" },
+  --  condition = function(utils)
+  --    return utils.root_has_file ".prettierrc" or utils.root_has_file ".prettierrc.js" or utils.root_has_file ".prettierrc.json" or utils.root_has_file "prettier.config.js" or utils.root_has_file "prettier.config.cjs"
+  --  end,
+  --},
+  builtins.formatting.prettier.with({ -- markdown, html/js formatting
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html", "css", "scss", "less", "graphql", "vue", "svelte" },
-    condition = function(utils)
-      return utils.root_has_file ".prettierrc" or utils.root_has_file ".prettierrc.js" or utils.root_has_file ".prettierrc.json" or utils.root_has_file "prettier.config.js" or utils.root_has_file "prettier.config.cjs"
-    end,
-  },
+  }),
 
   builtins.diagnostics.dotenv_linter,
   builtins.diagnostics.shellcheck.with({ -- shell script diagnostics
@@ -128,9 +131,6 @@ return M
 --        -- so you should prefer caching results if possible
 --    }),
 ----		require("null-ls").builtins.formatting.stylua, -- lua formatting
-----		require("null-ls").builtins.formatting.prettier.with({ -- markdown, html/js formatting
-----			filetypes = { "html", "css", "javascript", "javascriptreact", "markdown", "json", "yaml" },
-----		}),
 ----    require("null-ls").builtins.formatting.black,
 ----		require("null-ls").builtins.formatting.prettierd,
 ----		require("null-ls").builtins.diagnostics.cspell.with {
