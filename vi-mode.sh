@@ -54,7 +54,7 @@ if [[ -n "$ZSH_VERSION" ]]; then
     bindkey -M menuselect 'l' vi-forward-char
 
     # Map 'jk' to Escape key in INSERT mode
-    bindkey -M insert 'jk' vi-cmd-mode
+    bindkey -M viins 'jk' vi-cmd-mode
 
 # Set vi-mode and key bindings for bash
 elif [[ -n "$BASH_VERSION" ]]; then
