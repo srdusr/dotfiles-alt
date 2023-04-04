@@ -6,16 +6,38 @@ if [[ -n "$ZSH_VERSION" ]]; then
     export KEYTIMEOUT=1
 
     # Show which mode
-    function zle-keymap-select {
-      if [[ $KEYMAP == vicmd ]] ||
-        [[ $1 = 'block' ]]; then
-        echo -n -- NORMAL --
-      else
-        echo -n -- INSERT --
-      fi
-      echo -ne '\n'
-      zle reset-prompt
+    terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
+
+    function insert-mode () { echo "-- INSERT --" }
+    function normal-mode () { echo "-- NORMAL --" }
+
+    precmd () {
+        # yes, I actually like to have a new line, then some stuff and then 
+        # the input line
+        print -rP "
+    [%D{%a, %d %b %Y, %H:%M:%S}] %n %{$fg[blue]%}%m%{$reset_color%}"
+
+        # this is required for initial prompt and a problem I had with Ctrl+C or
+        # Enter when in normal mode (a new line would come up in insert mode,
+        # but normal mode would be indicated)
+        PS1="%{$terminfo_down_sc$(insert-mode)$terminfo[rc]%}%~ $ "
     }
+    function set-prompt () {
+        case ${KEYMAP} in
+          (vicmd)      VI_MODE="$(normal-mode)" ;;
+          (main|viins) VI_MODE="$(insert-mode)" ;;
+          (*)          VI_MODE="$(insert-mode)" ;;
+        esac
+        PS1="%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%~ $ "
+    }
+
+    function zle-line-init zle-keymap-select {
+        set-prompt
+        zle reset-prompt
+    }
+    preexec () { print -rn -- $terminfo[el]; }
+
+    zle -N zle-line-init
     zle -N zle-keymap-select
 
     # Fix backspace bug when switching modes
