@@ -367,7 +367,7 @@ extract () {
 }
 
 # Dotfiles
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/.git --work-tree=$HOME'
+alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
 #alias cfg='config subtree pull --prefx'
 #alias gsp="git subtree push --prefix=_site git@github.com:mertnuhoglu/blog_datascience.git"
 #alias gsp="git subtree push.local/bin/scripts https://github.com/srdusr/scripts.git main --squash
