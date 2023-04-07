@@ -366,8 +366,39 @@ extract () {
      fi
 }
 
-# Dotfiles
-alias config='/usr/bin/git --git-dir=$HOME/.cfg/ --work-tree=$HOME'
+
+### Dotfiles
+# Set up the dotfiles repository and alias
+alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
+
+# Function to set up Git environment variables
+function set_git_env() {
+  local cwd="$PWD"
+  while [[ "$cwd" != "/" ]]; do
+    if [[ -d "$cwd/.git" ]]; then
+      unset GIT_DIR
+      unset GIT_WORK_TREE
+      return
+    fi
+    cwd=$(dirname "$cwd")
+  done
+  export GIT_DIR="$HOME/.cfg"
+  export GIT_WORK_TREE="$HOME"
+}
+
+# Set up Git environment variables on initial shell startup
+set_git_env
+
+# Function to set up Git environment variables whenever you execute a command
+function preexec() {
+    set_git_env
+}
+
+# Enable the preexec function
+autoload -Uz add-zsh-hook
+add-zsh-hook preexec preexec
+
+
 #alias cfg='config subtree pull --prefx'
 #alias gsp="git subtree push --prefix=_site git@github.com:mertnuhoglu/blog_datascience.git"
 #alias gsp="git subtree push.local/bin/scripts https://github.com/srdusr/scripts.git main --squash
@@ -404,9 +435,9 @@ function gsp
         config subtree pull --prefix=$PREFIX $REMOTE $BRANCH
     done
 }
+
 alias vi='nvim'
 alias nv='nvim'
-alias trash="gio trash"
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
 alias ec='$EDITOR $HOME/.config/zsh/.zshrc'
 alias sc="source $HOME/.config/zsh/.zshrc"
