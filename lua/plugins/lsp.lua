@@ -17,9 +17,7 @@ require("mason-lspconfig").setup({
     "jedi_language_server",
     "rust_analyzer",
     "bashls",
-    --"bash-language-server",
-    "vimls"
-    --"vim-language-server",
+    "vimls",
 
   },
   ui = {
