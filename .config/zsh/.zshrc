@@ -368,35 +368,7 @@ extract () {
 
 
 ### Dotfiles
-# Set up the dotfiles repository and alias
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
-
-# Function to set up Git environment variables
-function set_git_env() {
-  local cwd="$PWD"
-  while [[ "$cwd" != "/" ]]; do
-    if [[ -d "$cwd/.git" ]]; then
-      unset GIT_DIR
-      unset GIT_WORK_TREE
-      return
-    fi
-    cwd=$(dirname "$cwd")
-  done
-  export GIT_DIR="$HOME/.cfg"
-  export GIT_WORK_TREE="$HOME"
-}
-
-# Set up Git environment variables on initial shell startup
-set_git_env
-
-# Function to set up Git environment variables whenever you execute a command
-function preexec() {
-    set_git_env
-}
-
-# Enable the preexec function
-autoload -Uz add-zsh-hook
-add-zsh-hook preexec preexec
 
 
 #alias cfg='config subtree pull --prefx'
