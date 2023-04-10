@@ -370,10 +370,29 @@ extract () {
 ### Dotfiles
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 
+### Set bare dotfiles repository git environment variables dynamically
+function set_git_env_vars() {
+  local git_dir="$(git rev-parse --git-dir -C . 2>/dev/null)"
+  if [[ -n "$git_dir" ]]; then
+    local is_bare="$(git -C "$git_dir" rev-parse --is-bare-repository 2>/dev/null)"
+    if [[ "$is_bare" == "true" ]]; then
+      export GIT_DIR="$HOME/.cfg"
+      #export GIT_WORK_TREE="$HOME"
+      export GIT_WORK_TREE=$(realpath $(eval echo ~))
+      #export GIT_WORK_TREE="$HOME/$(basename "$(git rev-parse --show-toplevel)")"
+    else
+      unset GIT_DIR
+      unset GIT_WORK_TREE
+    fi
+  else
+    export GIT_DIR="$HOME/.cfg"
+    #export GIT_WORK_TREE="$HOME"
+    export GIT_WORK_TREE=$(realpath $(eval echo ~))
+    #export GIT_WORK_TREE="$HOME/$(basename "$(git rev-parse --show-toplevel)")"
+  fi
+}
+set_git_env_vars
 
-#alias cfg='config subtree pull --prefx'
-#alias gsp="git subtree push --prefix=_site git@github.com:mertnuhoglu/blog_datascience.git"
-#alias gsp="git subtree push.local/bin/scripts https://github.com/srdusr/scripts.git main --squash
 function gsp
 {
     # Config file for subtrees
