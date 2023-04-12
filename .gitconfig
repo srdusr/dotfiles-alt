@@ -1,9 +1,8 @@
 [user]
-	email = graytrevor98@gmail.com
 	name = srdusr
+	email = graytrevor98@gmail.com
 [init]
 	defaultBranch = main
 [alias]   
   sba ="!f() { git subtree add --prefix $2 $1 main; }; f"  
   sbu ="!f() { git subtree pull --prefix $2 $1 main; }; f"  
-
