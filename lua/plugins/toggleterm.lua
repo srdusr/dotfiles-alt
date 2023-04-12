@@ -114,7 +114,7 @@ function Lazygit_toggle()
       Cur_cwd = cwd
       lazygit:close()
       lazygit = Terminal:new({
-        cmd = "lazygit",
+        cmd = "zsh --login -c 'lazygit'",
         dir = "git_dir",
         direction = "float",
         hidden = true,
