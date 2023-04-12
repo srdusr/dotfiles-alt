@@ -163,4 +163,48 @@ end
 
 --------------------------------------------------
 
+-- Set bare dotfiles repository git environment variables dynamically
+
+-- Set git enviornment variables
+--function M.Set_git_env_vars()
+--  local git_dir_job = vim.fn.jobstart({ "git", "rev-parse", "--git-dir" })
+--  local command_status = vim.fn.jobwait({ git_dir_job })[1]
+--  if command_status > 0 then
+--    vim.env.GIT_DIR = vim.fn.expand("$HOME/.cfg")
+--    vim.env.GIT_WORK_TREE = vim.fn.expand("~")
+--  else
+--    vim.env.GIT_DIR = nil
+--    vim.env.GIT_WORK_TREE = nil
+--  end
+--  -- Launch terminal emulator with Git environment variables set
+--  --require("toggleterm").exec(string.format([[%s %s]], os.getenv("SHELL"), "-i"))
+--end
+
+------
+
+local prev_cwd = ""
+
+function M.Set_git_env_vars()
+  local cwd = vim.fn.getcwd()
+  if cwd ~= prev_cwd then
+    prev_cwd = cwd
+    local git_dir_job = vim.fn.jobstart({ "git", "rev-parse", "--git-dir" })
+    local command_status = vim.fn.jobwait({ git_dir_job })[1]
+    if command_status > 0 then
+      vim.env.GIT_DIR = vim.fn.expand("$HOME/.cfg")
+      vim.env.GIT_WORK_TREE = vim.fn.expand("~")
+    else
+      vim.env.GIT_DIR = nil
+      vim.env.GIT_WORK_TREE = nil
+    end
+  end
+end
+vim.cmd [[augroup my_git_env_vars]]
+vim.cmd [[  autocmd!]]
+vim.cmd [[  autocmd BufEnter * lua require('user.mods').Set_git_env_vars()]]
+vim.cmd [[  autocmd VimEnter * lua require('user.mods').Set_git_env_vars()]]
+vim.cmd [[augroup END]]
+
+--------------------------------------------------
+
 return M
