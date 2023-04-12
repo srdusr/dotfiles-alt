@@ -370,27 +370,35 @@ extract () {
 ### Dotfiles
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 
-### Set bare dotfiles repository git environment variables dynamically
+# Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {
   local git_dir="$(git rev-parse --git-dir -C . 2>/dev/null)"
   if [[ -n "$git_dir" ]]; then
     local is_bare="$(git -C "$git_dir" rev-parse --is-bare-repository 2>/dev/null)"
     if [[ "$is_bare" == "true" ]]; then
       export GIT_DIR="$HOME/.cfg"
-      #export GIT_WORK_TREE="$HOME"
       export GIT_WORK_TREE=$(realpath $(eval echo ~))
-      #export GIT_WORK_TREE="$HOME/$(basename "$(git rev-parse --show-toplevel)")"
     else
       unset GIT_DIR
       unset GIT_WORK_TREE
     fi
   else
-    export GIT_DIR="$HOME/.cfg"
-    #export GIT_WORK_TREE="$HOME"
-    export GIT_WORK_TREE=$(realpath $(eval echo ~))
-    #export GIT_WORK_TREE="$HOME/$(basename "$(git rev-parse --show-toplevel)")"
+    local root_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
+    if [[ -n "$root_dir" ]]; then
+      unset GIT_DIR
+      export GIT_WORK_TREE="$root_dir"
+    else
+      export GIT_DIR="$HOME/.cfg"
+      export GIT_WORK_TREE=$(realpath $(eval echo ~))
+    fi
   fi
 }
+
+# Define an auto_cd hook to automatically update Git environment variables
+function chpwd() {
+  set_git_env_vars
+}
+# Call the function to set Git environment variables when the shell starts up
 set_git_env_vars
 
 function gsp
