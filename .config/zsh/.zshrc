@@ -258,6 +258,9 @@ bindkey '^e' edit-command-line
 
 ##########    Useful Commands/Alias    ##########
 
+alias s="systemctl"
+alias j="journalctl xe"
+
 # Enter directory and list contents
 cd() {
 	if [ -n "$1" ]; then
