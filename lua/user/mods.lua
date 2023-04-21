@@ -31,20 +31,20 @@ end
 -- Format on save
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 require("null-ls").setup({
-    -- you can reuse a shared lspconfig on_attach callback here
-    on_attach = function(client, bufnr)
-        if client.supports_method("textDocument/formatting") then
-            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-            vim.api.nvim_create_autocmd("BufWritePre", {
-                group = augroup,
-                buffer = bufnr,
-                callback = function()
-                    -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
-                    vim.lsp.buf.formatting_seq_sync()
-                end,
-            })
-        end
-    end,
+  -- you can reuse a shared lspconfig on_attach callback here
+  on_attach = function(client, bufnr)
+    if client.supports_method("textDocument/formatting") then
+      vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+      vim.api.nvim_create_autocmd("BufWritePre", {
+        group = augroup,
+        buffer = bufnr,
+        callback = function()
+          -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
+          vim.lsp.buf.formatting_seq_sync()
+        end,
+      })
+    end
+  end,
 })
 
 
@@ -72,7 +72,6 @@ function M.may_create_dir(dir)
     fn.mkdir(dir, "p")
   end
 end
-
 
 --------------------------------------------------
 
@@ -122,25 +121,23 @@ function M.add_pack(name)
   return status
 end
 
-
 --------------------------------------------------
 
 --- Toggle autopairs on/off (requires "windwp/nvim-autopairs")
 function M.Toggle_autopairs()
-	local ok, autopairs = pcall(require, "nvim-autopairs")
-	if ok then
-		if autopairs.state.disabled then
-			autopairs.enable()
-			print("autopairs on")
-		else
-			autopairs.disable()
-			print("autopairs off")
-		end
-	else
-		print("autopairs not available")
-	end
+  local ok, autopairs = pcall(require, "nvim-autopairs")
+  if ok then
+    if autopairs.state.disabled then
+      autopairs.enable()
+      print("autopairs on")
+    else
+      autopairs.disable()
+      print("autopairs off")
+    end
+  else
+    print("autopairs not available")
+  end
 end
-
 
 --------------------------------------------------
 
@@ -199,6 +196,7 @@ function M.Set_git_env_vars()
     end
   end
 end
+
 vim.cmd [[augroup my_git_env_vars]]
 vim.cmd [[  autocmd!]]
 vim.cmd [[  autocmd BufEnter * lua require('user.mods').Set_git_env_vars()]]
@@ -206,5 +204,11 @@ vim.cmd [[  autocmd VimEnter * lua require('user.mods').Set_git_env_vars()]]
 vim.cmd [[augroup END]]
 
 --------------------------------------------------
+
+vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
+--vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+
+--------------------------------------------------
+
 
 return M
