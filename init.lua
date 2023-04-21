@@ -80,7 +80,7 @@ local modules = {
   --"plugins.git",
   "plugins.gitsigns",
   "plugins.neoscroll",
-  "plugins.null-ls",
+  --"plugins.null-ls",
   "plugins.lsp",
   "plugins.goto-preview",
   "plugins.autopairs",
