@@ -88,6 +88,7 @@ return packer.startup(function(use)
   })
 
 	-- Linters/Formatters
+	use('mhartington/formatter.nvim')
 	use("jay-babu/mason-null-ls.nvim")
 	--use({"jayp0521/mason-null-ls.nvim",
   --  config = function()
