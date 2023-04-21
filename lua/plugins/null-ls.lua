@@ -24,20 +24,21 @@ local sources = {
   builtins.formatting.clang_format,
   builtins.formatting.rustfmt,
   builtins.formatting.sql_formatter,
-  --builtins.formatting.prettierd.with {
-  --  filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html", "css", "scss", "less", "graphql", "vue", "svelte" },
-  --  condition = function(utils)
-  --    return utils.root_has_file ".prettierrc" or utils.root_has_file ".prettierrc.js" or utils.root_has_file ".prettierrc.json" or utils.root_has_file "prettier.config.js" or utils.root_has_file "prettier.config.cjs"
-  --  end,
-  --},
-  builtins.formatting.prettier.with({ -- markdown, html/js formatting
+  builtins.formatting.prettierd.with({
     filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html", "css", "scss", "less", "graphql", "vue", "svelte" },
+  }),
+  builtins.formatting.prettier.with({
+    -- markdown, html/js formatting
+    filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html",
+      "css", "scss", "less", "graphql", "vue", "svelte" },
+    extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" },
   }),
 
   builtins.diagnostics.dotenv_linter,
-  builtins.diagnostics.shellcheck.with({ -- shell script diagnostics
+  builtins.diagnostics.shellcheck.with({
+    -- shell script diagnostics
     diagnostic_config = {
-    -- see :help vim.diagnostic.config()
+      -- see :help vim.diagnostic.config()
       underline = true,
       virtual_text = false,
       signs = true,
@@ -45,8 +46,8 @@ local sources = {
       severity_sort = true,
     },
     diagnostics_format = "[#{c}] #{m} (#{s})",
-            -- this will run every time the source runs,
-      -- so you should prefer caching results if possible
+    -- this will run every time the source runs,
+    -- so you should prefer caching results if possible
   }),
   builtins.diagnostics.eslint_d.with(eslint_opts),
   builtins.diagnostics.todo_comments,
@@ -65,27 +66,24 @@ local M = {}
 M.setup = function(on_attach)
   local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
-  null_ls.setup {
+  null_ls.setup({
     sources = sources,
     debug = false,
     on_attach = function(client, bufnr)
-      on_attach(client, bufnr)
       -- Format on save
-      -- vim.cmd [[autocmd BufWritePost <buffer> lua vim.lsp.buf.formatting()]]
 
-      -- if client.supports_method "textDocument/formatting" then
-      --   vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
-      --   vim.api.nvim_create_autocmd("BufWritePre", {
-      --     group = augroup,
-      --     buffer = bufnr,
-      --     callback = function()
-      --       -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
-      --       vim.lsp.buf.format { bufnr = bufnr }
-      --     end,
-      --   })
-      -- end
+      if client.supports_method "textDocument/formatting" then
+        vim.api.nvim_clear_autocmds { group = augroup, buffer = bufnr }
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          group = augroup,
+          buffer = bufnr,
+          callback = function()
+            vim.lsp.buf.format()
+          end
+        })
+      end
     end,
-  }
+  })
 end
 
 return M
