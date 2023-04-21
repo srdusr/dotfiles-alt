@@ -1,52 +1,57 @@
--- Shorten Function Names
-local fn = vim.fn
-local keymap = vim.keymap
-local mods = require("user.mods")
-
-
--- Setup mason so it can manage external tooling
 require('mason').setup()
+local lspconfig = require 'lspconfig'
+local null_ls = require 'null-ls'
 
--- Mason-lspconfig
-require("mason-lspconfig").setup({
-  ensure_installed = {
-    "clangd",
-    "lua_ls",
-    "pylsp",
-    "pyright",
-    "jedi_language_server",
-    "rust_analyzer",
-    "bashls",
-    "vimls"
+local keymap = vim.keymap
+local cmd = vim.cmd
 
-  },
-  ui = {
-    icons = {
-      package_pending = " ",
-      package_installed = " ",
-      package_uninstalled = " ﮊ",
+local border = {
+  { '🭽', 'FloatBorder' },
+  { '▔', 'FloatBorder' },
+  { '🭾', 'FloatBorder' },
+  { '▕', 'FloatBorder' },
+  { '🭿', 'FloatBorder' },
+  { '▁', 'FloatBorder' },
+  { '🭼', 'FloatBorder' },
+  { '▏', 'FloatBorder' },
+}
+
+local signs = { Error = " ", Warn = "▲", Info = "􀅳", Hint = "⚑" }
+for type, icon in pairs(signs) do
+	local hl = "DiagnosticSign" .. type
+	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
+vim.diagnostic.config({
+    underline = false,
+    signs = true,
+    virtual_text = false,
+    virtual_lines = { only_current_line = true },
+    float = {
+        show_header = true,
+        source = 'if_many',
+        --border = 'rounded',
+        border = border,
+        focusable = true,
     },
-    keymaps = {
-      toggle_server_expand = "<CR>",
-      install_server = "i",
-      update_server = "u",
-      check_server_version = "c",
-      update_all_servers = "U",
-      check_outdated_servers = "C",
-      uninstall_server = "X",
-      cancel_installation = "<C-c>",
-    },
-  },
-  max_concurrent_installers = 10,
-  automatic_installation = true,
+    update_in_insert = false, -- default to false
+    severity_sort = false, -- default to false
 })
+
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+	underline = false,
+	virtual_text = false,
+	signs = true,
+	update_in_insert = false,
+})
+
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
 -- Use an on_attach function to only map the following keys after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-  -- Shorten function names for mappings
   local map = function(mode, l, r, opts)
   	opts = opts or {}
   	opts.silent = true
@@ -80,84 +85,14 @@ local on_attach = function(client, bufnr)
 	map("n", "<leader>wl", function()
 		print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
 	end)
-	--map("n", "<leader>q", function()
-	--	vim.diagnostic.setqflist({ open = true })
-	--end)
-	--map("n", "<space>q", "<Cmd>lua vim.diagnostic.setloclist()<CR>")
-  --map("n", "gk", "<Cmd>Lspsaga diagnostic_jump_prev<CR>")
-  --map("n", "gj", "<Cmd>Lspsaga diagnostic_jump_next<CR>")
 
-  -- Set some key bindings conditional on server capabilities
-	if client.server_capabilities.documentFormattingProvider then
-		map("n", "<space>f", vim.lsp.buf.format)
-	end
-
-  -- Add rust specific keymappings
-	if client.name == "rust_analyzer" then
-		map("n", "<leader>rr", "<cmd>RustRunnables<CR>")
-		map("n", "<leader>ra", "<cmd>RustHoverAction<CR>")
-	end
-
-  -- this part is telling Neovim to use the lsp server
-  --local servers = { 'pyright', 'tsserver', 'jdtls' }
-  --for _, lsp in pairs(servers) do
-  --    require('lspconfig')[lsp].setup {
-  --        on_attach = on_attach,
-  --        flags = {
-  --          debounce_text_changes = 150,
-  --        }
-  --    }
-  --end
-
-  -- Add the following to your on_attach (this allows checking server capabilities to avoid calling invalid commands.)
-  -- Highlight symbol under cursor
-  if client.server_capabilities.document_highlight then
-    vim.cmd [[
-      hi! LspReferenceRead cterm=bold ctermbg=red guibg=LightYellow
-      hi! LspReferenceText cterm=bold ctermbg=red guibg=LightYellow
-      hi! LspReferenceWrite cterm=bold ctermbg=red guibg=LightYellow
-    ]]
-    vim.api.nvim_create_augroup('lsp_document_highlight', {
-      clear = false
-    })
-    vim.api.nvim_clear_autocmds({
-      buffer = bufnr,
-      group = 'lsp_document_highlight',
-    })
-    --vim.api.nvim_create_autocmd({ 'CursorHold', 'CursorHoldI' }, {
-    --  group = 'lsp_document_highlight',
-    --  buffer = bufnr,
-    --  callback = vim.lsp.buf.document_highlight,
-    --})
-    --vim.api.nvim_create_autocmd("CursorHold", {
-    --  buffer = bufnr,
-    --  callback = function()
-    --    local term_opts = {
-    --      focusable = false,
-    --      --close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
-    --      close_events = { "BufLeave" },
-    --      border = 'rounded',
-    --      --source = 'always',
-    --      --prefix = ' ',
-    --      --scope = 'cursor',
-    --    }
-    --  vim.diagnostic.open_float(nil, term_opts)
-    --  end
-		--})
-    vim.api.nvim_create_autocmd('CursorMoved', {
-      group = 'lsp_document_highlight',
-      buffer = bufnr,
-      callback = vim.lsp.buf.clear_references,
-      --callback = ":silent! lua vim.lsp.buf.clear_references()",
-
-    })
+  -- TODO: Use the nicer new API for autocommands
+  cmd 'augroup lsp_aucmds'
+  if client.server_capabilities.documentHighlightProvider then
+    cmd 'au CursorHold <buffer> lua vim.lsp.buf.document_highlight()'
+    cmd 'au CursorMoved <buffer> lua vim.lsp.buf.clear_references()'
   end
-
-	if vim.g.logging_level == "debug" then
-		local msg = string.format("Language server %s started!", client.name)
-		vim.notify(msg, vim.log.levels.DEBUG, { title = "Server?" })
-	end
-
+  cmd 'augroup END'
 end
 
 -- Toggle diagnostics visibility
@@ -184,81 +119,47 @@ augroup END
 -- Suppress error messages from lang servers
 vim.lsp.set_log_level("debug")
 local capabilities = vim.lsp.protocol.make_client_capabilities()
-capabilities = require("cmp_nvim_lsp").default_capabilities(capabilities)
+capabilities = require("cmp_nvim_lsp").default_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.offsetEncoding = { "utf-16" }
 
-local lspconfig = require("lspconfig")
-
-if mods.executable("pylsp") then
-	lspconfig.pylsp.setup({
-		settings = {
-			pylsp = {
-				plugins = {
-					pylint = { enabled = true, executable = "pylint" },
-					pyflakes = { enabled = false },
-					pycodestyle = { enabled = false },
-					jedi_completion = { fuzzy = true },
-					pyls_isort = { enabled = true },
-					pylsp_mypy = { enabled = true },
-				},
-			},
-		},
-		flags = {
-			debounce_text_changes = 200,
-		},
-		capabilities = capabilities,
-	})
-else
-	vim.notify("pylsp not found!", vim.log.levels.WARN, { title = "Server?" })
+local function prefer_null_ls_fmt(client)
+  client.server_capabilities.documentHighlightProvider = false
+  client.server_capabilities.documentFormattingProvider = false
+  on_attach(client)
 end
 
-if mods.executable('pyright') then
-  lspconfig.pyright.setup{
-    on_attach = on_attach,
-    capabilities = capabilities
-  }
-else
-  vim.notify("pyright not found!", vim.log.levels.WARN, {title = 'Server?'})
-end
-
-if mods.executable("clangd") then
-	lspconfig.clangd.setup({
-		on_attach = on_attach,
-		capabilities = capabilities,
-		filetypes = { "c", "cpp", "cc" },
-		flags = {
-			debounce_text_changes = 500,
-		},
-	})
-else
-	vim.notify("clangd not found!", vim.log.levels.WARN, { title = "Server?" })
-end
-
--- Set up vim-language-server
-if mods.executable("vim-language-server") then
-	lspconfig.vimls.setup({
-		on_attach = on_attach,
-		flags = {
-			debounce_text_changes = 500,
-		},
-		capabilities = capabilities,
-	})
-else
-	vim.notify("vim-language-server not found!", vim.log.levels.WARN, { title = "Server?" })
-end
-
--- Set up bash-language-server
-if mods.executable("bash-language-server") then
-	lspconfig.bashls.setup({
-		on_attach = on_attach,
-		capabilities = capabilities,
-    debounce_text_changes = 500,
-	})
-end
-
-if mods.executable("lua-language-server") then
-	lspconfig.lua_ls.setup({
+local servers = {
+  bashls = {},
+  cssls = {
+    filetypes = { 'css', 'scss', 'less', 'sass' },
+    root_dir = lspconfig.util.root_pattern('package.json', '.git'),
+  },
+  -- ghcide = {},
+  html = {},
+  jsonls = { prefer_null_ls = true, cmd = { '--stdio' } },
+  julials = {
+    on_new_config = function(new_config, _)
+      local julia = vim.fn.expand '~/.julia/environments/nvim-lspconfig/bin/julia'
+      if lspconfig.util.path.is_file(julia) then
+        new_config.cmd[1] = julia
+      end
+    end,
+    settings = { julia = { format = { indent = 2 } } },
+  },
+  pyright = { settings = { python = { formatting = { provider = 'yapf' }, linting = { pytypeEnabled = true } } } },
+  rust_analyzer = {
+    settings = {
+      ['rust-analyzer'] = {
+        cargo = { allFeatures = true },
+        checkOnSave = {
+          command = 'clippy',
+          extraArgs = { '--no-deps' },
+        },
+      },
+    },
+  },
+  lua_ls = ({
 		on_attach = on_attach,
 		capabilities = capabilities,
     debounce_text_changes = 500,
@@ -279,112 +180,94 @@ if mods.executable("lua-language-server") then
 				},
 			},
 		},
-	})
-end
-
-
-if mods.executable("rust-language-server") then
-require("lspconfig").rust_analyzer.setup{
-    cmd = { "rustup", "run", "nightly", "rust-analyzer" },
-    on_attach = on_attach,
-  	flags = {
-			debounce_text_changes = 500,
-		},
-	--[[
-    settings = {
-        rust = {
-            unstable_features = true,
-            build_on_save = false,
-            all_features = true,
-        },
-    }
-    --]]
+	}),
+  tsserver = { capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
+    on_attach = function(client)
+        client.server_capabilities.document_formatting = false
+        client.server_capabilities.document_range_formatting = false
+    end,
+    filetypes = {
+      'javascript',
+      'javascriptreact',
+      'javascript.jsx',
+      'typescript',
+      'typescriptreact',
+      'typescript.tsx'
+  }, },
+  vimls = {},
 }
+
+
+
+for server, config in pairs(servers) do
+  if config.prefer_null_ls then
+    if config.on_attach then
+      local old_on_attach = config.on_attach
+      config.on_attach = function(client, bufnr)
+        old_on_attach(client, bufnr)
+        prefer_null_ls_fmt(client)
+      end
+    else
+      config.on_attach = prefer_null_ls_fmt
+    end
+  elseif not config.on_attach then
+    config.on_attach = on_attach
+  end
+
+  lspconfig[server].setup(config)
 end
 
-local opts = {
-  tools = {
-    runnables = {
-      use_telescope = true,
-    },
-    inlay_hints = {
-      auto = true,
-      show_parameter_hints = false,
-      parameter_hints_prefix = "",
-      other_hints_prefix = "",
-    },
-  },
 
-  -- all the opts to send to nvim-lspconfig
-  -- these override the defaults set by rust-tools.nvim
-  -- see https://github.com/neovim/nvim-lspconfig/blob/master/CONFIG.md#rust_analyzer
-  server = {
-    -- on_attach is a callback called when the language server attachs to the buffer
-    on_attach = on_attach,
-    settings = {
-      -- to enable rust-analyzer settings visit:
-      -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-      ["rust-analyzer"] = {
-        -- enable clippy on save
-        checkOnSave = {
-          command = "clippy",
-        },
-      },
-    },
+-- null_ls setup
+local builtins = null_ls.builtins
+local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
+
+null_ls.setup {
+  sources = {
+    builtins.diagnostics.chktex,
+    --null_ls.builtins.code_actions.eslint_d,
+    --null_ls.builtins.diagnostics.eslint_d,
+    --null_ls.builtins.formatting.eslint_d,
+    -- null_ls.builtins.diagnostics.cppcheck,
+    -- null_ls.builtins.diagnostics.proselint,
+    -- null_ls.builtins.diagnostics.pylint,
+    builtins.diagnostics.selene,
+    builtins.diagnostics.shellcheck,
+    builtins.diagnostics.teal,
+    -- null_ls.builtins.diagnostics.vale,
+    builtins.diagnostics.vint,
+    builtins.diagnostics.tidy,
+    -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
+    builtins.formatting.clang_format,
+    -- null_ls.builtins.formatting.cmake_format,
+    builtins.formatting.isort,
+    builtins.formatting.htmlbeautifier,
+    -- null_ls.builtins.formatting.prettier,
+    builtins.formatting.prettier.with({
+      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html",
+      "css", "scss", "less", "graphql", "vue", "svelte" },
+      extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" },
+    }),
+    --null_ls.builtins.formatting.prettierd,
+    builtins.formatting.rustfmt,
+    builtins.formatting.shfmt,
+    builtins.formatting.stylua,
+    builtins.formatting.trim_whitespace,
+    builtins.formatting.yapf,
+    -- null_ls.builtins.formatting.black
+    builtins.code_actions.gitsigns,
+    -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
   },
+    on_attach = function(client, bufnr)
+        if client.supports_method("textDocument/formatting") then
+            vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
+            vim.api.nvim_create_autocmd("BufWritePre", {
+                group = augroup,
+                buffer = bufnr,
+                callback = function()
+                  vim.lsp.buf.format()
+                end
+            })
+        end
+      end,
 }
-require('rust-tools').setup(opts)
-
-vim.diagnostic.config({
-    underline = false,
-    signs = true,
-    virtual_text = false,
-    virtual_lines = { only_current_line = true },
-    float = {
-        show_header = true,
-        source = 'if_many',
-        border = 'rounded',
-        focusable = true,
-    },
-    update_in_insert = false, -- default to false
-    severity_sort = false, -- default to false
-})
-
-vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-	underline = false,
-	virtual_text = false,
-	signs = true,
-	update_in_insert = false,
-})
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
-
-
--- The following settings works with the bleeding edge neovim.
--- See https://github.com/neovim/neovim/pull/13998.
-vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(
-  vim.lsp.handlers.hover, {
-    border = {
-       {"┌", "Normal"},
-       {"─", "Normal"},
-       {"┐", "Normal"},
-       {"│", "Normal"},
-       {"┘", "Normal"},
-       {"─", "Normal"},
-       {"└", "Normal"},
-       {"│", "Normal"}
-     }
-})
-
--- this is for diagnositcs signs on the line number column
--- use this to beautify the plain E W signs to more fun ones
--- !important nerdfonts needs to be setup for this to work in your terminal
---local signs = { Error = "✘", Warn = "▲", Info = "􀅳", Hint = "⚑" }
-local signs = { Error = " ", Warn = "▲", Info = "􀅳", Hint = "⚑" }
-for type, icon in pairs(signs) do
-	local hl = "DiagnosticSign" .. type
-	--vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = "" })
-	vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
-end
-
-
