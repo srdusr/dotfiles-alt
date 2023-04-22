@@ -61,13 +61,7 @@ super + w
 
 # Show clipmenu
 alt + x
-    rofi -modi "clipboard:greenclip print" -show clipboard -run-command '{cmd}' \
-        -location 1 \
-        -m -3 \
-        -no-show-icons \
-        -theme-str '* \{ font: 10px; \}' \
-        -theme-str 'listview \{ spacing: 0; \}' \
-        -theme-str 'window \{ width: 20em; \}'
+  diodon
 
 # Screenshots tool (selection)
 ctrl + Print
