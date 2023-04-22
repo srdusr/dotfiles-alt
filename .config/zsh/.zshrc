@@ -376,7 +376,7 @@ alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 ## Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {
   # Check if the current command is a package manager command
-  if [[ "${(%)${(z)history[1]}}" =~ ^(pacman|yay|apt|dnf|yum|brew) ]]; then
+  if [[ "${(%)${(z)history[1]}}" =~ ^(pacman|yay|apt|dnf|brew|npm|pip|gem|go|cargo) ]]; then
     return
   fi
   local git_dir="$(git rev-parse --git-dir -C . 2>/dev/null)"
