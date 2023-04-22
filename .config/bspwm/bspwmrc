@@ -78,6 +78,7 @@ bspc rule -a Heads-Up-Display sticky=on state=floating rectangle=360x160+990+40
 pkill xfce4-power-manager; sleep 1 && nice -n 1 xfce4-power-manager &
 pkill volumeicon; sleep 2 && nice -n 2 volumeicon &
 pkill mictray; sleep 2 && nice -n 2 mictray &
+pkill diodon; sleep 2 && nice -n 2 diodon &
 
 bspc subscribe node_state | while read -r _ _ _ _ state flag; do
   if [[ "$state" != fullscreen ]]; then continue; fi
