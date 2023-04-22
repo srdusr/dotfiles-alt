@@ -4,19 +4,25 @@
 local colorscheme = "nightfly"
 local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
 if not status_ok then
-	vim.notify("colorscheme " .. colorscheme .. " not found!")
-	return
+  vim.notify("colorscheme " .. colorscheme .. " not found!")
+  return
 end
 
 vim.api.nvim_command("syntax on")
 vim.api.nvim_command("highlight Normal guibg=none")
 vim.api.nvim_command("highlight SignColumn guibg=none")
+--vim.api.nvim_command("highlight FoldColumn guibg=none")
+vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
 vim.api.nvim_command("highlight TabLine guibg=#333842 gui=bold")
 vim.api.nvim_command("highlight Title guibg=none gui=bold")
 vim.api.nvim_command("highlight TabLineSel guibg=#333842 gui=bold")
 vim.api.nvim_command("highlight TabLineFill guibg=none gui=bold")
 vim.api.nvim_command("highlight WinBar guibg=none gui=bold")
 vim.api.nvim_command("highlight NormalFloat guibg=none")
+vim.api.nvim_command("highlight LineNr guibg=none")
+vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
+--vim.api.nvim_command("highlight SignColumn guifg=none guibg=none cterm=NONE ctermfg=none ctermbg=NONE gui=NONE")
+--vim.api.nvim_command("highlight ColorColumn guifg=none guibg=none cterm=NONE ctermfg=none ctermbg=NONE gui=NONE")
 --vim.api.nvim_command("highlight TabLineSel guibg=none guifg=none gui=bold")
 --vim.api.nvim_command("highlight TabLineNC guibg=none gui=bold")
 --vim.api.nvim_command("highlight StatusLine guibg=#333842 gui=bold")
@@ -27,13 +33,13 @@ vim.api.nvim_command("highlight NormalFloat guibg=none")
 --vim.api.nvim_command("highlight winblend guibg=none")
 
 -- Set different window separator colorscheme
-vim.cmd[[
+vim.cmd [[
 au WinEnter * setl winhl=WinSeparator:WinSeparatorA
 au WinLeave * setl winhl=WinSeparator:WinSeparator
 ]]
 
 require("notify").setup({
-	background_colour = "#000000",
+  background_colour = "#000000",
 })
 
 -- Custom colorscheme
