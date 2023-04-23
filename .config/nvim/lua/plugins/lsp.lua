@@ -138,6 +138,7 @@ local servers = {
   -- ghcide = {},
   html = {},
   jsonls = { prefer_null_ls = true, cmd = { '--stdio' } },
+  intelephense = {},
   julials = {
     on_new_config = function(new_config, _)
       local julia = vim.fn.expand '~/.julia/environments/nvim-lspconfig/bin/julia'
@@ -237,6 +238,8 @@ null_ls.setup {
     -- null_ls.builtins.diagnostics.vale,
     builtins.diagnostics.vint,
     builtins.diagnostics.tidy,
+    builtins.diagnostics.php,
+    builtins.diagnostics.phpcs,
     -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
     builtins.formatting.clang_format,
     -- null_ls.builtins.formatting.cmake_format,
