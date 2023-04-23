@@ -199,6 +199,7 @@ local servers = {
       'typescript.tsx'
   }, },
   vimls = {},
+  yamlls = {},
 }
 
 
