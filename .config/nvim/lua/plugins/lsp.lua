@@ -130,6 +130,7 @@ local function prefer_null_ls_fmt(client)
 end
 
 local servers = {
+  asm_lsp = {},
   bashls = {},
   cssls = {
     filetypes = { 'css', 'scss', 'less', 'sass' },
