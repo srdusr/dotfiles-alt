@@ -132,6 +132,7 @@ end
 local servers = {
   asm_lsp = {},
   bashls = {},
+  clangd = {},
   cssls = {
     filetypes = { 'css', 'scss', 'less', 'sass' },
     root_dir = lspconfig.util.root_pattern('package.json', '.git'),
