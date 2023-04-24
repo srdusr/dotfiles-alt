@@ -261,6 +261,7 @@ null_ls.setup {
     builtins.formatting.clang_format,
     builtins.formatting.rustfmt,
     builtins.formatting.sql_formatter,
+    builtins.diagnostics.todo_comments,
 
     builtins.diagnostics.teal,
     -- null_ls.builtins.diagnostics.vale,
