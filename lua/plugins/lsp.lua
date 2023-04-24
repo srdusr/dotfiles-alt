@@ -242,7 +242,20 @@ null_ls.setup {
       extra_args = { "-i", "2", "-ci" },
     }),
     builtins.diagnostics.dotenv_linter,
-    --builtins.diagnostics.shellcheck,
+    builtins.diagnostics.shellcheck.with({
+      -- shell script diagnostics
+      diagnostic_config = {
+        -- see :help vim.diagnostic.config()
+        underline = true,
+        virtual_text = false,
+        signs = true,
+        update_in_insert = false,
+        severity_sort = true,
+      },
+      diagnostics_format = "[#{c}] #{m} (#{s})",
+      -- this will run every time the source runs,
+      -- so you should prefer caching results if possible
+    }),
     builtins.formatting.shellharden,
     builtins.formatting.trim_whitespace.with { filetypes = { "tmux", "teal", "zsh" } },
     builtins.formatting.clang_format,
