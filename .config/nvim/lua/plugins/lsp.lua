@@ -227,8 +227,17 @@ end
 local builtins = null_ls.builtins
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
+--local eslint_opts = {
+--  -- condition = function(utils)
+--  --   return utils.root_has_file ".eslintrc.js" or utils.root_has_file ".eslintrc" or utils.root_has_file ".eslintrc.json"
+--  -- end,
+--  -- diagnostics_format = "#{m} [#{c}]",
+--  prefer_local = true,
+--}
+
 null_ls.setup {
   sources = {
+    -- Diagnostics
     builtins.diagnostics.chktex,
     --null_ls.builtins.code_actions.eslint_d,
     --null_ls.builtins.diagnostics.eslint_d,
@@ -236,8 +245,23 @@ null_ls.setup {
     -- null_ls.builtins.diagnostics.cppcheck,
     -- null_ls.builtins.diagnostics.proselint,
     -- null_ls.builtins.diagnostics.pylint,
-    builtins.diagnostics.selene,
-    builtins.diagnostics.shellcheck,
+    --builtins.diagnostics.selene,
+    builtins.diagnostics.dotenv_linter,
+    builtins.diagnostics.shellcheck.with({
+      -- shell script diagnostics
+      diagnostic_config = {
+        -- see :help vim.diagnostic.config()
+        underline = true,
+        virtual_text = false,
+        signs = true,
+        update_in_insert = false,
+        severity_sort = true,
+      },
+      diagnostics_format = "[#{c}] #{m} (#{s})",
+      -- this will run every time the source runs,
+      -- so you should prefer caching results if possible
+    }),
+    builtins.diagnostics.todo_comments,
     builtins.diagnostics.teal,
     -- null_ls.builtins.diagnostics.vale,
     builtins.diagnostics.vint,
@@ -245,7 +269,19 @@ null_ls.setup {
     builtins.diagnostics.php,
     builtins.diagnostics.phpcs,
     -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
+
+
+    -- Formatting
+    builtins.formatting.shfmt.with({
+      filetypes = { "bash", "zsh", "sh" },
+      extra_args = { "-i", "2", "-ci" },
+    }),
+    builtins.formatting.shellharden,
+    builtins.formatting.trim_whitespace.with { filetypes = { "tmux", "teal", "zsh" } },
     builtins.formatting.clang_format,
+    builtins.formatting.rustfmt,
+    builtins.formatting.sql_formatter,
+
     -- null_ls.builtins.formatting.cmake_format,
     builtins.formatting.isort,
     builtins.formatting.htmlbeautifier,
@@ -257,13 +293,23 @@ null_ls.setup {
     }),
     --null_ls.builtins.formatting.prettierd,
     builtins.formatting.rustfmt,
-    builtins.formatting.shfmt,
     builtins.formatting.stylua,
     builtins.formatting.trim_whitespace,
     builtins.formatting.yapf,
     -- null_ls.builtins.formatting.black
-    builtins.code_actions.gitsigns,
+
+
+    -- Code Actions
+    builtins.code_actions.shellcheck, -- shell script code actions
+    --builtins.code_actions.eslint_d.with(eslint_opts),
     -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
+    builtins.code_actions.gitsigns,
+    builtins.code_actions.gitrebase,
+
+
+    -- Hover
+    builtins.hover.dictionary,
+    builtins.hover.printenv,
   },
     on_attach = function(client, bufnr)
         if client.supports_method("textDocument/formatting") then
