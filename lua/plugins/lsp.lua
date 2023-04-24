@@ -227,6 +227,14 @@ end
 local builtins = null_ls.builtins
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
+--local eslint_opts = {
+--  -- condition = function(utils)
+--  --   return utils.root_has_file ".eslintrc.js" or utils.root_has_file ".eslintrc" or utils.root_has_file ".eslintrc.json"
+--  -- end,
+--  -- diagnostics_format = "#{m} [#{c}]",
+--  prefer_local = true,
+--}
+
 null_ls.setup {
   sources = {
     -- Diagnostics
