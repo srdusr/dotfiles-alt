@@ -241,6 +241,7 @@ null_ls.setup {
       filetypes = { "bash", "zsh", "sh" },
       extra_args = { "-i", "2", "-ci" },
     }),
+    builtins.diagnostics.dotenv_linter,
     --builtins.diagnostics.shellcheck,
     builtins.formatting.shellharden,
     builtins.formatting.trim_whitespace.with { filetypes = { "tmux", "teal", "zsh" } },
