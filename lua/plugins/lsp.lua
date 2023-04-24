@@ -229,6 +229,7 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 
 null_ls.setup {
   sources = {
+    -- Diagnostics
     builtins.diagnostics.chktex,
     --null_ls.builtins.code_actions.eslint_d,
     --null_ls.builtins.diagnostics.eslint_d,
@@ -237,10 +238,6 @@ null_ls.setup {
     -- null_ls.builtins.diagnostics.proselint,
     -- null_ls.builtins.diagnostics.pylint,
     --builtins.diagnostics.selene,
-    builtins.formatting.shfmt.with({
-      filetypes = { "bash", "zsh", "sh" },
-      extra_args = { "-i", "2", "-ci" },
-    }),
     builtins.diagnostics.dotenv_linter,
     builtins.diagnostics.shellcheck.with({
       -- shell script diagnostics
@@ -256,13 +253,7 @@ null_ls.setup {
       -- this will run every time the source runs,
       -- so you should prefer caching results if possible
     }),
-    builtins.formatting.shellharden,
-    builtins.formatting.trim_whitespace.with { filetypes = { "tmux", "teal", "zsh" } },
-    builtins.formatting.clang_format,
-    builtins.formatting.rustfmt,
-    builtins.formatting.sql_formatter,
     builtins.diagnostics.todo_comments,
-
     builtins.diagnostics.teal,
     -- null_ls.builtins.diagnostics.vale,
     builtins.diagnostics.vint,
@@ -270,6 +261,19 @@ null_ls.setup {
     builtins.diagnostics.php,
     builtins.diagnostics.phpcs,
     -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
+
+
+    -- Formatting
+    builtins.formatting.shfmt.with({
+      filetypes = { "bash", "zsh", "sh" },
+      extra_args = { "-i", "2", "-ci" },
+    }),
+    builtins.formatting.shellharden,
+    builtins.formatting.trim_whitespace.with { filetypes = { "tmux", "teal", "zsh" } },
+    builtins.formatting.clang_format,
+    builtins.formatting.rustfmt,
+    builtins.formatting.sql_formatter,
+
     -- null_ls.builtins.formatting.cmake_format,
     builtins.formatting.isort,
     builtins.formatting.htmlbeautifier,
@@ -285,6 +289,9 @@ null_ls.setup {
     builtins.formatting.trim_whitespace,
     builtins.formatting.yapf,
     -- null_ls.builtins.formatting.black
+
+
+    -- Code Actions
     builtins.code_actions.gitsigns,
     -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
   },
