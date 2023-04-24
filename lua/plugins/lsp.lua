@@ -292,8 +292,16 @@ null_ls.setup {
 
 
     -- Code Actions
-    builtins.code_actions.gitsigns,
+    builtins.code_actions.shellcheck, -- shell script code actions
+    --builtins.code_actions.eslint_d.with(eslint_opts),
     -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
+    builtins.code_actions.gitsigns,
+    builtins.code_actions.gitrebase,
+
+
+    -- Hover
+    builtins.hover.dictionary,
+    builtins.hover.printenv,
   },
     on_attach = function(client, bufnr)
         if client.supports_method("textDocument/formatting") then
