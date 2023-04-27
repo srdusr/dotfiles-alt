@@ -373,7 +373,7 @@ extract () {
 ### Dotfiles
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 
-## Set bare dotfiles repository git environment variables dynamically
+# Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {
   # Check if the current command is a package manager command
   if [[ "${(%)${(z)history[1]}}" =~ ^(pacman|yay|apt|dnf|brew|npm|pip|gem|go|cargo) ]]; then
@@ -383,21 +383,21 @@ function set_git_env_vars() {
   if [[ -n "$git_dir" ]]; then
     local is_bare="$(git -C "$git_dir" rev-parse --is-bare-repository 2>/dev/null)"
     if [[ "$is_bare" == "true" ]]; then
-      local root_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
-      if [[ "$root_dir" == "$(realpath $(eval echo ~))" ]]; then
-        unset GIT_DIR
-        unset GIT_WORK_TREE
-      else
-        export GIT_DIR="$HOME/.cfg"
-        export GIT_WORK_TREE=$(realpath $(eval echo ~))
-      fi
+      export GIT_DIR="$HOME/.cfg"
+      export GIT_WORK_TREE=$(realpath $(eval echo ~))
     else
       unset GIT_DIR
       unset GIT_WORK_TREE
     fi
   else
-    export GIT_DIR="$HOME/.cfg"
-    export GIT_WORK_TREE=$(realpath $(eval echo ~))
+    local root_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
+    if [[ -n "$root_dir" ]]; then
+      unset GIT_DIR
+      export GIT_WORK_TREE="$root_dir"
+    else
+      export GIT_DIR="$HOME/.cfg"
+      export GIT_WORK_TREE=$(realpath $(eval echo ~))
+    fi
   fi
 }
 
