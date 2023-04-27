@@ -21,6 +21,8 @@ vim.api.nvim_command("highlight WinBar guibg=none gui=bold")
 vim.api.nvim_command("highlight NormalFloat guibg=none")
 vim.api.nvim_command("highlight LineNr guibg=none")
 vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
+--vim.api.nvim_command("highlight FoldColumn guibg=none")
+
 --vim.api.nvim_command("highlight SignColumn guifg=none guibg=none cterm=NONE ctermfg=none ctermbg=NONE gui=NONE")
 --vim.api.nvim_command("highlight ColorColumn guifg=none guibg=none cterm=NONE ctermfg=none ctermbg=NONE gui=NONE")
 --vim.api.nvim_command("highlight TabLineSel guibg=none guifg=none gui=bold")
