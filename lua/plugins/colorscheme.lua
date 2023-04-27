@@ -22,14 +22,6 @@ vim.api.nvim_command("highlight NormalFloat guibg=none")
 vim.api.nvim_command("highlight LineNr guibg=none")
 vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
 --vim.api.nvim_command("highlight FoldColumn guibg=none")
-vim.api.nvim_command("highlight DiffModified guibg=none guifg=#82aaff")
-vim.api.nvim_command("highlight DiffAdd guibg=none guifg=#21c7a8")
-vim.api.nvim_command("highlight DiffDelete guibg=none guifg=#fc514e")
-vim.cmd([[
-hi link GitSignsAdd DiffAdd
-hi link GitSignsChange DiffModified
-hi link GitSignsDelete DiffDelete
-]])
 
 --vim.api.nvim_command("highlight SignColumn guifg=none guibg=none cterm=NONE ctermfg=none ctermbg=NONE gui=NONE")
 --vim.api.nvim_command("highlight ColorColumn guifg=none guibg=none cterm=NONE ctermfg=none ctermbg=NONE gui=NONE")
