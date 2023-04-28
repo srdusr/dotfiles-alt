@@ -261,6 +261,7 @@ null_ls.setup {
       -- this will run every time the source runs,
       -- so you should prefer caching results if possible
     }),
+    builtins.diagnostics.zsh,
     builtins.diagnostics.todo_comments,
     builtins.diagnostics.teal,
     -- null_ls.builtins.diagnostics.vale,
