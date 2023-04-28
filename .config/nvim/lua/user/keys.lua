@@ -1,5 +1,4 @@
 --[[ key.lua ]]
-
 ------------- Shorten Function Names --------------
 local keymap = vim.keymap
 local map = function(mode, l, r, opts)
@@ -9,7 +8,6 @@ local map = function(mode, l, r, opts)
   keymap.set(mode, l, r, opts)
 end
 local term_opts = { noremap = true, silent = false }
-
 
 --------------- Standard Operations ---------------
 -- Semi-colon as leader key
@@ -25,7 +23,8 @@ vim.g.mapleader = ";"
 map("i", "jj", "<esc>")
 
 -- Reload nvim config
-map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>")
+map("n", "<leader><CR>",
+  "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>")
 
 
 --------------- Extended Operations ---------------
@@ -35,15 +34,15 @@ map('n', 'q', function()
   if config.relative ~= "" then -- is_floating_window?
     return ":silent! close!<CR>"
   elseif
-    vim.o.buftype == 'quickfix' then
+      vim.o.buftype == 'quickfix' then
     return ":quit<CR>"
   elseif
-    vim.o.buftype == 'help' then
+      vim.o.buftype == 'help' then
     return ":close<CR>"
   else
     return "q"
   end
-end, {expr = true, replace_keycodes = true})
+end, { expr = true, replace_keycodes = true })
 
 -- Combine buffers list with buffer name
 map("n", "<Leader>b", ":buffers<CR>:buffer<Space>")
@@ -99,16 +98,10 @@ map("i", "<A-k>", "<up>")
 map("i", "<A-l>", "<right>")
 
 -- Map Alt+(h/j/k/l) in command mode to move directional
-map("c", "<A-h>", "<left>")
-map("c", "<A-j>", "<down>")
-map("c", "<A-k>", "<up>")
-map("c", "<A-l>", "<right>")
-
--- Map Alt+(h/j/k/l) in selection mode to move directional
-map("s", "<A-h>", "<left>")
-map("s", "<A-j>", "<down>")
-map("s", "<A-k>", "<up>")
-map("s", "<A-l>", "<right>")
+vim.api.nvim_set_keymap('c', '<A-h>', '<Left>', { noremap = true })
+vim.api.nvim_set_keymap('c', '<A-j>', '<Down>', { noremap = true })
+vim.api.nvim_set_keymap('c', '<A-k>', '<Up>', { noremap = true })
+vim.api.nvim_set_keymap('c', '<A-l>', '<Right>', { noremap = true })
 
 -- Create tab, edit and move between them
 map("n", "<C-T>n", ":tabnew<CR>")
@@ -179,13 +172,13 @@ map('n', '<leader>o', ':!xdg-open %<cr><cr>')
 
 -- URL handling
 if vim.fn.has("mac") == 1 then
-	map("", "gx", '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>', {})
+  map("", "gx", '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>', {})
 elseif vim.fn.has("unix") == 1 then
-	map("", "gx", '<Cmd>call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})<CR>', {})
+  map("", "gx", '<Cmd>call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})<CR>', {})
 elseif vim.fn.has("wsl") == 1 then
-	map("", "gx", '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>', {})
+  map("", "gx", '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>', {})
 else
-	map[''].gx = {'<Cmd>lua print("Error: gx is not supported on this OS!")<CR>'}
+  map[''].gx = { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
 end
 
 -- Toggle completion
@@ -197,15 +190,15 @@ map('i', '<C-p>', '<Nop>')
 
 -- Set line wrap
 map("n", "<M-z>", function()
-	local wrap_status = vim.api.nvim_exec("set wrap ?", true)
+  local wrap_status = vim.api.nvim_exec("set wrap ?", true)
 
-	if wrap_status == "nowrap" then
-		vim.api.nvim_command("set wrap linebreak")
-		print("Wrap enabled")
-	else
-		vim.api.nvim_command("set wrap nowrap")
-		print("Wrap disabled")
-	end
+  if wrap_status == "nowrap" then
+    vim.api.nvim_command("set wrap linebreak")
+    print("Wrap enabled")
+  else
+    vim.api.nvim_command("set wrap nowrap")
+    print("Wrap disabled")
+  end
 end, { silent = true })
 
 -- Toggle between folds
@@ -251,7 +244,7 @@ map('n', '<C-j>', '<CMD>NavigatorDown<CR>')
 --map("n", "<leader>tt", "<cmd>ToggleTerm<cr>")
 
 -- LazyGit
-map({"n", "t"}, "<leader>gg", "<cmd>lua Lazygit_toggle()<CR>")
+map({ "n", "t" }, "<leader>gg", "<cmd>lua Lazygit_toggle()<CR>")
 
 -- Fugitive git bindings
 map("n", "<leader>ga", ":Git add %:p<CR><CR>")
@@ -284,7 +277,7 @@ map("n", "<leader>gm", ":Gmove<Space>")
 
 -- Telescope
 map("n", "<leader>ff", function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end) -- find all files
-map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>") -- find files with hidden option
+map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>")                                   -- find files with hidden option
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
 map("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
@@ -295,13 +288,13 @@ map("n", "<leader>fp", "<cmd>Telescope pickers<cr>")
 map("n", "<leader>fr", "<cmd>lua require('telescope.builtin').registers({})<CR>") -- registers picker
 map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
 map("n", "<leader>fk", "<cmd>lua require('telescope.builtin').keymaps()<cr>")
-map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]]) -- find notes
-map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]]) -- search notes
-map("n", "<leader>f.", [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]]) -- find configs
-map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]]) -- find scripts
-map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]]) -- find projects
+map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])                   -- find notes
+map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]])                  -- search notes
+map("n", "<leader>f.", [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]])                 -- find configs
+map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]])                 -- find scripts
+map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])                -- find projects
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
-map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>") -- find notifications
+map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
@@ -335,12 +328,12 @@ map('n', '<Leader>qr', ':lua require("replacer").run()<CR>')
 
 -- Quickfix
 map("n", "<leader>q", function()
-    if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
-        require('plugins.quickfix').close()
-    else
-        require('plugins.quickfix').open()
-        --require("quickfix").open()
-    end
+  if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
+    require('plugins.quickfix').close()
+  else
+    require('plugins.quickfix').open()
+    --require("quickfix").open()
+  end
 end, { desc = "Toggle quickfix window" })
 
 -- Dap (debugging)
@@ -348,7 +341,7 @@ local dap_ok, dap = pcall(require, "dap")
 local dap_ui_ok, ui = pcall(require, "dapui")
 
 if not (dap_ok and dap_ui_ok) then
-    require("notify")("nvim-dap or dap-ui not installed!", "warning")
+  require("notify")("nvim-dap or dap-ui not installed!", "warning")
   return
 end
 
@@ -387,4 +380,3 @@ map("n", "<leader><Space>", "<CMD>Dashboard<CR>")
 
 -- Lsp Lines toggle
 map("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
-
