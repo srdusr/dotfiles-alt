@@ -62,8 +62,3 @@ end)
 --  %x	hexadecimal digits (\3, \4, ...)
 --  %z	the character with representation 0
 --  .	  Matches any character
-
-
-
-
-
