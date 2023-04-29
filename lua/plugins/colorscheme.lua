@@ -1,7 +1,7 @@
 -- Colorscheme
 -- Available colorschemes:
 -- [[ nightfly ayu onedark doom-one ]]
-local colorscheme = "nightfly"
+local colorscheme = "nvimgelion"
 local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
 if not status_ok then
   vim.notify("colorscheme " .. colorscheme .. " not found!")
