@@ -183,7 +183,11 @@ local prev_cwd = ""
 
 function M.Set_git_env_vars()
   local cwd = vim.fn.getcwd()
-  if cwd ~= prev_cwd then
+  if prev_cwd == "" then
+    -- First buffer being opened, set prev_cwd to cwd
+    prev_cwd = cwd
+  elseif cwd ~= prev_cwd then
+    -- Working directory has changed since last buffer was opened
     prev_cwd = cwd
     local git_dir_job = vim.fn.jobstart({ "git", "rev-parse", "--git-dir" })
     local command_status = vim.fn.jobwait({ git_dir_job })[1]
