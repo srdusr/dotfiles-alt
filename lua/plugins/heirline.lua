@@ -4,7 +4,7 @@ local utils = require("heirline.utils")
 local colors = {
   --bg = "#23232e",
   bg = nil,
-  nobg = nil,
+  nobg = "NONE",
   transparency = "NONE",
   white = "#f8f8f2",
   black = "#000000",
@@ -735,7 +735,7 @@ RightSpace3 = utils.surround(
 RightSpace4 = utils.surround(
   { "█", "" },
   utils.get_highlight("statusline").bg,
-  { RightSpace4, hl = { fg = colors.transparency, force = true } }
+  { RightSpace4, hl = { fg = colors.nobg, force = true } }
 )
 
 LSPActive = utils.surround({ "", "" }, function(self)
@@ -755,39 +755,39 @@ local left = {
   --  end,
   --},
   --{ LeftSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { LeftSpace,     hl = { bg = colors.transparency, force = true } },
-  { FileNameBlock, hl = { bg = colors.transparency, force = true } },
-  { Space,         hl = { bg = colors.transparency, force = true } },
-  { Git,           hl = { bg = colors.transparency, force = true } },
+  { LeftSpace,     hl = { bg = colors.nobg, force = true } },
+  { FileNameBlock, hl = { bg = colors.nobg, force = true } },
+  { Space,         hl = { bg = colors.nobg, force = true } },
+  { Git,           hl = { bg = colors.nobg, force = true } },
 }
 local middle = {
-  { Align,       hl = { bg = colors.transparency, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
   --{ Navic, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { DAPMessages, hl = { bg = colors.transparency, force = true } },
-  { Align,       hl = { bg = colors.transparency, force = true } },
+  { DAPMessages, hl = { bg = colors.nobg, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
 }
 local right = {
-  { Space,         hl = { bg = colors.transparency, force = true } },
-  { Diagnostics,   hl = { bg = colors.transparency, force = true } },
-  { Space,         hl = { bg = colors.transparency, force = true } },
-  --{ RightSep, hl = { fg = colors.transparency, bg = colors.transparency, force = true } },
-  --{ RightSep, hl = { fg = colors.darkgray, bg = colors.transparency, force = true } },
+  { Space,         hl = { bg = colors.nobg, force = true } },
+  { Diagnostics,   hl = { bg = colors.nobg, force = true } },
+  { Space,         hl = { bg = colors.nobg, force = true } },
+  --{ RightSep, hl = { fg = colors.nobg, bg = colors.nobg, force = true } },
+  --{ RightSep, hl = { fg = colors.darkgray, bg = colors.nobg, force = true } },
   --{
   --	RightSpace4,
   --	hl = { bg = colors.darkgray, force = true },
   --},
-  { LSPActive,     hl = { bg = colors.transparency, force = true } },
-  { Space,         hl = { bg = colors.transparency, force = true } },
+  { LSPActive,     hl = { bg = colors.nobg, force = true } },
+  { Space,         hl = { bg = colors.nobg, force = true } },
   --{ LSPActive, hl = { bg = colors.darkgray, force = true } },
-  --{ RightSpace2, hl = { bg = colors.transparency, force = true } },
+  --{ RightSpace2, hl = { bg = colors.nobg, force = true } },
   --{ RightSpace2, hl = { bg = colors.gray, force = true } },
-  { FileInfoBlock, hl = { bg = colors.transparency, force = true } },
+  { FileInfoBlock, hl = { bg = colors.nobg, force = true } },
   --{ FileInfoBlock, hl = { bg = colors.gray, force = true } },
-  --{ RightSep,     hl = { bg = colors.transparency, force = true } },
-  --{ RightSpace,    hl = { bg = colors.transparency, force = true } },
+  --{ RightSep,     hl = { bg = colors.nobg, force = true } },
+  --{ RightSpace,    hl = { bg = colors.nobg, force = true } },
   --{ RightSpace, hl = { fg = colors.gray, force = true } },
-  --{ RightSpace, hl = { bg = colors.transparency, force = true } },
-  { RightSpace,         hl = { bg = colors.transparency, fg = utils.get_highlight("statusline").bg, force = true } },
+  --{ RightSpace, hl = { bg = colors.nobg, force = true } },
+  { RightSpace,         hl = { bg = colors.nobg, fg = utils.get_highlight("statusline").bg, force = true } },
   --{ cursor_location, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
   { Ruler,         hl = { fg = utils.get_highlight("statusline").bg, force = true } },
   --utils.make_flexible_component(
