@@ -5,6 +5,7 @@ local colors = {
 	--bg = "#23232e",
 	bg = nil,
 	nobg = nil,
+	transparency ="NONE",
 	white = "#f8f8f2",
   black = "#000000",
 	darkgray = "#23232e",
@@ -94,10 +95,15 @@ local ViMode = {
 	provider = function(self)
 		return "  %2(" .. self.mode_names[self.mode] .. "%) "
 	end,
-	hl = function(self)
-		local color = self:mode_color()
-		return { fg = color, bold = true }
-	end,
+  hl = function(self) return { fg = "darkgray", bg = self.mode_color, bold = true } end,
+  --hl = function(self) return { fg = self.mode_color, bg = "bg" } end,
+--	hl = function(self)
+--    local color = self.mode:sub(1, 1) -- get only the first mode character
+--    --return { fg = self.mode_colors[mode], bold = true, }
+--		--local color = self:mode_color()
+--		return { fg = color, bold = true }
+--  		return { fg = colors.black, bg = color, bold = true }
+--	end,
 	update = {
 		"ModeChanged",
 	},
@@ -729,6 +735,12 @@ RightSpace3 = utils.surround(
 	{ RightSpace3, hl = { fg = colors.darkgray, force = true } }
 )
 
+RightSpace4 = utils.surround(
+	{ "█", "" },
+	utils.get_highlight("statusline").bg,
+	{ RightSpace4, hl = { fg = colors.transparency, force = true } }
+)
+
 LSPActive = utils.surround({ "", "" }, function(self)
 	return self:mode_color()
 end, { Space, LSPActive, hl = { bg = colors.darkgray, force = true } })
@@ -745,23 +757,25 @@ local left = {
   --      return { fg = self.mode_colors[self.mode], bg = utils.get_highlight("statusline").bg, bold = true, }
   --  end,
   --},
-	{ LeftSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-	{ FileNameBlock, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-	{ Space, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-	{ Git, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
+	--{ LeftSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
+	{ LeftSpace, hl = { bg = colors.transparency, force = true } },
+	{ FileNameBlock, hl = { bg = colors.transparency, force = true } },
+	{ Space, hl = { bg = colors.transparency, force = true } },
+	{ Git, hl = { bg = colors.transparency, force = true } },
 }
 local middle = {
-	{ Align, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
+	{ Align, hl = { bg = colors.transparency, force = true } },
 	--{ Navic, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-	{ DAPMessages, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-	{ Align, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
+	{ DAPMessages, hl = { bg = colors.transparency, force = true } },
+	{ Align, hl = { bg = colors.transparency, force = true } },
 }
 local right = {
-	{ Diagnostics, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-	{
-		RightSpace3,
-		hl = { bg = colors.darkgray, force = true },
-	},
+	{ Diagnostics, hl = { bg = colors.transparency, force = true } },
+	{ RightSep, hl = { fg = colors.darkgray, bg = colors.transparency, force = true } },
+	--{
+	--	RightSpace4,
+	--	hl = { bg = colors.darkgray, force = true },
+	--},
 	{ LSPActive, hl = { bg = colors.darkgray, force = true } },
 	{ RightSpace2, hl = { bg = colors.gray, force = true } },
 	{ FileInfoBlock, hl = { bg = colors.gray, force = true } },
