@@ -39,11 +39,6 @@ local Space = { provider = " ", hl = { bg = colors.bg } }
 local Tab = { provider = " " }
 local LeftSpace = { provider = "" }
 local RightSpace = { provider = "" }
-local RightSpace2 = { provider = "" }
-local RightSpace3 = { provider = "" }
-local Fill = { provider = "%=", hl = { bg = colors.nobg } }
-local LeftSep = { provider = "" }
-local RightSep = { provider = "" }
 
 local ViMode = {
   init = function(self)
@@ -95,14 +90,6 @@ local ViMode = {
     return "  %2(" .. self.mode_names[self.mode] .. "%) "
   end,
   hl = function(self) return { fg = "darkgray", bg = self.mode_color, bold = true } end,
-  --hl = function(self) return { fg = self.mode_color, bg = "bg" } end,
-  --	hl = function(self)
-  --    local color = self.mode:sub(1, 1) -- get only the first mode character
-  --    --return { fg = self.mode_colors[mode], bold = true, }
-  --		--local color = self:mode_color()
-  --		return { fg = color, bold = true }
-  --  		return { fg = colors.black, bg = color, bold = true }
-  --	end,
   update = {
     "ModeChanged",
   },
@@ -559,38 +546,7 @@ local help_file_name = {
   hl = { fg = colors.blue },
 }
 
--- Cursor position: Ruler
---local Ruler = {
--- %l = current line number
--- %L = number of lines in the buffer
--- %c = column number
--- %P = percentage through file of displayed window
---provider = "%P %(%l/%L%):%c ",
---provider = "%3(%2l%):%c %P ",
---provider = "%7(%l/%3L%):%2c%P ",
---provider = "%3(%P%)",
---provider = "%7(%l/%3L%):%2c %P",
---provider = "%7 %p%% Ln %l, Col %c",
---provider = "%9( %P %2l/%L :%2c %)",
---provider = "%9(%2l%2( : %c%)/%L %P %)",
---provider = "%7(%l:%c/%L%) ",
---provider = "%6(%l:%1.5c/%L%) %P ",
---provider = "%6(%l:%1.5c/%L%) ",
---provider = "%3(%l:%1.5c/%L%)  ",
---provider = "%7(%l/%3L%):%2c ",
---	provider = "%7(%l:%c%) ",
---provider = "%l:%c ",
---hl = { fg = utils.get_highlight("Statusline").fg, bold = true },
---	hl = { fg = colors.darkgray, bold = true },
---}
-local leftruler = { Space, Align }
-local rightruler = { Align, Space }
 local cursor_location = {
-  --{ provider = "", hl = { fg = utils.get_highlight("StatusLine").bg, bold = true } },
-  --	{ provider = "%<%-05.10(%l:%c%)", hl = { fg = colors.darkgray, bold = true } },
-  --	{ provider = "  ", hl = { fg = colors.darkgray, bold = true } },
-  --{ provider = "%P %=%<%(%l,%c)" },
-  --{ provider = "   %w%-8.(%l,%c%)%>" },
   { provider = " %1(%4l:%-3(%c%) %)%*", hl = { fg = colors.black, bold = true } },
 }
 local Ruler = { cursor_location }
