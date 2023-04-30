@@ -5,7 +5,6 @@ local colors = {
   --bg = "#23232e",
   bg = nil,
   nobg = "NONE",
-  transparency = "NONE",
   white = "#f8f8f2",
   black = "#000000",
   darkgray = "#23232e",
@@ -699,44 +698,13 @@ FileInfoBlock = utils.insert(
   { provider = "%<" } -- this means that the statusline is cut here when there's not enough space
 )
 
---ViMode = utils.surround({ "", "" }, function(self)
---	return self:mode_color()
---end, { ViMode, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
---local mysurroundedcomponent = {
---{provider='', hl = {...}},
---{<your component>},
---{provider = '>>>', hl = {...}}
---}
 LeftSpace = utils.surround({ "", " " }, function(self)
   return self:mode_color()
 end, { LeftSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
 
-RightSpace = utils.surround({ "", "" }, function(self)
+RightSpace = utils.surround({ "", "" }, function(self)
   return self:mode_color()
-end, { RightSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } })
---RightSpace = utils.surround(
---  { "", "" },
---  colors.gray,
---  { RightSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } }
---)
-
-RightSpace2 = utils.surround(
-  { "█", "" },
-  colors.darkgray,
-  { RightSpace2, hl = { fg = colors.darkgray, force = true } }
-)
-
-RightSpace3 = utils.surround(
-  { "█", "" },
-  utils.get_highlight("statusline").bg,
-  { RightSpace3, hl = { fg = colors.darkgray, force = true } }
-)
-
-RightSpace4 = utils.surround(
-  { "█", "" },
-  utils.get_highlight("statusline").bg,
-  { RightSpace4, hl = { fg = colors.nobg, force = true } }
-)
+end, { RightSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
 
 LSPActive = utils.surround({ "", "" }, function(self)
   return self:mode_color()
@@ -768,7 +736,7 @@ local right = {
   { LSPActive,     hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { FileInfoBlock, hl = { bg = colors.nobg, force = true } },
-  { RightSpace,         hl = { bg = colors.nobg, fg = utils.get_highlight("statusline").bg, force = true } },
+  { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,         hl = { fg = utils.get_highlight("statusline").bg, force = true } },
 }
 
@@ -792,7 +760,7 @@ local SpecialStatusline = {
   { LeftSpace,     hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { Align,       hl = { bg = colors.nobg, force = true } },
-  { RightSpace,         hl = { bg = colors.nobg, fg = utils.get_highlight("statusline").bg, force = true } },
+  { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
 }
 
@@ -808,18 +776,11 @@ local TerminalStatusline = {
   { FileNameBlock, hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { Align,       hl = { bg = colors.nobg, force = true } },
-  { RightSpace,         hl = { bg = colors.nobg, fg = utils.get_highlight("statusline").bg, force = true } },
+  { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
 }
 
 local StatusLine = {
-  --hl = function()
-  --	if conditions.is_active() then
-  --		return "StatusLine"
-  --	else
-  --		return "StatusLineNC"
-  --	end
-  --end,
   static = {
     mode_colors = {
       n = colors.blue,
@@ -863,18 +824,6 @@ local WinbarFileNameBlock = {
   end,
   hl = { bg = colors.bg },
 }
-
---local WinbarFileName = {
---	provider = function(self)
---		-- self.filename will be defined later, just keep looking at the example!
---		local filename = self.filename
---		filename = filename == "" and "No Name" or vim.fn.fnamemodify(filename, ":t")
---		return filename
---	end,
---	hl = function()
---		return { fg = colors.gray, italic = true }
---	end,
---}
 local WinbarFileName = {
   provider = function(self)
     -- first, trim the pattern relative to the current directory. For other
@@ -1192,29 +1141,29 @@ require("heirline").setup({
 })
 
 -- Yep, with heirline we're driving manual!
---vim.cmd([[au FileType * if index(['wipe', 'delete', 'unload'], &bufhidden) >= 0 | set nobuflisted | endif]])
---
---local function get_bufs()
---	return vim.tbl_filter(function(bufnr)
---		return vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].buflisted
---	end, vim.api.nvim_list_bufs())
---end
---
---local function goto_buf(index)
---	local bufs = get_bufs()
---	if index > #bufs then
---		index = #bufs
---	end
---	vim.api.nvim_win_set_buf(0, bufs[index])
---end
---
---local function addKey(key, index)
---	vim.keymap.set("", "<A-" .. key .. ">", function()
---		goto_buf(index)
---	end, { noremap = true, silent = true })
---end
---
---for i = 1, 9 do
---	addKey(i, i)
---end
---addKey("0", 10)
+vim.cmd([[au FileType * if index(['wipe', 'delete', 'unload'], &bufhidden) >= 0 | set nobuflisted | endif]])
+
+local function get_bufs()
+	return vim.tbl_filter(function(bufnr)
+		return vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].buflisted
+	end, vim.api.nvim_list_bufs())
+end
+
+local function goto_buf(index)
+	local bufs = get_bufs()
+	if index > #bufs then
+		index = #bufs
+	end
+	vim.api.nvim_win_set_buf(0, bufs[index])
+end
+
+local function addKey(key, index)
+	vim.keymap.set("", "<A-" .. key .. ">", function()
+		goto_buf(index)
+	end, { noremap = true, silent = true })
+end
+
+for i = 1, 9 do
+	addKey(i, i)
+end
+addKey("0", 10)
