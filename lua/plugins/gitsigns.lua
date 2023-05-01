@@ -15,7 +15,7 @@ require("gitsigns").setup({
 					--},
 					delete = {
 						hl = "GitSignsDelete",
-						text = "▁", --_
+						text = "▁", --_━─
 						numhl = "GitSignsDeleteNr",
 						linehl = "GitSignsDeleteLn",
 					},
