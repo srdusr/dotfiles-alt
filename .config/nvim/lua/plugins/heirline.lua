@@ -5,7 +5,6 @@ local colors = {
   --bg = "#23232e",
   bg = nil,
   nobg = "NONE",
-  transparency = "NONE",
   white = "#f8f8f2",
   black = "#000000",
   darkgray = "#23232e",
@@ -40,11 +39,6 @@ local Space = { provider = " ", hl = { bg = colors.bg } }
 local Tab = { provider = " " }
 local LeftSpace = { provider = "" }
 local RightSpace = { provider = "" }
-local RightSpace2 = { provider = "" }
-local RightSpace3 = { provider = "" }
-local Fill = { provider = "%=", hl = { bg = colors.nobg } }
-local LeftSep = { provider = "" }
-local RightSep = { provider = "" }
 
 local ViMode = {
   init = function(self)
@@ -96,14 +90,6 @@ local ViMode = {
     return "  %2(" .. self.mode_names[self.mode] .. "%) "
   end,
   hl = function(self) return { fg = "darkgray", bg = self.mode_color, bold = true } end,
-  --hl = function(self) return { fg = self.mode_color, bg = "bg" } end,
-  --	hl = function(self)
-  --    local color = self.mode:sub(1, 1) -- get only the first mode character
-  --    --return { fg = self.mode_colors[mode], bold = true, }
-  --		--local color = self:mode_color()
-  --		return { fg = color, bold = true }
-  --  		return { fg = colors.black, bg = color, bold = true }
-  --	end,
   update = {
     "ModeChanged",
   },
@@ -560,38 +546,7 @@ local help_file_name = {
   hl = { fg = colors.blue },
 }
 
--- Cursor position: Ruler
---local Ruler = {
--- %l = current line number
--- %L = number of lines in the buffer
--- %c = column number
--- %P = percentage through file of displayed window
---provider = "%P %(%l/%L%):%c ",
---provider = "%3(%2l%):%c %P ",
---provider = "%7(%l/%3L%):%2c%P ",
---provider = "%3(%P%)",
---provider = "%7(%l/%3L%):%2c %P",
---provider = "%7 %p%% Ln %l, Col %c",
---provider = "%9( %P %2l/%L :%2c %)",
---provider = "%9(%2l%2( : %c%)/%L %P %)",
---provider = "%7(%l:%c/%L%) ",
---provider = "%6(%l:%1.5c/%L%) %P ",
---provider = "%6(%l:%1.5c/%L%) ",
---provider = "%3(%l:%1.5c/%L%)  ",
---provider = "%7(%l/%3L%):%2c ",
---	provider = "%7(%l:%c%) ",
---provider = "%l:%c ",
---hl = { fg = utils.get_highlight("Statusline").fg, bold = true },
---	hl = { fg = colors.darkgray, bold = true },
---}
-local leftruler = { Space, Align }
-local rightruler = { Align, Space }
 local cursor_location = {
-  --{ provider = "", hl = { fg = utils.get_highlight("StatusLine").bg, bold = true } },
-  --	{ provider = "%<%-05.10(%l:%c%)", hl = { fg = colors.darkgray, bold = true } },
-  --	{ provider = "  ", hl = { fg = colors.darkgray, bold = true } },
-  --{ provider = "%P %=%<%(%l,%c)" },
-  --{ provider = "   %w%-8.(%l,%c%)%>" },
   { provider = " %1(%4l:%-3(%c%) %)%*", hl = { fg = colors.black, bold = true } },
 }
 local Ruler = { cursor_location }
@@ -699,44 +654,13 @@ FileInfoBlock = utils.insert(
   { provider = "%<" } -- this means that the statusline is cut here when there's not enough space
 )
 
---ViMode = utils.surround({ "", "" }, function(self)
---	return self:mode_color()
---end, { ViMode, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
---local mysurroundedcomponent = {
---{provider='', hl = {...}},
---{<your component>},
---{provider = '>>>', hl = {...}}
---}
 LeftSpace = utils.surround({ "", " " }, function(self)
   return self:mode_color()
 end, { LeftSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
 
-RightSpace = utils.surround({ "", "" }, function(self)
+RightSpace = utils.surround({ "", "" }, function(self)
   return self:mode_color()
-end, { RightSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } })
---RightSpace = utils.surround(
---  { "", "" },
---  colors.gray,
---  { RightSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } }
---)
-
-RightSpace2 = utils.surround(
-  { "█", "" },
-  colors.darkgray,
-  { RightSpace2, hl = { fg = colors.darkgray, force = true } }
-)
-
-RightSpace3 = utils.surround(
-  { "█", "" },
-  utils.get_highlight("statusline").bg,
-  { RightSpace3, hl = { fg = colors.darkgray, force = true } }
-)
-
-RightSpace4 = utils.surround(
-  { "█", "" },
-  utils.get_highlight("statusline").bg,
-  { RightSpace4, hl = { fg = colors.nobg, force = true } }
-)
+end, { RightSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
 
 LSPActive = utils.surround({ "", "" }, function(self)
   return self:mode_color()
@@ -750,11 +674,6 @@ Ruler = utils.surround({ "", "" }, colors.gray, { Ruler, hl = { fg = colors.gray
 
 local left = {
   { ViMode,        hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  --{ LeftSep, hl = function(self)
-  --      return { fg = self.mode_colors[self.mode], bg = utils.get_highlight("statusline").bg, bold = true, }
-  --  end,
-  --},
-  --{ LeftSpace, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
   { LeftSpace,     hl = { bg = colors.nobg, force = true } },
   { FileNameBlock, hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
@@ -770,44 +689,20 @@ local right = {
   { Space,         hl = { bg = colors.nobg, force = true } },
   { Diagnostics,   hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
-  --{ RightSep, hl = { fg = colors.nobg, bg = colors.nobg, force = true } },
-  --{ RightSep, hl = { fg = colors.darkgray, bg = colors.nobg, force = true } },
-  --{
-  --	RightSpace4,
-  --	hl = { bg = colors.darkgray, force = true },
-  --},
   { LSPActive,     hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
-  --{ LSPActive, hl = { bg = colors.darkgray, force = true } },
-  --{ RightSpace2, hl = { bg = colors.nobg, force = true } },
-  --{ RightSpace2, hl = { bg = colors.gray, force = true } },
   { FileInfoBlock, hl = { bg = colors.nobg, force = true } },
-  --{ FileInfoBlock, hl = { bg = colors.gray, force = true } },
-  --{ RightSep,     hl = { bg = colors.nobg, force = true } },
-  --{ RightSpace,    hl = { bg = colors.nobg, force = true } },
-  --{ RightSpace, hl = { fg = colors.gray, force = true } },
-  --{ RightSpace, hl = { bg = colors.nobg, force = true } },
-  { RightSpace,         hl = { bg = colors.nobg, fg = utils.get_highlight("statusline").bg, force = true } },
-  --{ cursor_location, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,         hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  --utils.make_flexible_component(
-  --	3,
-  --	{ Ruler, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  --	{ provider = "%<" }
-  --),
 }
---local Align = { provider = "%=", hl = { bg = colors.bg } }
 
 local sections = { left, middle, right }
 local DefaultStatusline = { sections }
---LSPActive, Space, LSPMessages, Space, UltTest, Space, FileType, Space, Ruler, Space, ScrollBar
 
 local InactiveStatusline = {
   condition = conditions.is_not_active,
-  { FileType, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { Space,    hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { FileName, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { Align,    hl = { bg = utils.get_highlight("statusline").bg, force = true } },
+  { FileNameBlock, hl = { bg = colors.nobg, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
 }
 
 local SpecialStatusline = {
@@ -817,14 +712,11 @@ local SpecialStatusline = {
       filetype = { "^git.*", "fugitive", "dashboard", },
     })
   end,
-  --FileType,
-  --Space,
-  --Align,
   { ViMode,     hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  { LeftSpace,  hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { Space,      hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { Align,      hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { RightSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  { LeftSpace,     hl = { bg = colors.nobg, force = true } },
+  { Space,         hl = { bg = colors.nobg, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
+  { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
 }
 
@@ -832,31 +724,19 @@ local TerminalStatusline = {
   condition = function()
     return conditions.buffer_matches({ buftype = { "terminal" } })
   end,
-  --hl = { bg = colors.red },
 
   -- Quickly add a condition to the ViMode to only show it when buffer is active!
   --{ condition = conditions.is_active, ViMode, Space },
   { ViMode,     hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  { LeftSpace,  hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { FileType,   hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { Space,      hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { Align,      hl = { bg = utils.get_highlight("statusline").bg, force = true } },
-  { RightSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  { LeftSpace,     hl = { bg = colors.nobg, force = true } },
+  { FileNameBlock, hl = { bg = colors.nobg, force = true } },
+  { Space,         hl = { bg = colors.nobg, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
+  { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  --FileType,
-  --Space,
-  --TerminalName,
-  --Align,
 }
 
 local StatusLine = {
-  --hl = function()
-  --	if conditions.is_active() then
-  --		return "StatusLine"
-  --	else
-  --		return "StatusLineNC"
-  --	end
-  --end,
   static = {
     mode_colors = {
       n = colors.blue,
@@ -900,18 +780,6 @@ local WinbarFileNameBlock = {
   end,
   hl = { bg = colors.bg },
 }
-
---local WinbarFileName = {
---	provider = function(self)
---		-- self.filename will be defined later, just keep looking at the example!
---		local filename = self.filename
---		filename = filename == "" and "No Name" or vim.fn.fnamemodify(filename, ":t")
---		return filename
---	end,
---	hl = function()
---		return { fg = colors.gray, italic = true }
---	end,
---}
 local WinbarFileName = {
   provider = function(self)
     -- first, trim the pattern relative to the current directory. For other
@@ -1229,29 +1097,29 @@ require("heirline").setup({
 })
 
 -- Yep, with heirline we're driving manual!
---vim.cmd([[au FileType * if index(['wipe', 'delete', 'unload'], &bufhidden) >= 0 | set nobuflisted | endif]])
---
---local function get_bufs()
---	return vim.tbl_filter(function(bufnr)
---		return vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].buflisted
---	end, vim.api.nvim_list_bufs())
---end
---
---local function goto_buf(index)
---	local bufs = get_bufs()
---	if index > #bufs then
---		index = #bufs
---	end
---	vim.api.nvim_win_set_buf(0, bufs[index])
---end
---
---local function addKey(key, index)
---	vim.keymap.set("", "<A-" .. key .. ">", function()
---		goto_buf(index)
---	end, { noremap = true, silent = true })
---end
---
---for i = 1, 9 do
---	addKey(i, i)
---end
---addKey("0", 10)
+vim.cmd([[au FileType * if index(['wipe', 'delete', 'unload'], &bufhidden) >= 0 | set nobuflisted | endif]])
+
+local function get_bufs()
+	return vim.tbl_filter(function(bufnr)
+		return vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].buflisted
+	end, vim.api.nvim_list_bufs())
+end
+
+local function goto_buf(index)
+	local bufs = get_bufs()
+	if index > #bufs then
+		index = #bufs
+	end
+	vim.api.nvim_win_set_buf(0, bufs[index])
+end
+
+local function addKey(key, index)
+	vim.keymap.set("", "<A-" .. key .. ">", function()
+		goto_buf(index)
+	end, { noremap = true, silent = true })
+end
+
+for i = 1, 9 do
+	addKey(i, i)
+end
+addKey("0", 10)
