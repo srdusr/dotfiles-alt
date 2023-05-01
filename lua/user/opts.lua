@@ -172,20 +172,22 @@ vim.opt.shortmess:append("sI")
 --vim.opt.shortmess = "sI"
 --vim.o.shortmess = vim.o.shortmess:gsub('s', '')
 vim.opt.fillchars = {
-	horiz = "━",
-	horizup = "┻",
-	horizdown = "┳",
-	vert = "▏",
-	vertleft = "▏",
+	horiz = "─",
+	horizup = "┴",
+	horizdown = "┬",
+	vert = "│",
+	vertleft = "┤",
 	vertright = "├",
-	verthoriz = "╋",
-	fold = "⠀",
+	verthoriz = "┼",
+  foldopen = "",
+  foldsep = "│",
+  foldclose = "",
+  fold = "─",
 	eob = " ",
-	diff = "┃",
-	msgsep = "‾",
-	foldopen = "▾",
-	foldsep = "│",
-	foldclose = "▸",
+	--diff = "┃",
+  diff = "░",
+  msgsep = "━",
+	--msgsep = "‾",
 }
 vim.opt.listchars = { tab = "▸ ", trail = "·" } --
 --vim.opt.fillchars:append({ eob = " " }) -- remove the ~ from end of buffer
