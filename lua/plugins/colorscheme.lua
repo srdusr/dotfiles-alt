@@ -30,7 +30,7 @@ vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
 --vim.api.nvim_command("highlight StatusLine guibg=#333842 gui=bold")
 --vim.api.nvim_command("highlight StatusLineNC guibg=none ctermfg=Cyan guifg=#80a0ff gui=bold")
 vim.api.nvim_command("highlight WinSeparator guibg=none gui=bold")
---vim.api.nvim_command("highlight MsgSeparator guibg=none")
+vim.api.nvim_command("highlight MsgSeparator guibg=none")
 vim.api.nvim_command("highlight PmenuSel guibg=none")
 vim.api.nvim_command("highlight winblend guibg=none")
 
