@@ -92,7 +92,7 @@ local modules = {
   "plugins.toggleterm",
   "plugins.trouble",
   "plugins.dashboard",
-  --"plugins.dap",
+  "plugins.dap",
   --"plugins.modify-blend",
   --"plugins.floatterm",
 }
