@@ -29,6 +29,7 @@ map("n", "<leader><CR>",
 
 --------------- Extended Operations ---------------
 -- Conditional 'q' to quit on floating/quickfix/help windows otherwise still use it for macros
+-- TODO: Have a list of if available on system/packages, example "Zen Mode" to not work on it (quit Zen Mode)
 map('n', 'q', function()
   local config = vim.api.nvim_win_get_config(0)
   if config.relative ~= "" then -- is_floating_window?
