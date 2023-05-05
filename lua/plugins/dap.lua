@@ -47,10 +47,12 @@ dap.adapters.cppdbg = {
 
 dap.adapters.codelldb = {
   type = 'server',
-  port = "${port}",
+  port = '${port}',
   executable = {
-    command = os.getenv("HOME") .. '/apps/codelldb/extension/adapter/codelldb',
-    args = {"--port", "${port}"},
+    --command = os.getenv("HOME") .. '/apps/codelldb/extension/adapter/codelldb',
+    --command = vim.env.HOME .. "/.vscode-oss/extensions/vadimcn.vscode-lldb-1.9.0-universal/adapter/codelldb",
+    command = os.getenv("HOME") .. "/.vscode-oss/extensions/vadimcn.vscode-lldb-1.9.0-universal/adapter/codelldb",
+    args = {'--port', '${port}'},
   }
 }
 
@@ -59,32 +61,34 @@ dap.adapters.lldb = {
   command = '/usr/bin/lldb-vscode',
   name = "lldb"
 }
-
 dap.configurations.cpp = {
   {
     name = "Launch file",
-    type = "cppdbg",
-    --request = "launch",
-    request = "Attach",
-    processId = function()
-      return tonumber(vim.fn.input({ prompt = "Pid: "}))
-    end,
+    --type = "cppdbg",
+    type = "codelldb",
+    request = "launch",
+    --request = "Attach",
+    --processId = function()
+    --  return tonumber(vim.fn.input({ prompt = "Pid: "}))
+    --end,
     program = function()
       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
     end,
     stopAtEntry = true,
-    MIMode = 'gdb',
+    args = {},
+    runInTerminal = false,
+    --MIMode = 'gdb',
     --miDebuggerServerAddress = 'localhost:1234',
-    miDebuggerPath = 'gdb-oneapi',
+    --miDebuggerPath = 'gdb-oneapi',
     --miDebuggerPath = '/usr/bin/gdb',
-    externalConsole = true,
-    setupCommands = {
-      {
-        text = '-enable-pretty-printing',
-        description =  'enable pretty printing',
-        ignoreFailures = false
-      }
-    },
+    --externalConsole = true,
+    --setupCommands = {
+    --  {
+    --    text = '-enable-pretty-printing',
+    --    description =  'enable pretty printing',
+    --    ignoreFailures = false
+    --  }
+    --},
     cwd = '${workspaceFolder}',
 },
 }
@@ -228,7 +232,16 @@ vim.fn.sign_define("DapBreakpointRejected", { text = '!>', texthl = 'DiagnosticE
 vim.fn.sign_define("DapBreakpointCondition", { text = '?>', texthl = 'DiagnosticInfo', numhl = 'DiagnosticInfo' })
 vim.fn.sign_define("DapLogPoint", { text = '.>', texthl = 'DiagnosticInfo', numhl = 'DiagnosticInfo' })
 
+dap.listeners.after.event_initialized["dapui_config"] = function()
+  dapui.open()
+end
+dap.listeners.before.event_terminated["dapui_config"] = function()
+  dapui.close()
+end
+dap.listeners.before.event_exited["dapui_config"] = function()
+  dapui.close()
+end
+
 -- options
 dap.defaults.fallback.focus_terminal = false
 dap.defaults.fallback.terminal_win_cmd = '10split new'
-
