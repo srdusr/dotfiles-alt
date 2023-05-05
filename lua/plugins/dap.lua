@@ -48,12 +48,15 @@ dap.adapters.cppdbg = {
 dap.adapters.codelldb = {
   type = 'server',
   port = '${port}',
+  --host = '127.0.0.1',
+  --port = 13000, -- 💀 Use the port printed out or specified with `--port`
   executable = {
     --command = os.getenv("HOME") .. '/apps/codelldb/extension/adapter/codelldb',
     --command = vim.env.HOME .. "/.vscode-oss/extensions/vadimcn.vscode-lldb-1.9.0-universal/adapter/codelldb",
     command = os.getenv("HOME") .. "/.vscode-oss/extensions/vadimcn.vscode-lldb-1.9.0-universal/adapter/codelldb",
     args = {'--port', '${port}'},
-  }
+  },
+  --detached = true,
 }
 
 dap.adapters.lldb = {
@@ -76,12 +79,15 @@ dap.configurations.cpp = {
     end,
     stopAtEntry = true,
     args = {},
-    runInTerminal = false,
+    runInTerminal = true,
+    --runInTerminal = false,
+    --console = 'integratedTerminal',
+
     --MIMode = 'gdb',
     --miDebuggerServerAddress = 'localhost:1234',
     --miDebuggerPath = 'gdb-oneapi',
     --miDebuggerPath = '/usr/bin/gdb',
-    --externalConsole = true,
+    externalConsole = true,
     --setupCommands = {
     --  {
     --    text = '-enable-pretty-printing',
