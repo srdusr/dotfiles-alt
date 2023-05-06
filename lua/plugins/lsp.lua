@@ -1,5 +1,6 @@
 require('mason').setup()
 local lspconfig = require 'lspconfig'
+local mason_lspconfig = require 'mason-lspconfig'
 local null_ls = require 'null-ls'
 
 local keymap = vim.keymap
@@ -206,7 +207,10 @@ local servers = {
   yamlls = {},
 }
 
-
+mason_lspconfig.setup({
+  ensure_installed = servers, -- will be installed by mason
+  automatic_installation = true,
+})
 
 for server, config in pairs(servers) do
   if config.prefer_null_ls then
