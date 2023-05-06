@@ -79,6 +79,14 @@ map("n", "<leader>%", ":NumbersOnOff<CR>")
 --map("n", "<C-K>", "<C-W><C-K>")
 --map("n", "<C-L>", "<C-W><C-L>")
 --map("n", "<C-H>", "<C-W><C-H>")
+map("t", "<C-[>", "<C-\\><C-N>")
+map("t", "<C-h>", "<C-\\><C-N><C-h>")
+map("t", "<C-j>", "<C-\\><C-N><C-j>")
+map("t", "<C-k>", "<C-\\><C-N><C-k>")
+map("t", "<C-l>", "<C-\\><C-N><C-l>")
+map("t", "<C-x>", "<C-c>")
+map("n", "<C-x>", "<C-c>")
+--map("n", "<C-r>", ":<C-u>call MyFunc(v:count)<CR>")
 
 -- Split window
 map("n", "<leader>h", ":split<CR>")
@@ -147,7 +155,7 @@ map("n", "<A-j>", ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>')
 map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 
 -- Toggle Diff
-map("n", "<leader>dt", "<Cmd>call utils#ToggleDiff()<CR>")
+map("n", "<leader>td", "<Cmd>call utils#ToggleDiff()<CR>")
 
 -- Map delete to Ctrl+l
 map("i", "<C-l>", "<Del>")
@@ -163,7 +171,7 @@ map("v", "p", '"_dP')
 
 -- Swap two pieces of text, use x to cut in visual mode, then use Ctrl-x in
 -- visual mode to select text to swap with
-map("v", "<C-X>", "<Esc>`.``gvP``P")
+--map("v", "<C-X>", "<Esc>`.``gvP``P")
 
 -- Change Working Directory to current project
 map("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
@@ -358,14 +366,20 @@ end)
 -- Set breakpoints, get variable values, step into/out of functions, etc.
 map("n", "<leader>dl", require("dap.ui.widgets").hover)
 map("n", "<leader>dc", dap.continue)
+map("n", "<leader>dC", dap.close)
+map("n", "<leader>dt", dap.terminate)
 map("n", "<leader>db", dap.toggle_breakpoint)
 map("n", "<leader>dn", dap.step_over)
 map("n", "<leader>di", dap.step_into)
 map("n", "<leader>do", dap.step_out)
-map("n", "<leader>dC", function()
+map("n", "<leader>dB", function()
   dap.clear_breakpoints()
   require("notify")("Breakpoints cleared", "warn")
 end)
+--vim.keymap.set("n", "<leader>B", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
+--vim.keymap.set("v", "<leader>B", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
+--vim.keymap.set("n", "<leader>lp", ":lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>")
+--vim.keymap.set("n", "<leader>dr", ":lua require'dap'.repl.open()<CR>")
 
 -- Close debugger and clear breakpoints
 map("n", "<leader>de", function()
