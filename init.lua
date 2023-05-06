@@ -82,6 +82,7 @@ local modules = {
   "plugins.neoscroll",
   --"plugins.null-ls",
   "plugins.lsp",
+  "plugins.statuscol",
   "plugins.goto-preview",
   "plugins.autopairs",
   "plugins.navic",
