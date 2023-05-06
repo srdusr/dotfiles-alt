@@ -205,14 +205,7 @@ return packer.startup(function(use)
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
 	use("onsails/lspkind-nvim") -- 
-  --use({
-  --  'goolord/alpha-nvim',
-  --  requires = { 'nvim-tree/nvim-web-devicons' },
-  --  config = function ()
-  --      require'alpha'.setup(require'alpha.themes.startify'.config)
-  --  end
-  --})
-  use ({'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'})
+  use ({'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}) -- Fold code
   use ({"luukvbaal/statuscol.nvim",
     config = function()
     local builtin = require "statuscol.builtin"
