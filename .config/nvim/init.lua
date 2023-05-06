@@ -82,6 +82,8 @@ local modules = {
   "plugins.neoscroll",
   --"plugins.null-ls",
   "plugins.lsp",
+  "plugins.lsp_lines",
+  "plugins.statuscol",
   "plugins.goto-preview",
   "plugins.autopairs",
   "plugins.navic",
@@ -92,7 +94,7 @@ local modules = {
   "plugins.toggleterm",
   "plugins.trouble",
   "plugins.dashboard",
-  --"plugins.dap",
+  "plugins.dap",
   --"plugins.modify-blend",
   --"plugins.floatterm",
 }

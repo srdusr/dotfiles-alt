@@ -73,9 +73,13 @@ return packer.startup(function(use)
   })
   use("rmagatti/goto-preview")
 
+  -- neodev
+  use("folke/neodev.nvim")
+
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
 	use("rcarriga/nvim-dap-ui") -- UI for nvim-dap
+  use("theHamsta/nvim-dap-virtual-text")
   use("gabrielpoca/replacer.nvim")
   use({
     "jayp0521/mason-nvim-dap.nvim",
@@ -114,6 +118,7 @@ return packer.startup(function(use)
 	use("hrsh7th/cmp-calc") -- Completion source for math calculation
 	use("saadparwaiz1/cmp_luasnip") -- Completion source for snippets, specifically for luasnip
 	use("hrsh7th/cmp-nvim-lsp-signature-help") -- Completion source for displaying function signatures with the current parameter emphasized
+  use("rcarriga/cmp-dap")
 
 	-- Snippets
 	use("L3MON4D3/LuaSnip") -- Snippet engine
@@ -200,13 +205,20 @@ return packer.startup(function(use)
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
 	use("onsails/lspkind-nvim") -- 
-  --use({
-  --  'goolord/alpha-nvim',
-  --  requires = { 'nvim-tree/nvim-web-devicons' },
-  --  config = function ()
-  --      require'alpha'.setup(require'alpha.themes.startify'.config)
-  --  end
-  --})
+  use ({'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async'}) -- Fold code
+  use ({"luukvbaal/statuscol.nvim",
+    config = function()
+    local builtin = require "statuscol.builtin"
+    require("statuscol").setup {
+      relculright = true,
+      segments = {
+        { text = { builtin.foldfunc }, click = "v:lua.ScFa" },
+        { text = { "%s" }, click = "v:lua.ScSa" },
+        { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
+      },
+    }
+    end
+  })
   use({
     'glepnir/dashboard-nvim',
     event = 'VimEnter',

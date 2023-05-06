@@ -1,7 +1,7 @@
 -- Colorscheme
 -- Available colorschemes:
 -- [[ nightfly ayu onedark doom-one nvimgelion ]]
-local colorscheme = "nvimgelion"
+local colorscheme = "doom-one"
 local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
 if not status_ok then
   vim.notify("colorscheme " .. colorscheme .. " not found!")
@@ -12,7 +12,7 @@ vim.api.nvim_command("syntax on")
 vim.api.nvim_command("highlight Normal guibg=none")
 vim.api.nvim_command("highlight SignColumn guibg=none")
 --vim.api.nvim_command("highlight FoldColumn guibg=none")
-vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
+--vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
 vim.api.nvim_command("highlight TabLine guibg=#333842 gui=bold")
 vim.api.nvim_command("highlight Title guibg=none gui=bold")
 vim.api.nvim_command("highlight TabLineSel guibg=#333842 gui=bold")
@@ -20,7 +20,6 @@ vim.api.nvim_command("highlight TabLineFill guibg=none gui=bold")
 vim.api.nvim_command("highlight WinBar guibg=none gui=bold")
 vim.api.nvim_command("highlight NormalFloat guibg=none")
 vim.api.nvim_command("highlight LineNr guibg=none")
-vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
 --vim.api.nvim_command("highlight FoldColumn guibg=none")
 
 --vim.api.nvim_command("highlight SignColumn guifg=none guibg=none cterm=NONE ctermfg=none ctermbg=NONE gui=NONE")
