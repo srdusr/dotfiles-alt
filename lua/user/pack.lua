@@ -118,6 +118,7 @@ return packer.startup(function(use)
 	use("hrsh7th/cmp-calc") -- Completion source for math calculation
 	use("saadparwaiz1/cmp_luasnip") -- Completion source for snippets, specifically for luasnip
 	use("hrsh7th/cmp-nvim-lsp-signature-help") -- Completion source for displaying function signatures with the current parameter emphasized
+  use("rcarriga/cmp-dap")
 
 	-- Snippets
 	use("L3MON4D3/LuaSnip") -- Snippet engine
