@@ -366,7 +366,7 @@ end)
 -- Set breakpoints, get variable values, step into/out of functions, etc.
 map("n", "<leader>dc", dap.continue)
 map("n", "<leader>dC", dap.close)
-map("n", "<leader>dt", dap.terminate)
+--map("n", "<leader>dt", dap.terminate)
 map("n", "<leader>dd", function() dap.disconnect({ terminateDebuggee = true }) end)
 map("n", "<leader>dn", dap.step_over)
 map("n", "<leader>di", dap.step_into)
@@ -377,19 +377,31 @@ map("n", "<leader>dB", function()
   require("notify")("Breakpoints cleared", "warn")
 end)
 map("n", "<leader>dl", require("dap.ui.widgets").hover)
+map("n", "<leader>de", function() require("dapui").float_element() end,
+  { desc = "Open Element" })
+map("n", "<leader>dt", function()
+  require("dapui").close()
+  require("dap").repl.close()
+  local session = require("dap").session()
+  if session then
+    require("dap").terminate()
+  end
+    require("nvim-dap-virtual-text").refresh()
+  end, { desc = "Terminate Debug" })
+
 --vim.keymap.set("n", "<leader>B", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 --vim.keymap.set("v", "<leader>B", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 --vim.keymap.set("n", "<leader>lp", ":lua require'dap'.set_breakpoint(nil, nil, vim.fn.input('Log point message: '))<CR>")
 --vim.keymap.set("n", "<leader>dr", ":lua require'dap'.repl.open()<CR>")
 
 -- Close debugger and clear breakpoints
-map("n", "<leader>de", function()
-  dap.clear_breakpoints()
-  ui.toggle({})
-  dap.terminate()
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false)
-  require("notify")("Debugger session ended", "warn")
-end)
+--map("n", "<leader>de", function()
+--  dap.clear_breakpoints()
+--  ui.toggle({})
+--  dap.terminate()
+--  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false)
+--  require("notify")("Debugger session ended", "warn")
+--end)
 
 -- Dashboard
 map("n", "<leader><Space>", "<CMD>Dashboard<CR>")
