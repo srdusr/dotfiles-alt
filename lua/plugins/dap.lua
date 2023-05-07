@@ -1,4 +1,13 @@
 local dap = require('dap')
+
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "dap-float" },
+  callback = function(event)
+    vim.keymap.set("n", "<Tab>", "", { buffer = event.buf, silent = true })
+    vim.keymap.set("n", "<S-Tab>", "", { buffer = event.buf, silent = true })
+  end,
+})
+
 --dap.defaults.fallback.external_terminal = {
 --  command = '/usr/bin/wezterm';
 --  args = {'-e'};
@@ -43,6 +52,7 @@ dap.adapters.cppdbg = {
   type = 'executable',
   --command = vim.fn.stdpath('data') .. '/mason/bin/OpenDebugAD7',
   command = os.getenv("HOME") .. '/apps/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
+  --command = cpptools:get_install_path() .. '/extension/debugAdapters/bin/OpenDebugAD7'
 }
 
 dap.adapters.codelldb = {
