@@ -289,16 +289,21 @@ dapui.setup({
   layouts = {
     {
       elements = {
-        { id = "scopes", size = 0.5 },
-        { id = "watches", size = 0.5 },
+        -- Elements can be strings or table with id and size keys.
+        { id = "scopes", size = 0.4 },
+        "breakpoints",
+        "stacks",
+        "watches",
       },
-      size = 40,
+      size = 50, -- 40 columns
       position = "left",
     },
     {
-      elements = { "console", "repl" },
+      elements = {
+        "console",
+      },
+      size = 0.3,
       position = "bottom",
-      size = 15,
     },
   },
   render = {
@@ -318,15 +323,16 @@ dapui.setup({
     collapsed = "",
     current_frame = "",
   },
+  { "theHamsta/nvim-dap-virtual-text", config = true },
 })
 
 -- signs
 local sign = vim.fn.sign_define
 sign("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+sign("DapBreakpointCondition", { text = "◆", texthl = "DapBreakpointCondition", linehl = "", numhl = "" })
+sign("DapBreakpointRejected", { text = 'R', texthl = 'DiagnosticError', numhl = 'DiagnosticError' })
+sign("DapLogPoint", { text = "L", texthl = "DapLogPoint", linehl = "", numhl = "" })
 sign('DapStopped', { text = '', texthl = 'DiagnosticSignHint', numbhl = '', linehl = '' })
-sign("DapBreakpointRejected", { text = '!>', texthl = 'DiagnosticError', numhl = 'DiagnosticError' })
-sign("DapBreakpointCondition", { text = "●", texthl = "DapBreakpointCondition", linehl = "", numhl = "" })
-sign("DapLogPoint", { text = "◆", texthl = "DapLogPoint", linehl = "", numhl = "" })
 
 --sign('DapBreakpoint', { text = '', texthl = 'DiagnosticSignError', numbhl = '', linehl = '' })
 --sign("DapLogPoint", { text = '.>', texthl = 'DiagnosticInfo', numhl = 'DiagnosticInfo' })
