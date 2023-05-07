@@ -284,7 +284,7 @@ dapui.setup({
       toggle = "t",
   },
   controls = {
-    enabled = false,
+    enabled = true,
   },
   layouts = {
     {
@@ -298,6 +298,13 @@ dapui.setup({
       size = 50, -- 40 columns
       position = "left",
     },
+    --{
+    --  elements = {
+    --    "repl",
+    --  },
+    --  size = 50,
+    --  position = "center",
+    --},
     {
       elements = {
         "console",
@@ -329,7 +336,7 @@ dapui.setup({
 -- signs
 local sign = vim.fn.sign_define
 sign("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = "" })
-sign("DapBreakpointCondition", { text = "◆", texthl = "DapBreakpointCondition", linehl = "", numhl = "" })
+sign("DapBreakpointCondition", { text = "◆", texthl = "DapBreakpointCondition", linehl = "", numhl = "" }) --
 sign("DapBreakpointRejected", { text = 'R', texthl = 'DiagnosticError', numhl = 'DiagnosticError' })
 sign("DapLogPoint", { text = "L", texthl = "DapLogPoint", linehl = "", numhl = "" })
 sign('DapStopped', { text = '', texthl = 'DiagnosticSignHint', numbhl = '', linehl = '' })
