@@ -779,40 +779,34 @@ local InactiveStatusline = {
   { Align,       hl = { bg = colors.nobg, force = true } },
 }
 
+local specialleft = {
+    { ViMode,     hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+    { LeftSpace,     hl = { bg = colors.nobg, force = true } },
+    { Space,         hl = { bg = colors.nobg, force = true } },
+  }
+local specialmiddle = {
+    { Align,       hl = { bg = colors.nobg, force = true } },
+    { DAPMessages, hl = { bg = colors.nobg, force = true } },
+    { Align,       hl = { bg = colors.nobg, force = true } },
+  }
+local specialright = {
+    { RightSpace,     hl = { bg = colors.nobg, force = true } },
+    { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  }
+local specialsections = { specialleft, specialmiddle, specialright }
+
 local SpecialStatusline = {
   condition = function()
     return conditions.buffer_matches({
       buftype = { "nofile", "prompt", "help", "quickfix" },
       filetype = { "^git.*", "fugitive", "dashboard", },
     })
-  end,
-  { ViMode,     hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  { LeftSpace,     hl = { bg = colors.nobg, force = true } },
-  { Space,         hl = { bg = colors.nobg, force = true } },
-  { Align,       hl = { bg = colors.nobg, force = true } },
-  { DAPMessages, hl = { bg = colors.nobg, force = true } },
-  { Align,       hl = { bg = colors.nobg, force = true } },
-  { RightSpace,     hl = { bg = colors.nobg, force = true } },
-  { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-}
+  end, specialsections }
 
 local TerminalStatusline = {
   condition = function()
     return conditions.buffer_matches({ buftype = { "terminal" } })
-  end,
-
-  -- Quickly add a condition to the ViMode to only show it when buffer is active!
-  --{ condition = conditions.is_active, ViMode, Space },
-  { ViMode,     hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  { LeftSpace,     hl = { bg = colors.nobg, force = true } },
-  { FileNameBlock, hl = { bg = colors.nobg, force = true } },
-  { Space,         hl = { bg = colors.nobg, force = true } },
-  { Align,       hl = { bg = colors.nobg, force = true } },
-  { DAPMessages, hl = { bg = colors.nobg, force = true } },
-  { Align,       hl = { bg = colors.nobg, force = true } },
-  { RightSpace,     hl = { bg = colors.nobg, force = true } },
-  { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-}
+  end, specialsections }
 
 local StatusLine = {
   static = {
