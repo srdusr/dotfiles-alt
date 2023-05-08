@@ -71,6 +71,7 @@ local modules = {
   "plugins.colorscheme",
   "plugins.treesitter",
   "plugins.telescope",
+  "plugins.neodev",
   "plugins.nvim-tree",
   "plugins.quickfix",
   "plugins.cmp",
