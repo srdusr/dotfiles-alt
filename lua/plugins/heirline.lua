@@ -337,26 +337,100 @@ local Git = {
 
 -- Debugger
 -- Display informations from nvim-dap!
+-- Note that we add spaces separately, so that only the icon characters will be clickable
 local DAPMessages = {
-  -- display the dap messages only on the debugged file
-  condition = function()
-    local session = require("dap").session()
-    if session then
-      local filename = vim.api.nvim_buf_get_name(0)
-      if session.config then
-        local progname = session.config.program
-        return filename == progname
-      end
-    end
-    return false
-  end,
-  provider = function()
-    return " " .. require("dap").status()
-  end,
-  hl = { fg = utils.get_highlight("Debug").fg },
-  -- Debugger on_click: step-over, step-into, next, previous, stop buttons
-  --    coming soon!
+    condition = function()
+        local session = require("dap").session()
+        return session ~= nil
+    end,
+    provider = function()
+        return " " .. require("dap").status() .. " "
+    end,
+    hl = "Debug",
+    {
+        provider = "",
+        on_click = {
+            callback = function()
+                require("dap").step_into()
+            end,
+            name = "heirline_dap_step_into",
+        },
+    },
+    { provider = " " },
+    {
+        provider = "",
+        on_click = {
+            callback = function()
+                require("dap").step_out()
+            end,
+            name = "heirline_dap_step_out",
+        },
+    },
+    { provider = " " },
+    {
+        provider = " ",
+        on_click = {
+            callback = function()
+                require("dap").step_over()
+            end,
+            name = "heirline_dap_step_over",
+        },
+    },
+    { provider = " " },
+    {
+        provider = "ﰇ",
+        on_click = {
+            callback = function()
+                require("dap").run_last()
+            end,
+            name = "heirline_dap_run_last",
+        },
+    },
+    { provider = " " },
+    {
+        provider = "",
+        on_click = {
+            callback = function()
+                require("dap").terminate()
+                require("dapui").close({})
+            end,
+            name = "heirline_dap_close",
+        },
+    },
+    { provider = " " },
+    -- icons:       ﰇ  
 }
+--local DAPMessages = {
+--  -- display the dap messages only on the debugged file
+--  condition = function()
+--    local session = require("dap").session()
+--    if session then
+--      local filename = vim.api.nvim_buf_get_name(0)
+--      if session.config then
+--        local progname = session.config.program
+--        return filename == progname
+--      end
+--    end
+--    return false
+--  end,
+--  provider = function()
+--    return " " .. require("dap").status()
+--  end,
+--  hl = { fg = utils.get_highlight("Debug").fg },
+--  -- Debugger on_click: step-over, step-into, next, previous, stop buttons
+--  --    coming soon!
+--}
+--local DAPMessages = {
+--    condition = function()
+--        local session = require("dap").session()
+--        return session ~= nil
+--    end,
+--    provider = function()
+--        return " " .. require("dap").status()
+--    end,
+--    hl = "Debug"
+--    -- see Click-it! section for clickable actions
+--}
 
 -- Tests
 -- This requires the great ultest.
@@ -716,6 +790,8 @@ local SpecialStatusline = {
   { LeftSpace,     hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { Align,       hl = { bg = colors.nobg, force = true } },
+  { DAPMessages, hl = { bg = colors.nobg, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
   { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
 }
@@ -731,6 +807,8 @@ local TerminalStatusline = {
   { LeftSpace,     hl = { bg = colors.nobg, force = true } },
   { FileNameBlock, hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
+  { DAPMessages, hl = { bg = colors.nobg, force = true } },
   { Align,       hl = { bg = colors.nobg, force = true } },
   { RightSpace,     hl = { bg = colors.nobg, force = true } },
   { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
@@ -863,8 +941,8 @@ local Center = {
    -- Hide the winbar for special buffers
     condition = function()
       return conditions.buffer_matches({
-        buftype = { "nofile", "prompt", "help", "quickfix" },
-        filetype = { "^git.*", "fugitive", "dashboard", },
+        buftype = { "terminal", "nofile", "prompt", "help", "quickfix" },
+        filetype = { "dap-ui", "NvimTree", "^git.*", "fugitive", "dashboard", },
       })
     end,
     init = function()
