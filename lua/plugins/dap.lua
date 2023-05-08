@@ -310,7 +310,8 @@ dapui.setup({
       elements = {
         --"console",
         { id = "console", size = 0.6 },
-        "repl",
+        --"repl",
+        { id = "repl", size = 0.4 },
       },
       size = 0.3,
       position = "bottom",
