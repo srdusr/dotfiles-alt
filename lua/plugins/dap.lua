@@ -290,10 +290,11 @@ dapui.setup({
     {
       elements = {
         -- Elements can be strings or table with id and size keys.
-        { id = "scopes", size = 0.4 },
+        --{ id = "scopes", size = 0.4 },
+        "watches",
+        "scopes",
         "breakpoints",
         "stacks",
-        "watches",
       },
       size = 50, -- 40 columns
       position = "left",
@@ -307,7 +308,9 @@ dapui.setup({
     --},
     {
       elements = {
-        "console",
+        --"console",
+        { id = "console", size = 0.6 },
+        "repl",
       },
       size = 0.3,
       position = "bottom",
@@ -390,5 +393,5 @@ vim.cmd([[
 -- options
 --dap.set_exception_breakpoints("default")
 dap.defaults.fallback.switchbuf = 'uselast'
-dap.defaults.fallback.focus_terminal = false
-dap.defaults.fallback.terminal_win_cmd = '10split new'
+dap.defaults.fallback.focus_terminal = true
+--dap.defaults.fallback.terminal_win_cmd = '10split new'
