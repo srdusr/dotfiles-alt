@@ -1,4 +1,5 @@
 require("fidget").setup({
+  event = "LspAttach",
   text = {
     --spinner = "pipe",         -- (Default) animation shown when tasks are ongoing
     --spinner = "hamburger",         -- animation shown when tasks are ongoing
