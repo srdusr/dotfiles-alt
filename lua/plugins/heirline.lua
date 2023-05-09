@@ -50,39 +50,39 @@ local ViMode = {
   end,
   static = {
     mode_names = {
-      n = "NORMAL ",
-      no = "N·OPERATOR PENDING ",
-      nov = "N?",
-      noV = "N?",
-      ["no\22"] = "N? ",
-      niI = "Ni",
-      niR = "Nr",
-      niV = "Nv",
+      n = " NORMAL ",
+      no = "PENDING ",
+      nov = "   N?   ",
+      noV = "   N?   ",
+      ["no\22"] = "   N?   ",
+      niI = "   Ni   ",
+      niR = "   Nr   ",
+      niV = "   Nv   ",
       nt = "TERMINAL",
-      v = "VISUAL ",
-      vs = "Vs",
-      V = "V·LINE ",
+      v = " VISUAL ",
+      vs = "   Vs   ",
+      V = " V·LINE ",
       ["\22"] = "V·BLOCK ",
       ["\22s"] = "V·BLOCK ",
-      s = "SELECT ",
-      S = "S·LINE ",
+      s = " SELECT ",
+      S = " S·LINE ",
       ["\19"] = "S·BLOCK ",
-      i = "INSERT ",
-      ix = "insert x ",
-      ic = "insert c ",
+      i = " INSERT ",
+      ix = "insert x",
+      ic = "insert c",
       R = "REPLACE ",
-      Rc = "Rc",
-      Rx = "Rx",
+      Rc = "   Rc   ",
+      Rx = "   Rx   ",
       Rv = "V·REPLACE ",
-      Rvc = "Rv",
-      Rvx = "Rv",
-      c = "COMMAND",
-      cv = "VIM EX ",
-      ce = "EX ",
-      r = "PROMPT ",
-      rm = "MORE ",
+      Rvc = "   Rv   ",
+      Rvx = "   Rv   ",
+      c = "COMMAND ",
+      cv = " VIM EX ",
+      ce = "   EX   ",
+      r = " PROMPT ",
+      rm = "  MORE  ",
       ["r?"] = "CONFIRM ",
-      ["!"] = "SHELL ",
+      ["!"] = " SHELL  ",
       t = "TERMINAL",
     },
   },
@@ -113,9 +113,8 @@ local LSPActive = {
   end,
   hl = { fg = colors.lightgray, bold = false },
 }
-
 local Navic = {
-  condition = require("nvim-navic").is_available,
+  condition = function() return require("nvim-navic").is_available() end,
   static = {
     -- create a type highlight map
     type_hl = {
@@ -204,7 +203,7 @@ local Navic = {
   provider = function(self)
     return self.child:eval()
   end,
-  hl = { fg = colors.white },
+  hl = { fg = "gray" },
   update = 'CursorMoved'
 }
 
@@ -270,7 +269,7 @@ local Git = {
   --hl = { fg = "orange" },
   hl = { fg = colors.orange, bg = colors.bg },
   {
-   -- git branch name
+    -- git branch name
     provider = function(self)
       return " " .. self.status_dict.head
     end,
@@ -339,66 +338,66 @@ local Git = {
 -- Display informations from nvim-dap!
 -- Note that we add spaces separately, so that only the icon characters will be clickable
 local DAPMessages = {
-    condition = function()
-        local session = require("dap").session()
-        return session ~= nil
-    end,
-    provider = function()
-        return " " .. require("dap").status() .. " "
-    end,
-    hl = "Debug",
-    {
-        provider = "",
-        on_click = {
-            callback = function()
-                require("dap").step_into()
-            end,
-            name = "heirline_dap_step_into",
-        },
+  condition = function()
+    local session = require("dap").session()
+    return session ~= nil
+  end,
+  provider = function()
+    return " " .. require("dap").status() .. " "
+  end,
+  hl = "Debug",
+  {
+    provider = "",
+    on_click = {
+      callback = function()
+        require("dap").step_into()
+      end,
+      name = "heirline_dap_step_into",
     },
-    { provider = " " },
-    {
-        provider = "",
-        on_click = {
-            callback = function()
-                require("dap").step_out()
-            end,
-            name = "heirline_dap_step_out",
-        },
+  },
+  { provider = " " },
+  {
+    provider = "",
+    on_click = {
+      callback = function()
+        require("dap").step_out()
+      end,
+      name = "heirline_dap_step_out",
     },
-    { provider = " " },
-    {
-        provider = " ",
-        on_click = {
-            callback = function()
-                require("dap").step_over()
-            end,
-            name = "heirline_dap_step_over",
-        },
+  },
+  { provider = " " },
+  {
+    provider = " ",
+    on_click = {
+      callback = function()
+        require("dap").step_over()
+      end,
+      name = "heirline_dap_step_over",
     },
-    { provider = " " },
-    {
-        provider = "ﰇ",
-        on_click = {
-            callback = function()
-                require("dap").run_last()
-            end,
-            name = "heirline_dap_run_last",
-        },
+  },
+  { provider = " " },
+  {
+    provider = "ﰇ",
+    on_click = {
+      callback = function()
+        require("dap").run_last()
+      end,
+      name = "heirline_dap_run_last",
     },
-    { provider = " " },
-    {
-        provider = "",
-        on_click = {
-            callback = function()
-                require("dap").terminate()
-                require("dapui").close({})
-            end,
-            name = "heirline_dap_close",
-        },
+  },
+  { provider = " " },
+  {
+    provider = "",
+    on_click = {
+      callback = function()
+        require("dap").terminate()
+        require("dapui").close({})
+      end,
+      name = "heirline_dap_close",
     },
-    { provider = " " },
-    -- icons:       ﰇ  
+  },
+  { provider = " " },
+  -- icons:       ﰇ  
 }
 --local DAPMessages = {
 --  -- display the dap messages only on the debugged file
@@ -609,7 +608,7 @@ local Spell = {
   hl = { bold = true, fg = colors.yellow },
 }
 
-local help_file_name = {
+local HelpFileName = {
   condition = function()
     return vim.bo.filetype == "help"
   end,
@@ -620,9 +619,51 @@ local help_file_name = {
   hl = { fg = colors.blue },
 }
 
-local cursor_location = {
-  { provider = " %1(%4l:%-3(%c%) %)%*", hl = { fg = colors.black, bold = true } },
+local SearchCount = {
+  condition = function()
+    return vim.v.hlsearch ~= 0 and vim.o.cmdheight == 0
+  end,
+  init = function(self)
+    local ok, search = pcall(vim.fn.searchcount)
+    if ok and search.total then
+      self.search = search
+    end
+  end,
+  provider = function(self)
+    local search = self.search
+    return string.format("[%d/%d]", search.current, math.min(search.total, search.maxcount))
+  end,
 }
+
+local MacroRec = {
+  condition = function()
+    return vim.fn.reg_recording() ~= "" and vim.o.cmdheight == 0
+  end,
+  provider = " ",
+  hl = { fg = "orange", bold = true },
+  utils.surround({ "[", "]" }, nil, {
+    provider = function()
+      return vim.fn.reg_recording()
+    end,
+    hl = { fg = "green", bold = true },
+  }),
+  update = {
+    "RecordingEnter",
+    "RecordingLeave",
+  }
+}
+
+local ShowCmd = {
+  condition = function()
+    return vim.o.cmdheight == 0
+  end,
+  provider = ":%3.5(%S%)",
+}
+
+local cursor_location = {
+  { provider = " %1(%4l:%-3(%c%)  %)%*", hl = { fg = colors.black, bold = true } },
+}
+
 local Ruler = { cursor_location }
 
 --utils.make_flexible_component(
@@ -709,8 +750,8 @@ FileNameBlock = utils.insert(
   FileNameBlock,
   FileIcon,
   utils.insert(FileNameModifier, FileName), -- a new table where FileName is a child of FileNameModifier
-  unpack(FileFlags),                       -- A small optimisation, since their parent does nothing
-  { provider = "%<" }                      -- this means that the statusline is cut here when there's not enough space
+  unpack(FileFlags),                        -- A small optimisation, since their parent does nothing
+  { provider = "%<" }                       -- this means that the statusline is cut here when there's not enough space
 )
 
 local FileInfoBlock = {
@@ -753,20 +794,22 @@ local left = {
   { Space,         hl = { bg = colors.nobg, force = true } },
   { Git,           hl = { bg = colors.nobg, force = true } },
 }
+
 local middle = {
   { Align,       hl = { bg = colors.nobg, force = true } },
-  --{ Navic, hl = { bg = utils.get_highlight("statusline").bg, force = true } },
+  { Navic,       hl = { bg = colors.nobg, force = true } },
   { DAPMessages, hl = { bg = colors.nobg, force = true } },
   { Align,       hl = { bg = colors.nobg, force = true } },
 }
+
 local right = {
-  { Space,         hl = { bg = colors.nobg, force = true } },
+  --{ Space,         hl = { bg = colors.nobg, force = true } },
   { Diagnostics,   hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { LSPActive,     hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { FileInfoBlock, hl = { bg = colors.nobg, force = true } },
-  { RightSpace,     hl = { bg = colors.nobg, force = true } },
+  { RightSpace,    hl = { bg = colors.nobg, force = true } },
   { Ruler,         hl = { fg = utils.get_highlight("statusline").bg, force = true } },
 }
 
@@ -776,23 +819,25 @@ local DefaultStatusline = { sections }
 local InactiveStatusline = {
   condition = conditions.is_not_active,
   { FileNameBlock, hl = { bg = colors.nobg, force = true } },
-  { Align,       hl = { bg = colors.nobg, force = true } },
+  { Align,         hl = { bg = colors.nobg, force = true } },
 }
 
 local specialleft = {
-    { ViMode,     hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-    { LeftSpace,     hl = { bg = colors.nobg, force = true } },
-    { Space,         hl = { bg = colors.nobg, force = true } },
-  }
+  { ViMode,    hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  { LeftSpace, hl = { bg = colors.nobg, force = true } },
+}
+
 local specialmiddle = {
-    { Align,       hl = { bg = colors.nobg, force = true } },
-    { DAPMessages, hl = { bg = colors.nobg, force = true } },
-    { Align,       hl = { bg = colors.nobg, force = true } },
-  }
+  { Align,       hl = { bg = colors.nobg, force = true } },
+  { DAPMessages, hl = { bg = colors.nobg, force = true } },
+  { Align,       hl = { bg = colors.nobg, force = true } },
+}
+
 local specialright = {
-    { RightSpace,     hl = { bg = colors.nobg, force = true } },
-    { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  }
+  { RightSpace, hl = { bg = colors.nobg, force = true } },
+  { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+}
+
 local specialsections = { specialleft, specialmiddle, specialright }
 
 local SpecialStatusline = {
@@ -801,12 +846,16 @@ local SpecialStatusline = {
       buftype = { "nofile", "prompt", "help", "quickfix" },
       filetype = { "^git.*", "fugitive", "dashboard", },
     })
-  end, specialsections }
+  end,
+  specialsections
+}
 
 local TerminalStatusline = {
   condition = function()
     return conditions.buffer_matches({ buftype = { "terminal" } })
-  end, specialsections }
+  end,
+  specialsections
+}
 
 local StatusLine = {
   static = {
@@ -852,6 +901,7 @@ local WinbarFileNameBlock = {
   end,
   hl = { bg = colors.bg },
 }
+
 local WinbarFileName = {
   provider = function(self)
     -- first, trim the pattern relative to the current directory. For other
@@ -876,8 +926,8 @@ WinbarFileNameBlock = utils.insert(
   WinbarFileNameBlock,
   FileIcon,
   utils.insert(WinbarFileName), -- a new table where FileName is a child of FileNameModifier
-  unpack(FileFlags),           -- A small optimisation, since their parent does nothing
-  { provider = "%<" }          -- this means that the statusline is cut here when there's not enough space
+  unpack(FileFlags),            -- A small optimisation, since their parent does nothing
+  { provider = "%<" }           -- this means that the statusline is cut here when there's not enough space
 )
 
 vim.api.nvim_create_autocmd("User", {
@@ -932,7 +982,7 @@ local CloseButton = {
 local Center = {
   fallthrough = false,
   {
-   -- Hide the winbar for special buffers
+    -- Hide the winbar for special buffers
     condition = function()
       return conditions.buffer_matches({
         buftype = { "terminal", "nofile", "prompt", "help", "quickfix" },
@@ -944,7 +994,7 @@ local Center = {
     end,
   },
   {
-   -- A special winbar for terminals
+    -- A special winbar for terminals
     condition = function()
       return conditions.buffer_matches({ buftype = { "terminal" } })
     end,
@@ -953,7 +1003,7 @@ local Center = {
     --TerminalName,
   },
   {
-   -- An inactive winbar for regular files
+    -- An inactive winbar for regular files
     condition = function()
       return not conditions.is_active()
     end,
@@ -1169,29 +1219,30 @@ require("heirline").setup({
 })
 
 -- Yep, with heirline we're driving manual!
+vim.o.showtabline = 2
 vim.cmd([[au FileType * if index(['wipe', 'delete', 'unload'], &bufhidden) >= 0 | set nobuflisted | endif]])
 
 local function get_bufs()
-	return vim.tbl_filter(function(bufnr)
-		return vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].buflisted
-	end, vim.api.nvim_list_bufs())
+  return vim.tbl_filter(function(bufnr)
+    return vim.api.nvim_buf_is_loaded(bufnr) and vim.bo[bufnr].buflisted
+  end, vim.api.nvim_list_bufs())
 end
 
 local function goto_buf(index)
-	local bufs = get_bufs()
-	if index > #bufs then
-		index = #bufs
-	end
-	vim.api.nvim_win_set_buf(0, bufs[index])
+  local bufs = get_bufs()
+  if index > #bufs then
+    index = #bufs
+  end
+  vim.api.nvim_win_set_buf(0, bufs[index])
 end
 
 local function addKey(key, index)
-	vim.keymap.set("", "<A-" .. key .. ">", function()
-		goto_buf(index)
-	end, { noremap = true, silent = true })
+  vim.keymap.set("", "<A-" .. key .. ">", function()
+    goto_buf(index)
+  end, { noremap = true, silent = true })
 end
 
 for i = 1, 9 do
-	addKey(i, i)
+  addKey(i, i)
 end
 addKey("0", 10)
