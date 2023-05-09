@@ -262,6 +262,7 @@ require('telescope').load_extension('changed_files')
 require('telescope').load_extension('media_files')
 --require('telescope').extensions.notify.notify()
 require('telescope').load_extension('notify')
+require('telescope').load_extension('dap')
 
 function M.find_configs()
   require("telescope.builtin").find_files {
