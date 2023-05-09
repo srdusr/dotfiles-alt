@@ -194,6 +194,12 @@ return packer.startup(function(use)
 	--    require("plugins.ultest")
 	--  end,
 	--})
+	use({"rcarriga/neotest",
+    config = function()
+    require("neotest").setup()
+  end,
+  })
+
 
 	-- Colorschemes
 	use("bluz71/vim-nightfly-guicolors")
