@@ -140,6 +140,7 @@ return packer.startup(function(use)
 	use("nvim-telescope/telescope-media-files.nvim") -- 
 	use("nvim-telescope/telescope-file-browser.nvim") -- 
 	use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" }) -- Search emoji(s) and other symbols
+	use("nvim-telescope/telescope-dap.nvim")
 	use("axkirillov/telescope-changed-files") -- 
 
 	-- UX
