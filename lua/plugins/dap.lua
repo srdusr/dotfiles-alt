@@ -284,33 +284,36 @@ dapui.setup({
       toggle = "t",
   },
   controls = {
+    element = "repl",
     enabled = true,
+    --icons = {
+    --    disconnect = "",
+    --    pause = "",
+    --    play = "",
+    --    run_last = "",
+    --    step_back = "",
+    --    step_into = "",
+    --    step_out = "",
+    --    step_over = "",
+    --    terminate = "",
+    --},
   },
   layouts = {
     {
       elements = {
         -- Elements can be strings or table with id and size keys.
         --{ id = "scopes", size = 0.4 },
-        "watches",
-        "scopes",
-        "breakpoints",
-        "stacks",
+        { id = "watches", size = 0.25 },
+        { id = "scopes", size = 0.25 },
+        { id = "breakpoints", size = 0.25 },
+        { id = "stacks", size = 0.25 },
       },
       size = 50, -- 40 columns
       position = "left",
     },
-    --{
-    --  elements = {
-    --    "repl",
-    --  },
-    --  size = 50,
-    --  position = "center",
-    --},
     {
       elements = {
-        --"console",
         { id = "console", size = 0.6 },
-        --"repl",
         { id = "repl", size = 0.4 },
       },
       size = 0.3,
