@@ -2,6 +2,7 @@ require('mason').setup()
 local lspconfig = require 'lspconfig'
 local mason_lspconfig = require 'mason-lspconfig'
 local null_ls = require 'null-ls'
+--local lsp_lines = require 'lsp_lines'
 
 local keymap = vim.keymap
 local cmd = vim.cmd
@@ -24,11 +25,24 @@ for type, icon in pairs(signs) do
   vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
 end
 
+--lsp_lines.setup()
+
+--vim.keymap.set("n", "g?", function()
+--  local lines_enabled = not vim.diagnostic.config().virtual_lines
+--  vim.diagnostic.config(
+--    {
+--      virtual_lines = lines_enabled,
+--      virtual_text = not lines_enabled
+--    }
+--  )
+--end, { noremap = true, silent = true })
+
 vim.diagnostic.config({
   underline = false,
   signs = true,
-  virtual_text = false,
-  virtual_lines = { only_current_line = true },
+  virtual_text = true,
+  --virtual_lines = { only_current_line = true },
+  virtual_lines = false,
   float = {
     show_header = true,
     source = 'if_many',
@@ -279,7 +293,6 @@ null_ls.setup {
     builtins.diagnostics.phpcs,
     -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
 
-
     -- Formatting
     builtins.formatting.shfmt.with({
       filetypes = { "bash", "zsh", "sh" },
@@ -290,7 +303,6 @@ null_ls.setup {
     builtins.formatting.clang_format,
     builtins.formatting.rustfmt,
     builtins.formatting.sql_formatter,
-
     -- null_ls.builtins.formatting.cmake_format,
     builtins.formatting.isort,
     builtins.formatting.htmlbeautifier,
@@ -307,14 +319,12 @@ null_ls.setup {
     builtins.formatting.yapf,
     -- null_ls.builtins.formatting.black
 
-
     -- Code Actions
     builtins.code_actions.shellcheck, -- shell script code actions
     --builtins.code_actions.eslint_d.with(eslint_opts),
     -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
     builtins.code_actions.gitsigns,
     builtins.code_actions.gitrebase,
-
 
     -- Hover
     builtins.hover.dictionary,
