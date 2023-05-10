@@ -1,5 +1,15 @@
 local dap = require('dap')
 
+-- options
+--dap.set_exception_breakpoints("default")
+dap.defaults.fallback.switchbuf = 'uselast'
+dap.defaults.fallback.focus_terminal = true
+dap.defaults.fallback.terminal_win_cmd = '10split new'
+
+--vim.cmd([[
+--  autocmd TermClose * if !v:event.status | exe 'bdelete! '..expand('<abuf>') | endif
+--]])
+
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "dap-float" },
   callback = function(event)
@@ -64,7 +74,7 @@ dap.adapters.codelldb = {
   executable = {
     --command = os.getenv("HOME") .. '/apps/codelldb/extension/adapter/codelldb',
     command = os.getenv("HOME") .. "/.vscode-oss/extensions/vadimcn.vscode-lldb-1.9.0-universal/adapter/codelldb",
-    args = {'--port', '${port}'},
+    args = { '--port', '${port}' },
   },
   --detached = true,
 }
@@ -127,7 +137,7 @@ dap.configurations.cpp = {
     --    ignoreFailures = false
     --  }
     --},
-},
+  },
 }
 --  dap.adapters.cppdbg = {
 --    name = 'cppdbg',
@@ -215,21 +225,21 @@ dap.configurations.rust = dap.configurations.cpp
 --}
 
 dap.adapters.python = {
-    type = 'executable';
-    command = vim.trim(vim.fn.system('which python'));
-    args = { '-m', 'debugpy.adapter' };
+  type = 'executable',
+  command = vim.trim(vim.fn.system('which python')),
+  args = { '-m', 'debugpy.adapter' },
 }
 
 dap.configurations.python = {
-    {
-        -- The first three options are required by nvim-dap
-        type = 'python'; -- the type here established the link to the adapter definition: `dap.adapters.python`
-        request = 'launch';
-        name = "Launch file";
-        -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
-        program = "${file}"; -- This configuration will launch the current file if used.
-        stopOnEntry = true,
-    },
+  {
+    -- The first three options are required by nvim-dap
+    type = 'python', -- the type here established the link to the adapter definition: `dap.adapters.python`
+    request = 'launch',
+    name = "Launch file",
+    -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
+    program = "${file}", -- This configuration will launch the current file if used.
+    stopOnEntry = true,
+  },
 }
 
 --local dapui = require('dapui')
@@ -247,41 +257,15 @@ end
 --    }
 --})
 
---dapui.setup({
---  layouts = {
---    {
---      elements = {
---        "watches",
---      },
---      size = 0.2,
---      position = "left",
---    },
---  },
---  controls = {
---    enabled = false,
---  },
---  render = {
---    max_value_lines = 3,
---  },
---  floating = {
---    max_height = nil, -- These can be integers or a float between 0 and 1.
---    max_width = nil, -- Floats will be treated as percentage of your screen.
---    border = "single", -- Border style. Can be "single", "double" or "rounded"
---    mappings = {
---      close = { "q", "<Esc>" },
---    },
---  },
---})
-
 -- setup dapui
 dapui.setup({
   mappings = {
-      expand = "<CR>",
-      open = "o",
-      remove = "D",
-      edit = "e",
-      repl = "r",
-      toggle = "t",
+    expand = "<CR>",
+    open = "o",
+    remove = "D",
+    edit = "e",
+    repl = "r",
+    toggle = "t",
   },
   controls = {
     element = "repl",
@@ -303,10 +287,10 @@ dapui.setup({
       elements = {
         -- Elements can be strings or table with id and size keys.
         --{ id = "scopes", size = 0.4 },
-        { id = "watches", size = 0.25 },
-        { id = "scopes", size = 0.25 },
+        { id = "watches",     size = 0.25 },
+        { id = "scopes",      size = 0.25 },
         { id = "breakpoints", size = 0.25 },
-        { id = "stacks", size = 0.25 },
+        { id = "stacks",      size = 0.25 },
       },
       size = 50, -- 40 columns
       position = "left",
@@ -314,7 +298,7 @@ dapui.setup({
     {
       elements = {
         { id = "console", size = 0.6 },
-        { id = "repl", size = 0.4 },
+        { id = "repl",    size = 0.4 },
       },
       size = 0.3,
       position = "bottom",
@@ -324,8 +308,8 @@ dapui.setup({
     max_value_lines = 3,
   },
   floating = {
-    max_height = nil, -- These can be integers or a float between 0 and 1.
-    max_width = nil, -- Floats will be treated as percentage of your screen.
+    max_height = nil,  -- These can be integers or a float between 0 and 1.
+    max_width = nil,   -- Floats will be treated as percentage of your screen.
     border = "single", -- Border style. Can be "single", "double" or "rounded"
     mappings = {
       close = { "q", "<Esc>" },
@@ -373,29 +357,19 @@ if not dap_virtual_text_status_ok then
 end
 --require("nvim-dap-virtual-text").setup()
 
-dap_virtual_text_status.setup({
-  enabled = true, -- enable this plugin (the default)
-  enabled_commands = true, -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
-  highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
-  highlight_new_as_changed = false, -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
-  show_stop_reason = true, -- show stop reason when stopped for exceptions
-  commented = true, -- prefix virtual text with comment string
-  only_first_definition = true, -- only show virtual text at first definition (if there are multiple)
-  all_references = false, -- show virtual text on all all references of the variable (not only definitions)
-  filter_references_pattern = "<module", -- filter references (not definitions) pattern when all_references is activated (Lua gmatch pattern, default filters out Python modules)
-  -- experimental features:
-  virt_text_pos = "eol", -- position of virtual text, see `:h nvim_buf_set_extmark()`
-  all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
-  virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
-  virt_text_win_col = nil -- position the virtual text at a fixed window column (starting from the first text column) ,
-  -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
-})
-
-vim.cmd([[
-  autocmd TermClose * if !v:event.status | exe 'bdelete! '..expand('<abuf>') | endif
-]])
--- options
---dap.set_exception_breakpoints("default")
-dap.defaults.fallback.switchbuf = 'uselast'
-dap.defaults.fallback.focus_terminal = true
---dap.defaults.fallback.terminal_win_cmd = '10split new'
+--local dap_virtual_text_status = require('nvim-dap-virtual-text')
+--require("nvim-dap-virtual-text").setup {
+dap_virtual_text_status.setup {
+  enabled = true,
+  enabled_commands = true,
+  highlight_changed_variables = true,
+  highlight_new_as_changed = false,
+  show_stop_reason = true,
+  commented = true,
+  only_first_definition = true,
+  all_references = false,
+  filter_references_pattern = "<module",
+  virt_text_pos = "eol",
+  all_frames = false,
+  virt_text_win_col = nil
+}
