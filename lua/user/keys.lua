@@ -157,6 +157,8 @@ map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 -- Toggle Diff
 map("n", "<leader>td", "<Cmd>call utils#ToggleDiff()<CR>")
 
+map("n", "<leader>tv", "<Cmd>call utils#ToggleVerbose()<CR>")
+
 -- Map delete to Ctrl+l
 map("i", "<C-l>", "<Del>")
 
