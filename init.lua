@@ -79,7 +79,6 @@ local modules = {
   --"plugins.git",
   "plugins.gitsigns",
   "plugins.neoscroll",
-  --"plugins.null-ls",
   "plugins.lsp",
   "plugins.statuscol",
   "plugins.goto-preview",
@@ -94,8 +93,6 @@ local modules = {
   "plugins.trouble",
   "plugins.dashboard",
   "plugins.dap",
-  --"plugins.modify-blend",
-  --"plugins.floatterm",
 }
 
 
