@@ -43,10 +43,10 @@ local RightSpace = { provider = "" }
 local ViMode = {
   init = function(self)
     self.mode = vim.fn.mode(1)
-    if not self.once then
-      vim.cmd("au ModeChanged *:*o redrawstatus")
-    end
-    self.once = true
+    --if not self.once then
+    --  vim.cmd("au ModeChanged *:*o redrawstatus")
+    --end
+    --self.once = true
   end,
   static = {
     mode_names = {
@@ -337,98 +337,67 @@ local Git = {
 -- Debugger
 -- Display informations from nvim-dap!
 -- Note that we add spaces separately, so that only the icon characters will be clickable
-local DAPMessages = {
-  condition = function()
-    local session = require("dap").session()
-    return session ~= nil
-  end,
-  provider = function()
-    return " " .. require("dap").status() .. " "
-  end,
-  hl = "Debug",
-  {
-    provider = "",
-    on_click = {
-      callback = function()
-        require("dap").step_into()
-      end,
-      name = "heirline_dap_step_into",
-    },
-  },
-  { provider = " " },
-  {
-    provider = "",
-    on_click = {
-      callback = function()
-        require("dap").step_out()
-      end,
-      name = "heirline_dap_step_out",
-    },
-  },
-  { provider = " " },
-  {
-    provider = " ",
-    on_click = {
-      callback = function()
-        require("dap").step_over()
-      end,
-      name = "heirline_dap_step_over",
-    },
-  },
-  { provider = " " },
-  {
-    provider = "ﰇ",
-    on_click = {
-      callback = function()
-        require("dap").run_last()
-      end,
-      name = "heirline_dap_run_last",
-    },
-  },
-  { provider = " " },
-  {
-    provider = "",
-    on_click = {
-      callback = function()
-        require("dap").terminate()
-        require("dapui").close({})
-      end,
-      name = "heirline_dap_close",
-    },
-  },
-  { provider = " " },
-  -- icons:       ﰇ  
-}
 --local DAPMessages = {
---  -- display the dap messages only on the debugged file
 --  condition = function()
 --    local session = require("dap").session()
---    if session then
---      local filename = vim.api.nvim_buf_get_name(0)
---      if session.config then
---        local progname = session.config.program
---        return filename == progname
---      end
---    end
---    return false
+--    return session ~= nil
 --  end,
 --  provider = function()
---    return " " .. require("dap").status()
+--    return " " .. require("dap").status() .. " "
 --  end,
---  hl = { fg = utils.get_highlight("Debug").fg },
---  -- Debugger on_click: step-over, step-into, next, previous, stop buttons
---  --    coming soon!
---}
---local DAPMessages = {
---    condition = function()
---        local session = require("dap").session()
---        return session ~= nil
---    end,
---    provider = function()
---        return " " .. require("dap").status()
---    end,
---    hl = "Debug"
---    -- see Click-it! section for clickable actions
+--  hl = "Debug",
+--  {
+--    provider = "",
+--    on_click = {
+--      callback = function()
+--        require("dap").step_into()
+--      end,
+--      name = "heirline_dap_step_into",
+--    },
+--  },
+--  { provider = " " },
+--  {
+--    provider = "",
+--    on_click = {
+--      callback = function()
+--        require("dap").step_out()
+--      end,
+--      name = "heirline_dap_step_out",
+--    },
+--  },
+--  { provider = " " },
+--  {
+--    provider = " ",
+--    on_click = {
+--      callback = function()
+--        require("dap").step_over()
+--      end,
+--      name = "heirline_dap_step_over",
+--    },
+--  },
+--  { provider = " " },
+--  {
+--    provider = "ﰇ",
+--    on_click = {
+--      callback = function()
+--        require("dap").run_last()
+--      end,
+--      name = "heirline_dap_run_last",
+--    },
+--  },
+--  { provider = " " },
+--  {
+--    provider = "",
+--    on_click = {
+--      callback = function()
+--        require("dap").terminate()
+--        require("dapui").close({})
+--      end,
+--      name = "heirline_dap_close",
+--    },
+--  },
+--  { provider = " " },
+--  -- icons:       ﰇ  
 --}
 
 -- Tests
@@ -796,10 +765,10 @@ local left = {
 }
 
 local middle = {
-  { Align,       hl = { bg = colors.nobg, force = true } },
-  { Navic,       hl = { bg = colors.nobg, force = true } },
-  { DAPMessages, hl = { bg = colors.nobg, force = true } },
-  { Align,       hl = { bg = colors.nobg, force = true } },
+  { Align, hl = { bg = colors.nobg, force = true } },
+  --{ Navic,       hl = { bg = colors.nobg, force = true } },
+  --{ DAPMessages, hl = { bg = colors.nobg, force = true } },
+  { Align, hl = { bg = colors.nobg, force = true } },
 }
 
 local right = {
@@ -816,21 +785,15 @@ local right = {
 local sections = { left, middle, right }
 local DefaultStatusline = { sections }
 
-local InactiveStatusline = {
-  condition = conditions.is_not_active,
-  { FileNameBlock, hl = { bg = colors.nobg, force = true } },
-  { Align,         hl = { bg = colors.nobg, force = true } },
-}
-
 local specialleft = {
   { ViMode,    hl = { fg = utils.get_highlight("statusline").bg, force = true } },
   { LeftSpace, hl = { bg = colors.nobg, force = true } },
 }
 
 local specialmiddle = {
-  { Align,       hl = { bg = colors.nobg, force = true } },
-  { DAPMessages, hl = { bg = colors.nobg, force = true } },
-  { Align,       hl = { bg = colors.nobg, force = true } },
+  { Align, hl = { bg = colors.nobg, force = true } },
+  --{ DAPMessages, hl = { bg = colors.nobg, force = true } },
+  { Align, hl = { bg = colors.nobg, force = true } },
 }
 
 local specialright = {
@@ -839,6 +802,13 @@ local specialright = {
 }
 
 local specialsections = { specialleft, specialmiddle, specialright }
+
+local InactiveStatusline = {
+  condition = conditions.is_not_active,
+  --{ FileNameBlock, hl = { bg = colors.nobg, force = true } },
+  --{ Align,         hl = { bg = colors.nobg, force = true } },
+  specialsections
+}
 
 local SpecialStatusline = {
   condition = function()
@@ -850,6 +820,8 @@ local SpecialStatusline = {
   specialsections
 }
 
+--local InactiveStatusline = SpecialStatusline
+
 local TerminalStatusline = {
   condition = function()
     return conditions.buffer_matches({ buftype = { "terminal" } })
@@ -859,18 +831,54 @@ local TerminalStatusline = {
 
 local StatusLine = {
   static = {
+    --mode_colors = {
+    --  n = colors.blue,
+    --  i = colors.green,
+    --  v = colors.purple,
+    --  V = colors.purple,
+    --  ["\22"] = colors.purple,
+    --  c = colors.orange,
+    --  s = colors.purple,
+    --  S = colors.purple,
+    --  ["\19"] = colors.purple,
+    --  R = colors.red,
+    --  r = colors.red,
+    --  ["!"] = colors.orange,
+    --  t = colors.orange,
+    --},
     mode_colors = {
       n = colors.blue,
-      i = colors.green,
+      no = colors.blue,
+      nov = colors.blue,
+      noV = colors.blue,
+      ["no\22"] = colors.blue,
+      niI = colors.blue,
+      niR = colors.blue,
+      niV = colors.blue,
+      nt = colors.blue,
       v = colors.purple,
+      vs = colors.purple,
       V = colors.purple,
       ["\22"] = colors.purple,
-      c = colors.orange,
+      ["\22s"] = colors.purple,
       s = colors.purple,
       S = colors.purple,
       ["\19"] = colors.purple,
+      i = colors.green,
+      ix = colors.green,
+      ic = colors.green,
       R = colors.red,
+      Rc = colors.red,
+      Rx = colors.red,
+      Rv = colors.red,
+      Rvc = colors.red,
+      Rvx = colors.red,
+      c = colors.orange,
+      cv = colors.orange,
+      ce = colors.orange,
       r = colors.red,
+      rm = colors.red,
+      ["r?"] = colors.red,
       ["!"] = colors.orange,
       t = colors.orange,
     },
