@@ -73,23 +73,22 @@ return packer.startup(function(use)
   })
   use("rmagatti/goto-preview")
 
-  -- neodev
-  use("folke/neodev.nvim")
-
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
 	use("rcarriga/nvim-dap-ui") -- UI for nvim-dap
+	--use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
   use("theHamsta/nvim-dap-virtual-text")
   use("gabrielpoca/replacer.nvim")
-  use({
-    "jayp0521/mason-nvim-dap.nvim",
-    config = function()
-      require("mason-nvim-dap").setup({
-        automatic_installation = true,
-        ensure_installed = { "python", "cppdbg", "codelldb" },
-      })
-    end,
-  })
+  use("jayp0521/mason-nvim-dap.nvim")
+  --use({
+  --  "jayp0521/mason-nvim-dap.nvim",
+  --  config = function()
+  --    require("mason-nvim-dap").setup({
+  --      automatic_installation = true,
+  --      ensure_installed = { "python", "cppdbg", "codelldb" },
+  --    })
+  --  end,
+  --})
 
 	-- Linters/Formatters
 	use('mhartington/formatter.nvim')
@@ -144,6 +143,7 @@ return packer.startup(function(use)
 	use("axkirillov/telescope-changed-files") -- 
 
 	-- UX
+  use("folke/neodev.nvim")
   use({
     'numToStr/Navigator.nvim', -- Navigate between Tmux and Nvim
     config = function()
