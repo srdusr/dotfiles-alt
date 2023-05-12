@@ -34,7 +34,7 @@ require('telescope').setup({
 			"%.DS_Store",
 			"%.git/",
 			"%.spl",
-			"%.log",
+			--"%.log",
 			"%[No Name%]", -- new files / sometimes folders (netrw)
 			"/$", -- ignore folders (netrw)
 			"node_modules",
