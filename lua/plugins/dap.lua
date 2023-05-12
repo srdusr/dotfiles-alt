@@ -1,15 +1,14 @@
 local dap = require('dap')
 
 -- options
---dap.set_exception_breakpoints("default")
 dap.defaults.fallback.switchbuf = 'uselast'
 dap.defaults.fallback.focus_terminal = true
-dap.defaults.fallback.terminal_win_cmd = '10split new'
+dap.defaults.fallback.external_terminal = {
+  command = '/usr/bin/wezterm',
+  args = { '-e' },
+}
 
---vim.cmd([[
---  autocmd TermClose * if !v:event.status | exe 'bdelete! '..expand('<abuf>') | endif
---]])
-
+-- Autocmds
 vim.api.nvim_create_autocmd("FileType", {
   pattern = { "dap-float" },
   callback = function(event)
@@ -18,45 +17,6 @@ vim.api.nvim_create_autocmd("FileType", {
   end,
 })
 
---dap.defaults.fallback.external_terminal = {
---  command = '/usr/bin/wezterm';
---  args = {'-e'};
---}
---dap.adapters.lldb = {
---  type = 'executable',
---  --command = '/usr/bin/lldb-vscode', -- adjust as needed, must be absolute path
---  --command = '/usr/bin/vscode-lldb', -- adjust as needed, must be absolute path
---  command = 'codelldb',
---  --command = 'lldb',
---  --command = codelldb_root,
---  --command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
---  name = 'lldb',
---  host = '127.0.0.1',
---  port = 13000
---}
---
---local lldb = {
---	name = "Launch lldb",
---	type = "lldb", -- matches the adapter
---	request = "launch", -- could also attach to a currently running process
---	program = function()
---		return vim.fn.input(
---			"Path to executable: ",
---			vim.fn.getcwd() .. "/",
---			"file"
---		)
---	end,
---	cwd = "${workspaceFolder}",
---	stopOnEntry = false,
---	args = {},
---	runInTerminal = false,
---	--type = 'server',
---  port = "${port}",
---  executable = {
---    --command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
---    args = { "--port", "${port}" },
---  }
---}
 dap.adapters.cppdbg = {
   id = 'cppdbg',
   type = 'executable',
@@ -86,19 +46,16 @@ dap.adapters.lldb = {
 }
 dap.configurations.cpp = {
   {
-    name = "Launch file",
+    name = "Debugger",
     --type = "lldb",
     --type = "cppdbg",
     type = "codelldb",
     request = "launch",
-    --request = "Attach",
-    --processId = function()
-    --  return tonumber(vim.fn.input({ prompt = "Pid: "}))
-    --end,
     cwd = '${workspaceFolder}',
     program = function()
       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
     end,
+    --program = '${file}',
     --program = function()
     --  -- First, check if exists CMakeLists.txt
     --  local cwd = vim.fn.getcwd()
@@ -139,71 +96,11 @@ dap.configurations.cpp = {
     --},
   },
 }
---  dap.adapters.cppdbg = {
---    name = 'cppdbg',
---    type = 'executable',
---    command = vim.fn.stdpath('data') .. '/mason/bin/OpenDebugAD7',
---  }
---   dap.configurations.cpp = {
---    {
---      name = 'Launch',
---      type = 'cppdbg',
---      request = 'launch',
---      --request = 'attach',
---      MIMode = 'gdb',
---      --cwd = '${workspaceFolder}',
---      -- udb='live',
---      -- miDebuggerPath = 'udb',
---      setupCommands= {
---				{
---					description= "Enable pretty-printing for gdb",
---					text= "-enable-pretty-printing",
---					ignoreFailures= true,
---				}
---      },
---      program = '${file}',
---      cwd = vim.fn.getcwd(),
---      --attach = {
---      --  pidProperty = "processId",
---      --  pidSelect = "ask"
---      --},
---      stopAtEntry = true,
---      --program = 'main',
---      --program = '${workspaceFolder}/main'
---      --program = '${file}',
---      --program = function()
---      --  return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
---      --end,
---    },
---   }
-
---require('dap').configurations.c = {
---	lldb -- different debuggers or more configurations can be used here
---}
-
--- cpp (c,c++,rust)
---dap.configurations.c = {
---  {
---    name = 'Launch',
---    type = 'lldb',
---    request = 'launch',
---    --program = function()
---    --  return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
---    --end,
---    terminal = 'integrated',
---    console = 'integratedTerminal',
---    program = function()
---        return vim.fn.input('program: ', vim.loop.cwd() .. '/', 'file')
---    end,
---    cwd = "${workspaceFolder}",
---    stopOnEntry = false,
---    args = {},
--- },
---}
 
 -- If you want to use this for Rust and C, add something like this:
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
+
 -- javascript
 --dap.adapters.node2 = {
 --  type = 'executable',
@@ -242,11 +139,11 @@ dap.configurations.python = {
   },
 }
 
---local dapui = require('dapui')
-local dap_ui_status_ok, dapui = pcall(require, "dapui")
-if not dap_ui_status_ok then
-  return
-end
+local dapui = require('dapui')
+--local dap_ui_status_ok, dapui = pcall(require, "dapui")
+--if not dap_ui_status_ok then
+--  return
+--end
 
 -- setup repl
 --dap.repl.commands = vim.tbl_extend('force', dap.repl.commands, {
@@ -257,74 +154,64 @@ end
 --    }
 --})
 
--- setup dapui
-dapui.setup({
-  mappings = {
-    expand = "<CR>",
-    open = "o",
-    remove = "D",
-    edit = "e",
-    repl = "r",
-    toggle = "t",
-  },
-  controls = {
-    element = "repl",
-    enabled = true,
-    --icons = {
-    --    disconnect = "",
-    --    pause = "",
-    --    play = "",
-    --    run_last = "",
-    --    step_back = "",
-    --    step_into = "",
-    --    step_out = "",
-    --    step_over = "",
-    --    terminate = "",
-    --},
-  },
-  layouts = {
-    {
-      elements = {
-        -- Elements can be strings or table with id and size keys.
-        --{ id = "scopes", size = 0.4 },
-        { id = "watches",     size = 0.25 },
-        { id = "scopes",      size = 0.25 },
-        { id = "breakpoints", size = 0.25 },
-        { id = "stacks",      size = 0.25 },
-      },
-      size = 50, -- 40 columns
-      position = "left",
-    },
-    {
-      elements = {
-        { id = "console", size = 0.6 },
-        { id = "repl",    size = 0.4 },
-      },
-      size = 0.3,
-      position = "bottom",
-    },
-  },
-  render = {
-    max_value_lines = 3,
-  },
-  floating = {
-    max_height = nil,  -- These can be integers or a float between 0 and 1.
-    max_width = nil,   -- Floats will be treated as percentage of your screen.
-    border = "single", -- Border style. Can be "single", "double" or "rounded"
+-- Load dapui configuration only if it hasn't been loaded before
+if not vim.g.loaded_dapui then
+  require("dapui").setup({
     mappings = {
-      close = { "q", "<Esc>" },
+      expand = "<CR>",
+      open = "o",
+      remove = "D",
+      edit = "e",
+      repl = "r",
+      toggle = "t",
     },
-  },
-  --icons = { expanded = "-", collapsed = "$" },
-  icons = {
-    expanded = "",
-    collapsed = "",
-    current_frame = "",
-  },
-  { "theHamsta/nvim-dap-virtual-text", config = true },
-})
+    controls = {
+      enabled = true,
+    },
+    layouts = {
+      {
+        elements = {
+          -- Elements can be strings or table with id and size keys.
+          { id = "watches",     size = 0.25 },
+          { id = "scopes",      size = 0.25 },
+          { id = "breakpoints", size = 0.25 },
+          { id = "stacks",      size = 0.25 },
+        },
+        size = 50, -- 40 columns
+        position = "left",
+      },
+      {
+        elements = {
+          { id = "console", size = 0.6 },
+          { id = "repl",    size = 0.4 },
+        },
+        size = 0.3,
+        position = "bottom",
+      },
+    },
+    render = {
+      max_value_lines = 3,
+    },
+    floating = {
+      max_height = nil,  -- These can be integers or a float between 0 and 1.
+      max_width = nil,   -- Floats will be treated as percentage of your screen.
+      border = "single", -- Border style. Can be "single", "double" or "rounded"
+      mappings = {
+        close = { "q", "<Esc>" },
+      },
+    },
+    --icons = { expanded = "-", collapsed = "$" },
+    icons = {
+      expanded = "",
+      collapsed = "",
+      current_frame = "",
+    },
+  })
+  vim.g.loaded_dapui = true
+end
 
--- signs
+
+-- Signs
 local sign = vim.fn.sign_define
 sign("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = "" })
 sign("DapBreakpointCondition", { text = "◆", texthl = "DapBreakpointCondition", linehl = "", numhl = "" }) --
@@ -351,15 +238,7 @@ dap.listeners.before.disconnect["dapui_config"] = function()
   dapui.close()
 end
 
-local dap_virtual_text_status_ok, dap_virtual_text_status = pcall(require, "nvim-dap-virtual-text")
-if not dap_virtual_text_status_ok then
-  return
-end
---require("nvim-dap-virtual-text").setup()
-
---local dap_virtual_text_status = require('nvim-dap-virtual-text')
---require("nvim-dap-virtual-text").setup {
-dap_virtual_text_status.setup {
+require("nvim-dap-virtual-text").setup {
   enabled = true,
   enabled_commands = true,
   highlight_changed_variables = true,
