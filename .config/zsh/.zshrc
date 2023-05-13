@@ -297,6 +297,12 @@ getstate () {
     . ~/environment.tmp
 }
 
+# use ctrl-z to toggle in and out of bg
+if [[ $- == *i* ]]; then 
+  stty susp undef
+  bind '"\C-z":" fg\015"'
+fi
+
 # cd using "up n" as a command up as many directories, example "up 3"
 up() {
     # default parameter to 1 if non provided
