@@ -1,48 +1,28 @@
 local dap = require('dap')
---dap.defaults.fallback.external_terminal = {
---  command = '/usr/bin/wezterm';
---  args = {'-e'};
---}
---dap.adapters.lldb = {
---  type = 'executable',
---  --command = '/usr/bin/lldb-vscode', -- adjust as needed, must be absolute path
---  --command = '/usr/bin/vscode-lldb', -- adjust as needed, must be absolute path
---  command = 'codelldb',
---  --command = 'lldb',
---  --command = codelldb_root,
---  --command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
---  name = 'lldb',
---  host = '127.0.0.1',
---  port = 13000
---}
---
---local lldb = {
---	name = "Launch lldb",
---	type = "lldb", -- matches the adapter
---	request = "launch", -- could also attach to a currently running process
---	program = function()
---		return vim.fn.input(
---			"Path to executable: ",
---			vim.fn.getcwd() .. "/",
---			"file"
---		)
---	end,
---	cwd = "${workspaceFolder}",
---	stopOnEntry = false,
---	args = {},
---	runInTerminal = false,
---	--type = 'server',
---  port = "${port}",
---  executable = {
---    --command = vim.fn.stdpath("data") .. '/mason/bin/codelldb',
---    args = { "--port", "${port}" },
---  }
---}
+
+-- options
+dap.defaults.fallback.switchbuf = 'uselast'
+dap.defaults.fallback.focus_terminal = true
+dap.defaults.fallback.external_terminal = {
+  command = '/usr/bin/wezterm',
+  args = { '-e' },
+}
+
+-- Autocmds
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "dap-float" },
+  callback = function(event)
+    vim.keymap.set("n", "<Tab>", "", { buffer = event.buf, silent = true })
+    vim.keymap.set("n", "<S-Tab>", "", { buffer = event.buf, silent = true })
+  end,
+})
+
 dap.adapters.cppdbg = {
   id = 'cppdbg',
   type = 'executable',
   --command = vim.fn.stdpath('data') .. '/mason/bin/OpenDebugAD7',
   command = os.getenv("HOME") .. '/apps/cpptools/extension/debugAdapters/bin/OpenDebugAD7',
+  --command = cpptools:get_install_path() .. '/extension/debugAdapters/bin/OpenDebugAD7'
 }
 
 dap.adapters.codelldb = {
@@ -54,7 +34,7 @@ dap.adapters.codelldb = {
   executable = {
     --command = os.getenv("HOME") .. '/apps/codelldb/extension/adapter/codelldb',
     command = os.getenv("HOME") .. "/.vscode-oss/extensions/vadimcn.vscode-lldb-1.9.0-universal/adapter/codelldb",
-    args = {'--port', '${port}'},
+    args = { '--port', '${port}' },
   },
   --detached = true,
 }
@@ -66,19 +46,16 @@ dap.adapters.lldb = {
 }
 dap.configurations.cpp = {
   {
-    name = "Launch file",
+    name = "Debugger",
     --type = "lldb",
     --type = "cppdbg",
     type = "codelldb",
     request = "launch",
-    --request = "Attach",
-    --processId = function()
-    --  return tonumber(vim.fn.input({ prompt = "Pid: "}))
-    --end,
     cwd = '${workspaceFolder}',
     program = function()
       return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
     end,
+    --program = '${file}',
     --program = function()
     --  -- First, check if exists CMakeLists.txt
     --  local cwd = vim.fn.getcwd()
@@ -117,73 +94,13 @@ dap.configurations.cpp = {
     --    ignoreFailures = false
     --  }
     --},
-},
+  },
 }
---  dap.adapters.cppdbg = {
---    name = 'cppdbg',
---    type = 'executable',
---    command = vim.fn.stdpath('data') .. '/mason/bin/OpenDebugAD7',
---  }
---   dap.configurations.cpp = {
---    {
---      name = 'Launch',
---      type = 'cppdbg',
---      request = 'launch',
---      --request = 'attach',
---      MIMode = 'gdb',
---      --cwd = '${workspaceFolder}',
---      -- udb='live',
---      -- miDebuggerPath = 'udb',
---      setupCommands= {
---				{
---					description= "Enable pretty-printing for gdb",
---					text= "-enable-pretty-printing",
---					ignoreFailures= true,
---				}
---      },
---      program = '${file}',
---      cwd = vim.fn.getcwd(),
---      --attach = {
---      --  pidProperty = "processId",
---      --  pidSelect = "ask"
---      --},
---      stopAtEntry = true,
---      --program = 'main',
---      --program = '${workspaceFolder}/main'
---      --program = '${file}',
---      --program = function()
---      --  return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
---      --end,
---    },
---   }
-
---require('dap').configurations.c = {
---	lldb -- different debuggers or more configurations can be used here
---}
-
--- cpp (c,c++,rust)
---dap.configurations.c = {
---  {
---    name = 'Launch',
---    type = 'lldb',
---    request = 'launch',
---    --program = function()
---    --  return vim.fn.input('Path to executable: ', vim.fn.getcwd() .. '/', 'file')
---    --end,
---    terminal = 'integrated',
---    console = 'integratedTerminal',
---    program = function()
---        return vim.fn.input('program: ', vim.loop.cwd() .. '/', 'file')
---    end,
---    cwd = "${workspaceFolder}",
---    stopOnEntry = false,
---    args = {},
--- },
---}
 
 -- If you want to use this for Rust and C, add something like this:
 dap.configurations.c = dap.configurations.cpp
 dap.configurations.rust = dap.configurations.cpp
+
 -- javascript
 --dap.adapters.node2 = {
 --  type = 'executable',
@@ -205,28 +122,28 @@ dap.configurations.rust = dap.configurations.cpp
 --}
 
 dap.adapters.python = {
-    type = 'executable';
-    command = vim.trim(vim.fn.system('which python'));
-    args = { '-m', 'debugpy.adapter' };
+  type = 'executable',
+  command = vim.trim(vim.fn.system('which python')),
+  args = { '-m', 'debugpy.adapter' },
 }
 
 dap.configurations.python = {
-    {
-        -- The first three options are required by nvim-dap
-        type = 'python'; -- the type here established the link to the adapter definition: `dap.adapters.python`
-        request = 'launch';
-        name = "Launch file";
-        -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
-        program = "${file}"; -- This configuration will launch the current file if used.
-        stopOnEntry = true,
-    },
+  {
+    -- The first three options are required by nvim-dap
+    type = 'python', -- the type here established the link to the adapter definition: `dap.adapters.python`
+    request = 'launch',
+    name = "Launch file",
+    -- Options below are for debugpy, see https://github.com/microsoft/debugpy/wiki/Debug-configuration-settings for supported options
+    program = "${file}", -- This configuration will launch the current file if used.
+    stopOnEntry = true,
+  },
 }
 
---local dapui = require('dapui')
-local dap_ui_status_ok, dapui = pcall(require, "dapui")
-if not dap_ui_status_ok then
-  return
-end
+local dapui = require('dapui')
+--local dap_ui_status_ok, dapui = pcall(require, "dapui")
+--if not dap_ui_status_ok then
+--  return
+--end
 
 -- setup repl
 --dap.repl.commands = vim.tbl_extend('force', dap.repl.commands, {
@@ -237,86 +154,70 @@ end
 --    }
 --})
 
-dapui.setup({
-  layouts = {
-    {
-      elements = {
-        "watches",
-      },
-      size = 0.2,
-      position = "left",
-    },
-  },
-  controls = {
-    enabled = false,
-  },
-  render = {
-    max_value_lines = 3,
-  },
-  floating = {
-    max_height = nil, -- These can be integers or a float between 0 and 1.
-    max_width = nil, -- Floats will be treated as percentage of your screen.
-    border = "single", -- Border style. Can be "single", "double" or "rounded"
+-- Load dapui configuration only if it hasn't been loaded before
+if not vim.g.loaded_dapui then
+  require("dapui").setup({
     mappings = {
-      close = { "q", "<Esc>" },
-    },
-  },
-})
-
--- setup dapui
-dapui.setup({
-  mappings = {
       expand = "<CR>",
       open = "o",
       remove = "D",
       edit = "e",
       repl = "r",
       toggle = "t",
-  },
-  controls = {
-    enabled = false,
-  },
-  layouts = {
-    {
-      elements = {
-        { id = "scopes", size = 0.5 },
-        { id = "watches", size = 0.5 },
+    },
+    controls = {
+      enabled = true,
+    },
+    layouts = {
+      {
+        elements = {
+          -- Elements can be strings or table with id and size keys.
+          { id = "watches",     size = 0.25 },
+          { id = "scopes",      size = 0.25 },
+          { id = "breakpoints", size = 0.25 },
+          { id = "stacks",      size = 0.25 },
+        },
+        size = 50, -- 40 columns
+        position = "left",
       },
-      size = 40,
-      position = "left",
+      {
+        elements = {
+          { id = "console", size = 0.6 },
+          { id = "repl",    size = 0.4 },
+        },
+        size = 0.3,
+        position = "bottom",
+      },
     },
-    {
-      elements = { "console", "repl" },
-      position = "bottom",
-      size = 15,
+    render = {
+      max_value_lines = 3,
     },
-  },
-  render = {
-    max_value_lines = 3,
-  },
-  floating = {
-    max_height = nil, -- These can be integers or a float between 0 and 1.
-    max_width = nil, -- Floats will be treated as percentage of your screen.
-    border = "single", -- Border style. Can be "single", "double" or "rounded"
-    mappings = {
-      close = { "q", "<Esc>" },
+    floating = {
+      max_height = nil,  -- These can be integers or a float between 0 and 1.
+      max_width = nil,   -- Floats will be treated as percentage of your screen.
+      border = "single", -- Border style. Can be "single", "double" or "rounded"
+      mappings = {
+        close = { "q", "<Esc>" },
+      },
     },
-  },
-  --icons = { expanded = "-", collapsed = "$" },
-  icons = {
-    expanded = "",
-    collapsed = "",
-    current_frame = "",
-  },
-})
+    --icons = { expanded = "-", collapsed = "$" },
+    icons = {
+      expanded = "",
+      collapsed = "",
+      current_frame = "",
+    },
+  })
+  vim.g.loaded_dapui = true
+end
 
--- signs
+
+-- Signs
 local sign = vim.fn.sign_define
 sign("DapBreakpoint", { text = "●", texthl = "DapBreakpoint", linehl = "", numhl = "" })
+sign("DapBreakpointCondition", { text = "◆", texthl = "DapBreakpointCondition", linehl = "", numhl = "" }) --
+sign("DapBreakpointRejected", { text = 'R', texthl = 'DiagnosticError', numhl = 'DiagnosticError' })
+sign("DapLogPoint", { text = "L", texthl = "DapLogPoint", linehl = "", numhl = "" })
 sign('DapStopped', { text = '', texthl = 'DiagnosticSignHint', numbhl = '', linehl = '' })
-sign("DapBreakpointRejected", { text = '!>', texthl = 'DiagnosticError', numhl = 'DiagnosticError' })
-sign("DapBreakpointCondition", { text = "●", texthl = "DapBreakpointCondition", linehl = "", numhl = "" })
-sign("DapLogPoint", { text = "◆", texthl = "DapLogPoint", linehl = "", numhl = "" })
 
 --sign('DapBreakpoint', { text = '', texthl = 'DiagnosticSignError', numbhl = '', linehl = '' })
 --sign("DapLogPoint", { text = '.>', texthl = 'DiagnosticInfo', numhl = 'DiagnosticInfo' })
@@ -337,34 +238,17 @@ dap.listeners.before.disconnect["dapui_config"] = function()
   dapui.close()
 end
 
-local dap_virtual_text_status_ok, dap_virtual_text_status = pcall(require, "nvim-dap-virtual-text")
-if not dap_virtual_text_status_ok then
-  return
-end
---require("nvim-dap-virtual-text").setup()
-
-dap_virtual_text_status.setup({
-  enabled = true, -- enable this plugin (the default)
-  enabled_commands = true, -- create commands DapVirtualTextEnable, DapVirtualTextDisable, DapVirtualTextToggle, (DapVirtualTextForceRefresh for refreshing when debug adapter did not notify its termination)
-  highlight_changed_variables = true, -- highlight changed values with NvimDapVirtualTextChanged, else always NvimDapVirtualText
-  highlight_new_as_changed = false, -- highlight new variables in the same way as changed variables (if highlight_changed_variables)
-  show_stop_reason = true, -- show stop reason when stopped for exceptions
-  commented = true, -- prefix virtual text with comment string
-  only_first_definition = true, -- only show virtual text at first definition (if there are multiple)
-  all_references = false, -- show virtual text on all all references of the variable (not only definitions)
-  filter_references_pattern = "<module", -- filter references (not definitions) pattern when all_references is activated (Lua gmatch pattern, default filters out Python modules)
-  -- experimental features:
-  virt_text_pos = "eol", -- position of virtual text, see `:h nvim_buf_set_extmark()`
-  all_frames = false, -- show virtual text for all stack frames not only current. Only works for debugpy on my machine.
-  virt_lines = false, -- show virtual lines instead of virtual text (will flicker!)
-  virt_text_win_col = nil -- position the virtual text at a fixed window column (starting from the first text column) ,
-  -- e.g. 80 to position at column 80, see `:h nvim_buf_set_extmark()`
-})
-
-vim.cmd([[
-  autocmd TermClose * if !v:event.status | exe 'bdelete! '..expand('<abuf>') | endif
-]])
--- options
---dap.set_exception_breakpoints("default")
-dap.defaults.fallback.focus_terminal = false
-dap.defaults.fallback.terminal_win_cmd = '10split new'
+require("nvim-dap-virtual-text").setup {
+  enabled = true,
+  enabled_commands = true,
+  highlight_changed_variables = true,
+  highlight_new_as_changed = false,
+  show_stop_reason = true,
+  commented = true,
+  only_first_definition = true,
+  all_references = false,
+  filter_references_pattern = "<module",
+  virt_text_pos = "eol",
+  all_frames = false,
+  virt_text_win_col = nil
+}

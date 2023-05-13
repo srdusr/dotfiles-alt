@@ -73,23 +73,22 @@ return packer.startup(function(use)
   })
   use("rmagatti/goto-preview")
 
-  -- neodev
-  use("folke/neodev.nvim")
-
   -- Debugger
 	use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
 	use("rcarriga/nvim-dap-ui") -- UI for nvim-dap
+	--use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
   use("theHamsta/nvim-dap-virtual-text")
   use("gabrielpoca/replacer.nvim")
-  use({
-    "jayp0521/mason-nvim-dap.nvim",
-    config = function()
-      require("mason-nvim-dap").setup({
-        automatic_installation = true,
-        ensure_installed = { "python", "cppdbg", "codelldb" },
-      })
-    end,
-  })
+  use("jayp0521/mason-nvim-dap.nvim")
+  --use({
+  --  "jayp0521/mason-nvim-dap.nvim",
+  --  config = function()
+  --    require("mason-nvim-dap").setup({
+  --      automatic_installation = true,
+  --      ensure_installed = { "python", "cppdbg", "codelldb" },
+  --    })
+  --  end,
+  --})
 
 	-- Linters/Formatters
 	use('mhartington/formatter.nvim')
@@ -140,9 +139,11 @@ return packer.startup(function(use)
 	use("nvim-telescope/telescope-media-files.nvim") -- 
 	use("nvim-telescope/telescope-file-browser.nvim") -- 
 	use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" }) -- Search emoji(s) and other symbols
+	use("nvim-telescope/telescope-dap.nvim")
 	use("axkirillov/telescope-changed-files") -- 
 
 	-- UX
+  use("folke/neodev.nvim")
   use({
     'numToStr/Navigator.nvim', -- Navigate between Tmux and Nvim
     config = function()
@@ -194,6 +195,21 @@ return packer.startup(function(use)
 	--    require("plugins.ultest")
 	--  end,
 	--})
+	--use({"rcarriga/neotest",
+  --  config = function()
+  --  require("neotest").setup()
+  --end,
+  --})
+  use({
+    "nvim-neotest/neotest",
+    requires = {
+      {
+        "nvim-neotest/neotest-python",
+        "nvim-neotest/neotest-plenary",
+        "nvim-neotest/neotest-vim-test",
+      },
+    }
+  })
 
 	-- Colorschemes
 	use("bluz71/vim-nightfly-guicolors")

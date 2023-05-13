@@ -11,9 +11,7 @@
                  Url: https://github.com/srdusr/nvim.git
               ------------------------------------------------ "
 --]]
-
 --[[init.]]
-
 -- ========================================================================== --
 -- ==                            DEPENDENCIES                              == --
 -- ========================================================================== --
@@ -48,15 +46,15 @@
 -- Load impatient (Faster loading times)
 local impatient_ok, impatient = pcall(require, "impatient")
 if impatient_ok then
-	impatient.enable_profile()
+  impatient.enable_profile()
 end
 
 
 -- Schedule reading shadafile to improve the startup time
 vim.opt.shadafile = "NONE"
 vim.schedule(function()
-	vim.opt.shadafile = ""
-	vim.cmd("silent! rsh")
+  vim.opt.shadafile = ""
+  vim.cmd("silent! rsh")
 end)
 
 
@@ -70,6 +68,7 @@ local modules = {
   --"user.scripts",
   "plugins.colorscheme",
   "plugins.treesitter",
+  "plugins.neodev",
   "plugins.telescope",
   "plugins.nvim-tree",
   "plugins.quickfix",
@@ -80,9 +79,7 @@ local modules = {
   --"plugins.git",
   "plugins.gitsigns",
   "plugins.neoscroll",
-  --"plugins.null-ls",
   "plugins.lsp",
-  "plugins.lsp_lines",
   "plugins.statuscol",
   "plugins.goto-preview",
   "plugins.autopairs",
@@ -91,12 +88,11 @@ local modules = {
   "plugins.fidget",
   "plugins.web-devicons",
   "plugins.heirline",
+  "plugins.neotest",
   "plugins.toggleterm",
   "plugins.trouble",
   "plugins.dashboard",
   "plugins.dap",
-  --"plugins.modify-blend",
-  --"plugins.floatterm",
 }
 
 
@@ -113,9 +109,9 @@ local expected_ver = "0.9.0"
 local nvim_ver = mods.get_nvim_version()
 
 if nvim_ver ~= expected_ver then
-	local msg = string.format("Unsupported nvim version: expect %s, but got %s instead!", expected_ver, nvim_ver)
-vim.api.nvim_err_writeln(msg)
-	return
+  local msg = string.format("Unsupported nvim version: expect %s, but got %s instead!", expected_ver, nvim_ver)
+  vim.api.nvim_err_writeln(msg)
+  return
 end
 
 
@@ -127,24 +123,24 @@ vim.notify = require("notify") -- Requires plugin "rcarriga/nvim-notify"
 
 -- Improve speed by disabling some default plugins/modules
 local builtins = {
-	"gzip",
-	"zip",
-	"zipPlugin",
-	"tar",
-	"tarPlugin",
-	"getscript",
-	"getscriptPlugin",
-	"vimball",
-	"vimballPlugin",
-	"2html_plugin",
-	--"matchit",
-	--"matchparen",
-	"logiPat",
-	"rrhelper",
-	"netrw",
-	"netrwPlugin",
-	"netrwSettings",
-	"netrwFileHandlers",
+  "gzip",
+  "zip",
+  "zipPlugin",
+  "tar",
+  "tarPlugin",
+  "getscript",
+  "getscriptPlugin",
+  "vimball",
+  "vimballPlugin",
+  "2html_plugin",
+  --"matchit",
+  --"matchparen",
+  "logiPat",
+  "rrhelper",
+  "netrw",
+  "netrwPlugin",
+  "netrwSettings",
+  "netrwFileHandlers",
   "tutor_mode_plugin",
   "fzf",
   "spellfile_plugin",
@@ -152,7 +148,7 @@ local builtins = {
 }
 
 for _, plugin in ipairs(builtins) do
-	vim.g["loaded_" .. plugin] = 1
+  vim.g["loaded_" .. plugin] = 1
 end
 vim.g.do_filetype_lua = 1
 vim.g.did_load_filetypes = 0
