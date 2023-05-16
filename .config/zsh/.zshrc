@@ -298,10 +298,17 @@ getstate () {
 }
 
 # use ctrl-z to toggle in and out of bg
-if [[ $- == *i* ]]; then 
-  stty susp undef
-  bind '"\C-z":" fg\015"'
-fi
+function toggle_fg_bg() {
+    if [[ $#BUFFER -eq 0 ]]; then
+        BUFFER="fg"
+        zle accept-line
+    else
+        BUFFER=""
+        zle clear-screen
+    fi
+}
+zle -N toggle_fg_bg
+bindkey '^Z' toggle_fg_bg
 
 # cd using "up n" as a command up as many directories, example "up 3"
 up() {
