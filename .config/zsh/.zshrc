@@ -69,9 +69,16 @@ git_branch_test_color() {
     echo ""
   fi
 }
-#PROMPT='%9c$(git_branch_test_color)%F{none} %# '
 
-#echo "${gitstatuscolor} (${ref})"
+# Job indicator
+jobs_status_indicator() {
+    local jobs_count=$(jobs | wc -l)
+    if [[ "$jobs_count" -gt 0 ]]; then
+        echo "jobs: ${jobs_count}"
+    else
+        echo ""
+    fi
+}
 
 autoload -Uz add-zsh-hook vcs_info
 zstyle ':vcs_info:*' stagedstr ' +%F{15}staged%f' 
@@ -97,7 +104,7 @@ fi
 #add-zsh-hook
 function my_precmd () {
     vcs_info
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_}
+    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} $(jobs_status_indicator)
     %{%{$terminfo_down_sc$(insert-mode)$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
@@ -107,7 +114,7 @@ function set-prompt () {
       (main|viins) VI_MODE="$(insert-mode)" ;;
       (*)          VI_MODE="$(insert-mode)" ;;
     esac
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_}
+    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} $(jobs_status_indicator)
     %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 add-zsh-hook precmd my_precmd
