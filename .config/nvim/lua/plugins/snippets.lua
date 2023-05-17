@@ -7,6 +7,10 @@ ls.config.set_config {
   updateevents = "TextChanged,TextChangedI",
   -- Autosnippets:
   enable_autosnippets = true, --
+  region_check_events = "InsertEnter",
+  delete_check_events = "TextChanged",
+  update_events = "TextChanged,TextChangedI",
+  store_selection_keys = "<Tab>",
   ext_opts = { --
     [require("luasnip.util.types").choiceNode] = {
       active = {
