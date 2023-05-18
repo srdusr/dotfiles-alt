@@ -72,11 +72,15 @@ git_branch_test_color() {
 
 # Job indicator
 jobs_status_indicator() {
-    local jobs_count=$(jobs | wc -l)
-    if [[ "$jobs_count" -gt 0 ]]; then
+    local jobs_output
+    declare -p jobs_output >/dev/null 2>&1
+    if [[ $? -eq 0 ]]; then
+        unset jobs_output
+    fi
+    jobs_output=$(jobs -s)
+    if [[ -n "$jobs_output" ]]; then
+        local jobs_count=$(echo "$jobs_output" | wc -l)
         echo "jobs: ${jobs_count}"
-    else
-        echo ""
     fi
 }
 
