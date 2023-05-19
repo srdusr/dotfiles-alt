@@ -91,7 +91,7 @@ local modules = {
   "plugins.dap",
   "plugins.neotest",
   "plugins.heirline",
-  --"plugins.dashboard",
+  "plugins.dashboard",
 }
 
 
