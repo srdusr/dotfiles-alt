@@ -217,6 +217,7 @@ return packer.startup(function(use)
 	use("joshdick/onedark.vim")
 	use("NTBBloodbath/doom-one.nvim")
 	use("nyngwang/nvimgelion")
+	use("projekt0n/github-nvim-theme")
 
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
