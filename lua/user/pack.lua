@@ -133,9 +133,23 @@ return packer.startup(function(use)
 	use("kyazdani42/nvim-tree.lua") -- File explorer
 	use('ibhagwan/fzf-lua') -- Fuzzy finder
 	use('ThePrimeagen/harpoon')
-	use("nvim-telescope/telescope.nvim") --  Fuzzy finder with lots of features/extendabilities
+	--use("nvim-telescope/telescope.nvim") --  Fuzzy finder with lots of features/extendabilities
+  use({
+    'nvim-telescope/telescope.nvim',
+    branch = '0.1.x',
+    --config = function()
+    --  require('plugins.telescope').setup()
+    --end,
+    requires = {
+      'nvim-lua/plenary.nvim',
+      'nvim-telescope/telescope-live-grep-args.nvim',
+      'nvim-telescope/telescope-file-browser.nvim',
+      { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
+    }
+  })
 	use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" }) -- Support fzf syntax/algorithm
 	use("nvim-telescope/telescope-ui-select.nvim") -- 
+	use("nvim-telescope/telescope-project.nvim") -- 
 	use("nvim-telescope/telescope-media-files.nvim") -- 
 	use("nvim-telescope/telescope-file-browser.nvim") -- 
 	use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" }) -- Search emoji(s) and other symbols
@@ -238,13 +252,30 @@ return packer.startup(function(use)
   })
   use({
     'glepnir/dashboard-nvim',
-    event = 'VimEnter',
+    --event = 'VimEnter',
     requires = {'nvim-tree/nvim-web-devicons'}
   })
 	use("rcarriga/nvim-notify") -- Notification plugin
 	use("karb94/neoscroll.nvim") -- Faster/smooth scrolling
 	use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
-	use("norcalli/nvim-colorizer.lua") -- 
+  use({
+    'norcalli/nvim-colorizer.lua', -- colorize hexa and rgb strings
+    cmd = { 'ColorizerToggle', 'ColorizerAttachToBuffer' },
+    config = function()
+      require('colorizer').setup({
+        --'*';
+        user_default_options = {
+          RGB = true,
+          RRGGBB = true,
+          names = false,
+          RRGGBBAA = false,
+          css = false,
+          css_fn = true,
+          mode = 'foreground',
+        },
+      })
+    end
+  })
   use( "j-hui/fidget.nvim") -- UI to show nvim-lsp progress
   use { "simrat39/symbols-outline.nvim", -- 
     config = function()
@@ -262,8 +293,8 @@ return packer.startup(function(use)
   })
   use({
     'rebelot/heirline.nvim', -- Statusline that is highly configurable
-    requires = 'kyazdani42/nvim-web-devicons',
-    event = 'VimEnter',
+    --requires = 'kyazdani42/nvim-web-devicons',
+    --event = 'VimEnter',
   })
 
   -- Language specific tools
