@@ -5,6 +5,6 @@
 
 # Xresources
 [[ -f ~/.config/X11/.Xresources ]] && xrdb -merge ~/.config/X11/.Xresources
-#. "/home/sxrdusr/.local/share/cargo/env"
+#. "/home/srdusr/.local/share/cargo/env"
 #. "$HOME/.cargo/env"
 ZDOTDIR="${XDG_CONFIG_HOME}/zsh"
