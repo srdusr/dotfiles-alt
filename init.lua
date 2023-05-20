@@ -92,6 +92,7 @@ local modules = {
   "plugins.neotest",
   "plugins.heirline",
   "plugins.dashboard",
+  "plugins.which-key",
   --"plugins.modify-blend",
 }
 
