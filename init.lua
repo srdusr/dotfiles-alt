@@ -74,7 +74,7 @@ local modules = {
   "plugins.cmp",
   "plugins.quickfix",
   "plugins.snippets",
-  "plugins.colorizer",
+  --"plugins.colorizer",
   "plugins.prettier",
   --"plugins.git",
   "plugins.lsp",
@@ -92,6 +92,7 @@ local modules = {
   "plugins.neotest",
   "plugins.heirline",
   "plugins.dashboard",
+  --"plugins.modify-blend",
 }
 
 
