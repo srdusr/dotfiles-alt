@@ -93,6 +93,7 @@ local modules = {
   "plugins.heirline",
   "plugins.dashboard",
   "plugins.which-key",
+  "plugins.harpoon",
   --"plugins.modify-blend",
 }
 
