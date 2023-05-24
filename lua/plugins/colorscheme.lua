@@ -49,7 +49,7 @@ vim.api.nvim_command("highlight WinSeparator guibg=none gui=bold")
 vim.api.nvim_command("highlight MsgSeparator guibg=none")
 vim.api.nvim_command("highlight PmenuSel guibg=none")
 vim.api.nvim_command("highlight winblend guibg=none")
-
+vim.api.nvim_command("highlight EndOfBuffer guibg=NONE guifg=Normal")
 -- Set different window separator colorscheme
 vim.cmd [[
 au WinEnter * setl winhl=WinSeparator:WinSeparatorA
