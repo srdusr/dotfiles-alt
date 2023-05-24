@@ -6,24 +6,37 @@
 #  ███████╗███████║██║  ██║██║  ██║╚██████╗
 #  ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
-export PATH=$HOME/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
-#export PYTHONPATH=/usr/local/bin/python3
-#if [[ ! $(tmux list-sessions) ]]; then
-#  tmux
-#fi
-
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# If xset is availabe:
-#if xset q &>/dev/null; then
-#  xset r rate 180 40                   # Sane repeat rate
-#  xset -b                              # No bell
-#  xset -dpms                           # Keep screen on at all times
-#  xset s off                           #
-#  xset m 7/5 0                         # Pointer settings
-#  setxkbmap us -variant altgr-intl
-#fi
+export PATH=$HOME/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
+
+##########    Vi mode    ##########
+bindkey -v
+
+#export KEYTIMEOUT=1
+export KEYTIMEOUT=25
+export EDITOR=$VISUAL
+export VISUAL=nvim
+bindkey -M viins '^?' backward-delete-char
+bindkey -M viins '^[[3~'  delete-char
+bindkey -M vicmd '^[[3~'  delete-char
+bindkey -v '^?' backward-delete-char
+bindkey -r '\e/'
+bindkey -s jj '\e'
+bindkey "^W" backward-kill-word
+bindkey "^H" backward-delete-char      # Control-h also deletes the previous char
+bindkey "^U" backward-kill-line
+
+bindkey "^[j" history-search-forward # or you can bind it to the down key "^[[B"
+bindkey "^[k" history-search-backward # or you can bind it to Up key "^[[A"
+bindkey '^X' autosuggest-execute
+bindkey '^Y' autosuggest-accept
+
+# Edit line in vim with alt-e
+autoload edit-command-line; zle -N edit-command-line
+bindkey '^e' edit-command-line
+bindkey '^[e' edit-command-line # alt + e
 
 # Allow CTRL+D to exit zsh with partial command line (non empty line)
 exit_zsh() { exit }
@@ -38,8 +51,9 @@ stty stop undef		# Disable ctrl-s to freeze terminal.
 stty start undef
 
 export PATH="$HOME/.local/bin:$PATH"
-export VIRTUAL_ENV_DISABLE_PROMPT=true
+#export VIRTUAL_ENV_DISABLE_PROMPT=true
 #unsetopt BEEP
+
 # Enable various options
 setopt interactive_comments beep extendedglob nomatch notify completeinword prompt_subst
 
@@ -47,14 +61,9 @@ setopt interactive_comments beep extendedglob nomatch notify completeinword prom
 
 # Enable colors and change prompt:
 autoload -U colors && colors	# Load colors
-#autoload -U promptinit && promptinit
-#prompt fade red
+
 # Prompt with Vi insert-mode/normal-mode and blinking '$', note blinking '$' only works on some terminals.
 terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
-
-function insert-mode () { echo "-- INSERT --" }
-function normal-mode () { echo "-- NORMAL --" }
-
 
 git_branch_test_color() {
   local ref=$(git symbolic-ref --short HEAD 2> /dev/null)
@@ -84,6 +93,7 @@ jobs_status_indicator() {
     fi
 }
 
+# Version control (git)
 autoload -Uz add-zsh-hook vcs_info
 zstyle ':vcs_info:*' stagedstr ' +%F{15}staged%f' 
 zstyle ':vcs_info:*' unstagedstr ' -%F{15}unstaged%f' 
@@ -91,8 +101,6 @@ zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' actionformats '%F{5}%F{2}%b%F{3}|%F{1}%a%F{5}%f '
 zstyle ':vcs_info:*' formats \
   '%F{208} '$'\uE0A0'' %f$(git_branch_test_color)%f%F{76}%c%F{3}%u%f '
-    #'%{-[%F{226}'$'\uE0A0''%f%{%F{76}%b%f%}]%} %F{76}%c%F{3}%u%f'
-    #'%F{226}'$'\uE0A0''%f%{(%F{76}%b%f)%} %F{76}%c%F{3}%u%f'
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 zstyle ':vcs_info:*' enable git 
 +vi-git-untracked() {
@@ -101,171 +109,78 @@ zstyle ':vcs_info:*' enable git
   hook_com[unstaged]+='%F{196} !%f%F{15}untracked%f'
 fi
 }
-#hook_com[unstaged]+=' %F{15}(%f%F{196}!%f%F{15})untracked%f'
 
+# Prompt
+function insert-mode() {
+  echo "-- INSERT --"
+}
 
-#RPROMPT='%F{5}[%F{2}%n%F{5}] %F{3}%3~ ${vcs_info_msg_0_} %f%# '
-#add-zsh-hook
+function normal-mode() {
+  echo "-- NORMAL --"
+}
+
 function my_precmd () {
     vcs_info
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} $(jobs_status_indicator)
+    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(jobs_status_indicator)
     %{%{$terminfo_down_sc$(insert-mode)$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
-function set-prompt () {
-    case ${KEYMAP} in
-      (vicmd)      VI_MODE="$(normal-mode)" ;;
-      (main|viins) VI_MODE="$(insert-mode)" ;;
-      (*)          VI_MODE="$(insert-mode)" ;;
-    esac
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} $(jobs_status_indicator)
-    %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
-}
 add-zsh-hook precmd my_precmd
-RPROMPT='%(?..[%F{196}%?%f] )'
-#RPROMPT="%K{172}${vcs_info_msg_0_}%k%(?..[%F{196}%?%f] )"
 
-#autoload -Uz vcs_info
-#zstyle ':vcs_info:*' stagedstr 'M' 
-#zstyle ':vcs_info:*' unstagedstr 'M' 
-#zstyle ':vcs_info:*' check-for-changes true
-#zstyle ':vcs_info:*' actionformats '%{(%F{76}%b%F{3}|%F{1}%a%%f%}) '
-#zstyle ':vcs_info:*' formats \
-#    '%{(%F{76}%b%f)%} %F{76}%c%F{3}%u%f'
-#zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
-#zstyle ':vcs_info:*' enable git 
-#+vi-git-untracked() {
-#  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-#  [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]] ; then
-#  hook_com[unstaged]+='%F{1}??%f'
-#fi
-#}
-#
-#
-##RPROMPT='%F{5}[%F{2}%n%F{5}] %F{3}%3~ ${vcs_info_msg_0_} %f%# '
-#precmd () {
-#    print -rP "
-#"
-#    #PS1="┌─[%F{48}%n%f]-[%F{154}%B%m%b%f]-[%F{202}%#%f%F{39}%0~%f]
-#    PS1="%{┌─[%F{48}%n%f] %F{119}%#%f%F{119}%0~%f%}] ${vcs_info_msg_0_}
-#    %{%{$terminfo_down_sc$(insert-mode)$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
-#} && { vcs_info } 
-#
-#function set-prompt () {
-#    case ${KEYMAP} in
-#      (vicmd)      VI_MODE="$(normal-mode)" ;;
-#      (main|viins) VI_MODE="$(insert-mode)" ;;
-#      (*)          VI_MODE="$(insert-mode)" ;;
-#    esac
-#    PS1="%{┌─[%F{48}%n%f] %F{119}%#%f%F{119}%0~%f%} ${vcs_info_msg_0_}
-#    %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
-#}
-#PS1="%{┌─[%F{48}%n%f]-[%F{48}%B%m%b%f]-[%F{48}%#%f%F{48}%0~%f]%}
-function zle-line-init zle-keymap-select {
-    set-prompt
-    zle reset-prompt
-    case $KEYMAP in
-        vicmd) echo -ne '\e[1 q';;      # block
-        viins|main) echo -ne '\e[5 q';; # beam
-    esac
+function set-prompt() {
+  if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
+    echo -ne '\e[1 q'
+    VI_MODE=$(normal-mode)
+  elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
+    echo -ne '\e[5 q'
+    VI_MODE=$(insert-mode)
+  fi
+    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} $(jobs_status_indicator)
+    %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{[%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}]%}%}%}"
 }
 
-preexec () { print -rn -- $terminfo[el]; echo -ne '\e[5 q' ; }
+function update-mode-file() {
+  set-prompt
+  echo "$VI_MODE" >| ~/.vi-mode
+  tmux refresh-client -S
+}
 
-zle -N zle-line-init
+function zle-line-init() {
+  zle reset-prompt
+  case "${KEYMAP}" in
+    vicmd)
+      echo -ne '\e[1 q'
+      ;;
+    main|viins|*)
+      echo -ne '\e[5 q'
+      ;;
+  esac
+}
+
+function zle-keymap-select() {
+  update-mode-file
+  zle reset-prompt
+  case "${KEYMAP}" in
+    vicmd)
+      echo -ne '\e[1 q'
+      ;;
+    main|viins|*)
+      echo -ne '\e[5 q'
+      ;;
+  esac
+}
+
 zle -N zle-keymap-select
+zle -N zle-line-init
 
-# Load version control information
-#autoload -Uz vcs_info
-#precmd() { vcs_info }
-
-# Format the vcs_info_msg_0_ variable
-#zstyle ':vcs_info:git:*' formats 'on branch %b'
-
-# Set up the right-side prompt (with git branch name) and throw conditional error Code
-
-
-## function to return current branch name while suppressing errors.
-#function git_branch() {
-#    branch=$(git symbolic-ref HEAD 2> /dev/null | awk 'BEGIN{FS="/"} {print $NF}')
-#    if [[ $branch == "" ]]; then
-#        :
-#    else
-#        echo ' (' $branch ') '
-#    fi
-#}
-
-#setopt prompt_subst             # allow command substitution inside the prompt
-#PROMPT='%~ $(git_branch) >'     # set the prompt value
-
-#autoload -Uz add-zsh-hook vcs_info
-#setopt prompt_subst
-#add-zsh-hook precmd my_precmd
-#
-#zstyle ':vcs_info:git:*' formats '%b'
-#
-#function my_precmd {
-#  local theUser='%B%F{39}%n%f%b'
-#  local theHost='%B%F{white}@%m%f%b'
-#  local git1="%F{220}~%f$(git_prompt_info)"
-#  local rcAndArrow='%(?.%F{white}.%B%F{red}[%?])»%f%b'
-#
-#  vcs_info
-#  local git2color='cyan'
-#  [[ "${vcs_info_msg_0_}" == "master" ]] && git2color='196'
-#  local git2="||%F{${git2color}}${vcs_info_msg_0_}%f||"
-#
-#  psvar[1]="${theUser}${theHost} ${git1} ${rcAndArrow} "
-#  psvar[2]="${git2}"
-#}
-#
-#PROMPT='${psvar[1]}'
-#RPROMPT='${psvar[2]}'
-
-
-
-##########    Auto-completion    ##########
-
-#autoload -U promptinit && promptinit
-autoload -Uz compinit && compinit
-
-# Accept completion with <tab> or Ctrl+i and go to next/previous suggestions with Vi like keys: Ctrl+n/p
-zmodload -i zsh/complist
-accept-and-complete-next-history() {
-    zle expand-or-complete-prefix
+TRAPWINCH() { # Trap the WINCH signal to update the mode file on window size changes
+  update-mode-file
 }
 
-zle -N accept-and-complete-next-history
-bindkey -M menuselect '^i' accept-and-complete-next-history
-bindkey '^n' expand-or-complete
-bindkey '^p' reverse-menu-complete
-zstyle ':completion:*' menu select=1
+set-prompt
 
+RPROMPT='%(?..[%F{196}%?%f] )'
 
-
-##########    Vi mode    ##########
-
-export KEYTIMEOUT=25
-export EDITOR=$VISUAL
-export VISUAL=nvim
-bindkey -M viins '^?' backward-delete-char
-bindkey -M viins '^[[3~'  delete-char
-bindkey -M vicmd '^[[3~'  delete-char
-bindkey -r '\e/'
-bindkey -M viins 'jj' vi-cmd-mode
-bindkey "^W" backward-kill-word
-bindkey "^H" backward-delete-char      # Control-h also deletes the previous char
-bindkey "^U" backward-kill-line
-
-bindkey "^[j" history-search-forward # or you can bind it to the down key "^[[B"
-bindkey "^[k" history-search-backward # or you can bind it to Up key "^[[A"
-bindkey '^X' autosuggest-execute
-bindkey '^Y' autosuggest-accept
-
-# Edit line in vim with alt-e
-autoload edit-command-line; zle -N edit-command-line
-bindkey '^e' edit-command-line
-#bindkey '^[e' edit-command-line # alt + e
 
 ##########    Useful Commands/Alias    ##########
 
@@ -357,20 +272,6 @@ nnn() {
   [ -s $NNN_TMPFILE ] && source $NNN_TMPFILE
 }
 
-# Use lf to switch directories and bind it to ctrl-o
-#lfcd () {
-#	tmp="$(mktemp)"
-#	lf -last-dir-path="$tmp" "$@"
-#	if [ -f "$tmp" ]; then
-#		dir="$(cat "$tmp")"
-#		rm -f "$tmp" >/dev/null
-#		[ -d "$dir" ] && [ "$dir" != "$(pwd)" ] && cd "$dir"
-#	fi
-#}
-#bindkey -s '^o' 'lfcd\n'
-#bindkey -s '^a' 'bc -lq\n'
-#bindkey -s '^f' 'cd "$(dirname "$(fzf)")"\n'
-
 # Extract with one command
 extract () {
      if [ -f $1 ] ; then
@@ -392,7 +293,6 @@ extract () {
          echo "'$1' is not a valid file"
      fi
 }
-
 
 ### Dotfiles
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
@@ -501,9 +401,6 @@ openSession () {
 }
 
 ##########    Source Plugins, should be last    ##########
-
-# load zsh-vi-mode
-#source /usr/share/zsh/plugins/zsh-vi-mode/zsh-vi-mode.plugin.zsh
 
 # Load zsh-syntax-highlighting
 source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
