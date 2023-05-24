@@ -58,8 +58,8 @@ toggleterm.setup({
 local mods = require("user.mods")
 local float_handler = function(term)
 
-  if not mods.empty(vim.fn.mapcheck('jj', 't')) then
-    vim.keymap.del('t', 'jj', { buffer = term.bufnr })
+  if not mods.empty(vim.fn.mapcheck('jk', 't')) then
+    vim.keymap.del('t', 'jk', { buffer = term.bufnr })
     vim.keymap.del('t', '<esc>', { buffer = term.bufnr })
   end
 end
@@ -68,7 +68,7 @@ function _G.set_terminal_keymaps()
 	local opts = { noremap = true }
 	--local opts = {buffer = 0}
 	vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
-	vim.api.nvim_buf_set_keymap(0, "t", "jj", [[<C-\><C-n>]], opts)
+	vim.api.nvim_buf_set_keymap(0, "t", "jk", [[<C-\><C-n>]], opts)
 	vim.api.nvim_buf_set_keymap(0, "t", "<C-h>", [[<C-\><C-n><C-W>h]], opts)
 	vim.api.nvim_buf_set_keymap(0, "t", "<C-j>", [[<C-\><C-n><C-W>j]], opts)
 	vim.api.nvim_buf_set_keymap(0, "t", "<C-k>", [[<C-\><C-n><C-W>k]], opts)
