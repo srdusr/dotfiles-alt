@@ -20,7 +20,7 @@ vim.g.mapleader = ";"
 --map("n", "<Space>", ".")
 
 -- "jj" to exit insert-mode
-map("i", "jj", "<esc>")
+map("i", "jk", "<esc>")
 
 -- Reload nvim config
 map("n", "<leader><CR>",
