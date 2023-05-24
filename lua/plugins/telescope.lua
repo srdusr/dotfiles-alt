@@ -411,37 +411,37 @@ local with_title = function(opts, extra)
   }, extra or {})
 end
 
---vim.api.nvim_create_augroup('startup', { clear = true })
---vim.api.nvim_command('augroup startup')
---vim.api.nvim_command('autocmd!')
---vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
---vim.api.nvim_command('augroup END')
-
-
-local startup = function()
-  -- Open file browser if argument is a folder
-  local arg = vim.api.nvim_eval('argv(0)')
-  if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
-    vim.defer_fn(function()
-      require('telescope.builtin').find_files(with_title(dropdown))
---      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
---        hidden = true,
---        results_title = '',
---        layout_config = { prompt_position = 'top' },
---      }))
-    end, 10)
-  end
-end
-
-
-
--- Define the custom command startup/findhere
-vim.cmd('command! Startup lua require("plugins.telescope").startup()')
-vim.cmd('command! Findhere lua require("plugins.telescope").startup()')
-
---vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
-
--- Merge the existing M table with the startup function table
-M = vim.tbl_extend('force', M, { startup = startup })
+----vim.api.nvim_create_augroup('startup', { clear = true })
+----vim.api.nvim_command('augroup startup')
+----vim.api.nvim_command('autocmd!')
+----vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
+----vim.api.nvim_command('augroup END')
+--
+--
+--local startup = function()
+--  -- Open file browser if argument is a folder
+--  local arg = vim.api.nvim_eval('argv(0)')
+--  if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
+--    vim.defer_fn(function()
+--      require('telescope.builtin').find_files(with_title(dropdown))
+----      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
+----        hidden = true,
+----        results_title = '',
+----        layout_config = { prompt_position = 'top' },
+----      }))
+--    end, 10)
+--  end
+--end
+--
+--
+--
+---- Define the custom command startup/findhere
+--vim.cmd('command! Startup lua require("plugins.telescope").startup()')
+--vim.cmd('command! Findhere lua require("plugins.telescope").startup()')
+--
+----vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
+--
+---- Merge the existing M table with the startup function table
+--M = vim.tbl_extend('force', M, { startup = startup })
 
 return M
