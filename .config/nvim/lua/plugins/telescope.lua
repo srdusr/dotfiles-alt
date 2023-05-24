@@ -1,13 +1,14 @@
 local M = {}
+
 -- Shorten function names
 local actions = require("telescope.actions")
 local fb_actions = require("telescope").extensions.file_browser.actions
-local builtin = require("telescope.builtin")
-local themes = require("telescope.themes")
-local utils = require("telescope.utils")
-local action_state = require("telescope.actions.state")
-local layout_actions = require("telescope.actions.layout")
-
+--local builtin = require("telescope.builtin")
+--local themes = require("telescope.themes")
+--local utils = require("telescope.utils")
+--local action_state = require("telescope.actions.state")
+--local layout_actions = require("telescope.actions.layout")
+--local pickers = require("telescope.pickers")
 
 require('telescope').setup({
 	defaults = {
@@ -23,28 +24,29 @@ require('telescope').setup({
       "--fixed-strings",
       "--trim",
     },
-		prompt_prefix = " ",
-		selection_caret = " ",
-		entry_prefix = "  ",
-		path_display = { "tail" },
+    prompt_prefix = " ",
+    selection_caret = " ",
+    entry_prefix = "  ",
+    path_display = { "tail" },
     --path_display = { "truncate" },
-		--path_display = { "smart" },
-		file_ignore_patterns = {
-			"packer_compiled.lua",
-			"%.DS_Store",
-			"%.git/",
-			"%.spl",
-			--"%.log",
-			"%[No Name%]", -- new files / sometimes folders (netrw)
-			"/$", -- ignore folders (netrw)
-			"node_modules",
-			"%.png",
-			"%.zip",
-			"%.pxd",
+    --path_display = { "smart" },
+    file_ignore_patterns = {
+      "packer_compiled.lua",
+      "%.DS_Store",
+      "%.git/",
+      "%.spl",
+      --"%.log",
+      "%[No Name%]", -- new files / sometimes folders (netrw)
+      "/$", -- ignore folders (netrw)
+      "node_modules",
+      "%.png",
+      "%.zip",
+      "%.pxd",
       "^.vim/",
       "^.local/",
       "^.cache/",
       "^downloads/",
+      "^music/",
       --"^node_modules/",
       --"^undodir/",
 		},
@@ -153,16 +155,16 @@ require('telescope').setup({
 				prompt_position = "bottom",
 			},
 		},
-  pickers = {
-    live_grep = {
-      disable_coordinates = true,
-      layout_config = {
-        horizontal = {
-          preview_width = 0.55,
-        },
-      },
-    },
-  },
+  --pickers = {
+  --  live_grep = {
+  --    disable_coordinates = true,
+  --    layout_config = {
+  --      horizontal = {
+  --        preview_width = 0.55,
+  --      },
+  --    },
+  --  },
+  --},
 	--pickers = {
 		--lsp_references = {
 		--	prompt_prefix='⬅️',
@@ -370,5 +372,76 @@ function M.grep_current_dir()
   }
   require("telescope.builtin").live_grep(opts)
 end
+
+--------------------------------------------------------------------------------
+
+local dropdown = require('telescope.themes').get_dropdown({
+    hidden = true,
+    no_ignore = true,
+    previewer = false,
+    prompt_title = '',
+    preview_title = '',
+    results_title = '',
+    layout_config = {
+      --anchor = "S",
+      prompt_position = 'top'
+    },
+})
+
+-- File browser always relative to buffer
+local opts_file_browser = vim.tbl_extend('force', dropdown, {
+  path_display = { '%:p:h' },
+})
+
+-- Set current folder as prompt title
+local with_title = function(opts, extra)
+  extra = extra or {}
+  local path = opts.cwd or opts.path or extra.cwd or extra.path or nil
+  local title = ''
+  local buf_path = vim.fn.expand('%:p:h')
+  local cwd = vim.fn.getcwd()
+  if path ~= nil and buf_path ~= cwd then
+    title = require('plenary.path'):new(buf_path):make_relative(cwd)
+  else
+    title = vim.fn.fnamemodify(cwd, ':t')
+  end
+
+  return vim.tbl_extend('force', opts, {
+    prompt_title = title
+  }, extra or {})
+end
+
+----vim.api.nvim_create_augroup('startup', { clear = true })
+----vim.api.nvim_command('augroup startup')
+----vim.api.nvim_command('autocmd!')
+----vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
+----vim.api.nvim_command('augroup END')
+--
+--
+--local startup = function()
+--  -- Open file browser if argument is a folder
+--  local arg = vim.api.nvim_eval('argv(0)')
+--  if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
+--    vim.defer_fn(function()
+--      require('telescope.builtin').find_files(with_title(dropdown))
+----      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
+----        hidden = true,
+----        results_title = '',
+----        layout_config = { prompt_position = 'top' },
+----      }))
+--    end, 10)
+--  end
+--end
+--
+--
+--
+---- Define the custom command startup/findhere
+--vim.cmd('command! Startup lua require("plugins.telescope").startup()')
+--vim.cmd('command! Findhere lua require("plugins.telescope").startup()')
+--
+----vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
+--
+---- Merge the existing M table with the startup function table
+--M = vim.tbl_extend('force', M, { startup = startup })
 
 return M

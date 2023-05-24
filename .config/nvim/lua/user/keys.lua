@@ -20,7 +20,7 @@ vim.g.mapleader = ";"
 --map("n", "<Space>", ".")
 
 -- "jj" to exit insert-mode
-map("i", "jj", "<esc>")
+map("i", "jk", "<esc>")
 
 -- Reload nvim config
 map("n", "<leader><CR>",
@@ -157,7 +157,11 @@ map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 -- Toggle Diff
 map("n", "<leader>td", "<Cmd>call utils#ToggleDiff()<CR>")
 
+-- Toggle Verbose
 map("n", "<leader>tv", "<Cmd>call utils#ToggleVerbose()<CR>")
+
+-- Jump List
+map("n", "<leader>j", "<Cmd>call utils#GotoJump()<CR>")
 
 -- Map delete to Ctrl+l
 map("i", "<C-l>", "<Del>")
