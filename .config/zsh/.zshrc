@@ -43,6 +43,22 @@ exit_zsh() { exit }
 zle -N exit_zsh
 bindkey '^D' exit_zsh
 
+# Auto-completion
+#autoload -U promptinit && promptinit
+autoload -Uz compinit && compinit
+
+# Accept completion with <tab> or Ctrl+i and go to next/previous suggestions with Vi like keys: Ctrl+n/p
+zmodload -i zsh/complist
+accept-and-complete-next-history() {
+    zle expand-or-complete-prefix
+}
+
+zle -N accept-and-complete-next-history
+bindkey -M menuselect '^i' accept-and-complete-next-history
+bindkey '^n' expand-or-complete
+bindkey '^p' reverse-menu-complete
+zstyle ':completion:*' menu select=1
+
 # Some other useful functionalities
 setopt autocd		# Automatically cd into typed directory.
 stty intr '^q'        # free Ctrl+C for copy use Ctrl+q instead
@@ -51,7 +67,7 @@ stty stop undef		# Disable ctrl-s to freeze terminal.
 stty start undef
 
 export PATH="$HOME/.local/bin:$PATH"
-#export VIRTUAL_ENV_DISABLE_PROMPT=true
+export VIRTUAL_ENV_DISABLE_PROMPT=true
 #unsetopt BEEP
 
 # Enable various options
