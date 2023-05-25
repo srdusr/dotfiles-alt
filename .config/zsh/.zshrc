@@ -135,8 +135,8 @@ function set-prompt() {
     echo -ne '\e[5 q'
     VI_MODE=$(insert-mode)
   fi
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} $(jobs_status_indicator)
-    %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{[%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}]%}%}%}"
+    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(jobs_status_indicator)
+    %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
 function update-mode-file() {
@@ -169,6 +169,8 @@ function zle-keymap-select() {
       ;;
   esac
 }
+
+preexec () { print -rn -- $terminfo[el]; echo -ne '\e[5 q' ; }
 
 zle -N zle-keymap-select
 zle -N zle-line-init
