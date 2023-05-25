@@ -139,10 +139,20 @@ function set-prompt() {
     %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
+#function update-mode-file() {
+#  set-prompt
+#  echo "$VI_MODE" >| ~/.vi-mode
+#  tmux refresh-client -S
+#}
 function update-mode-file() {
   set-prompt
-  echo "$VI_MODE" >| ~/.vi-mode
-  tmux refresh-client -S
+  local current_mode=$(cat ~/.vi-mode)
+  local new_mode="$VI_MODE"
+
+  if [[ "$new_mode" != "$current_mode" ]]; then
+    echo "$new_mode" >| ~/.vi-mode
+    tmux refresh-client -S
+  fi
 }
 
 function zle-line-init() {
