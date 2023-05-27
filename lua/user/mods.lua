@@ -214,5 +214,39 @@ vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
 
 --------------------------------------------------
 
+--- Update Tmux Status Vi-mode
+function M.update_tmux_status()
+  local mode = vim.api.nvim_eval('mode()')
+  -- Determine the mode name based on the mode value
+  local mode_name
+  if mode == 'n' then
+    mode_name = '-- NORMAL --'
+  elseif mode == 'i' or mode == 'ic' then
+    mode_name = '-- INSERT --'
+  else
+    mode_name = '-- NORMAL --' --'-- COMMAND --'
+  end
 
+  -- Write the mode name to the file
+  local file = io.open(os.getenv('HOME') .. '/.vi-mode', 'w')
+  file:write(mode_name)
+  file:close()
+  if nvim_running then
+    -- Neovim is running, update the mode file and refresh tmux
+    VI_MODE = ""  -- Clear VI_MODE to show Neovim mode
+    vim.cmd("silent !tmux refresh-client -S")
+  end
+  ---- Force tmux to update the status
+  vim.cmd("silent !tmux refresh-client -S")
+end
+vim.cmd([[
+  augroup TmuxStatus
+    autocmd!
+    autocmd CursorHold * lua require("user.mods").update_tmux_status()
+    autocmd VimEnter * lua require("user.mods").update_tmux_status()
+    autocmd ModeChanged * lua require("user.mods").update_tmux_status()
+  augroup END
+]])
+
+--------------------------------------------------
 return M
