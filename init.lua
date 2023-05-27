@@ -73,7 +73,7 @@ local modules = {
   "plugins.web-devicons",
   "plugins.cmp",
   "plugins.quickfix",
-  "plugins.snippets",
+  --"plugins.snippets",
   --"plugins.colorizer",
   "plugins.prettier",
   --"plugins.git",
