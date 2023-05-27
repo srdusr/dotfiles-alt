@@ -7,7 +7,7 @@
               ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
               " ------------------------------------------------
               Author: srdusr
-               Email: graytrevor98@gmail.com
+               Email: trevorgray@srdusr.com
                  Url: https://github.com/srdusr/nvim.git
               ------------------------------------------------ "
 --]]
