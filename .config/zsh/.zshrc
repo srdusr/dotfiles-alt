@@ -155,11 +155,6 @@ function set-prompt() {
     %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
-#function update-mode-file() {
-#  set-prompt
-#  echo "$VI_MODE" >| ~/.vi-mode
-#  tmux refresh-client -S
-#}
 function update-mode-file() {
   set-prompt
   local current_mode=$(cat ~/.vi-mode)
@@ -167,6 +162,23 @@ function update-mode-file() {
 
   if [[ "$new_mode" != "$current_mode" ]]; then
     echo "$new_mode" >| ~/.vi-mode
+  fi
+
+  tmux refresh-client -S
+}
+
+function check-nvim-running() {
+  if pgrep -x "nvim" > /dev/null; then
+    VI_MODE=""
+    update-mode-file
+    tmux refresh-client -S
+  else
+    if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
+      VI_MODE=$(normal-mode)
+    elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
+      VI_MODE=$(insert-mode)
+    fi
+    update-mode-file
     tmux refresh-client -S
   fi
 }
@@ -205,6 +217,39 @@ TRAPWINCH() { # Trap the WINCH signal to update the mode file on window size cha
   update-mode-file
 }
 
+function nvim-listener() {
+  local prev_nvim_status="inactive"
+  local nvim_pid=""
+
+  while true; do
+    local current_nvim_pid=$(pgrep -x "nvim")
+
+    if [[ -n "$current_nvim_pid" && "$current_nvim_pid" != "$nvim_pid" ]]; then
+      # Neovim started
+      prev_nvim_status="active"
+      nvim_pid="$current_nvim_pid"
+      VI_MODE="" # Clear VI_MODE to show Neovim mode
+      update-mode-file
+      tmux refresh-client -S
+    elif [[ -z "$current_nvim_pid" && "$prev_nvim_status" == "active" ]]; then
+      # Neovim stopped
+      prev_nvim_status="inactive"
+      nvim_pid=""
+      if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
+        VI_MODE=$(normal-mode)
+      elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
+        VI_MODE=$(insert-mode)
+      fi
+      update-mode-file
+      tmux refresh-client -S
+    fi
+    # Add a delay
+    #sleep 0.5
+  done
+}
+
+# Start Neovim listener in the background
+nvim-listener &!
 set-prompt
 
 RPROMPT='%(?..[%F{196}%?%f] )'
