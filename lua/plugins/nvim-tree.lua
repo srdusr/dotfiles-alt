@@ -77,6 +77,10 @@ nvim_tree.setup({
     --  },
     --},
   },
+  trash = {
+    cmd = "gio trash",
+    require_confirm = true,
+  },
 })
 
 vim.api.nvim_create_autocmd("QuitPre", {
