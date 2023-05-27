@@ -223,9 +223,9 @@ end, { silent = true })
 --utils.map("n", "<Space>", "za")
 
 -- Make a copy of current file
-vim.cmd([[
-  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
-]])
+--vim.cmd([[
+--  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
+--]])
 
 -- Toggle transparency
 map('n', '<leader>tb', ':call utils#Toggle_transparent_background()<CR>')
