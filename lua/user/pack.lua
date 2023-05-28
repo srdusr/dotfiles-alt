@@ -229,6 +229,7 @@ return packer.startup(function(use)
     requires = {'rmagatti/auto-session', 'nvim-telescope/telescope.nvim'},
     config = function()
       require('session-lens').setup({--[[your custom config--]]})
+      vim.keymap.set('n', '<leader>s', require('session-lens').search_session) -- <-- this sets it to `Ctrl + s`
     end
   })
 
