@@ -11,6 +11,14 @@ if [ -n "$ZSH_VERSION" ]; then
     insert-mode () { echo "-- INSERT --"; }
     normal-mode () { echo "-- NORMAL --"; }
 
+    show-mode() {
+        case $KEYMAP in
+          vicmd)      echo "$(normal-mode)" ;;
+          main|viins) echo "$(insert-mode)" ;;
+          *)          echo "$(insert-mode)" ;;
+        esac
+    }
+
     precmd () {
         # yes, I actually like to have a new line, then some stuff and then 
         # the input line
@@ -20,8 +28,9 @@ if [ -n "$ZSH_VERSION" ]; then
         # this is required for initial prompt and a problem I had with Ctrl+C or
         # Enter when in normal mode (a new line would come up in insert mode,
         # but normal mode would be indicated)
-        PS1="%{${terminfo_down_sc}$(insert-mode)${terminfo[rc]}%}%~ $ "
+        PS1="%{${terminfo_down_sc}$(show-mode)${terminfo[rc]}%}%~ $ "
     }
+
     set-prompt () {
         case $KEYMAP in
           vicmd)      VI_MODE="$(normal-mode)" ;;
@@ -61,7 +70,6 @@ elif [ -n "$BASH_VERSION" ]; then
     # Set vi-mode and key bindings for bash
     set -o vi
 
-    # Show which mode
     show-mode() {
       if [ "$BASH_MODE" = "vi" ]; then
         echo -ne "\[\033[1m\]-- NORMAL --\[\033[0m\]\n"
@@ -69,32 +77,9 @@ elif [ -n "$BASH_VERSION" ]; then
         echo -ne "\[\033[1m\]-- INSERT --\[\033[0m\]\n"
       fi
     }
+
     PS1='$(show-mode)\u@\h:\w\$ '
 
     # Edit line in vim with alt-e
     edit-command-line() {
-      local temp=$(mktemp /tmp/bash-edit-line.XXXXXXXXXX)
-      history -a
-      history -n
-      fc -ln -1 > "${temp}"
-      vim "${temp}"
-      READLINE_LINE=$(cat "${temp}")
-      READLINE_POINT=0
-      rm -f "${temp}"
-    }
-    bind -x '"\ee": edit-command-line'
-
-    # Navigate in complete menu
-    bind -m vi-command '"h": backward-char'    # map h to backward-char
-    bind -m vi-command '"j": down-line-or-history'  # map j to down-line-or-history
-    bind -m vi-command '"k": up-line-or-history'    # map k to up-line-or-history
-    bind -m vi-command '"l": forward-char'    # map l to forward-char
-
-    # Map 'jk' to Escape key in INSERT mode
-    bind -m vi-insert '"jk":vi-movement-mode'
-
-    # Fix backspace bug when switching modes
-    stty erase '^?'
-else
-  echo "Unsupported shell"
-fi
+      local temp=$(mktemp /tmp/bash
