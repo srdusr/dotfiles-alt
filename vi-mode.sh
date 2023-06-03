@@ -95,18 +95,20 @@ elif [[ -n "$BASH_VERSION" ]]; then
 
     # Fix backspace bug when switching modes
     stty erase '^?'
+else
+  echo "Unsupported shell"
 fi
 
-# Reload .bashrc or .bash_profile file if using bash
-if [[ -n "$BASH_VERSION" ]]; then
-    if [[ -f "$HOME/.bashrc" ]]; then
-        source ~/.bashrc
-    elif [[ -f "$HOME/.bash_profile" ]]; then
-        source ~/.bash_profile
-    fi
-fi
-
-# Reload .zshrc file if using zsh
-if [[ -n "$ZSH_VERSION" ]]; then
-    source ~/.zshrc
-fi
+## Reload .bashrc or .bash_profile file if using bash
+#if [[ -n "$BASH_VERSION" ]]; then
+#    if [[ -f "$HOME/.bashrc" ]]; then
+#        source ~/.bashrc
+#    elif [[ -f "$HOME/.bash_profile" ]]; then
+#        source ~/.bash_profile
+#    fi
+#fi
+#
+## Reload .zshrc file if using zsh
+#if [[ -n "$ZSH_VERSION" ]]; then
+#    source ~/.zshrc
+#fi
