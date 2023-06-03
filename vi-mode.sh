@@ -11,16 +11,8 @@ if [ -n "$ZSH_VERSION" ]; then
     insert-mode () { echo "-- INSERT --"; }
     normal-mode () { echo "-- NORMAL --"; }
 
-    show-mode() {
-        case $KEYMAP in
-          vicmd)      echo "$(normal-mode)" ;;
-          main|viins) echo "$(insert-mode)" ;;
-          *)          echo "$(insert-mode)" ;;
-        esac
-    }
-
     precmd () {
-        # yes, I actually like to have a new line, then some stuff and then 
+        # yes, I actually like to have a new line, then some stuff and then
         # the input line
         print -rP "
     [%D{%a, %d %b %Y, %H:%M:%S}] %n %{${fg[blue]}%}%m%{$reset_color%}"
@@ -28,7 +20,7 @@ if [ -n "$ZSH_VERSION" ]; then
         # this is required for initial prompt and a problem I had with Ctrl+C or
         # Enter when in normal mode (a new line would come up in insert mode,
         # but normal mode would be indicated)
-        PS1="%{${terminfo_down_sc}%$(show-mode)%${terminfo[rc]}%}%~ $ "
+        PS1="%{${terminfo_down_sc}%$(insert-mode)%${terminfo[rc]}%}%~ $ "
     }
 
     set-prompt () {
@@ -54,7 +46,7 @@ if [ -n "$ZSH_VERSION" ]; then
     bindkey '^?' backward-delete-char
 
     # Edit line in vim with alt-e
-    autoload edit-command-line; zle -N edit-command-line
+    autoload -U edit-command-line; zle -N edit-command-line
     bindkey '^e' edit-command-line
 
     # Navigate in complete menu
@@ -71,25 +63,25 @@ elif [ -n "$BASH_VERSION" ]; then
     set -o vi
 
     show-mode() {
-      if [ "$BASH_MODE" = "vi" ]; then
-        echo -ne "\[\033[1m\]-- NORMAL --\[\033[0m\]\n"
-      else
-        echo -ne "\[\033[1m\]-- INSERT --\[\033[0m\]\n"
-      fi
+        if [ "$BASH_MODE" = "vi" ]; then
+            echo -ne "\[\033[1m\]-- NORMAL --\[\033[0m\]\n"
+        else
+            echo -ne "\[\033[1m\]-- INSERT --\[\033[0m\]\n"
+        fi
     }
 
     PS1='$(show-mode)\u@\h:\w\$ '
 
     # Edit line in vim with alt-e
     edit-command-line() {
-      local temp=$(mktemp /tmp/bash-edit-line.XXXXXXXXXX)
-      history -a
-      history -n
-      fc -ln -1 > "${temp}"
-      vim "${temp}"
-      READLINE_LINE=$(cat "${temp}")
-      READLINE_POINT=0
-      rm -f "${temp}"
+        local temp=$(mktemp /tmp/bash-edit-line.XXXXXXXXXX)
+        history -a
+        history -n
+        fc -ln -1 > "${temp}"
+        vim "${temp}"
+        READLINE_LINE=$(cat "${temp}")
+        READLINE_POINT=0
+        rm -f "${temp}"
     }
     bind -x '"\ee": edit-command-line'
 
@@ -104,6 +96,7 @@ elif [ -n "$BASH_VERSION" ]; then
 
     # Fix backspace bug when switching modes
     stty erase '^?'
+
 else
-  echo "Unsupported shell"
+    echo "Unsupported shell"
 fi
