@@ -31,9 +31,10 @@ if [[ -n "$ZSH_VERSION" ]]; then
         PS1="%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%~ $ "
     }
 
-    function zle-line-init() zle-keymap-select() {
+    function zle-line-init () {
         set-prompt
         zle reset-prompt
+        zle-keymap-select
     }
     preexec () { print -rn -- $terminfo[el]; }
 
