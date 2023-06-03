@@ -82,4 +82,29 @@ elif [ -n "$BASH_VERSION" ]; then
 
     # Edit line in vim with alt-e
     edit-command-line() {
-      local temp=$(mktemp /tmp/bash
+      local temp=$(mktemp /tmp/bash-edit-line.XXXXXXXXXX)
+      history -a
+      history -n
+      fc -ln -1 > "${temp}"
+      vim "${temp}"
+      READLINE_LINE=$(cat "${temp}")
+      READLINE_POINT=0
+      rm -f "${temp}"
+    }
+    bind -x '"\ee": edit-command-line'
+
+    # Navigate in complete menu
+    bind -m vi-command '"h": backward-char'    # map h to backward-char
+    bind -m vi-command '"j": down-line-or-history'  # map j to down-line-or-history
+    bind -m vi-command '"k": up-line-or-history'    # map k to up-line-or-history
+    bind -m vi-command '"l": forward-char'    # map l to forward-char
+
+    # Map 'jk' to Escape key in INSERT mode
+    bind -m vi-insert '"jk":vi-movement-mode'
+
+    # Fix backspace bug when switching modes
+    stty erase '^?'
+else
+  echo "Unsupported shell"
+fi
+
