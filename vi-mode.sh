@@ -28,7 +28,7 @@ if [ -n "$ZSH_VERSION" ]; then
         # this is required for initial prompt and a problem I had with Ctrl+C or
         # Enter when in normal mode (a new line would come up in insert mode,
         # but normal mode would be indicated)
-        PS1="%{${terminfo_down_sc}$(show-mode)${terminfo[rc]}%}%~ $ "
+        PS1="%{${terminfo_down_sc}%$(show-mode)%${terminfo[rc]}%}%~ $ "
     }
 
     set-prompt () {
@@ -107,4 +107,3 @@ elif [ -n "$BASH_VERSION" ]; then
 else
   echo "Unsupported shell"
 fi
-
