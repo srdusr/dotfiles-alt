@@ -285,6 +285,7 @@ function M.find_configs()
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
+      "~/.ssh",
       "~/.bashrc",
     },
     -- cwd = "~/.config/nvim/",
