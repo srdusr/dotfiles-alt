@@ -7,7 +7,7 @@
               ╚═╝  ╚═══╝╚══════╝ ╚═════╝   ╚═══╝  ╚═╝╚═╝     ╚═╝
               " ------------------------------------------------
               Author: srdusr
-               Email: graytrevor98@gmail.com
+               Email: trevorgray@srdusr.com
                  Url: https://github.com/srdusr/nvim.git
               ------------------------------------------------ "
 --]]
@@ -73,7 +73,7 @@ local modules = {
   "plugins.web-devicons",
   "plugins.cmp",
   "plugins.quickfix",
-  "plugins.snippets",
+  --"plugins.snippets",
   --"plugins.colorizer",
   "plugins.prettier",
   --"plugins.git",

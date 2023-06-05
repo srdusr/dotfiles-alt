@@ -265,6 +265,7 @@ require('telescope').load_extension('media_files')
 --require('telescope').extensions.notify.notify()
 require('telescope').load_extension('notify')
 require('telescope').load_extension('dap')
+require("telescope").load_extension("session-lens")
 
 function M.find_configs()
   require("telescope.builtin").find_files {
@@ -284,6 +285,7 @@ function M.find_configs()
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
+      "~/.ssh",
       "~/.bashrc",
     },
     -- cwd = "~/.config/nvim/",

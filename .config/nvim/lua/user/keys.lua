@@ -85,7 +85,7 @@ map("t", "<C-j>", "<C-\\><C-N><C-j>")
 map("t", "<C-k>", "<C-\\><C-N><C-k>")
 map("t", "<C-l>", "<C-\\><C-N><C-l>")
 map("t", "<C-x>", "<C-c>")
-map("n", "<C-x>", "<C-c>")
+--map("n", "<C-x>", "<C-c>")
 --map("n", "<C-r>", ":<C-u>call MyFunc(v:count)<CR>")
 
 -- Split window
@@ -223,9 +223,9 @@ end, { silent = true })
 --utils.map("n", "<Space>", "za")
 
 -- Make a copy of current file
-vim.cmd([[
-  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
-]])
+--vim.cmd([[
+--  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
+--]])
 
 -- Toggle transparency
 map('n', '<leader>tb', ':call utils#Toggle_transparent_background()<CR>')

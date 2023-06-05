@@ -29,7 +29,7 @@ vim.cmd([[
 
 --------------------------------------------------
 
--- Use a protected call so we don't error out on first use
+-- Use a protected call so don't error out on first use
 local status_ok, packer = pcall(require, "packer")
 if not status_ok then
 	return
@@ -223,6 +223,14 @@ return packer.startup(function(use)
         "nvim-neotest/neotest-vim-test",
       },
     }
+  })
+  use({
+    'rmagatti/session-lens',
+    requires = {'rmagatti/auto-session', 'nvim-telescope/telescope.nvim'},
+    config = function()
+      require('session-lens').setup({--[[your custom config--]]})
+      vim.keymap.set('n', '<leader>s', require('session-lens').search_session) -- <-- this sets it to `Ctrl + s`
+    end
   })
 
 	-- Colorschemes

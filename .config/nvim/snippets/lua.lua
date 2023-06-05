@@ -194,7 +194,7 @@ local {} = {}
   ]],
 		{ i(1, ""), i(2, "") }
 	),
-	"jk"
+	"jj"
 ) --}}}
 -- Tutorial Snippets go here --
 local myFirstSnippet = s("myFirstSnippet", {
