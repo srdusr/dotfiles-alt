@@ -85,7 +85,7 @@ map("t", "<C-j>", "<C-\\><C-N><C-j>")
 map("t", "<C-k>", "<C-\\><C-N><C-k>")
 map("t", "<C-l>", "<C-\\><C-N><C-l>")
 map("t", "<C-x>", "<C-c>")
-map("n", "<C-x>", "<C-c>")
+--map("n", "<C-x>", "<C-c>")
 --map("n", "<C-r>", ":<C-u>call MyFunc(v:count)<CR>")
 
 -- Split window
