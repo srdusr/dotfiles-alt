@@ -240,6 +240,7 @@ return packer.startup(function(use)
 	use("NTBBloodbath/doom-one.nvim")
 	use("nyngwang/nvimgelion")
 	use("projekt0n/github-nvim-theme")
+	use("folke/tokyonight.nvim")
 
   -- UI
 	use("kyazdani42/nvim-web-devicons") -- 
