@@ -27,6 +27,7 @@ end
 
 vim.api.nvim_command("syntax on")
 vim.api.nvim_command("highlight Normal guibg=none")
+vim.api.nvim_command("highlight NormalNC guibg=none")
 vim.api.nvim_command("highlight SignColumn guibg=none")
 --vim.api.nvim_command("highlight FoldColumn guibg=none")
 --vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
