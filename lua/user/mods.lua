@@ -239,10 +239,11 @@ function M.update_tmux_status()
   ---- Force tmux to update the status
   vim.cmd("silent !tmux refresh-client -S")
 end
+
 vim.cmd([[
   augroup TmuxStatus
     autocmd!
-    autocmd CursorHold * lua require("user.mods").update_tmux_status()
+    "autocmd CursorHold * lua require("user.mods").update_tmux_status()
     autocmd VimEnter * lua require("user.mods").update_tmux_status()
     autocmd ModeChanged * lua require("user.mods").update_tmux_status()
   augroup END
