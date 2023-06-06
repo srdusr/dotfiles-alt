@@ -1,7 +1,7 @@
 -- Colorscheme
 -- Available colorschemes:
--- [[ nightfly ayu onedark doom-one nvimgelion github_dark ]]
-local colorscheme = "nightfly"
+-- [[ nightfly ayu onedark doom-one nvimgelion github_dark tokyonight ]]
+local colorscheme = "tokyonight-night"
 local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
 if not status_ok then
   vim.notify("colorscheme " .. colorscheme .. " not found!")
@@ -27,6 +27,7 @@ end
 
 vim.api.nvim_command("syntax on")
 vim.api.nvim_command("highlight Normal guibg=none")
+vim.api.nvim_command("highlight NormalNC guibg=none")
 vim.api.nvim_command("highlight SignColumn guibg=none")
 --vim.api.nvim_command("highlight FoldColumn guibg=none")
 --vim.api.nvim_command("highlight CursorLineSign guibg=none ctermbg=NONE")
