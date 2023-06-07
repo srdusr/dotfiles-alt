@@ -19,7 +19,7 @@ vim.g.mapleader = ";"
 -- Repeat last command using `<Space>` instead of `.` NOTE: commented out in favour of "ggandor/flit.nvim"
 --map("n", "<Space>", ".")
 
--- "jj" to exit insert-mode
+-- "jk" to exit insert-mode
 map("i", "jk", "<esc>")
 
 -- Reload nvim config
