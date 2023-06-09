@@ -58,7 +58,7 @@ require('telescope').setup({
 				["<C-j>"] = actions.move_selection_next,
 				["<C-k>"] = actions.move_selection_previous,
 
-				["<C-c>"] = actions.close,
+				--["<C-c>"] = actions.close,
 				["<Esc>"] = actions.close, -- close w/ one esc
 				--["<Esc>"] = "close", -- close w/ one esc
 				["<?>"] = actions.which_key, -- keys from pressing <C-/>
