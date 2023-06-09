@@ -1,5 +1,57 @@
 local wezterm = require 'wezterm'
 
+---- Function to unset Ctrl+C keybinding
+--local function unsetCtrlCKeybinding(window)
+--  local keys = window:get_config().keys
+--  for i, key in ipairs(keys) do
+--    if key.key == 'c' and key.mods == 'CTRL' then
+--      table.remove(keys, i)
+--      break
+--    end
+--  end
+--  window:set_config({ keys = keys })
+--end
+--
+---- Event handler to unset Ctrl+C keybinding when using nvim
+--wezterm.on("spawn_command", function(window, pane)
+--  local cmd = pane:get_command()
+--  if cmd and cmd[1] == "nvim" then
+--    unsetCtrlCKeybinding(window)
+--  end
+--end)
+
+--local function isNvimRunning(window)
+--  local pane = window.active_pane
+--  local cmd = pane:get_command()
+--  return cmd and cmd[1] == "nvim"
+--end
+--
+---- Function to modify keybindings based on the current program
+--local function updateKeybindings(window)
+--  local isNvim = isNvimRunning(window)
+--
+--  local keys = {}
+--  if not isNvim then
+--    -- Add the default Ctrl+C keybinding
+--    keys = {
+--      {
+--        key = "c",
+--        mods = "CTRL",
+--        action = wezterm.action{CopyTo = "ClipboardAndPrimarySelection"}
+--      }
+--    }
+--  end
+--
+--  window:set_config({
+--    keys = keys
+--  })
+--end
+--
+---- Event handler to update keybindings when the active program changes
+--wezterm.on("update-right-status", function(window)
+--  updateKeybindings(window)
+--end)
+
 wezterm.on("toggle-opacity", function(window)
   local overrides = window:get_config_overrides() or {}
   if not overrides.window_background_opacity then
@@ -72,11 +124,28 @@ return {
 			mods = "CTRL",
 			action = wezterm.action({ PasteFrom = "Clipboard" }),
 		},
-		{
-			key = "c",
-			mods = "CTRL",
-			action = wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }),
-		},
+    --{
+		--	key = "c",
+		--	mods = "CTRL",
+		--	action = wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }),
+		--},
+    {
+      key="c",
+      mods="CTRL",
+      action = wezterm.action_callback(function(window, pane)
+        local has_selection = window:get_selection_text_for_pane(pane) ~= ""
+        if has_selection then
+          window:perform_action(
+            wezterm.action{CopyTo="ClipboardAndPrimarySelection"},
+            pane)
+          window:perform_action("ClearSelection", pane)
+        else
+          window:perform_action(
+            wezterm.action{SendKey={key="c", mods="CTRL"}},
+            pane)
+        end
+      end)
+    }
 	},
 	-- Aesthetic Night Colorscheme
 	--bold_brightens_ansi_colors = true,
