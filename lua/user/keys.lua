@@ -220,7 +220,7 @@ end, { silent = true })
 --utils.map("n", "<F2>", "&foldlevel ? 'zM' : 'zR'", { expr = true })
 
 -- Use space to toggle fold
---utils.map("n", "<Space>", "za")
+map("n", "<Space>", "za")
 
 -- Make a copy of current file
 --vim.cmd([[
