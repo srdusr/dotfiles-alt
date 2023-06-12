@@ -249,11 +249,13 @@ vim.cmd([[
     autocmd VimEnter * lua require("user.mods").update_tmux_status()
     autocmd BufEnter * lua require("user.mods").update_tmux_status()
     autocmd ModeChanged * lua require("user.mods").update_tmux_status()
+    autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
   augroup END
 ]])
 
     --autocmd InsertLeave,InsertEnter * lua require("user.mods").update_tmux_status()
     --autocmd BufEnter * lua require("user.mods").update_tmux_status()
+    --autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
 
     --autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
     --autocmd VimResized * lua require("user.mods").update_tmux_status()
