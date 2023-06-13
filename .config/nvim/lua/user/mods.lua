@@ -240,8 +240,6 @@ function M.update_tmux_status()
   vim.cmd("silent !tmux refresh-client -S")
 end
 
--- Add autocmd for <esc>
--- Add autocmd to check when tmux switches panes/windows
 vim.cmd([[
   augroup TmuxStatus
     autocmd!
@@ -253,6 +251,8 @@ vim.cmd([[
   augroup END
 ]])
 
+-- Add autocmd for <esc>
+-- Add autocmd to check when tmux switches panes/windows
     --autocmd InsertLeave,InsertEnter * lua require("user.mods").update_tmux_status()
     --autocmd BufEnter * lua require("user.mods").update_tmux_status()
     --autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
