@@ -164,14 +164,18 @@ function update-mode-file() {
     echo "$new_mode" >| ~/.vi-mode
   fi
 
-  tmux refresh-client -S
+  if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+    tmux refresh-client -S
+  fi
 }
 
 function check-nvim-running() {
   if pgrep -x "nvim" > /dev/null; then
     VI_MODE=""
     update-mode-file
-    tmux refresh-client -S
+    if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+      tmux refresh-client -S
+    fi
   else
     if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
       VI_MODE=$(normal-mode)
@@ -179,7 +183,9 @@ function check-nvim-running() {
       VI_MODE=$(insert-mode)
     fi
     update-mode-file
-    tmux refresh-client -S
+    if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+      tmux refresh-client -S
+    fi
   fi
 }
 
@@ -230,7 +236,9 @@ function nvim-listener() {
       nvim_pid="$current_nvim_pid"
       VI_MODE="" # Clear VI_MODE to show Neovim mode
       update-mode-file
-      tmux refresh-client -S
+      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+        tmux refresh-client -S
+      fi
     elif [[ -z "$current_nvim_pid" && "$prev_nvim_status" == "active" ]]; then
       # Neovim stopped
       prev_nvim_status="inactive"
@@ -241,10 +249,12 @@ function nvim-listener() {
         VI_MODE=$(insert-mode)
       fi
       update-mode-file
-      tmux refresh-client -S
+      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+        tmux refresh-client -S
+      fi
     fi
     # Add a delay
-    #sleep 0.5
+    # sleep 0.5
   done
 }
 
