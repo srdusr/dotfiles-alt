@@ -14,7 +14,7 @@
 #fi
 
 #[[ -f ~/.config/zsh/.zshenv ]] && source ~/.config/zsh/.zshenv
-[[ -f ~/.config/zsh/.zshrc ]] && source ~/.config/zsh/.zshrc
+#[[ -f ~/.config/zsh/.zshrc ]] && source ~/.config/zsh/.zshrc
 
 
 # Xresources
