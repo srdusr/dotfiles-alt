@@ -9,6 +9,11 @@
 # ~/.bashrc
 #
 
+if [[ $- != *i* ]]; then
+  . ~/.profile
+  return
+fi
+
 # Get the current active terminal
 term="$(cat /proc/$PPID/comm)"
 
