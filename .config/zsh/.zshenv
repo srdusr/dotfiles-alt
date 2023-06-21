@@ -8,7 +8,7 @@
 
 # Path
 #export PATH="$PATH:${$(find ~/.local/bin ~/.local/share/npm/bin -type d -printf %p:)%%:}"
-export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local:$HOME/.local/bin:$HOME/.local/bin/scripts:$HOME/Scripts:$HOME/.local/bin/statusbar
+#export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local:$HOME/.local/bin:$HOME/.local/bin/scripts:$HOME/Scripts:$HOME/.local/bin/statusbar
 
 
 # Default Programs:
