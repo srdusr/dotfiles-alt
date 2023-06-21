@@ -9,7 +9,9 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-export PATH=$HOME/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
+export PATH=$HOME/.bin:$HOME/.local/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
+[[ -f ~/.config/zsh/.zshenv ]] && source ~/.config/zsh/.zshenv
+[[ -f ~/.config/X11/.Xresources ]] && xrdb -merge ~/.config/X11/.Xresources
 
 ##########    Vi mode    ##########
 bindkey -v
@@ -109,6 +111,14 @@ jobs_status_indicator() {
     fi
 }
 
+remote_indicator() {
+    if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+        remote_indicator='ssh '
+    else
+        remote_indicator=''
+    fi
+}
+
 # Version control (git)
 autoload -Uz add-zsh-hook vcs_info
 zstyle ':vcs_info:*' stagedstr ' +%F{15}staged%f' 
@@ -137,7 +147,7 @@ function normal-mode() {
 
 function my_precmd () {
     vcs_info
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(jobs_status_indicator)
+    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(remote_indicator)\$(jobs_status_indicator)
     %{%{$terminfo_down_sc$(insert-mode)$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
@@ -151,7 +161,7 @@ function set-prompt() {
     echo -ne '\e[5 q'
     VI_MODE=$(insert-mode)
   fi
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(jobs_status_indicator)
+    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(remote_indicator)\$(jobs_status_indicator)
     %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
