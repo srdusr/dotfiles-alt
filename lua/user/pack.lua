@@ -295,14 +295,16 @@ return packer.startup(function(use)
       })
     end
   })
-  use("j-hui/fidget.nvim")               -- UI to show nvim-lsp progress
-  use { "simrat39/symbols-outline.nvim", --
+  use({"j-hui/fidget.nvim",
+    tag = 'legacy',
+  })               -- UI to show nvim-lsp progress
+  use({ "simrat39/symbols-outline.nvim", --
     config = function()
       require("symbols-outline").setup({
         auto_close = true,
       })
     end
-  }
+  })
   use({
     "kosayoda/nvim-lightbulb",     --
     requires = "antoinemadec/FixCursorHold.nvim",
