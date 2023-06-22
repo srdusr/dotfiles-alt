@@ -111,9 +111,9 @@ jobs_status_indicator() {
 
 remote_indicator() {
   if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-    remote_indicator='ssh '
+    echo 'ssh '
   else
-    remote_indicator=''
+    echo ''
   fi
 }
 
