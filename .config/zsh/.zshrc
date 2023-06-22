@@ -10,7 +10,6 @@
 [[ $- != *i* ]] && return
 
 export PATH=$HOME/.bin:$HOME/.local/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
-#[[ -f ~/.config/zsh/.zshenv ]] && source ~/.config/zsh/.zshenv
 
 ##########    Vi mode    ##########
 bindkey -v
@@ -111,11 +110,11 @@ jobs_status_indicator() {
 }
 
 remote_indicator() {
-    if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-        remote_indicator='ssh '
-    else
-        remote_indicator=''
-    fi
+  if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+    remote_indicator='ssh '
+  else
+    remote_indicator=''
+  fi
 }
 
 # Version control (git)
