@@ -1,5 +1,4 @@
 require("gitsigns").setup({
-				keymaps = {},
 				signs = {
 					--add = {
 					--	hl = "GitSignsAdd",
