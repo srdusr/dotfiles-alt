@@ -26,8 +26,7 @@ export XDG_SESSION_TYPE=X11
 
 # XDG Paths:
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
-#export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
-export XDG_DATA_HOME="$HOME/.local/share"
+export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
 export XINITRC="$HOME/.config/X11/.xinitrc"
 export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/X11/.inputrc"
