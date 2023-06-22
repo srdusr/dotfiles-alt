@@ -312,7 +312,7 @@ null_ls.setup {
         "css", "scss", "less", "graphql", "vue", "svelte" },
       extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" },
     }),
-    --null_ls.builtins.formatting.prettierd,
+    builtins.formatting.prettierd,
     builtins.formatting.rustfmt,
     builtins.formatting.stylua,
     builtins.formatting.trim_whitespace,
