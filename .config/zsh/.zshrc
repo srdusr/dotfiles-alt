@@ -11,7 +11,6 @@
 
 export PATH=$HOME/.bin:$HOME/.local/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
 #[[ -f ~/.config/zsh/.zshenv ]] && source ~/.config/zsh/.zshenv
-#[[ -f ~/.config/X11/.Xresources ]] && xrdb -merge ~/.config/X11/.Xresources
 
 ##########    Vi mode    ##########
 bindkey -v
