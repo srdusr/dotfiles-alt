@@ -21,6 +21,7 @@ fi
 # (login screen) and so they are needed there. To prevent doubling up commands,
 # I source them here with the line below.
 
+# Profile
 [[ -f /etc/profile ]] && source /etc/profile
 
 if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/X11/.xprofile" ]; then
@@ -29,17 +30,3 @@ else
 	. "$HOME/.xprofile"
 fi
 
-
-
-# profile
-#[[ -f /etc/profile ]] && source /etc/profile
-#[[ -f ~/.config/X11/.profile ]] && source ~/.config/X11/.profile
-
-
-#exec ck-launch-session dbus-launch --exit-with-session startxfce4
-
-#export XDG_SESSION_TYPE=X11
-#xsetroot -cursor_name left_ptr
-#picom -f &
-#sxhkd &
-#exec bspwm

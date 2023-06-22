@@ -38,7 +38,5 @@ export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"
 
 if [[ "$(tty)" = "/dev/tty1" ]]; then
 	pgrep bspwm || startx "$XDG_CONFIG_HOME/X11/.xinitrc"
-fi
-#if [[ "$(tty)" = "/dev/tty1" ]]; then
 #	pgrep startxfce4 || startx "$XDG_CONFIG_HOME/X11/.xinitrc"
-#fi
+fi
