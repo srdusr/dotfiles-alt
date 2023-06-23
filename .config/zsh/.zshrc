@@ -11,11 +11,16 @@
 
 export PATH=$HOME/.bin:$HOME/.local/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
 
+#export KEYTIMEOUT=1
+#export KEYTIMEOUT=25
+if [[ -n "$SSH_CLIENT" ]]; then
+  export KEYTIMEOUT=1
+else
+  export KEYTIMEOUT=25
+fi
+
 ##########    Vi mode    ##########
 bindkey -v
-
-#export KEYTIMEOUT=1
-export KEYTIMEOUT=25
 export EDITOR=$VISUAL
 export VISUAL=nvim
 bindkey -M viins '^?' backward-delete-char
