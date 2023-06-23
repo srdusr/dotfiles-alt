@@ -9,20 +9,16 @@
 # If not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-export PATH=$HOME/.bin:$HOME/.local/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
-
 #export KEYTIMEOUT=1
 #export KEYTIMEOUT=25
 if [[ -n "$SSH_CLIENT" ]]; then
   export KEYTIMEOUT=1
 else
-  export KEYTIMEOUT=25
+  export KEYTIMEOUT=10
 fi
 
 ##########    Vi mode    ##########
 bindkey -v
-export EDITOR=$VISUAL
-export VISUAL=nvim
 bindkey -M viins '^?' backward-delete-char
 bindkey -M viins '^[[3~'  delete-char
 bindkey -M vicmd '^[[3~'  delete-char
@@ -70,9 +66,6 @@ stty intr '^q'        # free Ctrl+C for copy use Ctrl+q instead
 stty lnext '^-'        # free Ctrl+V for paste use ^- instead
 stty stop undef		# Disable ctrl-s to freeze terminal.
 stty start undef
-
-export PATH="$HOME/.local/bin:$PATH"
-export VIRTUAL_ENV_DISABLE_PROMPT=true
 #unsetopt BEEP
 
 # Enable various options

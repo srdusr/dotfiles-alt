@@ -1,16 +1,3 @@
-
-#export XINITRC="$HOME/.config/X11/.xinitrc"
-#export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/X11/.inputrc"
-#export ZDOTDIR="${XDG_CONFIG_HOME:-$HOME/.config}/zsh"
-#export XAUTHORITY="$XDG_RUNTIME_DIR/.Xauthority" # This line will break some DMs.
-#export XINITRC="$XDG_CONFIG_HOME"/X11/xinitrc
-#export XAUTHORITY="$XDG_RUNTIME_DIR"/Xauthority
-
-# Path
-#export PATH="$PATH:${$(find ~/.local/bin ~/.local/share/npm/bin -type d -printf %p:)%%:}"
-#export PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local:$HOME/.local/bin:$HOME/.local/bin/scripts:$HOME/Scripts:$HOME/.local/bin/statusbar
-
-
 # Default Programs:
 export EDITOR="nvim"
 export VISUAL="nvim"
@@ -25,12 +12,14 @@ export WM="bspwm"
 export XDG_SESSION_TYPE=X11
 
 # XDG Paths:
+export PATH=$HOME/.bin:$HOME/.local/bin:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
 export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
 export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
 export XINITRC="$HOME/.config/X11/.xinitrc"
 export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/X11/.inputrc"
 export ICEAUTHORITY="$XDG_CACHE_HOME"/.ICEauthority
+export VIRTUAL_ENV_DISABLE_PROMPT=true
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export HISTFILE="$ZDOTDIR/.zhistory"    # History filepath
 export HISTSIZE=1000000                  # Maximum events for internal history
