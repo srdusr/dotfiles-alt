@@ -366,9 +366,16 @@ command! -bang FM call fzf#run(fzf#wrap({'source': 'cat ~/.fzf-marks | sed "s/.*
 "colorscheme badwolf
 "let g:badwolf_darkgutter = 0 " Make the gutters darker than the background. Default 0.
 "let g:badwolf_tabline = 1 " 1 is default, 0 is lighter and 2 or 3 is darker a tabline
-colorscheme onedark
+
+" Try to use a colorscheme plugin
+" but fallback to a default one
+try
+    colorscheme gruvbox
+catch /^Vim\%((\a\+)\)\=:E185/
+    " no plugins available
+    colorscheme elflord
+endtry
 highlight Normal guibg=NONE
-"highlight Normal guibg=none
 "set background=dark
 "-------------------------------------------------------------------------------
 
