@@ -225,39 +225,39 @@ TRAPWINCH() { # Trap the WINCH signal to update the mode file on window size cha
   update-mode-file
 }
 
-function nvim-listener() {
-  local prev_nvim_status="inactive"
-  local nvim_pid=""
-  while true; do
-    local current_nvim_pid=$(pgrep -x "nvim")
-    if [[ -n "$current_nvim_pid" && "$current_nvim_pid" != "$nvim_pid" ]]; then
-      # Neovim started
-      prev_nvim_status="active"
-      nvim_pid="$current_nvim_pid"
-      VI_MODE="" # Clear VI_MODE to show Neovim mode
-      update-mode-file
-      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
-        tmux refresh-client -S
-      fi
-    elif [[ -z "$current_nvim_pid" && "$prev_nvim_status" == "active" ]]; then
-      # Neovim stopped
-      prev_nvim_status="inactive"
-      nvim_pid=""
-      if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
-        VI_MODE=$(normal-mode)
-      elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
-        VI_MODE=$(insert-mode)
-      fi
-      update-mode-file
-      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
-        tmux refresh-client -S
-      fi
-    fi
-  done
-}
+#function nvim-listener() {
+#  local prev_nvim_status="inactive"
+#  local nvim_pid=""
+#  while true; do
+#    local current_nvim_pid=$(pgrep -x "nvim")
+#    if [[ -n "$current_nvim_pid" && "$current_nvim_pid" != "$nvim_pid" ]]; then
+#      # Neovim started
+#      prev_nvim_status="active"
+#      nvim_pid="$current_nvim_pid"
+#      VI_MODE="" # Clear VI_MODE to show Neovim mode
+#      update-mode-file
+#      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+#        tmux refresh-client -S
+#      fi
+#    elif [[ -z "$current_nvim_pid" && "$prev_nvim_status" == "active" ]]; then
+#      # Neovim stopped
+#      prev_nvim_status="inactive"
+#      nvim_pid=""
+#      if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
+#        VI_MODE=$(normal-mode)
+#      elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
+#        VI_MODE=$(insert-mode)
+#      fi
+#      update-mode-file
+#      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+#        tmux refresh-client -S
+#      fi
+#    fi
+#  done
+#}
 
 # Start Neovim listener in the background
-nvim-listener &!
+#nvim-listener &!
 set-prompt
 
 RPROMPT='%(?..[%F{196}%?%f] )'
