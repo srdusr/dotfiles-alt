@@ -32,6 +32,7 @@ require('telescope').setup({
     --path_display = { "smart" },
     file_ignore_patterns = {
       "packer_compiled.lua",
+      "zcompdump",
       "%.DS_Store",
       "%.git/",
       "%.spl",
@@ -59,7 +60,7 @@ require('telescope').setup({
         ["<C-k>"] = actions.move_selection_previous,
 
         --["<C-c>"] = actions.close,
-        ["<Esc>"] = actions.close, -- close w/ one esc
+        ["<Esc>"] = actions.close,   -- close w/ one esc
         --["<Esc>"] = "close", -- close w/ one esc
         ["<?>"] = actions.which_key, -- keys from pressing <C-/>
 
@@ -187,12 +188,12 @@ require('telescope').setup({
   --	prompt_prefix=' ',
   --	show_line = false,
   --},
-  --find_files = {
-  --	cwd='%:p:h',
-  --	prompt_prefix=' ',
-  --	hidden = true,
-  --	follow = true,
-  --},
+  find_files = {
+    cwd = '%:p:h',
+    prompt_prefix = ' ',
+    hidden = true,
+    follow = true,
+  },
   --keymaps = { prompt_prefix='? ' },
   --oldfiles = { prompt_prefix=' ' },
   --highlights = { prompt_prefix=' ' },
@@ -301,6 +302,7 @@ function M.find_configs()
       ".git",
       "autoload/plugged",
       "plug.vim",
+      "zcompdump",
     },
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
