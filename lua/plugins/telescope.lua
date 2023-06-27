@@ -11,7 +11,7 @@ local fb_actions = require("telescope").extensions.file_browser.actions
 --local pickers = require("telescope.pickers")
 
 require('telescope').setup({
-	defaults = {
+  defaults = {
     vimgrep_arguments = {
       "rg",
       "--color=never",
@@ -37,7 +37,7 @@ require('telescope').setup({
       "%.spl",
       --"%.log",
       "%[No Name%]", -- new files / sometimes folders (netrw)
-      "/$", -- ignore folders (netrw)
+      "/$",          -- ignore folders (netrw)
       "node_modules",
       "%.png",
       "%.zip",
@@ -49,112 +49,112 @@ require('telescope').setup({
       "^music/",
       --"^node_modules/",
       --"^undodir/",
-		},
-		mappings = {
-					i = {
-				["<C-n>"] = actions.cycle_history_next,
-				["<C-p>"] = actions.cycle_history_prev,
-
-				["<C-j>"] = actions.move_selection_next,
-				["<C-k>"] = actions.move_selection_previous,
-
-				--["<C-c>"] = actions.close,
-				["<Esc>"] = actions.close, -- close w/ one esc
-				--["<Esc>"] = "close", -- close w/ one esc
-				["<?>"] = actions.which_key, -- keys from pressing <C-/>
-
-				["<Down>"] = actions.move_selection_next,
-				["<Up>"] = actions.move_selection_previous,
-
-				["<CR>"] = actions.select_default,
-				["<C-x>"] = actions.select_horizontal,
-				["<C-y>"] = actions.select_vertical,
-				["<C-t>"] = actions.select_tab,
-
-				["<C-u>"] = actions.preview_scrolling_up,
-				["<C-d>"] = actions.preview_scrolling_down,
-
-				["<PageUp>"] = actions.results_scrolling_up,
-				["<PageDown>"] = actions.results_scrolling_down,
-
-				["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-				["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-				["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-				["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-				["<C-l>"] = actions.complete_tag,
-				["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
-				--["<C-o>"] = function(prompt_bufnr)
-				--	local selection = require("telescope.actions.state").get_selected_entry()
-				--	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
-				--	require("telescope.actions").close(prompt_bufnr)
-				--	-- Depending on what you want put `cd`, `lcd`, `tcd`
-				--	vim.cmd(string.format("silent lcd %s", dir))
-				--end,
-			},
-
-			n = {
-				["<esc>"] = actions.close,
-        ["<q>"] = actions.close,
-				["<CR>"] = actions.select_default,
-				["<C-x>"] = actions.select_horizontal,
-				["<C-y>"] = actions.select_vertical,
-				["<C-t>"] = actions.select_tab,
-
-				["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-				["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-				["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-				["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-
-				["j"] = actions.move_selection_next,
-				["k"] = actions.move_selection_previous,
-				["H"] = actions.move_to_top,
-				["M"] = actions.move_to_middle,
-				["L"] = actions.move_to_bottom,
-
-				["<Down>"] = actions.move_selection_next,
-				["<Up>"] = actions.move_selection_previous,
-				["gg"] = actions.move_to_top,
-				["G"] = actions.move_to_bottom,
-
-				["<C-u>"] = actions.preview_scrolling_up,
-				["<C-d>"] = actions.preview_scrolling_down,
-
-				["<PageUp>"] = actions.results_scrolling_up,
-				["<PageDown>"] = actions.results_scrolling_down,
-
-				["?"] = actions.which_key,
-				--["<C-o>"] = function(prompt_bufnr)
-				--	local selection = require("telescope.actions.state").get_selected_entry()
-				--	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
-				--	require("telescope.actions").close(prompt_bufnr)
-				--	-- Depending on what you want put `cd`, `lcd`, `tcd`
-				--	vim.cmd(string.format("silent lcd %s", dir))
-				--end,
-			},
-		},
-	},
-    preview = {
-      filesize_limit = 3,
-      timeout = 250,
     },
-    selection_strategy = "reset",
-    sorting_strategy = "ascending",
-    scroll_strategy = "limit",
-    color_devicons = true,
-		layout_strategy = 'horizontal',
-		layout_config = {
-			horizontal = {
-				height = 0.95,
-				preview_cutoff = 70,
-				width = 0.92,
-				preview_width = {0.55, max = 50}
-			},
-			bottom_pane = {
-				height = 12,
-				preview_cutoff = 70,
-				prompt_position = "bottom",
-			},
-		},
+    mappings = {
+      i = {
+        ["<C-n>"] = actions.cycle_history_next,
+        ["<C-p>"] = actions.cycle_history_prev,
+
+        ["<C-j>"] = actions.move_selection_next,
+        ["<C-k>"] = actions.move_selection_previous,
+
+        --["<C-c>"] = actions.close,
+        ["<Esc>"] = actions.close, -- close w/ one esc
+        --["<Esc>"] = "close", -- close w/ one esc
+        ["<?>"] = actions.which_key, -- keys from pressing <C-/>
+
+        ["<Down>"] = actions.move_selection_next,
+        ["<Up>"] = actions.move_selection_previous,
+
+        ["<CR>"] = actions.select_default,
+        ["<C-x>"] = actions.select_horizontal,
+        ["<C-y>"] = actions.select_vertical,
+        ["<C-t>"] = actions.select_tab,
+
+        ["<C-u>"] = actions.preview_scrolling_up,
+        ["<C-d>"] = actions.preview_scrolling_down,
+
+        ["<PageUp>"] = actions.results_scrolling_up,
+        ["<PageDown>"] = actions.results_scrolling_down,
+
+        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
+        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
+        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ["<C-l>"] = actions.complete_tag,
+        ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
+        --["<C-o>"] = function(prompt_bufnr)
+        --	local selection = require("telescope.actions.state").get_selected_entry()
+        --	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+        --	require("telescope.actions").close(prompt_bufnr)
+        --	-- Depending on what you want put `cd`, `lcd`, `tcd`
+        --	vim.cmd(string.format("silent lcd %s", dir))
+        --end,
+      },
+
+      n = {
+        ["<esc>"] = actions.close,
+        ["<q>"] = actions.close,
+        ["<CR>"] = actions.select_default,
+        ["<C-x>"] = actions.select_horizontal,
+        ["<C-y>"] = actions.select_vertical,
+        ["<C-t>"] = actions.select_tab,
+
+        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
+        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
+        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
+        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+
+        ["j"] = actions.move_selection_next,
+        ["k"] = actions.move_selection_previous,
+        ["H"] = actions.move_to_top,
+        ["M"] = actions.move_to_middle,
+        ["L"] = actions.move_to_bottom,
+
+        ["<Down>"] = actions.move_selection_next,
+        ["<Up>"] = actions.move_selection_previous,
+        ["gg"] = actions.move_to_top,
+        ["G"] = actions.move_to_bottom,
+
+        ["<C-u>"] = actions.preview_scrolling_up,
+        ["<C-d>"] = actions.preview_scrolling_down,
+
+        ["<PageUp>"] = actions.results_scrolling_up,
+        ["<PageDown>"] = actions.results_scrolling_down,
+
+        ["?"] = actions.which_key,
+        --["<C-o>"] = function(prompt_bufnr)
+        --	local selection = require("telescope.actions.state").get_selected_entry()
+        --	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+        --	require("telescope.actions").close(prompt_bufnr)
+        --	-- Depending on what you want put `cd`, `lcd`, `tcd`
+        --	vim.cmd(string.format("silent lcd %s", dir))
+        --end,
+      },
+    },
+  },
+  preview = {
+    filesize_limit = 3,
+    timeout = 250,
+  },
+  selection_strategy = "reset",
+  sorting_strategy = "ascending",
+  scroll_strategy = "limit",
+  color_devicons = true,
+  layout_strategy = 'horizontal',
+  layout_config = {
+    horizontal = {
+      height = 0.95,
+      preview_cutoff = 70,
+      width = 0.92,
+      preview_width = { 0.55, max = 50 }
+    },
+    bottom_pane = {
+      height = 12,
+      preview_cutoff = 70,
+      prompt_position = "bottom",
+    },
+  },
   --pickers = {
   --  live_grep = {
   --    disable_coordinates = true,
@@ -165,89 +165,89 @@ require('telescope').setup({
   --    },
   --  },
   --},
-	--pickers = {
-		--lsp_references = {
-		--	prompt_prefix='⬅️',
-		--	show_line=false,
-		--	trim_text=true,
-		--	include_declaration=false,
-		--	initial_mode = "normal",
-		--},
-		--lsp_definitions = {
-		--	prompt_prefix='➡️',
-		--	show_line=false,
-		--	trim_text=true,
-		--	initial_mode = "normal",
-		--},
-		--lsp_document_symbols = {
-		--	prompt_prefix='* ',
-		--	show_line = false,
-		--},
-		--treesitter = {
-		--	prompt_prefix=' ',
-		--	show_line = false,
-		--},
-		--find_files = {
-		--	cwd='%:p:h',
-		--	prompt_prefix=' ',
-		--	hidden = true,
-		--	follow = true,
-		--},
-		--keymaps = { prompt_prefix='? ' },
-		--oldfiles = { prompt_prefix=' ' },
-		--highlights = { prompt_prefix=' ' },
-		--git_files = {
-		--	prompt_prefix=' ',
-		--	show_untracked = true,
-		--	path_display = { "tail" },
-		--},
-		--buffers = {
-		--	prompt_prefix=' ',
-		--	ignore_current_buffer = true,
-		--	initial_mode = "normal",
-		--	sort_mru = true,
-		--},
-		--live_grep = {
-		--	cwd='%:p:h',
-		--	disable_coordinates=true,
-		--	prompt_title='Search in Folder',
-		--	prompt_prefix=' ',
-		--},
-		--spell_suggest = {
-		--	initial_mode = "normal",
-		--	prompt_prefix = "暈",
-		--	theme = "cursor",
-		--	layout_config = { cursor = { width = 0.3 } }
-		--},
-		--colorscheme = {
-		--	enable_preview = true,
-		--	prompt_prefix = '',
-		--	results_title = '',
-		--	layout_strategy = "bottom_pane",
-		--},
-	--},
+  --pickers = {
+  --lsp_references = {
+  --	prompt_prefix='⬅️',
+  --	show_line=false,
+  --	trim_text=true,
+  --	include_declaration=false,
+  --	initial_mode = "normal",
+  --},
+  --lsp_definitions = {
+  --	prompt_prefix='➡️',
+  --	show_line=false,
+  --	trim_text=true,
+  --	initial_mode = "normal",
+  --},
+  --lsp_document_symbols = {
+  --	prompt_prefix='* ',
+  --	show_line = false,
+  --},
+  --treesitter = {
+  --	prompt_prefix=' ',
+  --	show_line = false,
+  --},
+  --find_files = {
+  --	cwd='%:p:h',
+  --	prompt_prefix=' ',
+  --	hidden = true,
+  --	follow = true,
+  --},
+  --keymaps = { prompt_prefix='? ' },
+  --oldfiles = { prompt_prefix=' ' },
+  --highlights = { prompt_prefix=' ' },
+  --git_files = {
+  --	prompt_prefix=' ',
+  --	show_untracked = true,
+  --	path_display = { "tail" },
+  --},
+  --buffers = {
+  --	prompt_prefix=' ',
+  --	ignore_current_buffer = true,
+  --	initial_mode = "normal",
+  --	sort_mru = true,
+  --},
+  --live_grep = {
+  --	cwd='%:p:h',
+  --	disable_coordinates=true,
+  --	prompt_title='Search in Folder',
+  --	prompt_prefix=' ',
+  --},
+  --spell_suggest = {
+  --	initial_mode = "normal",
+  --	prompt_prefix = "暈",
+  --	theme = "cursor",
+  --	layout_config = { cursor = { width = 0.3 } }
+  --},
+  --colorscheme = {
+  --	enable_preview = true,
+  --	prompt_prefix = '',
+  --	results_title = '',
+  --	layout_strategy = "bottom_pane",
+  --},
+  --},
 
-	extensions = {
-		file_browser = {
-			theme = "dropdown",
-			-- disables netrw and use telescope-file-browser in its place
-			hijack_netrw = true,
-			mappings = {
-				-- your custom insert mode mappings
-				["i"] = {
-					["<C-w>"] = function()
-						vim.cmd("normal vbd")
-					end,
+  extensions = {
+    file_browser = {
+      theme = "dropdown",
+      -- disables netrw and use telescope-file-browser in its place
+      hijack_netrw = true,
+      mappings = {
+        -- your custom insert mode mappings
+        ["i"] = {
+          ["<C-w>"] = function()
+            vim.cmd("normal vbd")
+          end,
           --["<C-h>"] = fb_actions.goto_parent_dir,
-				},
-				["n"] = {
-					-- your custom normal mode mappings
-					["N"] = fb_actions.create,
-					--["<C-h>"] = fb_actions.goto_parent_dir,
-					--["/"] = function()
-					--	vim.cmd("startinsert")
-					--end,
-				},
+        },
+        ["n"] = {
+          -- your custom normal mode mappings
+          ["N"] = fb_actions.create,
+          --["<C-h>"] = fb_actions.goto_parent_dir,
+          --["/"] = function()
+          --	vim.cmd("startinsert")
+          --end,
+        },
       },
     },
   },
@@ -285,8 +285,9 @@ function M.find_configs()
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
-      "~/.ssh",
       "~/.bashrc",
+      "~/.ssh",
+      "~/.vim",
     },
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
@@ -297,6 +298,8 @@ function M.find_configs()
       --"^~/.config/tmux/plugins",
       "%.txt",
       ".git",
+      "autoload/plugged",
+      "plug.vim",
     },
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
@@ -378,16 +381,16 @@ end
 --------------------------------------------------------------------------------
 
 local dropdown = require('telescope.themes').get_dropdown({
-    hidden = true,
-    no_ignore = true,
-    previewer = false,
-    prompt_title = '',
-    preview_title = '',
-    results_title = '',
-    layout_config = {
-      --anchor = "S",
-      prompt_position = 'top'
-    },
+  hidden = true,
+  no_ignore = true,
+  previewer = false,
+  prompt_title = '',
+  preview_title = '',
+  results_title = '',
+  layout_config = {
+    --anchor = "S",
+    prompt_position = 'top'
+  },
 })
 
 -- File browser always relative to buffer
