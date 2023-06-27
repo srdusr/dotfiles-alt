@@ -315,6 +315,7 @@ null_ls.setup {
     builtins.formatting.prettierd,
     builtins.formatting.rustfmt,
     builtins.formatting.stylua,
+    builtins.formatting.dart_format,
     builtins.formatting.trim_whitespace,
     builtins.formatting.yapf,
     -- null_ls.builtins.formatting.black
