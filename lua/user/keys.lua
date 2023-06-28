@@ -291,7 +291,7 @@ map("n", "<leader>gm", ":Gmove<Space>")
 --end
 
 -- Telescope
-map("n", "<leader>ff", function() require("telescope.builtin").find_files { hidden = true, no_ignore = true } end) -- find all files
+map("n", "<leader>ff", function() require("telescope.builtin").find_files { hidden = true, no_ignore = false } end) -- find all files
 map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>")                                   -- find files with hidden option
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
