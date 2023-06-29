@@ -290,6 +290,8 @@ function M.find_configs()
       "~/.bashrc",
       "~/.ssh",
       "~/.vim",
+      "~/.profile",
+      "~/.zprofile",
     },
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
