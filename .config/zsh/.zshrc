@@ -277,6 +277,16 @@ cd() {
 	fi
 }
 
+# cd into $XDG_CONFIG_HOME/$1 directory
+c() {
+	local root=${XDG_CONFIG_HOME:-~/.config}
+	local dname="$root/$1"
+	if [[ ! -d "$dname" ]]; then
+		return
+	fi
+	cd "$dname"
+}
+
 # Back up a file. Usage "backupthis <filename>"
 backupthis() {
 	cp -riv $1 ${1}-$(date +%Y%m%d%H%M).backup;
@@ -374,6 +384,12 @@ extract () {
          echo "'$1' is not a valid file"
      fi
 }
+
+# Time aliases
+alias ber='TZ=Europe/Berlin date'
+alias nyc='TZ=America/New_York date'
+alias sfo='TZ=America/Los_Angeles date'
+alias utc='TZ=Etc/UTC date'
 
 ### Dotfiles
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
