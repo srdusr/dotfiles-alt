@@ -287,6 +287,16 @@ c() {
 	cd "$dname"
 }
 
+# Make and cd into directory and any parent directories
+mkcd () {
+	if [[ -z "$1" ]]; then
+		echo "Usage: mkcd <dir>" 1>&2
+		return 1
+	fi
+	mkdir -p "$1"
+	cd "$1"
+}
+
 # Back up a file. Usage "backupthis <filename>"
 backupthis() {
 	cp -riv $1 ${1}-$(date +%Y%m%d%H%M).backup;
