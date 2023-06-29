@@ -307,11 +307,15 @@ if type rg &> /dev/null; then
   export FZF_DEFAULT_COMMAND='rg --files'
   export FZF_DEFAULT_OPTS='-m --height 50% --border'
 fi
+
 # Setup fzf
 # ---------
 if [[ ! "$PATH" == */root/.local/share/nvim/plugged/fzf/bin* ]]; then
   export PATH="${PATH:+${PATH}:}/root/.local/share/nvim/plugged/fzf/bin"
 fi
+
+# wget does not support environment variables
+alias wget=wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"
 
 # Spawn a clone of current terminal 
 putstate () {
