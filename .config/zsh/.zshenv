@@ -60,6 +60,10 @@ export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
 export VSCODE_PORTABLE="$XDG_DATA_HOME"/vscode
 export PATH=$PATH:/opt/google/chrome
 
+# GnuPG
+export GPG_TTY=$(tty)
+export GNUPGHOME="$HOME/.config/gnupg"
+
 # Kubernetes
 # kubernetes aliases
 if which kubectl > /dev/null; then
