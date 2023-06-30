@@ -125,6 +125,12 @@ export GO_PATH=${XDG_DATA_HOME}/go
 [[ -d "$XDG_DATA_HOME/node/bin" ]] && path=($XDG_DATA_HOME/node/bin $path)
 export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
 export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
+#export NPM_CONFIG_INIT_AUTHOR_NAME='srdusr'
+#export NPM_CONFIG_INIT_AUTHOR_EMAIL='trevorgray@srdusr.com'
+#export NPM_CONFIG_INIT_AUTHOR_URL='https://srdusr.com'
+#export NPM_CONFIG_INIT_LICENSE='GPL-3.0'
+#export NPM_CONFIG_INIT_VERSION='0.0.0'
+#export NPM_CONFIG_SIGN_GIT_TAG='true'
 
 nvm() {
     local green_color
