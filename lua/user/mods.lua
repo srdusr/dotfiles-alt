@@ -40,7 +40,8 @@ require("null-ls").setup({
         buffer = bufnr,
         callback = function()
           -- on 0.8, you should use vim.lsp.buf.format({ bufnr = bufnr }) instead
-          vim.lsp.buf.formatting_seq_sync()
+          --vim.lsp.buf.formatting_seq_sync()
+          vim.lsp.buf.format({ bufnr = bufnr })
         end,
       })
     end
@@ -264,18 +265,98 @@ vim.cmd([[
     --autocmd CmdwinEnter,CmdwinLeave * lua require("user.mods").update_tmux_status()
 --------------------------------------------------
 
-function OpenEmulatorList()
-	local emulatorsBuffer = vim.api.nvim_create_buf(false, true)
-	vim.api.nvim_buf_set_lines(emulatorsBuffer, 0, 0, true, {"Some text"})
-	vim.api.nvim_open_win(
-		emulatorsBuffer,
-		false,
-		{
-			relative='win', row=3, col=3, width=12, height=3
-		}
-	)
+-- function OpenEmulatorList()
+-- 	local emulatorsBuffer = vim.api.nvim_create_buf(false, true)
+-- 	vim.api.nvim_buf_set_lines(emulatorsBuffer, 0, 0, true, {"Some text"})
+-- 	vim.api.nvim_open_win(
+-- 		emulatorsBuffer,
+-- 		false,
+-- 		{
+-- 			relative='win', row=3, col=3, width=12, height=3
+-- 		}
+-- 	)
+-- end
+-- 
+-- vim.api.nvim_create_user_command('OpenEmulators', OpenEmulatorList, {})
+
+
+
+--local api = vim.api
+--local fn = vim.fn
+--local cmd = vim.cmd
+--
+--local function bufremove(opts)
+--  local target_buf_id = api.nvim_get_current_buf()
+--
+--  -- Do nothing if buffer is in modified state.
+--  if not opts.force and api.nvim_buf_get_option(target_buf_id, 'modified') then
+--    return false
+--  end
+--
+--  -- Hide target buffer from all windows.
+--  vim.tbl_map(function(win_id)
+--    win_id = win_id or 0
+--
+--    local current_buf_id = api.nvim_win_get_buf(win_id)
+--
+--    api.nvim_win_call(win_id, function()
+--      -- Try using alternate buffer
+--      local alt_buf_id = fn.bufnr('#')
+--      if alt_buf_id ~= current_buf_id and fn.buflisted(alt_buf_id) == 1 then
+--        api.nvim_win_set_buf(win_id, alt_buf_id)
+--        return
+--      end
+--
+--      -- Try using previous buffer
+--      cmd('bprevious')
+--      if current_buf_id ~= api.nvim_win_get_buf(win_id) then
+--        return
+--      end
+--
+--      -- Create new listed scratch buffer
+--      local new_buf = api.nvim_create_buf(true, true)
+--      api.nvim_win_set_buf(win_id, new_buf)
+--    end)
+--
+--    return true
+--  end, fn.win_findbuf(target_buf_id))
+--
+--  cmd(string.format('bdelete%s %d', opts.force and '!' or '', target_buf_id))
+--end
+--
+---- Assign bufremove to a global variable
+--_G.bufremove = bufremove
+
+--vim.cmd([[
+--  augroup NvimTreeDelete
+--    autocmd!
+--    autocmd FileType NvimTree lua require('user.mods').enew_on_delete()
+--  augroup END
+--]])
+--
+--function M.enew_on_delete()
+--  if vim.bo.buftype == 'nofile' then
+--    vim.cmd('enew')
+--  end
+--end
+
+-- Update Neovim
+function M.Update_neovim()
+  -- Run the commands to download and extract the latest version
+  os.execute("curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz")
+  os.execute("tar xzvf nvim-linux64.tar.gz")
+  -- Replace the existing Neovim installation with the new version
+  os.execute("rm -rf $HOME/.local/bin/nvim")
+  os.execute("mv nvim-linux64 $HOME/.local/bin/nvim")
+
+  -- Clean up the downloaded file
+  os.execute("rm nvim-linux64.tar.gz")
+
+  -- Print a message to indicate the update is complete
+  print("Neovim has been updated to the latest version.")
 end
 
-vim.api.nvim_create_user_command('OpenEmulators', OpenEmulatorList, {})
+-- Bind a keymap to the update_neovim function (optional)
+vim.api.nvim_set_keymap('n', '<leader>u', '<cmd> lua require("user.mods").Update_neovim()<CR>', { noremap = true, silent = true })
 
 return M
