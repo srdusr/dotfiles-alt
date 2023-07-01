@@ -155,7 +155,6 @@ return packer.startup(function(use)
   use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" }) -- Search emoji(s) and other symbols
   use("nvim-telescope/telescope-dap.nvim")
   use("axkirillov/telescope-changed-files")                                 --
-  use("princejoogie/dir-telescope.nvim")
 
   -- UX
   use("folke/neodev.nvim")
@@ -201,7 +200,11 @@ return packer.startup(function(use)
     "folke/trouble.nvim",
     requires = "nvim-tree/nvim-web-devicons",
   })
-  use("airblade/vim-rooter") --
+  use({ "airblade/vim-rooter", --
+    --vim.cmd("let g:rooter_change_directory_for_non_project_files = ''"),
+    vim.cmd("let g:rooter_change_directory_for_non_project_files = 'current'")
+  })
+
   --use("vim-test/vim-test") --
   --use({
   --  "rcarriga/vim-ultest", --
