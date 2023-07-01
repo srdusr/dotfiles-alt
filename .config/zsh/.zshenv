@@ -16,6 +16,9 @@ export PAGER="less"
 export WM="bspwm"
 export XDG_SESSION_TYPE=X11
 export FAQ_STYLE='github'
+export VIDEO="vlc"
+#export IMAGE="sxiv"
+
 
 # XDG Paths:
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
@@ -60,6 +63,9 @@ export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
 export VSCODE_PORTABLE="$XDG_DATA_HOME"/vscode
 export PATH=$PATH:/opt/google/chrome
 
+# Manage Arch linux build sources
+export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
+
 # GnuPG
 export GPG_TTY=$(tty)
 export GNUPGHOME="$HOME/.config/gnupg"
@@ -94,6 +100,7 @@ export PATH=$ANDROID_SDK_ROOT:$PATH
 #PATH=$ANDROID_HOME/emulator:$PATH
 #export ANDROID_SDK_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/android"
 
+
 # Programming Environment Variables:
 
 # Rust
@@ -110,6 +117,7 @@ if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
 # Java
 export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
 export PATH=$JAVA_HOME/bin:$PATH
+export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
 
 
 # Flutter
@@ -177,27 +185,31 @@ if type pyenv &> /dev/null || [[ -a $PYENV_ROOT/bin/pyenv ]]; then
   }
 fi
 export WORKON_HOME="$XDG_DATA_HOME"/virtualenvs
-
+export IPYTHONDIR="$XDG_CONFIG_HOME"/jupyter, export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
 
 # PHP
 PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 
 # Lua
+export PATH="$XDG_DATA_HOME/luarocks/bin:$PATH"
 
+#ver=$(find lua* -maxdepth 0 | sort -rV | head -n 1)
+#export LUA_PATH="$LUA_PATH:${ver}/share/lua/5.1/?.lua;${ver}/share/lua/5.1/?/init.lua;;"
+#export LUA_CPATH="$LUA_CPATH:${ver}/lib/lua/5.1/?.so;;"
 
+#LUAROCKS_PREFIX=/usr/local
+#export LUA_PATH="$LUAROCKS_PREFIX/share/lua/5.1/?.lua;$LUAROCKS_PREFIX/share/lua/5.1/?/init.lua;;"
+#export LUA_CPATH="$LUAROCKS_PREFIX/lib/lua/5.1/?.so;;"
 
-export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
-# fixing paths
-export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
-export IPYTHONDIR="$XDG_CONFIG_HOME"/jupyter, export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
-
-
-
+#export LUA_PATH="<path-to-add>;;"
+#export LUA_CPATH="./?.so;/usr/local/lib/lua/5.3/?.so;
+#                /usr/local/share/lua/5.3/?.so;<path-to-add>"
 
 
 # Program settings
 #export MOZ_USE_XINPUT2="1"		# Mozilla smooth scrolling/touchpads.
+
 
 # Scaling
 #export QT_AUTO_SCREEN_SCALE_FACTOR=0
@@ -206,10 +218,6 @@ export IPYTHONDIR="$XDG_CONFIG_HOME"/jupyter, export JUPYTER_CONFIG_DIR="$XDG_CO
 #export GDK_SCALE=1
 #export GDK_DPI_SCALE=1
 
-export VIDEO="vlc"
-#export IMAGE="sxiv"
-
-#xbindkeys -f "$XDG_CONFIG_HOME"/xbindkeys/config
 
 #typeset -U PATH path
 export GTK_IM_MODULE='fcitx'
