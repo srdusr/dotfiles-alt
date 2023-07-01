@@ -155,6 +155,7 @@ return packer.startup(function(use)
   use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" }) -- Search emoji(s) and other symbols
   use("nvim-telescope/telescope-dap.nvim")
   use("axkirillov/telescope-changed-files")                                 --
+  use("princejoogie/dir-telescope.nvim")
 
   -- UX
   use("folke/neodev.nvim")
