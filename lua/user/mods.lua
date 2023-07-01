@@ -161,6 +161,27 @@ end
 
 --------------------------------------------------
 
+-- Toggle the executable permission
+function M.Toggle_executable()
+  local current_file = vim.fn.expand('%:p')
+  local executable = vim.fn.executable(current_file) == 1
+
+  if executable then
+    -- File is executable, unset the executable permission
+    vim.fn.system('chmod -x ' .. current_file)
+    --print(current_file .. ' is no longer executable.')
+    print("No longer executable")
+  else
+    -- File is not executable, set the executable permission
+    vim.fn.system('chmod +x ' .. current_file)
+    --print(current_file .. ' is now executable.')
+    print("Now executable")
+  end
+end
+
+
+--------------------------------------------------
+
 -- Set bare dotfiles repository git environment variables dynamically
 
 -- Set git enviornment variables
@@ -341,22 +362,74 @@ vim.cmd([[
 --end
 
 -- Update Neovim
+--function M.Update_neovim()
+--  -- Run the commands to download and extract the latest version
+--  os.execute("curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz")
+--  os.execute("tar xzvf nvim-linux64.tar.gz")
+--  -- Replace the existing Neovim installation with the new version
+--  os.execute("rm -rf $HOME/.local/bin/nvim")
+--  os.execute("mv nvim-linux64 $HOME/.local/bin/nvim")
+--
+--  -- Clean up the downloaded file
+--  os.execute("rm nvim-linux64.tar.gz")
+--
+--  -- Print a message to indicate the update is complete
+--  print("Neovim has been updated to the latest version.")
+--end
+--
+---- Bind a keymap to the update_neovim function (optional)
+--vim.api.nvim_set_keymap('n', '<leader>u', '<cmd> lua require("user.mods").Update_neovim()<CR>', { noremap = true, silent = true })
+
+-- Define a function to create a floating window and run the update process inside it
 function M.Update_neovim()
-  -- Run the commands to download and extract the latest version
+  -- Create a new floating window
+  local bufnr, winid = vim.api.nvim_create_buf(false, true)
+  vim.api.nvim_open_win(bufnr, true, {
+    relative = "editor",
+    width = 80,
+    height = 20,
+    row = 2,
+    col = 2,
+    style = "minimal",
+    border = "single",
+  })
+
+  -- Function to append a line to the buffer in the floating window
+  local function append_line(line)
+    vim.api.nvim_buf_set_option(bufnr, "modifiable", true)
+    vim.api.nvim_buf_set_lines(bufnr, -1, -1, false, { line })
+    vim.api.nvim_buf_set_option(bufnr, "modifiable", false)
+  end
+
+  -- Download the latest version of Neovim
+  append_line("Downloading the latest version of Neovim...")
   os.execute("curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz")
+  append_line("Download complete.")
+
+  -- Extract the downloaded archive
+  append_line("Extracting the downloaded archive...")
   os.execute("tar xzvf nvim-linux64.tar.gz")
+  append_line("Extraction complete.")
+
   -- Replace the existing Neovim installation with the new version
-  os.execute("rm -rf $HOME/.local/bin/nvim")
-  os.execute("mv nvim-linux64 $HOME/.local/bin/nvim")
+  append_line("Replacing the existing Neovim installation...")
+  os.execute("rm -rf $HOME/nvim")
+  os.execute("mv nvim-linux64 $HOME/nvim")
+  append_line("Update complete.")
 
   -- Clean up the downloaded file
+  append_line("Cleaning up the downloaded file...")
   os.execute("rm nvim-linux64.tar.gz")
+  append_line("Cleanup complete.")
 
-  -- Print a message to indicate the update is complete
-  print("Neovim has been updated to the latest version.")
+  -- Close the floating window after a delay
+  vim.defer_fn(function()
+    vim.api.nvim_win_close(winid, true)
+  end, 5000) -- Adjust the delay as needed
 end
 
 -- Bind a keymap to the update_neovim function (optional)
 vim.api.nvim_set_keymap('n', '<leader>u', '<cmd> lua require("user.mods").Update_neovim()<CR>', { noremap = true, silent = true })
+
 
 return M
