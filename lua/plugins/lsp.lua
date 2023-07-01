@@ -1,8 +1,8 @@
 require('mason').setup()
-local lspconfig = require 'lspconfig'
-local mason_lspconfig = require 'mason-lspconfig'
-local null_ls = require 'null-ls'
---local lsp_lines = require 'lsp_lines'
+local lspconfig = require('lspconfig')
+local mason_lspconfig = require('mason-lspconfig')
+local null_ls = require('null-ls')
+--local lsp_lines = require('lsp_lines')
 
 local keymap = vim.keymap
 local cmd = vim.cmd
@@ -179,6 +179,26 @@ local servers = {
       },
     },
   },
+  dartls = ({
+    cmd = { "dart", "language-server", "--protocol=lsp" },
+    filetypes = { "dart" },
+    init_options = {
+      closingLabels = true,
+      flutterOutline = true,
+      onlyAnalyzeProjectsWithOpenFiles = true,
+      outline = true,
+      suggestFromUnimportedLibraries = true,
+    },
+    -- root_dir = root_pattern("pubspec.yaml"),
+    settings = {
+      dart = {
+        completeFunctionCalls = true,
+        showTodos = true,
+      },
+    },
+    on_attach = function(client, bufnr)
+    end,
+  }),
   lua_ls = ({
     on_attach = on_attach,
     capabilities = capabilities,
@@ -225,6 +245,19 @@ mason_lspconfig.setup({
   ensure_installed = servers, -- will be installed by mason
   automatic_installation = true,
 })
+
+-- Linters/Formatters ensure installed
+local registry = require("mason-registry")
+for _, pkg_name in ipairs { "dart-debug-Adaptor", "stylua", "prettier", "prettierd" } do
+  local ok, pkg = pcall(registry.get_package, pkg_name)
+  if ok then
+    if not pkg:is_installed() then
+       pkg:install()
+    end
+  end
+end
+
+require("lspconfig").dartls.setup {capabilities = capabilities,}
 
 for server, config in pairs(servers) do
   if config.prefer_null_ls then
@@ -307,12 +340,12 @@ null_ls.setup {
     builtins.formatting.isort,
     builtins.formatting.htmlbeautifier,
     -- null_ls.builtins.formatting.prettier,
+    builtins.formatting.prettierd,
     builtins.formatting.prettier.with({
       filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html",
         "css", "scss", "less", "graphql", "vue", "svelte" },
       extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" },
     }),
-    builtins.formatting.prettierd,
     builtins.formatting.rustfmt,
     builtins.formatting.stylua,
     builtins.formatting.dart_format,
