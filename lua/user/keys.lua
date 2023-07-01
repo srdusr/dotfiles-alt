@@ -170,7 +170,8 @@ map("i", "<C-l>", "<Del>")
 map("n", "<leader><C-l>", "<Cmd>!clear<CR>")
 
 -- Change file to an executable
-map("n", "<leader>x", ":!chmod +x %<CR>")
+map("n", "<Leader>x", ":lua require('user.mods').Toggle_executable()<CR> | :echom ('Toggle executable')<CR> | :sl! | echo ('')<CR>")
+--map("n", "<leader>x", ":!chmod +x %<CR>")
 
 -- Paste without replace clipboard
 map("v", "p", '"_dP')
@@ -292,7 +293,7 @@ map("n", "<leader>gm", ":Gmove<Space>")
 
 -- Telescope
 map("n", "<leader>ff", function() require("telescope.builtin").find_files { hidden = true, no_ignore = false } end) -- find all files
-map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>")                                   -- find files with hidden option
+--map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>")                                   -- find files with hidden option
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
 map("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
@@ -310,6 +311,12 @@ map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]
 map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])                -- find projects
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
 map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
+map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
+
+local builtin = require("telescope.builtin")
+local utils = require("telescope.utils")
+
+map("n", "<leader>fF", function() builtin.find_files({ cwd = utils.buffer_dir() }) end, { desc = "Find files in cwd" })
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
@@ -396,7 +403,7 @@ map("n", "<leader>dq", function()
   require("nvim-dap-virtual-text").refresh()
 end, { desc = "Terminate Debug" })
 map("n", "<leader>dc", function()
-    require("telescope").extensions.dap.commands()
+  require("telescope").extensions.dap.commands()
 end, { desc = "DAP-Telescope: Commands" })
 --vim.keymap.set("n", "<leader>B", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
 --vim.keymap.set("v", "<leader>B", ":lua require'dap'.set_breakpoint(vim.fn.input('Breakpoint condition: '))<CR>")
