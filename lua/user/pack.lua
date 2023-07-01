@@ -63,8 +63,8 @@ return packer.startup(function(use)
 
   -- lsp
   use("williamboman/mason.nvim")           -- Package manager to install and manage LSP servers, DAP servers, linters and formatters
-  use("williamboman/mason-lspconfig.nvim") -- Bridges mason.nvim with nvim-lspconfig to help use them together
   use("neovim/nvim-lspconfig")             -- Collection of LSP configs
+  use("williamboman/mason-lspconfig.nvim") -- Bridges mason.nvim with nvim-lspconfig to help use them together
   use({
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     config = function()
@@ -276,7 +276,7 @@ return packer.startup(function(use)
   })
   use("rcarriga/nvim-notify")      -- Notification plugin
   use("karb94/neoscroll.nvim")     -- Faster/smooth scrolling
-  use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
+  --use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
   use({
     'norcalli/nvim-colorizer.lua', -- colorize hexa and rgb strings
     cmd = { 'ColorizerToggle', 'ColorizerAttachToBuffer' },
