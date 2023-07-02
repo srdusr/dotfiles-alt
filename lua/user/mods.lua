@@ -158,6 +158,18 @@ end
 --autocmd User RooterChDir :sleep! | call LogTrigger(timer) | call ConfigureChDir()
 --]])
 
+function M.findFilesInCwd()
+  vim.cmd("let g:rooter_manual_only = 1") -- Toggle the rooter plugin
+  require("plugins.telescope").findhere()
+  vim.defer_fn(function()
+    vim.cmd("let g:rooter_manual_only = 0") -- Change back to automatic rooter
+  end, 100)
+end
+--function M.findFilesInCwd()
+--  vim.cmd("let g:rooter_manual_only = 1") -- Toggle the rooter plugin
+--  require("plugins.telescope").findhere()
+--  --vim.cmd("let g:rooter_manual_only = 0") -- Change back to automatic rooter
+--end
 
 --------------------------------------------------
 
@@ -178,7 +190,6 @@ function M.Toggle_executable()
     print("Now executable")
   end
 end
-
 
 --------------------------------------------------
 
@@ -255,7 +266,7 @@ function M.update_tmux_status()
   file:close()
   if nvim_running then
     -- Neovim is running, update the mode file and refresh tmux
-    VI_MODE = ""  -- Clear VI_MODE to show Neovim mode
+    VI_MODE = "" -- Clear VI_MODE to show Neovim mode
     vim.cmd("silent !tmux refresh-client -S")
   end
   ---- Force tmux to update the status
@@ -275,15 +286,15 @@ vim.cmd([[
 
 -- Add autocmd for <esc>
 -- Add autocmd to check when tmux switches panes/windows
-    --autocmd InsertLeave,InsertEnter * lua require("user.mods").update_tmux_status()
-    --autocmd BufEnter * lua require("user.mods").update_tmux_status()
-    --autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
+--autocmd InsertLeave,InsertEnter * lua require("user.mods").update_tmux_status()
+--autocmd BufEnter * lua require("user.mods").update_tmux_status()
+--autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
 
-    --autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
-    --autocmd VimResized * lua require("user.mods").update_tmux_status()
-    --autocmd FocusGained * lua require("user.mods").update_tmux_status()
-    --autocmd FocusLost * lua require("user.mods").update_tmux_status()
-    --autocmd CmdwinEnter,CmdwinLeave * lua require("user.mods").update_tmux_status()
+--autocmd WinEnter,WinLeave * lua require("user.mods").update_tmux_status()
+--autocmd VimResized * lua require("user.mods").update_tmux_status()
+--autocmd FocusGained * lua require("user.mods").update_tmux_status()
+--autocmd FocusLost * lua require("user.mods").update_tmux_status()
+--autocmd CmdwinEnter,CmdwinLeave * lua require("user.mods").update_tmux_status()
 --------------------------------------------------
 
 -- function OpenEmulatorList()
@@ -297,7 +308,7 @@ vim.cmd([[
 -- 		}
 -- 	)
 -- end
--- 
+--
 -- vim.api.nvim_create_user_command('OpenEmulators', OpenEmulatorList, {})
 
 
@@ -403,7 +414,8 @@ function M.Update_neovim()
 
   -- Download the latest version of Neovim
   append_line("Downloading the latest version of Neovim...")
-  os.execute("curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz")
+  os.execute(
+    "curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz")
   append_line("Download complete.")
 
   -- Extract the downloaded archive
@@ -429,7 +441,8 @@ function M.Update_neovim()
 end
 
 -- Bind a keymap to the update_neovim function (optional)
-vim.api.nvim_set_keymap('n', '<leader>u', '<cmd> lua require("user.mods").Update_neovim()<CR>', { noremap = true, silent = true })
+vim.api.nvim_set_keymap('n', '<leader>u', '<cmd> lua require("user.mods").Update_neovim()<CR>',
+  { noremap = true, silent = true })
 
 
 return M
