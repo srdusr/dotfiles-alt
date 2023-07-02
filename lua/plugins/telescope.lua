@@ -9,6 +9,8 @@ local fb_actions = require("telescope").extensions.file_browser.actions
 --local action_state = require("telescope.actions.state")
 --local layout_actions = require("telescope.actions.layout")
 --local pickers = require("telescope.pickers")
+local themes = require("telescope.themes")
+
 
 require('telescope').setup({
   defaults = {
@@ -92,8 +94,14 @@ require('telescope').setup({
         --	vim.cmd(string.format("silent lcd %s", dir))
         --end,
       },
-
       n = {
+        ["cd"] = function(prompt_bufnr)
+          local selection = require("telescope.actions.state").get_selected_entry()
+          local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+          require("telescope.actions").close(prompt_bufnr)
+          -- Depending on what you want put `cd`, `lcd`, `tcd`
+          vim.cmd(string.format("silent lcd %s", dir))
+        end,
         ["<esc>"] = actions.close,
         ["<q>"] = actions.close,
         ["<CR>"] = actions.select_default,
@@ -166,6 +174,18 @@ require('telescope').setup({
   --    },
   --  },
   --},
+  pickers = {
+    live_grep = {
+      mappings = {
+        i = {
+          ["<C-f>"] = ts_select_dir_for_grep,
+        },
+        n = {
+          ["<C-f>"] = ts_select_dir_for_grep,
+        },
+      },
+    },
+  },
   --pickers = {
   --lsp_references = {
   --	prompt_prefix='⬅️',
@@ -190,6 +210,7 @@ require('telescope').setup({
   --},
   find_files = {
     cwd = '%:p:h',
+    --cwd = vim.fn.getcwd(),
     prompt_prefix = ' ',
     hidden = true,
     follow = true,
@@ -269,6 +290,16 @@ require('telescope').load_extension('dap')
 require("telescope").load_extension("session-lens")
 require("telescope").load_extension("flutter")
 
+M.curbuf = function(opts)
+  opts = opts
+      or themes.get_dropdown({
+        previewer = false,
+        shorten_path = false,
+        border = true,
+      })
+  require("telescope.builtin").current_buffer_fuzzy_find(opts)
+end
+
 function M.find_configs()
   require("telescope.builtin").find_files {
     hidden = true,
@@ -292,6 +323,7 @@ function M.find_configs()
       "~/.vim",
       "~/.profile",
       "~/.zprofile",
+      "~/README.md",
     },
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
@@ -421,37 +453,36 @@ local with_title = function(opts, extra)
   }, extra or {})
 end
 
-----vim.api.nvim_create_augroup('startup', { clear = true })
-----vim.api.nvim_command('augroup startup')
-----vim.api.nvim_command('autocmd!')
-----vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
-----vim.api.nvim_command('augroup END')
---
---
+--vim.api.nvim_create_augroup('findhere', { clear = true })
+--vim.api.nvim_command('augroup findhere')
+--vim.api.nvim_command('autocmd!')
+--vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").findhere()')
+--vim.api.nvim_command('augroup END')
+
+
 --local startup = function()
---  -- Open file browser if argument is a folder
---  local arg = vim.api.nvim_eval('argv(0)')
---  if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
---    vim.defer_fn(function()
---      require('telescope.builtin').find_files(with_title(dropdown))
-----      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
-----        hidden = true,
-----        results_title = '',
-----        layout_config = { prompt_position = 'top' },
-----      }))
---    end, 10)
---  end
---end
---
---
---
----- Define the custom command startup/findhere
---vim.cmd('command! Startup lua require("plugins.telescope").startup()')
---vim.cmd('command! Findhere lua require("plugins.telescope").startup()')
---
-----vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").startup()')
---
----- Merge the existing M table with the startup function table
---M = vim.tbl_extend('force', M, { startup = startup })
+function M.findhere()
+  -- Open file browser if argument is a folder
+  local arg = vim.api.nvim_eval('argv(0)')
+  if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
+    vim.defer_fn(function()
+      require('telescope.builtin').find_files(with_title(dropdown))
+--      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
+--        hidden = true,
+--        results_title = '',
+--        layout_config = { prompt_position = 'top' },
+--      }))
+    end, 10)
+  end
+end
+
+-- Define the custom command findhere/startup
+vim.cmd('command! Findhere lua require("plugins.telescope").startup()')
+vim.cmd('command! Startup lua require("plugins.telescope").startup()')
+
+--vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").findhere()')
+
+-- Merge the existing M table with the startup function table
+--M = vim.tbl_extend('force', M, { findhere = findhere })
 
 return M
