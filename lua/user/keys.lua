@@ -316,7 +316,9 @@ map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")    
 local builtin = require("telescope.builtin")
 local utils = require("telescope.utils")
 
-map("n", "<leader>fF", function() builtin.find_files({ cwd = utils.buffer_dir() }) end, { desc = "Find files in cwd" })
+
+--map("n", "<leader>fF", function() builtin.find_files({ cwd = utils.buffer_dir() }) end, { desc = "Find files in cwd" })
+map("n", "<leader>fF", ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>", { noremap = true, silent = true, desc = "Find files in cwd" })
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
