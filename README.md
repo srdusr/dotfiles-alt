@@ -47,6 +47,29 @@ $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bas
 $ nvm install node
 ```
 
+##### mysql  
+
+- Ensure the MySQL service starts when you reboot or startup your machine.
+```bash
+$ sudo systemctl start mysqld  
+```
+
+- Setup MySQL for use
+```bash
+$ sudo mysql_secure_installation
+```
+
+- To check its installed and working just open up mysql command prompt with
+```
+$ sudo mysql
+```
+
+- If you see the following prompt, You're good to go!
+```
+MariaDB [(<span class="hljs-literal">none)]> 
+</span>
+```
+
 - - -
 
 ### Commands
