@@ -167,7 +167,7 @@ return packer.startup(function(use)
   use({ "tpope/vim-eunuch", cmd = { "Rename", "Delete" } }) -- Handy unix commands inside Vim (Rename, Move etc.)
   --use("tpope/vim-surround") --
   --use("tpope/vim-obsession") --
-  --use("tpope/vim-unimpaired") --
+  use("tpope/vim-unimpaired") --
   --use("vimpostor/vim-tpipeline") --
   --use("nathom/filetype.nvim") --
   use({ "myusuf3/numbers.vim", --
@@ -202,7 +202,7 @@ return packer.startup(function(use)
   })
   use({ "airblade/vim-rooter", --
     --vim.cmd("let g:rooter_change_directory_for_non_project_files = ''"),
-    vim.cmd("let g:rooter_change_directory_for_non_project_files = 'current'")
+    --vim.cmd("let g:rooter_change_directory_for_non_project_files = 'current'")
   })
 
   --use("vim-test/vim-test") --
