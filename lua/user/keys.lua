@@ -311,13 +311,7 @@ map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]
 map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])                -- find projects
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
 map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
-map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
-
-local builtin = require("telescope.builtin")
-local utils = require("telescope.utils")
-
-
---map("n", "<leader>fF", function() builtin.find_files({ cwd = utils.buffer_dir() }) end, { desc = "Find files in cwd" })
+--map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
 map("n", "<leader>fF", ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>", { noremap = true, silent = true, desc = "Find files in cwd" })
 
 -- FZF
