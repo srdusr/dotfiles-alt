@@ -95,13 +95,13 @@ require('telescope').setup({
         --end,
       },
       n = {
-        ["cd"] = function(prompt_bufnr)
-          local selection = require("telescope.actions.state").get_selected_entry()
-          local dir = vim.fn.fnamemodify(selection.path, ":p:h")
-          require("telescope.actions").close(prompt_bufnr)
-          -- Depending on what you want put `cd`, `lcd`, `tcd`
-          vim.cmd(string.format("silent lcd %s", dir))
-        end,
+        --["cd"] = function(prompt_bufnr)
+        --  local selection = require("telescope.actions.state").get_selected_entry()
+        --  local dir = vim.fn.fnamemodify(selection.path, ":p:h")
+        --  require("telescope.actions").close(prompt_bufnr)
+        --  -- Depending on what you want put `cd`, `lcd`, `tcd`
+        --  vim.cmd(string.format("silent lcd %s", dir))
+        --end,
         ["<esc>"] = actions.close,
         ["<q>"] = actions.close,
         ["<CR>"] = actions.select_default,
@@ -174,18 +174,18 @@ require('telescope').setup({
   --    },
   --  },
   --},
-  pickers = {
-    live_grep = {
-      mappings = {
-        i = {
-          ["<C-f>"] = ts_select_dir_for_grep,
-        },
-        n = {
-          ["<C-f>"] = ts_select_dir_for_grep,
-        },
-      },
-    },
-  },
+  --pickers = {
+  --  live_grep = {
+  --    mappings = {
+  --      i = {
+  --        ["<C-f>"] = ts_select_dir_for_grep,
+  --      },
+  --      n = {
+  --        ["<C-f>"] = ts_select_dir_for_grep,
+  --      },
+  --    },
+  --  },
+  --},
   --pickers = {
   --lsp_references = {
   --	prompt_prefix='⬅️',
@@ -290,15 +290,15 @@ require('telescope').load_extension('dap')
 require("telescope").load_extension("session-lens")
 require("telescope").load_extension("flutter")
 
-M.curbuf = function(opts)
-  opts = opts
-      or themes.get_dropdown({
-        previewer = false,
-        shorten_path = false,
-        border = true,
-      })
-  require("telescope.builtin").current_buffer_fuzzy_find(opts)
-end
+--M.curbuf = function(opts)
+--  opts = opts
+--      or themes.get_dropdown({
+--        previewer = false,
+--        shorten_path = false,
+--        border = true,
+--      })
+--  require("telescope.builtin").current_buffer_fuzzy_find(opts)
+--end
 
 function M.find_configs()
   require("telescope.builtin").find_files {
@@ -431,9 +431,9 @@ local dropdown = require('telescope.themes').get_dropdown({
 })
 
 -- File browser always relative to buffer
-local opts_file_browser = vim.tbl_extend('force', dropdown, {
-  path_display = { '%:p:h' },
-})
+--local opts_file_browser = vim.tbl_extend('force', dropdown, {
+--  path_display = { '%:p:h' },
+--})
 
 -- Set current folder as prompt title
 local with_title = function(opts, extra)
@@ -460,7 +460,7 @@ end
 --vim.api.nvim_command('augroup END')
 
 
---local startup = function()
+--local findhere = function()
 function M.findhere()
   -- Open file browser if argument is a folder
   local arg = vim.api.nvim_eval('argv(0)')
@@ -477,8 +477,8 @@ function M.findhere()
 end
 
 -- Define the custom command findhere/startup
-vim.cmd('command! Findhere lua require("plugins.telescope").startup()')
-vim.cmd('command! Startup lua require("plugins.telescope").startup()')
+vim.cmd('command! Findhere lua require("plugins.telescope").findhere()')
+--vim.cmd('command! Startup lua require("plugins.telescope").findhere()')
 
 --vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").findhere()')
 
