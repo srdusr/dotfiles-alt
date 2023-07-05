@@ -193,7 +193,8 @@ PATH="$HOME/.config/composer/vendor/bin:$PATH"
 
 
 # Lua
-export PATH="$XDG_DATA_HOME/luarocks/bin:$PATH"
+export PATH=$PATH:/usr/local/luarocks/bin
+#export PATH="$XDG_DATA_HOME/luarocks/bin:$PATH"
 
 #ver=$(find lua* -maxdepth 0 | sort -rV | head -n 1)
 #export LUA_PATH="$LUA_PATH:${ver}/share/lua/5.1/?.lua;${ver}/share/lua/5.1/?/init.lua;;"
