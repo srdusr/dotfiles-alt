@@ -17,32 +17,29 @@
 ##### Java  
 Recommended to choose Openjdk 8 or 10 otherwise get an error when using Android tools  
 ##### Rust  
+- Download and run rustup script  
 ```bash  
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh    
 ```  
 ##### Lua  
-- Download and install Lua
+- Download LuaRocks  
 ```bash
-$ curl -R -O http://www.lua.org/ftp/lua-5.3.5.tar.gz  
-$ tar -zxf lua-5.3.5.tar.gz  
-$ cd lua-5.3.5  
-$ make linux test  
-$ sudo make install  
+$ git clone git://github.com/luarocks/luarocks.git  
 ```
-- Download and install LuaRocks
+- Install and specify the installation directory to build and configure LuaRocks  
 ```bash
-$ wget https://luarocks.org/releases/luarocks-3.8.0.tar.gz  
-$ tar zxpf luarocks-3.8.0.tar.gz  
-$ cd luarocks-3.8.0  
+./configure --prefix=/usr/local/luarocks
+make build
+sudo make install
 ```
- - Run this command (This will attempt to detect the installation of Lua and see for any errors)  
- ```bash
- ./configure --with-lua-include=/usr/local/include
- ```
- - Run make  
- ```bash
- $ sudo run make install.  
- ```
+- Add LuaRocks to system's environment variables by running the following command or add it .bashrc/.zshrc or any similar shell configuration file to make it persistent across sessions  
+```bash
+export PATH=$PATH:/usr/local/luarocks/bin
+```
+- Install Lua
+```bash
+$ luarocks install lua
+```
 
 ##### PHP  
 - Install PHP  
