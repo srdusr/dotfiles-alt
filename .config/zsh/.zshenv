@@ -85,19 +85,16 @@ if which kubectl > /dev/null; then
   }
 fi
 
-# Android SDK
+# Android Home
 export ANDROID_HOME=/opt/android-sdk
 export PATH=$ANDROID_HOME/tools:$PATH
 export PATH=$ANDROID_HOME/tools/bin:$PATH
 export PATH=$ANDROID_HOME/platform-tools:$PATH
+# Android emulator PATH
 export PATH=$ANDROID_HOME/emulator:$PATH
+# Android SDK ROOT PATH
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$ANDROID_SDK_ROOT:$PATH
-#export PATH=$PATH:$ANDROID_HOME/emulator
-#export PATH=$PATH:$ANDROID_HOME/platform-tools/
-#export PATH=$PATH:$ANDROID_HOME/tools/bin/
-#export PATH=$PATH:$ANDROID_HOME/tools/
-#PATH=$ANDROID_HOME/emulator:$PATH
 #export ANDROID_SDK_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/android"
 
 
@@ -116,13 +113,17 @@ if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
 
 # Java
 export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
+#export JAVA_HOME='/usr/lib/jvm/java-10-openjdk'
 export PATH=$JAVA_HOME/bin:$PATH
 export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
+#export _JAVA_AWT_WM_NONREPARENTING=1
+export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+#export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.xml.bind'
+#Windows:
+#set JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee
 
-
-# Flutter
-export PATH="$PATH:/opt/flutter/bin"
-
+# Dart/Flutter
+export PATH="/usr/bin/flutter:/usr/lib/dart/bin:$PATH"
 
 # Go
 export GO_PATH=${XDG_DATA_HOME}/go
