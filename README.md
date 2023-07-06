@@ -184,7 +184,7 @@ sudo setfacl -R -m g:android-sdk:rwx /opt/android-sdk
 sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk  
 ```
 
-- Put these lines into .bashrc or .zshrc etc...  
+- Put these lines into .bashrc/.zshrc or any similar shell configuration file to make it persistent across sessions  
 ```
 # Android Home
 export ANDROID_HOME=/opt/android-sdk
@@ -216,13 +216,13 @@ avdmanager create avd -n <name> -k "system-images;android-29;default;x86"
 ```
 $ flutter doctor --android-licenses  
 ```
-- Run this  
-```
-$ flutter doctor  
-```
 - If licences are still not accepted even after running `flutter doctor --android-licences` try these commands and then run `flutter doctor --android-licences again`  
 ```
 $ sudo chown -R $(whoami) $ANDROID_SDK_ROOT  
+```
+- Run this  
+```
+$ flutter doctor  
 ```
 - Install the android SDK command line tools (CLI) or won't be able to accept the android licenses.  
 ```
