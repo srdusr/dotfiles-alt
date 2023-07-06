@@ -28,9 +28,9 @@ $ git clone git://github.com/luarocks/luarocks.git
 ```
 - Install and specify the installation directory to build and configure LuaRocks  
 ```bash
-./configure --prefix=/usr/local/luarocks
-make build
-sudo make install
+$ ./configure --prefix=/usr/local/luarocks
+$ make build
+$ sudo make install
 ```
 - Add LuaRocks to system's environment variables by running the following command or add it .bashrc/.zshrc or any similar shell configuration file to make it persistent across sessions  
 ```bash
@@ -100,7 +100,7 @@ $ sudo mv dart-sdk /usr/lib/dart
 NOTE: If Dart SDK is downloaded separately, make sure that the Flutter version of dart is first in path, as the two versions might not be compatible. Use this command `which flutter dart` to see if flutter and dart originate from the same bin directory and are therefore compatible.  
 - Install flutter  
 ```bash  
-git clone https://github.com/flutter/flutter.git -b stable  
+$ git clone https://github.com/flutter/flutter.git -b stable  
 ```  
 - Set permissions since only Root has access    
 ```bash  
@@ -112,10 +112,6 @@ $ sudo chmod -R g+w /opt/flutter/
 - If still getting any permission denied errors then do this    
 ```bash  
 $ sudo chown -R $USER /opt/flutter  
-```  
-- Update Flutter Config SDK PATH for custom SDK PATH  
-```bash  
-$ flutter config --android-sdk /opt/android-sdk  
 ```  
 - Continue to step ***Android Studio*** section to complete setup  
   
@@ -146,8 +142,12 @@ $ sudo mysql_secure_installation
 ```  
 $ sudo mysql  
 ```  
-##### Android Studio  
+##### Android Studio/SDK  
 NOTE: Make sure to properly set the Java environment (either 8 or 10) otherwise android-studio will not start.  
+NOTE: Android Studio is an Integrated Development Environment (IDE) that provides a comprehensive set of tools for Android app development. It includes the Android SDK (Software Development Kit), which consists of various libraries, tools, and system images necessary for developing Android applications.
+
+The Android SDK can be installed separately without Android Studio, allowing you to use alternative text editors or IDEs for development. However, Android Studio provides a more streamlined and feature-rich development experience.
+
 - If Android Studio shows up as a blank window try exporting `_JAVA_AWT_WM_NONREPARENTING=1`.  
 - Install android studio either through tarball or available package manager  
   - Tarball  
@@ -168,22 +168,32 @@ NOTE: Make sure to properly set the Java environment (either 8 or 10) otherwise 
   $ tar -xvzf jetbrains-toolbox.tar.gz  
   $ sudo mv jetbrains-toolbox /opt/jetbrains  
   ```  
-  
-- Android SDK and tools  
-- To install Android SDK and other required tools run these commands in your terminal  
+- Android SDK and tools installation  
+NOTE: Can be installed either through Android Studio or separately.  
+- Android Studio Installed:  
+  - Launch Android Studio and go to the "SDK Manager" (usually found under "Configure" or "Preferences" menu). From the SDK Manager, select the desired SDK components (platforms, build tools, system images, etc.) and click "Apply" to install them.  
+- To install Android SDK separately (without Android Studio):  
 ```bash
-$ yay -S android-sdk android-sdk-platform-tools android-sdk-build-tools  
-$ yay -S android-platform  
+$ curl -L -o commandlinetools.zip "$(curl -s "https://developer.android.com/studio#downloads" | grep -oP 'https://dl.google.com/android/repository/commandlinetools-linux-\d+_latest\.zip' | head -n 1)"
+$ unzip commandlinetools.zip -d android-sdk
+$ sudo mv android-sdk /opt/
 ```
-  
+  - List `sdkmanager`'s available/installed packages  
+  ```bash
+  $ sdkmanager --list
+  ```
+  - Install platform-tools and build-tools:  
+  NOTE: Replace <version> with the specific version number for platforms and build tools to install (e.g.,  "platforms;android-`33`" "build-tools;`34.0.0`").  
+  ```bash
+  $ sdkmanager "platform-tools" "platforms;android-<version>" "build-tools;<version>"
+  ```
 - User permissions, android-sdk is installed in /opt/android-sdk directory, So set the appropriate permissions  
 ```bash
-sudo groupadd android-sdk  
-sudo gpasswd -a $USER android-sdk  
-sudo setfacl -R -m g:android-sdk:rwx /opt/android-sdk  
-sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk  
+$ sudo groupadd android-sdk  
+$ sudo gpasswd -a $USER android-sdk  
+$ sudo setfacl -R -m g:android-sdk:rwx /opt/android-sdk  
+$ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk  
 ```
-
 - Put these lines into .bashrc/.zshrc or any similar shell configuration file to make it persistent across sessions  
 ```
 # Android Home
@@ -196,7 +206,6 @@ export PATH=$ANDROID_HOME/emulator:$PATH
 # Android SDK ROOT PATH
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$ANDROID_SDK_ROOT:$PATH
-
 ```
 - Android emulator  
 - List of available android system images. 
@@ -207,11 +216,15 @@ $ sdkmanager --list
 ```
 $ sdkmanager --install "system-images;android-29;default;x86"  
 ```
-- Then create an android emulator  
+- Then create an android emulator using Android Virtual Devices Manager
 ```
-avdmanager create avd -n <name> -k "system-images;android-29;default;x86"  
+$ avdmanager create avd -n <name> -k "system-images;android-29;default;x86"  
 ```
 - Continuing from ***Dart(flutter)*** section  
+- Update Flutter Config SDK PATH for custom SDK PATH  
+```bash  
+$ flutter config --android-sdk /opt/android-sdk  
+```  
 - Accept all of licences by this command  
 ```
 $ flutter doctor --android-licenses  
@@ -224,16 +237,12 @@ $ sudo chown -R $(whoami) $ANDROID_SDK_ROOT
 ```
 $ flutter doctor  
 ```
-- Install the android SDK command line tools (CLI) or won't be able to accept the android licenses.  
-```
-yay -S android-sdk-cmdline-tools-latest  
-```
 - Update emulator binaries  
-```
+```bash
 $ sdkmanager --sdk_root=${ANDROID_HOME} tools  
 ```
 - Accept emulator licenses  
-```
+```bash
 $ sdkmanager --licenses  
 ```
 
