@@ -318,6 +318,7 @@ function M.find_configs()
       "~/.config/bspwm",
       "~/.config/sxhkd",
       "~/.config/picom",
+      "~/.config/polybar",
       "~/.bashrc",
       "~/.ssh",
       "~/.vim",
