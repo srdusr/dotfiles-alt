@@ -143,12 +143,13 @@ $ sudo mysql_secure_installation
 $ sudo mysql  
 ```  
 ##### Android Studio/SDK  
-NOTE: Make sure to properly set the Java environment (either 8 or 10) otherwise android-studio will not start.  
-NOTE: Android Studio is an Integrated Development Environment (IDE) that provides a comprehensive set of tools for Android app development. It includes the Android SDK (Software Development Kit), which consists of various libraries, tools, and system images necessary for developing Android applications.
+> NOTE: Android Studio is an Integrated Development Environment (IDE) that provides a comprehensive set of tools for Android app development. It includes the Android SDK (Software Development Kit), which consists of various libraries, tools, and system images necessary for developing Android applications.
 
-The Android SDK can be installed separately without Android Studio, allowing you to use alternative text editors or IDEs for development. However, Android Studio provides a more streamlined and feature-rich development experience.
+> The Android SDK can be installed separately without Android Studio, allowing you to use alternative text editors or IDEs for development. However, Android Studio provides a more streamlined and feature-rich development experience.
 
-- If Android Studio shows up as a blank window try exporting `_JAVA_AWT_WM_NONREPARENTING=1`.  
+> Make sure to properly set the Java environment (either 8 or 10, eg., java-8-openjdk) otherwise android-studio will not start.  
+
+> If Android Studio shows up as a blank window try exporting `_JAVA_AWT_WM_NONREPARENTING=1`.  
 - Install android studio either through tarball or available package manager  
   - Tarball  
   ```bash  
@@ -168,32 +169,6 @@ The Android SDK can be installed separately without Android Studio, allowing you
   $ tar -xvzf jetbrains-toolbox.tar.gz  
   $ sudo mv jetbrains-toolbox /opt/jetbrains  
   ```  
-- Android SDK and tools installation  
-NOTE: Can be installed either through Android Studio or separately.  
-- Android Studio Installed:  
-  - Launch Android Studio and go to the "SDK Manager" (usually found under "Configure" or "Preferences" menu). From the SDK Manager, select the desired SDK components (platforms, build tools, system images, etc.) and click "Apply" to install them.  
-- To install Android SDK separately (without Android Studio):  
-```bash
-$ curl -L -o commandlinetools.zip "$(curl -s "https://developer.android.com/studio#downloads" | grep -oP 'https://dl.google.com/android/repository/commandlinetools-linux-\d+_latest\.zip' | head -n 1)"
-$ unzip commandlinetools.zip -d android-sdk
-$ sudo mv android-sdk /opt/
-```
-  - List `sdkmanager`'s available/installed packages  
-  ```bash
-  $ sdkmanager --list
-  ```
-  - Install platform-tools and build-tools:  
-  NOTE: Replace <version> with the specific version number for platforms and build tools to install (e.g.,  "platforms;android-`33`" "build-tools;`34.0.0`").  
-  ```bash
-  $ sdkmanager "platform-tools" "platforms;android-<version>" "build-tools;<version>"
-  ```
-- User permissions, android-sdk is installed in /opt/android-sdk directory, So set the appropriate permissions  
-```bash
-$ sudo groupadd android-sdk  
-$ sudo gpasswd -a $USER android-sdk  
-$ sudo setfacl -R -m g:android-sdk:rwx /opt/android-sdk  
-$ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk  
-```
 - Put these lines into .bashrc/.zshrc or any similar shell configuration file to make it persistent across sessions  
 ```
 # Android Home
@@ -207,45 +182,71 @@ export PATH=$ANDROID_HOME/emulator:$PATH
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$ANDROID_SDK_ROOT:$PATH
 ```
+- Android SDK and tools installation  
+  > NOTE: Can be installed either through Android Studio or separately.  
+  - Android Studio Installed: Launch Android Studio and go to the "SDK Manager" (usually found under "Configure" or "Preferences" menu). From the SDK Manager, select the desired SDK components (platforms, build tools, system images, etc.) and click "Apply" to install them.  
+  - To install Android SDK separately (without Android Studio):  
+  ```bash
+  $ curl -L -o commandlinetools.zip "$(curl -s "https://developer.android.com/studio#downloads" | grep -oP 'https://dl.google.com/android/repository/commandlinetools-linux-\d+_latest\.zip' | head -n 1)"
+  $ unzip commandlinetools.zip -d android-sdk
+  $ sudo mv android-sdk /opt/
+  ```
+- If Android SDK was installed separately then configure the user's permissions since android-sdk is installed in /opt/android-sdk directory  
+```bash
+$ sudo groupadd android-sdk  
+$ sudo gpasswd -a $USER android-sdk  
+$ sudo setfacl -R -m g:android-sdk:rwx /opt/android-sdk  
+$ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk  
+```
+- If Android SDK was installed separately then install platform-tools and build-tools like this:  
+  - First list `sdkmanager`'s available/installed packages  
+  ```bash
+  $ sdkmanager --list
+  ```
+  - Install platform-tools and build-tools
+  > NOTE: Replace <version> with the specific version number for platforms and build tools to install (e.g.,  "platforms;android-`33`" "build-tools;`34.0.0`").  
+  ```bash
+  $ sdkmanager "platform-tools" "platforms;android-<version>" "build-tools;<version>"
+  ```
 - Android emulator  
-- List of available android system images. 
-```
-$ sdkmanager --list  
-```
-- Install an android image of your choice. For example.  
-```
-$ sdkmanager --install "system-images;android-29;default;x86"  
-```
-- Then create an android emulator using Android Virtual Devices Manager
-```
-$ avdmanager create avd -n <name> -k "system-images;android-29;default;x86"  
-```
+  - List of available android system images. 
+  ```bash  
+  $ sdkmanager --list  
+  ```
+  - Install an android image of your choice. For example.  
+  ```bash  
+  $ sdkmanager --install "system-images;android-29;default;x86"  
+  ```
+  - Then create an android emulator using Android Virtual Devices Manager
+  ```bash  
+  $ avdmanager create avd -n <name> -k "system-images;android-29;default;x86"  
+  ```
 - Continuing from ***Dart(flutter)*** section  
-- Update Flutter Config SDK PATH for custom SDK PATH  
-```bash  
-$ flutter config --android-sdk /opt/android-sdk  
-```  
-- Accept all of licences by this command  
-```
-$ flutter doctor --android-licenses  
-```
-- If licences are still not accepted even after running `flutter doctor --android-licences` try these commands and then run `flutter doctor --android-licences again`  
-```
-$ sudo chown -R $(whoami) $ANDROID_SDK_ROOT  
-```
-- Run this  
-```
-$ flutter doctor  
-```
+  - Update Flutter Config SDK PATH for custom SDK PATH  
+  ```bash  
+  $ flutter config --android-sdk /opt/android-sdk  
+  ```  
+  - Accept all of licences by this command  
+  ```
+  $ flutter doctor --android-licenses  
+  ```
+  - If licences are still not accepted even after running `flutter doctor --android-licences` try these commands and then run `flutter doctor --android-licences again`  
+  ```
+  $ sudo chown -R $(whoami) $ANDROID_SDK_ROOT  
+  ```
+  - Run this  
+  ```
+  $ flutter doctor  
+  ```
 - Update emulator binaries  
 ```bash
 $ sdkmanager --sdk_root=${ANDROID_HOME} tools  
 ```
 - Accept emulator licenses  
+> NOTE: Required to accept the necessary license for each package installed.
 ```bash
 $ sdkmanager --licenses  
 ```
-
 - - -  
   
 ### Commands  
