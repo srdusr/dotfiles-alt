@@ -151,13 +151,13 @@ enable-click = true
 reverse-scroll = true
 #reverse-scroll = false
 
-label-focused = 
+label-focused = 
 label-focused-padding = 2
 
-label-occupied = 
+label-occupied = 
 label-occupied-padding = 2
 
-label-empty = 
+label-empty = 
 label-empty-padding = 2
 
 
@@ -170,14 +170,14 @@ content = " "
 type = custom/text
 content-foreground = ${colors.red}
 content-padding = 1
-content = 
+content = 
 click-left = "xdotool getwindowfocus windowkill"
 
 [module/minimize]
 type = custom/text
 content-foreground = ${colors.yellow}
 content-padding = 1
-content = 
+content = 
 click-left = bspc node -g hidden
 click-right = ${HOME}/.config/bspwm/bspcmd unhide
 
@@ -186,7 +186,7 @@ click-right = ${HOME}/.config/bspwm/bspcmd unhide
 type = custom/text
 content-foreground = ${colors.green}
 content-padding = 1
-content = 
+content = 
 ;click-left = bspc node -t {fullscreen}
 click-left = bspc node -t ~floating
 click-right = bspc desktop -l next
