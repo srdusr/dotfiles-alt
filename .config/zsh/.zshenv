@@ -149,6 +149,7 @@ nvm() {
     echo -e "${green_color}nvm${reset_color} $@"
 }
 
+export NVM_DIR="$HOME/.config/nvm"
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     nvm_cmds=(nvm node npm yarn)
     for cmd in "${nvm_cmds[@]}"; do
