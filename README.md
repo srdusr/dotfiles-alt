@@ -21,6 +21,11 @@ Recommended to choose Openjdk 8 or 10 otherwise get an error when using Android 
 ```bash  
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh    
 ```  
+##### Go  
+```bash
+
+```
+
 ##### Lua  
 - Download LuaRocks  
 ```bash
@@ -32,7 +37,7 @@ $ ./configure --prefix=/usr/local/luarocks
 $ make build
 $ sudo make install
 ```
-- Add LuaRocks to system's environment variables by running the following command or add it .bashrc/.zshrc or any similar shell configuration file to make it persistent across sessions  
+- Add LuaRocks to system's environment variables by running the following command or add it `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
 ```bash
 export PATH=$PATH:/usr/local/luarocks/bin
 ```
@@ -102,6 +107,10 @@ NOTE: If Dart SDK is downloaded separately, make sure that the Flutter version o
 ```bash  
 $ git clone https://github.com/flutter/flutter.git -b stable  
 ```  
+- Export Flutter over Dart by putting this into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
+```bash
+export PATH="/usr/bin/flutter:/usr/lib/dart/bin:$PATH"
+```
 - Set permissions since only Root has access    
 ```bash  
 $ sudo groupadd flutterusers  
@@ -120,6 +129,11 @@ $ sudo chown -R $USER /opt/flutter
 ```bash  
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash    
 ```  
+- Put these lines into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
+```bash
+export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || printf %s "${XDG_CONFIG_HOME}/nvm")"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh" # This loads nvm
+```
 - Install node    
 ```bash  
 $ nvm install node  
@@ -169,7 +183,7 @@ $ sudo mysql
   $ tar -xvzf jetbrains-toolbox.tar.gz  
   $ sudo mv jetbrains-toolbox /opt/jetbrains  
   ```  
-- Put these lines into .bashrc/.zshrc or any similar shell configuration file to make it persistent across sessions  
+- Put these lines into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
 ```
 # Android Home
 export ANDROID_HOME=/opt/android-sdk
@@ -209,7 +223,7 @@ $ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk
   $ sdkmanager "platform-tools" "platforms;android-<version>" "build-tools;<version>"
   ```
 - Android emulator  
-  - List of available android system images. 
+  - List of available android system images.  
   ```bash  
   $ sdkmanager --list  
   ```
@@ -217,7 +231,7 @@ $ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk
   ```bash  
   $ sdkmanager --install "system-images;android-29;default;x86"  
   ```
-  - Then create an android emulator using Android Virtual Devices Manager
+  - Then create an android emulator using Android Virtual Devices Manager  
   ```bash  
   $ avdmanager create avd -n <name> -k "system-images;android-29;default;x86"  
   ```
@@ -243,7 +257,7 @@ $ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk
 $ sdkmanager --sdk_root=${ANDROID_HOME} tools  
 ```
 - Accept emulator licenses  
-> NOTE: Required to accept the necessary license for each package installed.
+> NOTE: Required to accept the necessary license for each package installed.  
 ```bash
 $ sdkmanager --licenses  
 ```
