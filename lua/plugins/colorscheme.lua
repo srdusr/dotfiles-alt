@@ -3,7 +3,7 @@
 -- [[ nightfly ayu onedark doom-one nvimgelion github_dark tokyonight ]]
 
 -- Define default color scheme
-local default_colorscheme = "doom-one"
+local default_colorscheme = "tokyonight-night"
 local fallback_colorscheme = "desert"
 
 -- Attempt to set the default color scheme
