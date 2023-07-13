@@ -107,9 +107,13 @@ NOTE: If Dart SDK is downloaded separately, make sure that the Flutter version o
 ```bash  
 $ git clone https://github.com/flutter/flutter.git -b stable  
 ```  
+- Move flutter to the `/opt` directory  
+```bash
+$ sudo mv flutter /opt/
+```
 - Export Flutter over Dart by putting this into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
 ```bash
-export PATH="/usr/bin/flutter:/usr/lib/dart/bin:$PATH"
+export PATH="/opt/flutter:/usr/lib/dart/bin:$PATH"
 ```
 - Set permissions since only Root has access    
 ```bash  
@@ -183,6 +187,13 @@ $ sudo mysql
   $ tar -xvzf jetbrains-toolbox.tar.gz  
   $ sudo mv jetbrains-toolbox /opt/jetbrains  
   ```  
+- Complete the Android Studio Setup Wizard  
+  - Click `Next` on the Welcome Window  
+  - Click `Custom` and `Next`
+  - Make sure a .android directory exists in the $HOME directory by typing in the following command in a terminal  
+  ```bash
+  $ mkdir ~/.android
+  ```
 - Put these lines into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
 ```
 # Android Home
