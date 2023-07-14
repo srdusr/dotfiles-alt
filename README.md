@@ -190,9 +190,15 @@ $ sudo mysql
   ```bash
   $ sudo mkdir /opt/android-sdk
   ```
-  - Click on the folder icon next to the SDK path field.
-  - In the file picker dialog, navigate to the /opt directory and select the android-sdk directory.
-  - Proceed with the setup wizard, following the remaining instructions to complete the installation.
+  - Click on the folder icon next to the SDK path field.  
+  - In the file picker dialog, navigate to the /opt directory and select the android-sdk directory.  
+  - Proceed with the setup wizard, following the remaining instructions to complete the installation.  
+- If already installed and prefer not to have a `$HOME/Android` directory but rather use `/opt/android-sdk`  
+  - Launch Android Studio.  
+  - Go to "File" > "Settings" (on Windows/Linux) or "Android Studio" > "Preferences" (on macOS) to open the settings.  
+  - In the settings, navigate to "Appearance & Behavior" > "System Settings" > "Android SDK".  
+  - In the "Android SDK Location" field, update the path to `/opt/android-sdk`.  
+  - Click "Apply" or "OK" to save the settings.  
 
 - Put these lines into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
 ```
