@@ -96,7 +96,8 @@ export PATH=$ANDROID_HOME/emulator:$PATH
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$ANDROID_SDK_ROOT:$PATH
 #export ANDROID_SDK_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/android"
-
+# Alias for android-studio
+alias android-studio='/opt/android-studio/bin/studio.sh'
 
 # Programming Environment Variables:
 
