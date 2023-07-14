@@ -1,11 +1,17 @@
 -- Colorscheme
 -- Available colorschemes:
 -- [[ nightfly ayu onedark doom-one nvimgelion github_dark tokyonight ]]
-local colorscheme = "tokyonight-night"
-local status_ok, _ = pcall(vim.cmd, "colorscheme " .. colorscheme)
+
+-- Define default color scheme
+local default_colorscheme = "tokyonight-night"
+local fallback_colorscheme = "desert"
+
+-- Attempt to set the default color scheme
+local status_ok, _ = pcall(vim.cmd, "colorscheme " .. default_colorscheme)
+
+-- If the default color scheme is not found, use the fallback color scheme
 if not status_ok then
-  vim.notify("colorscheme " .. colorscheme .. " not found!")
-  return
+    vim.cmd("colorscheme " .. fallback_colorscheme)
 end
 
 --local function MyHighlights()
@@ -26,7 +32,7 @@ end
 
 
 vim.api.nvim_command("syntax on")
-vim.api.nvim_command("highlight Normal guibg=none")
+vim.api.nvim_command("highlight Normal guibg=NONE")
 vim.api.nvim_command("highlight NormalNC guibg=none")
 vim.api.nvim_command("highlight SignColumn guibg=none")
 --vim.api.nvim_command("highlight FoldColumn guibg=none")

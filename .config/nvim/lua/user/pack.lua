@@ -63,8 +63,8 @@ return packer.startup(function(use)
 
   -- lsp
   use("williamboman/mason.nvim")           -- Package manager to install and manage LSP servers, DAP servers, linters and formatters
-  use("williamboman/mason-lspconfig.nvim") -- Bridges mason.nvim with nvim-lspconfig to help use them together
   use("neovim/nvim-lspconfig")             -- Collection of LSP configs
+  use("williamboman/mason-lspconfig.nvim") -- Bridges mason.nvim with nvim-lspconfig to help use them together
   use({
     "https://git.sr.ht/~whynothugo/lsp_lines.nvim",
     config = function()
@@ -167,7 +167,7 @@ return packer.startup(function(use)
   use({ "tpope/vim-eunuch", cmd = { "Rename", "Delete" } }) -- Handy unix commands inside Vim (Rename, Move etc.)
   --use("tpope/vim-surround") --
   --use("tpope/vim-obsession") --
-  --use("tpope/vim-unimpaired") --
+  use("tpope/vim-unimpaired") --
   --use("vimpostor/vim-tpipeline") --
   --use("nathom/filetype.nvim") --
   use({ "myusuf3/numbers.vim", --
@@ -200,7 +200,11 @@ return packer.startup(function(use)
     "folke/trouble.nvim",
     requires = "nvim-tree/nvim-web-devicons",
   })
-  use("airblade/vim-rooter") --
+  use({ "airblade/vim-rooter", --
+    --vim.cmd("let g:rooter_change_directory_for_non_project_files = ''"),
+    --vim.cmd("let g:rooter_change_directory_for_non_project_files = 'current'")
+  })
+
   --use("vim-test/vim-test") --
   --use({
   --  "rcarriga/vim-ultest", --
@@ -276,7 +280,7 @@ return packer.startup(function(use)
   })
   use("rcarriga/nvim-notify")      -- Notification plugin
   use("karb94/neoscroll.nvim")     -- Faster/smooth scrolling
-  use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
+  --use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
   use({
     'norcalli/nvim-colorizer.lua', -- colorize hexa and rgb strings
     cmd = { 'ColorizerToggle', 'ColorizerAttachToBuffer' },
@@ -326,6 +330,21 @@ return packer.startup(function(use)
     requires = { "nvim-lua/plenary.nvim" },
     config = function()
       require("crates").setup()
+    end,
+  })
+  use({
+    "akinsho/flutter-tools.nvim",
+    requires = {
+      "nvim-lua/plenary.nvim",
+      "stevearc/dressing.nvim", -- optional for vim.ui.select
+    },
+    config = function()
+      require('flutter-tools').setup({
+        debugger = {
+          enabled = true,
+          run_via_dap = true,
+        },
+      })
     end,
   })
   use({

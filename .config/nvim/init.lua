@@ -31,7 +31,7 @@
 -- Download nvim-linux64.tar.gz:
 --$ curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/download/nightly/nvim-linux64.tar.gz
 -- Extract:
---$ tar xzvf nvim-linux64.tar.gz
+--$ tar xzvf nvim-linux64.tar.gz --install-dir=/bin
 -- Run:
 --$ ./nvim-linux64/bin/nvim
 
@@ -75,7 +75,7 @@ local modules = {
   "plugins.quickfix",
   --"plugins.snippets",
   --"plugins.colorizer",
-  "plugins.prettier",
+  --"plugins.prettier",
   --"plugins.git",
   "plugins.lsp",
   "plugins.gitsigns",
