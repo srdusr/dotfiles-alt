@@ -168,8 +168,8 @@ $ sudo mysql
 > Make sure to properly set the Java environment (either 8 or 10, eg., java-8-openjdk) otherwise android-studio will not start.  
 
 > If Android Studio shows up as a blank window try exporting `_JAVA_AWT_WM_NONREPARENTING=1`.  
-- Install android studio either through tarball or available package manager  
-  - Tarball  
+- Install android studio  
+  - Directly from the official website  
   ```bash  
   $ curl -L -o android-studio.tar.gz "$(curl -s "https://developer.android.com/studio#downloads" | grep -oP 'https://redirector\.gvt1\.com/[^"]+' | head -n 1)"  
   $ tar -xvzf android-studio.tar.gz  
@@ -177,11 +177,7 @@ $ sudo mysql
   $ cd /opt/android-studio/bin script # Configure Android Studio by running this script    
   $ ./studio.sh  
   ```  
-  - Available package manager (example yay/AUR)  
-  ```bash  
-  $ yay android-studio  
-  ```  
-  - Optional install jetbrains-toolbox that includes android-studio amongst many other applications/tools from jetbrains  
+  - Or optionally install jetbrains-toolbox that includes android-studio amongst many other applications/tools from jetbrains  
   ```bash  
   $ latest_url=$(curl -sL "https://data.services.jetbrains.com/products/releases?code=TBA" | grep -oP 'https://download.jetbrains.com/toolbox/jetbrains-toolbox-\d+\.\d+\.\d+\.\d+\.tar\.gz' | head -n 1) && curl -L -o jetbrains-toolbox.tar.gz "$latest_url"  
   $ tar -xvzf jetbrains-toolbox.tar.gz  
@@ -190,10 +186,14 @@ $ sudo mysql
 - Complete the Android Studio Setup Wizard  
   - Click `Next` on the Welcome Window  
   - Click `Custom` and `Next`
-  - Make sure a .android directory exists in the $HOME directory by typing in the following command in a terminal  
+  - Make sure `/opt/android-sdk` directory exists otherwise create it by typing in the following command in a terminal  
   ```bash
-  $ mkdir ~/.android
+  $ sudo mkdir /opt/android-sdk
   ```
+  - Click on the folder icon next to the SDK path field.
+  - In the file picker dialog, navigate to the /opt directory and select the android-sdk directory.
+  - Proceed with the setup wizard, following the remaining instructions to complete the installation.
+
 - Put these lines into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
 ```
 # Android Home
