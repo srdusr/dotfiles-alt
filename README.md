@@ -206,6 +206,8 @@ export PATH=$ANDROID_HOME/emulator:$PATH
 # Android SDK ROOT PATH
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$ANDROID_SDK_ROOT:$PATH
+# Alias for android-studio
+alias android-studio='/opt/android-studio/bin/studio.sh'
 ```
 - Android SDK and tools installation  
   > NOTE: Can be installed either through Android Studio or separately.  
