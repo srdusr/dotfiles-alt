@@ -34,7 +34,6 @@ if (!(Test-Path $localPacker -PathType Container)) {
 # Set-ExecutionPolicy RemoteSigned
 # Then run the script by using this command in the same existing directory:
 # ./win-nvim.ps1
-
 # To allow script execution, run the following command in PowerShell as an administrator:
 # Set-ExecutionPolicy RemoteSigned
 # Then run the script by using this command in the same existing directory:
