@@ -7,7 +7,7 @@ if (!(Get-Command nvim -ErrorAction SilentlyContinue)) {
 $dotFilesRoot = Join-Path $HOME "dotfiles"
 
 if (!(Test-Path $dotFilesRoot -PathType Container)) {
-    git clone https://github.com:srdusr/dotfiles.git $dotFilesRoot
+    git clone https://github.com/srdusr/dotfiles.git $dotFilesRoot
 }
 
 # Link NeoVim configuration
