@@ -123,11 +123,13 @@ vim.opt.report = 0      -- Always report changed lines.
 
 -- Backup/undo/swap
 local prefix = vim.env.XDG_CONFIG_HOME or vim.fn.expand("~/.config")
+--vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undodir = { prefix .. "/nvim/tmp/.undo//" }
 vim.opt.backupdir = { prefix .. "/nvim/tmp/.backup//" }
 vim.opt.directory = { prefix .. "/nvim/tmp/.swp//" }
 vim.opt.backup = false   --
-vim.opt.undofile = false --
+--vim.opt.undofile = false --
+vim.opt.undofile = true --
 vim.opt.swapfile = true  --
 -- Add timestamp as extension for backup files
 vim.api.nvim_create_autocmd('BufWritePre', {
@@ -141,6 +143,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 -- Format
 --vim.opt.textwidth = 80 --
+vim.opt.isfname:append("@-@")
 vim.cmd([[let &t_Cs = "\e[4:3m"]])    -- Undercurl
 vim.cmd([[let &t_Ce = "\e[4:0m"]])    --
 vim.opt.path:append({ "**" })         -- Finding files - Search down into subfolder
