@@ -197,6 +197,10 @@ else
   map[''].gx = { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
 end
 
+-- Substitute globally and locally in the selected region.
+map("n", "ss", ":%s//g<Left><Left>")
+map("v", "ss", ":s//g<Left><Left>")
+
 -- Toggle completion
 map("n", "<Leader>tc", ":lua require('user.mods').toggle_completion()<CR>")
 
