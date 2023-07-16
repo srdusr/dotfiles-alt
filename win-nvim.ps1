@@ -20,11 +20,11 @@ $localConfiguration = Join-Path $env:LOCALAPPDATA "nvim"
 $dotfilesConfiguration = Join-Path (Join-Path $dotFilesRoot ".config") "nvim"
 
 if (!(Test-Path $localConfiguration -PathType Container)) { 
-    Start-Process -FilePath "cmd.exe" -ArgumentList "/c mklink /D `"$localConfiguration`" `"$dotfilesConfiguration`"" -Verb runas
+    cmd /c "mklink /D `"$localConfiguration`" `"$dotfilesConfiguration`"" | Out-Null
 }
 
 # Clone Packer.nvim, if not already present on the system
-$localPacker = Join-Path $env:LOCALAPPDATA "nvim-data" "site" "pack" "packer" "start" "packer.nvim"
+$localPacker = Join-Path $env:LOCALAPPDATA "nvim" "pack" "packer" "start" "packer.nvim"
 
 if (!(Test-Path $localPacker -PathType Container)) { 
     git clone https://github.com/wbthomason/packer.nvim $localPacker
