@@ -170,7 +170,8 @@ map("i", "<C-l>", "<Del>")
 map("n", "<leader><C-l>", "<Cmd>!clear<CR>")
 
 -- Change file to an executable
-map("n", "<Leader>x", ":lua require('user.mods').Toggle_executable()<CR> | :echom ('Toggle executable')<CR> | :sl! | echo ('')<CR>")
+map("n", "<Leader>x",
+  ":lua require('user.mods').Toggle_executable()<CR> | :echom ('Toggle executable')<CR> | :sl! | echo ('')<CR>")
 --map("n", "<leader>x", ":!chmod +x %<CR>")
 
 -- Paste without replace clipboard
@@ -267,6 +268,7 @@ map('n', '<C-j>', '<CMD>NavigatorDown<CR>')
 map({ "n", "t" }, "<leader>gg", "<cmd>lua Lazygit_toggle()<CR>")
 
 -- Fugitive git bindings
+map("n", "<leader>gs", vim.cmd.Git)
 map("n", "<leader>ga", ":Git add %:p<CR><CR>")
 --map("n", "<leader>gs", ":Gstatus<CR>")
 map("n", "<leader>gc", ":Gcommit -v -q<CR>")
@@ -316,13 +318,17 @@ map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
 map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
 --map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
-map("n", "<leader>fF", ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>", { noremap = true, silent = true, desc = "Find files in cwd" })
+map("n", "<leader>fF", ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>",
+  { noremap = true, silent = true, desc = "Find files in cwd" })
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
 
 -- Nvim-tree
 map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
+
+-- Undotree
+map('n', '<leader>u', vim.cmd.UndotreeToggle)
 
 -- Markdown-preview
 map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
