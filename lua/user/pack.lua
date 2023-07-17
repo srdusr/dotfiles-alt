@@ -170,6 +170,7 @@ return packer.startup(function(use)
   use("tpope/vim-unimpaired") --
   --use("vimpostor/vim-tpipeline") --
   --use("nathom/filetype.nvim") --
+  use("mbbill/undotree")
   use({ "myusuf3/numbers.vim", --
     vim.cmd("let g:numbers_exclude = ['dashboard']")
   })
