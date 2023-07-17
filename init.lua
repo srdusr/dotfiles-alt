@@ -78,6 +78,7 @@ local modules = {
   --"plugins.prettier",
   --"plugins.git",
   "plugins.lsp",
+  --"plugins.fugitive",
   "plugins.gitsigns",
   "plugins.neoscroll",
   "plugins.statuscol",
