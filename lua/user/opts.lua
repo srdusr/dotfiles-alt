@@ -47,8 +47,10 @@ vim.o.autochdir = true
 -- Colors
 vim.opt.termguicolors = true
 
+-- Clipboard
+vim.opt.clipboard:append({ "unnamedplus" }) -- Install xclip or this will slowdown startup
+
 -- Behaviour
-vim.opt.clipboard:append({ "unnamedplus" })      -- Install xclip or this will slowdown startup
 vim.opt.backspace = { "start", "eol", "indent" } -- Make backspace work as you would expect.
 vim.opt.hidden = true                            -- Switch between buffers without having to save first.
 vim.opt.splitbelow = true                        -- make split put the new buffer below the current buffer
@@ -246,7 +248,11 @@ vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpo
 --vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
 --vim.opt.sessionoptions:remove({ "blank", "buffers", "globals" })
 
-vim.opt.clipboard:append({ "unnamedplus" }) -- Install xclip or this will slowdown startup
+-- Netrw file tree
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+
 -- Cursorline
 vim.cmd([[                                        " Only show cursorline in the current window and in normal mode
   	augroup cline
