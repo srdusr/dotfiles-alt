@@ -26,9 +26,13 @@ bindkey -s jk '\e'
 bindkey "^W" backward-kill-word
 bindkey "^H" backward-delete-char      # Control-h also deletes the previous char
 bindkey "^U" backward-kill-line
-
 bindkey "^[j" history-search-forward # or you can bind it to the down key "^[[B"
 bindkey "^[k" history-search-backward # or you can bind it to Up key "^[[A"
+
+# Define the 'autosuggest-execute' and 'autosuggest-accept' ZLE widgets
+autoload -Uz autosuggest-execute autosuggest-accept
+zle -N autosuggest-execute
+zle -N autosuggest-accept
 bindkey '^X' autosuggest-execute
 bindkey '^Y' autosuggest-accept
 
@@ -343,6 +347,13 @@ up() {
     cd "$(pwd | sed -E 's;(/[^/]*){0,'$d'}$;;')/";
 }
 
+# Tmux layout
+openSession () {
+    tmux split-window -h -t
+    tmux split-window -v -t
+    tmux resize-pane -U 5 
+}
+
 # More history for cd and use "cd -TAB"
 setopt AUTO_PUSHD                  # pushes the old directory onto the stack
 zstyle ':completion:*:directory-stack' list-colors '=(#b) #([0-9]#)*( *)==95=38;5;12'
@@ -496,26 +507,59 @@ alias rm='rm -i'
 alias suspend='systemctl suspend && betterlockscreen --lock dimblur'
 alias hibernate='systemctl hibernate'
 
-# Tmux layout
-openSession () {
-    tmux split-window -h -t
-    tmux split-window -v -t
-    tmux resize-pane -U 5 
-}
+# Kubernetes
+# kubernetes aliases
+if command -v kubectl > /dev/null; then
+  function replaceNS() { kubectl config view --minify --flatten --context=$(kubectl config current-context) | yq ".contexts[0].context.namespace=\"$1\"" }
+  alias kks='KUBECONFIG=<(replaceNS "kube-system") kubectl'
+  alias kam='KUBECONFIG=<(replaceNS "authzed-monitoring") kubectl'
+  alias kas='KUBECONFIG=<(replaceNS "authzed-system") kubectl'
+  alias kar='KUBECONFIG=<(replaceNS "authzed-region") kubectl'
+  alias kt='KUBECONFIG=<(replaceNS "tenant") kubectl'
+  if command -v kubectl-krew > /dev/null; then
+    path=($XDG_CONFIG_HOME/krew/bin $path)
+  fi
+  function rmfinalizers() {
+    kubectl get deployment $1 -o json | jq '.metadata.finalizers = null' | k apply -f -
+  }
+fi
+
+# Alias for android-studio
+alias android-studio='/opt/android-studio/bin/studio.sh'
+
+# NVM
+#nvm() {
+#    local green_color
+#    green_color=$(tput setaf 2)
+#    local reset_color
+#    reset_color=$(tput sgr0)
+#    echo -e "${green_color}nvm${reset_color} $@"
+#}
+
+if [ -s "$NVM_DIR/nvm.sh" ]; then
+    nvm_cmds=(nvm node npm yarn)
+    for cmd in "${nvm_cmds[@]}"; do
+        alias "$cmd"="unalias ${nvm_cmds[*]} && unset nvm_cmds && . $NVM_DIR/nvm.sh && $cmd"
+    done
+fi
+
 
 ##########    Source Plugins, should be last    ##########
 #source /usr/share/nvm/init-nvm.sh
 
 # Load zsh-syntax-highlighting
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
+source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+#source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
 
 # Load fzf keybindings and completion
 source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
-source /usr/share/fzf-marks/fzf-marks.plugin.zsh 2>/dev/null
+source /usr/share/fzf-marks/fzf-marks.zsh
+#source /usr/share/fzf-marks/fzf-marks.plugin.zsh 2>/dev/null
 
 # Suggest aliases for commands
-source /usr/share/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh 2>/dev/null
+source /usr/share/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh
+#source /usr/share/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh 2>/dev/null
 
 # Load fish like auto suggestions
 source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
