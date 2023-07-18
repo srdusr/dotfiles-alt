@@ -1,5 +1,15 @@
 $include /etc/inputrc
 
+set editing-mode vi
+set keymap vi-insert
+"\f": clear-screen
+set show-mode-in-prompt on
+set vi-cmd-mode-string "\1\e[2 q\2"
+set vi-ins-mode-string "\1\e[6 q\2"
+
+# Reduce the delay between pressing escape and the cursor change
+set keyseq-timeout 0
+
 #set -o vi
 #lset keymap vi
 #$if mode=vi
