@@ -441,7 +441,7 @@ function M.Update_neovim()
 end
 
 -- Bind a keymap to the update_neovim function (optional)
-vim.api.nvim_set_keymap('n', '<leader>u', '<cmd> lua require("user.mods").Update_neovim()<CR>',
+vim.api.nvim_set_keymap('n', '<leader>U', '<cmd> lua require("user.mods").Update_neovim()<CR>',
   { noremap = true, silent = true })
 
 

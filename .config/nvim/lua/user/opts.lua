@@ -47,8 +47,10 @@ vim.o.autochdir = true
 -- Colors
 vim.opt.termguicolors = true
 
+-- Clipboard
+vim.opt.clipboard:append({ "unnamedplus" }) -- Install xclip or this will slowdown startup
+
 -- Behaviour
-vim.opt.clipboard:append({ "unnamedplus" })      -- Install xclip or this will slowdown startup
 vim.opt.backspace = { "start", "eol", "indent" } -- Make backspace work as you would expect.
 vim.opt.hidden = true                            -- Switch between buffers without having to save first.
 vim.opt.splitbelow = true                        -- make split put the new buffer below the current buffer
@@ -123,11 +125,13 @@ vim.opt.report = 0      -- Always report changed lines.
 
 -- Backup/undo/swap
 local prefix = vim.env.XDG_CONFIG_HOME or vim.fn.expand("~/.config")
+--vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undodir = { prefix .. "/nvim/tmp/.undo//" }
 vim.opt.backupdir = { prefix .. "/nvim/tmp/.backup//" }
 vim.opt.directory = { prefix .. "/nvim/tmp/.swp//" }
 vim.opt.backup = false   --
-vim.opt.undofile = false --
+--vim.opt.undofile = false --
+vim.opt.undofile = true --
 vim.opt.swapfile = true  --
 -- Add timestamp as extension for backup files
 vim.api.nvim_create_autocmd('BufWritePre', {
@@ -141,6 +145,7 @@ vim.api.nvim_create_autocmd('BufWritePre', {
 
 -- Format
 --vim.opt.textwidth = 80 --
+vim.opt.isfname:append("@-@")
 vim.cmd([[let &t_Cs = "\e[4:3m"]])    -- Undercurl
 vim.cmd([[let &t_Ce = "\e[4:0m"]])    --
 vim.opt.path:append({ "**" })         -- Finding files - Search down into subfolder
@@ -243,7 +248,11 @@ vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpo
 --vim.opt.sessionoptions = "buffers,curdir,folds,help,tabpages,winsize,winpos,terminal"
 --vim.opt.sessionoptions:remove({ "blank", "buffers", "globals" })
 
-vim.opt.clipboard:append({ "unnamedplus" }) -- Install xclip or this will slowdown startup
+-- Netrw file tree
+vim.g.netrw_browse_split = 0
+vim.g.netrw_banner = 0
+vim.g.netrw_winsize = 25
+
 -- Cursorline
 vim.cmd([[                                        " Only show cursorline in the current window and in normal mode
   	augroup cline
