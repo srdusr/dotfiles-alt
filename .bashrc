@@ -48,8 +48,6 @@ alias wallset='feh --bg-fill'
 PS1=$p
 
 # pfetch
-. "/home/srdusr/.local/share/cargo/env"
-. "$HOME/.cargo/env"
 
 #export NVM_DIR="$HOME/.local/share/nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
