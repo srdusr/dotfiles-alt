@@ -2,38 +2,59 @@
 export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.local/bin/scripts:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
+# Conditionally set WM(window manager)
+available_wms=("bspwm" "mutter" "i3")
+for wm in "${available_wms[@]}"; do
+    if command -v "$wm" &> /dev/null; then
+        export WM="$wm"
+        break
+    fi
+done
+
+# Conditionally set Display server
+if [ -n "$WAYLAND_DISPLAY" ]; then
+  export XDG_SESSION_TYPE=wayland
+else
+  export XDG_SESSION_TYPE=x11
+
+  # X11-specific variables
+  export XINITRC="$HOME/.config/X11/.xinitrc"
+  export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
+  export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
+  export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
+  export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
+  export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
+  export ICEAUTHORITY="$XDG_CACHE_HOME/.ICEauthority"
+fi
+
+available_terms=("wezterm" "alacritty" "xterm")
+
+for term in "${available_terms[@]}"; do
+    if command -v "$term" &> /dev/null; then
+        export TERMINAL="$term"
+        break
+    fi
+done
+
 # Default Programs:
-export EDITOR="nvim"
-export VISUAL="nvim"
-export READER="zathura"
-export TERMINAL="wezterm"
+export EDITOR=$(command -v nvim || echo "vim")
+export VISUAL=$EDITOR
 export COLORTERM="truecolor"
 export TERM="xterm-256color"
+export READER="zathura"
 export BROWSER="firefox"
 export OPENER="xdg-open"
-export MANPAGER="nvim +Man!"
+export MANPAGER="echo \$EDITOR +Man!"
 export PAGER="less"
-export WM="bspwm"
-export XDG_SESSION_TYPE=X11
 export FAQ_STYLE='github'
 export VIDEO="vlc"
 #export IMAGE="sxiv"
 
-
 # XDG Paths:
-export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:="$HOME/.config"}
-export XDG_DATA_HOME=${XDG_DATA_HOME:="$HOME/.local/share"}
-export XDG_CACHE_HOME=${XDG_CACHE_HOME:="$HOME/.cache"}
-export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/X11/.inputrc"
-export XINITRC="$HOME/.config/X11/.xinitrc"
-export XSERVERRC="$XDG_CONFIG_HOME"/X11/xserverrc
-export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
-export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
-export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
-export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
-export ICEAUTHORITY="$XDG_CACHE_HOME"/.ICEauthority
-export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
-export VIRTUAL_ENV_DISABLE_PROMPT=true
+export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
+export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
+export XDG_CACHE_HOME=${XDG_CACHE_HOME:-$HOME/.cache}
+export INPUTRC="${XDG_CONFIG_HOME:-$HOME/.config}/inputrc"
 export ZDOTDIR="$XDG_CONFIG_HOME/zsh"
 export HISTFILE="$ZDOTDIR/.zhistory"    # History filepath
 export HISTSIZE=1000000                  # Maximum events for internal history
@@ -56,34 +77,20 @@ export HIST_BEEP                 # Beep when accessing nonexistent history.
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
 
 # Other XDG paths:
-export PATH="/usr/bin/cmake:$PATH"
-export WGETRC="$XDG_CONFIG_HOME"/wget/wgetrc
 export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/ripgreprc"
-export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
-export VSCODE_PORTABLE="$XDG_DATA_HOME"/vscode
-export PATH=$PATH:/opt/google/chrome
+export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
+export VSCODE_PORTABLE="$XDG_DATA_HOME/vscode"
+export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
+#export PATH="/usr/bin/cmake:$PATH"
+#export PATH=$PATH:/opt/google/chrome
 
 # Manage Arch linux build sources
 export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
 
 # GnuPG
 export GPG_TTY=$(tty)
-export GNUPGHOME="$HOME/.config/gnupg"
+export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
-# Kubernetes
-# kubernetes aliases
-if which kubectl > /dev/null; then
-  function replaceNS() { kubectl config view --minify --flatten --context=$(kubectl config current-context) | yq ".contexts[0].context.namespace=\"$1\"" }
-  alias kks='KUBECONFIG=<(replaceNS "kube-system") kubectl'
-  alias kam='KUBECONFIG=<(replaceNS "authzed-monitoring") kubectl'
-  alias kas='KUBECONFIG=<(replaceNS "authzed-system") kubectl'
-  alias kar='KUBECONFIG=<(replaceNS "authzed-region") kubectl'
-  alias kt='KUBECONFIG=<(replaceNS "tenant") kubectl'
-  which kubectl-krew > /dev/null && path=($HOME/.krew/bin $path)
-  function rmfinalizers() {
-    kubectl get deployment $1 -o json | jq '.metadata.finalizers = null' | k apply -f -
-  }
-fi
 
 # Android Home
 export ANDROID_HOME=/opt/android-sdk
@@ -96,8 +103,6 @@ export PATH=$ANDROID_HOME/emulator:$PATH
 export ANDROID_SDK_ROOT=/opt/android-sdk
 export PATH=$ANDROID_SDK_ROOT:$PATH
 #export ANDROID_SDK_HOME="${XDG_CONFIG_HOME:-$HOME/.config}/android"
-# Alias for android-studio
-alias android-studio='/opt/android-studio/bin/studio.sh'
 
 # Programming Environment Variables:
 
@@ -141,23 +146,7 @@ export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 #export NPM_CONFIG_INIT_LICENSE='GPL-3.0'
 #export NPM_CONFIG_INIT_VERSION='0.0.0'
 #export NPM_CONFIG_SIGN_GIT_TAG='true'
-
-nvm() {
-    local green_color
-    green_color=$(tput setaf 2)
-    local reset_color
-    reset_color=$(tput sgr0)
-    echo -e "${green_color}nvm${reset_color} $@"
-}
-
 export NVM_DIR="$HOME/.config/nvm"
-if [ -s "$NVM_DIR/nvm.sh" ]; then
-    nvm_cmds=(nvm node npm yarn)
-    for cmd in "${nvm_cmds[@]}"; do
-        alias "$cmd"="unalias ${nvm_cmds[*]} && unset nvm_cmds && . $NVM_DIR/nvm.sh && $cmd"
-    done
-fi
-
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 
@@ -187,8 +176,10 @@ if type pyenv &> /dev/null || [[ -a $PYENV_ROOT/bin/pyenv ]]; then
     pyenv $@
   }
 fi
-export WORKON_HOME="$XDG_DATA_HOME"/virtualenvs
-export IPYTHONDIR="$XDG_CONFIG_HOME"/jupyter, export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME"/jupyter
+export WORKON_HOME="$XDG_DATA_HOME/virtualenvs"
+export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
+export IPYTHONDIR="$XDG_CONFIG_HOME/jupyter"
+export VIRTUAL_ENV_DISABLE_PROMPT=true
 
 # PHP
 PATH="$HOME/.config/composer/vendor/bin:$PATH"
