@@ -3,10 +3,19 @@
 - - -  
   
 ### Dependencies  
-- fzf    
-- ripgrep    
+- git  
+- clang  
+- gcc  
+- make  
 - ninja  
 - cmake  
+- fzf  
+- ripgrep  
+- fd  
+- tree-sitter  
+- vim  
+- nvim  
+- wezterm  
 
   
 - - -  
@@ -286,3 +295,31 @@ $ sdkmanager --licenses
   
   
 - - -  
+### Windows  
+- Install nvim natively to Windows  
+  - First allow script execution, run the following command in PowerShell as an administrator:  
+  ```dos
+    Set-ExecutionPolicy RemoteSigned
+  ```
+  - Then run the script by using this command in the same existing directory:  
+  ```dos
+  ./win-nvim.ps1
+  ```
+  ```dos
+  curl -o winget-cli.appxbundle https://aka.ms/winget-cli-appxbundle  
+  powershell Add-AppxPackage -Path  "winget-cli.appxbundle"  
+  Set-ExecutionPolicy Bypass -Scope Process -Force; [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072; iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))  
+  ```
+  - Use `-y` or consider: choco feature enable -n allowGlobalConfirmation  
+  ```dos
+  choco install git
+  ```
+  - Refresh the environment  
+  ```dos
+  Import-Module $env:ChocolateyInstall\helpers\chocolateyProfile.psm1
+  refreshenv
+  ```
+  ```dos
+  git config --global user.name "Firstname Lastname"
+  git config --global user.email "your_email@example.com"
+  ```
