@@ -554,7 +554,7 @@ source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zs
 # Load fzf keybindings and completion
 source /usr/share/fzf/key-bindings.zsh
 source /usr/share/fzf/completion.zsh
-source /usr/share/fzf-marks/fzf-marks.zsh
+source /usr/share/fzf/fzf-marks/fzf-marks.plugin.zsh
 #source /usr/share/fzf-marks/fzf-marks.plugin.zsh 2>/dev/null
 
 # Suggest aliases for commands
