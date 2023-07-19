@@ -151,6 +151,10 @@ export NVM_DIR="$([ -z "${XDG_CONFIG_HOME-}" ] && printf %s "${HOME}/.nvm" || pr
 ```bash  
 $ nvm install node  
 ```  
+- Install the latest version in order to make npm executable  
+```bash
+$ nvm install --lts
+```
   
 ##### MySQL    
 - Install MySQL  
