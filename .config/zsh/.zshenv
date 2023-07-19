@@ -2,30 +2,30 @@
 export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.local/bin/scripts:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
-# Conditionally set WM(window manager)
-available_wms=("bspwm" "mutter" "i3")
-for wm in "${available_wms[@]}"; do
-    if command -v "$wm" &> /dev/null; then
-        export WM="$wm"
-        break
-    fi
-done
-
-# Conditionally set Display server
-if [ -n "$WAYLAND_DISPLAY" ]; then
-  export XDG_SESSION_TYPE=wayland
-else
-  export XDG_SESSION_TYPE=x11
-
-  # X11-specific variables
-  export XINITRC="$HOME/.config/X11/.xinitrc"
-  export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
-  export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
-  export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
-  export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
-  export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
-  export ICEAUTHORITY="$XDG_CACHE_HOME/.ICEauthority"
-fi
+## Conditionally set WM(window manager)
+#available_wms=("bspwm" "mutter" "i3")
+#for wm in "${available_wms[@]}"; do
+#    if command -v "$wm" &> /dev/null; then
+#        export WM="$wm"
+#        break
+#    fi
+#done
+#
+## Conditionally set Display server
+#if [ -n "$WAYLAND_DISPLAY" ]; then
+#  export XDG_SESSION_TYPE=wayland
+#else
+#  export XDG_SESSION_TYPE=x11
+#
+#  # X11-specific variables
+#  export XINITRC="$HOME/.config/X11/.xinitrc"
+#  export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
+#  export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
+#  export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
+#  export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
+#  export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
+#  export ICEAUTHORITY="$XDG_CACHE_HOME/.ICEauthority"
+#fi
 
 available_terms=("wezterm" "alacritty" "xterm")
 
@@ -48,7 +48,7 @@ export MANPAGER="echo \$EDITOR +Man!"
 export PAGER="less"
 export FAQ_STYLE='github'
 export VIDEO="vlc"
-#export IMAGE="sxiv"
+export IMAGE="sxiv"
 
 # XDG Paths:
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
@@ -107,10 +107,10 @@ export PATH=$ANDROID_SDK_ROOT:$PATH
 # Programming Environment Variables:
 
 # Rust
-export RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup
-export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo
-[[ -d $CARGO_HOME/bin ]] && path=($CARGO_HOME/bin $path)
-if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
+#export RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup
+#export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo
+#[[ -d $CARGO_HOME/bin ]] && path=($CARGO_HOME/bin $path)
+#if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
 #export PATH="$HOME/.cargo/bin:$PATH"
 #export CARGO_HOME=${XDG_DATA_HOME}/cargo
 #export RUSTUP_HOME=${XDG_DATA_HOME}/rustup
@@ -162,20 +162,20 @@ export GEM_HOME="$XDG_DATA_HOME/ruby/gems"
 
 # Python
 # lazy load pyenv
-export PYENV_ROOT=${PYENV_ROOT:-$HOME/.pyenv}
-[[ -a $PYENV_ROOT/bin/pyenv ]] && path=($PYENV_ROOT/bin $path)
-if type pyenv &> /dev/null || [[ -a $PYENV_ROOT/bin/pyenv ]]; then
-  function pyenv() {
-    unset pyenv
-    path=($PYENV_ROOT/shims $path)
-    eval "$(command pyenv init -)"
-    if which pyenv-virtualenv-init > /dev/null; then
-      eval "$(pyenv virtualenv-init -)"
-      export PYENV_VIRTUALENV_DISABLE_PROMPT=1
-    fi
-    pyenv $@
-  }
-fi
+#export PYENV_ROOT=${PYENV_ROOT:-$HOME/.pyenv}
+#[[ -a $PYENV_ROOT/bin/pyenv ]] && path=($PYENV_ROOT/bin $path)
+#if type pyenv &> /dev/null || [[ -a $PYENV_ROOT/bin/pyenv ]]; then
+#  function pyenv() {
+#    unset pyenv
+#    path=($PYENV_ROOT/shims $path)
+#    eval "$(command pyenv init -)"
+#    if which pyenv-virtualenv-init > /dev/null; then
+#      eval "$(pyenv virtualenv-init -)"
+#      export PYENV_VIRTUALENV_DISABLE_PROMPT=1
+#    fi
+#    pyenv $@
+#  }
+#fi
 export WORKON_HOME="$XDG_DATA_HOME/virtualenvs"
 export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
 export IPYTHONDIR="$XDG_CONFIG_HOME/jupyter"
