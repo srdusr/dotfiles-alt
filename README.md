@@ -17,7 +17,15 @@
 - nvim  
 - wezterm  
 
-  
+
+git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+sudo mv zsh-syntax-highlighting /usr/share/zsh/plugins/
+
+git clone https://github.com/urbainvaes/fzf-marks.git
+sudo mv fzf-marks /usr/share/fzf/
+
+git clone https://github.com/MichaelAquilina/zsh-you-should-use.git
+sudo mv zsh-you-should-use /usr/share/zsh/plugins/
 - - -  
   
 ### Development Environment  
