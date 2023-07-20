@@ -3,6 +3,7 @@
 - - -  
   
 ### Dependencies  
+- curl
 - git  
 - clang  
 - gcc  
@@ -15,17 +16,27 @@
 - tree-sitter  
 - vim  
 - nvim  
+- libfuse2
+- wmctrl
+- xdo
+- xdotool
 - wezterm  
 
+git clone https://github.com/zsh-users/zsh-autosuggestions
+sudo mv zsh-autosuggestions /usr/share/zsh/plugins/
 
-git clone https://github.com/zsh-users/zsh-syntax-highlighting.git
+git clone https://github.com/zsh-users/zsh-syntax-highlighting
 sudo mv zsh-syntax-highlighting /usr/share/zsh/plugins/
 
-git clone https://github.com/urbainvaes/fzf-marks.git
+git clone https://github.com/urbainvaes/fzf-marks
 sudo mv fzf-marks /usr/share/fzf/
 
 git clone https://github.com/MichaelAquilina/zsh-you-should-use.git
 sudo mv zsh-you-should-use /usr/share/zsh/plugins/
+
+git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
+~/.fzf/install
+sudo mv ~/.fzf/shell/key-bindings.zsh ~/.fzf/shell/completion.zsh /usr/share/fzf/
 - - -  
   
 ### Development Environment  
