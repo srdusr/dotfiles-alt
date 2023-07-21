@@ -232,6 +232,8 @@ map("n", "<Space>", "za")
 --vim.cmd([[
 --  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
 --]])
+map('n', '<leader>.b', ':!cp % %.backup<CR>')
+
 
 -- Toggle transparency
 map('n', '<leader>tb', ':call utils#Toggle_transparent_background()<CR>')
@@ -266,6 +268,8 @@ map('n', '<C-j>', '<CMD>NavigatorDown<CR>')
 
 -- LazyGit
 map({ "n", "t" }, "<leader>gg", "<cmd>lua Lazygit_toggle()<CR>")
+
+map('n', '<leader>tg', '<cmd>lua Gh_dash()<CR>')
 
 -- Fugitive git bindings
 map("n", "<leader>gs", vim.cmd.Git)
