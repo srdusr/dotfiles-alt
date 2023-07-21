@@ -15,34 +15,37 @@ toggleterm.setup({
   --autochdir = true,
   hide_numbers = true,
   shade_filetypes = {},
-  shade_terminals = false,
+  shade_terminals = true,
   shading_factor = 1,
   start_in_insert = true,
   insert_mappings = true,
   persist_size = true,
-  direction = "float",
+  --direction = "float",
   --direction = "vertical",
-  --direction = "horizontal",
+  direction = "horizontal",
   close_on_exit = true,
   shell = vim.o.shell,
   highlights = {
     -- highlights which map to a highlight group name and a table of it's values
     -- NOTE: this is only a subset of values, any group placed here will be set for the terminal window split
-    Normal = {
-      background = "#000000",
-    },
+    --Normal = {
+    --  background = "#000000",
+    --},
+    Normal = { guibg = 'Black', guifg = 'DarkGray' },
+    FloatBorder = { guibg = 'Black', guifg = 'DarkGray' },
+    NormalFloat = { guibg = 'Black' },
     --float_opts = {
     --  border = as.style.current.border,
     --  winblend = 3,
     --},
-    size = function(term)
-      if term.direction == 'horizontal' then
-        return 15
-      elseif term.direction == 'vertical' then
-        return math.floor(vim.o.columns * 0.4)
-      end
-    end,
   },
+  size = function(term)
+    if term.direction == 'horizontal' then
+      return 7
+    elseif term.direction == 'vertical' then
+      return math.floor(vim.o.columns * 0.4)
+    end
+  end,
   float_opts = {
     width = 70,
     height = 15,
@@ -151,4 +154,18 @@ local python = Terminal:new({ cmd = "python", hidden = true })
 
 function _PYTHON_TOGGLE()
   python:toggle()
+end
+
+function Gh_dash()
+Terminal:new({
+  cmd = 'gh dash',
+  hidden = true,
+  direction = 'float',
+  on_open = float_handler,
+  float_opts = {
+    height = function() return math.floor(vim.o.lines * 0.8) end,
+    width = function() return math.floor(vim.o.columns * 0.95) end,
+  },
+})
+  Gh_dash:toggle()
 end
