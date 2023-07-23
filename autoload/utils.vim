@@ -117,8 +117,8 @@ endfunction
 
 "-------------------------------------------------
 
-" Toggle Verbose
-function! utils#ToggleVerbose()
+" Verbose Toggle
+function! utils#VerboseToggle()
     if !&verbose
         set verbosefile=~/.config/nvim/verbose.log
         set verbose=15
