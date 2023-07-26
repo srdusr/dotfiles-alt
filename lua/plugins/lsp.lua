@@ -494,3 +494,7 @@ end
 --    end
 --  end
 --end
+vim.api.nvim_create_user_command("NullLsToggle", function()
+  -- you can also create commands to disable or enable sources
+  require("null-ls").toggle({})
+end, {})
