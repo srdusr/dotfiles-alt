@@ -81,8 +81,8 @@ export RIPGREP_CONFIG_PATH="$XDG_CONFIG_HOME/ripgrep/ripgreprc"
 export DOCKER_CONFIG="$XDG_CONFIG_HOME/docker"
 export VSCODE_PORTABLE="$XDG_DATA_HOME/vscode"
 export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
-#export PATH="/usr/bin/cmake:$PATH"
-#export PATH=$PATH:/opt/google/chrome
+export PATH="/usr/bin/cmake:$PATH"
+export PATH=$PATH:/opt/google/chrome
 
 # Manage Arch linux build sources
 export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
@@ -97,6 +97,7 @@ export ANDROID_HOME=/opt/android-sdk
 export PATH=$ANDROID_HOME/tools:$PATH
 export PATH=$ANDROID_HOME/tools/bin:$PATH
 export PATH=$ANDROID_HOME/platform-tools:$PATH
+export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 # Android emulator PATH
 export PATH=$ANDROID_HOME/emulator:$PATH
 # Android SDK ROOT PATH
@@ -107,10 +108,10 @@ export PATH=$ANDROID_SDK_ROOT:$PATH
 # Programming Environment Variables:
 
 # Rust
-#export RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup
-#export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo
-#[[ -d $CARGO_HOME/bin ]] && path=($CARGO_HOME/bin $path)
-#if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
+export RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup
+export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo
+[[ -d $CARGO_HOME/bin ]] && path=($CARGO_HOME/bin $path)
+if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
 #export PATH="$HOME/.cargo/bin:$PATH"
 #export CARGO_HOME=${XDG_DATA_HOME}/cargo
 #export RUSTUP_HOME=${XDG_DATA_HOME}/rustup
@@ -120,7 +121,7 @@ export PATH=$ANDROID_SDK_ROOT:$PATH
 # Java
 export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
 #export JAVA_HOME='/usr/lib/jvm/java-10-openjdk'
-export PATH=$JAVA_HOME/bin:$PATH
+#export PATH=$JAVA_HOME/bin:$PATH
 export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
 #export _JAVA_AWT_WM_NONREPARENTING=1
 export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
@@ -129,7 +130,7 @@ export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
 #set JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee
 
 # Dart/Flutter
-export PATH="/usr/bin/flutter:/usr/lib/dart/bin:$PATH"
+export PATH="/opt/flutter/bin:/usr/lib/dart/bin:$PATH"
 
 # Go
 export GO_PATH=${XDG_DATA_HOME}/go
