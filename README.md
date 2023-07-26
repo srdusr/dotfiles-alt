@@ -291,11 +291,11 @@ $ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk
   ```bash  
   $ flutter config --android-sdk /opt/android-sdk  
   ```  
-  - Accept all of licences by this command  
+  - Accept all of licenses by this command  
   ```
   $ flutter doctor --android-licenses  
   ```
-  - If licences are still not accepted even after running `flutter doctor --android-licences` try these commands and then run `flutter doctor --android-licences again`  
+  - If licenses are still not accepted even after running `flutter doctor --android-licenses` try these commands and then run `flutter doctor --android-licenses again`  
   ```
   $ sudo chown -R $(whoami) $ANDROID_SDK_ROOT  
   ```
