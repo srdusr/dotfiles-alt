@@ -26,7 +26,7 @@ super + a
 
 # lockscreen
 super + Escape
-	betterlockscreen -l
+	betterlockscreen --lock blur
 
 # Program launcher
 super + @space
