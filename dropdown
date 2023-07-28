@@ -64,9 +64,15 @@
 #fi
 
 
-
-
-
+# Function to get window ID by window class name
+get_window_id_by_class() {
+    local class="$1"
+    if command -v ydotool > /dev/null; then
+        ydotool search --classname "$class"
+    elif command -v xdotool > /dev/null; then
+        xdotool search --classname "$class"
+    fi
+}
 
 # List of supported terminals with dropdown class
 supported_terminals=(
@@ -99,7 +105,7 @@ if [ -z "$my_term" ]; then
   # Start the terminal with dropdown class
   case "$my_term" in
     "wezterm")
-      wezterm start --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+      wezterm --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
       ;;
     "kitty")
       kitty --class dropdown tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
@@ -110,29 +116,26 @@ if [ -z "$my_term" ]; then
   esac
 fi
 
-# Function to toggle the visibility of the dropdown terminal
-toggle_dropdown() {
-  local id="$(xdotool search --class dropdown | head -1)"
-  if [ -n "$id" ]; then
-    local state="$(xprop -id "$id" | grep "_NET_WM_STATE_HIDDEN")"
-    if [ -n "$state" ]; then
-      # The dropdown window is hidden, so show it
-      wmctrl -i -r "$id" -b remove,hidden
-    else
+# Get the window ID of the dropdown terminal using either ydotool or xdotool
+id=$(get_window_id_by_class "dropdown")
+
+# Toggle the visibility of the dropdown terminal
+if [ -n "$id" ]; then
+  if command -v ydotool > /dev/null; then
+    if ydotool windowvisible "$id"; then
       # The dropdown window is visible, so hide it
-      wmctrl -i -r "$id" -b add,hidden
+      ydotool windowunmap "$id"
+    else
+      # The dropdown window is hidden, so show it
+      ydotool windowmap "$id"
+    fi
+  elif command -v xdotool > /dev/null; then
+    if xdotool getwindowfocus | grep -q "$id"; then
+      # The dropdown window is visible, so hide it
+      xdotool windowunmap "$id"
+    else
+      # The dropdown window is hidden, so show it
+      xdotool windowmap "$id"
     fi
   fi
-}
-
-# Check if the script is already running and exit if it is
-if pgrep -x "$(basename "$0")" | grep -v $$ > /dev/null; then
-  exit 1
 fi
-
-# Attempt to toggle the dropdown terminal
-toggle_dropdown
-
-# Sometimes, it may fail to toggle, so we add a slight delay and try again
-sleep 0.1
-toggle_dropdown
