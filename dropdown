@@ -64,6 +64,7 @@
 #fi
 
 
+
 # Function to get window ID by window class name
 get_window_id_by_class() {
     local class="$1"
@@ -122,7 +123,8 @@ id=$(get_window_id_by_class "dropdown")
 # Toggle the visibility of the dropdown terminal
 if [ -n "$id" ]; then
   if command -v ydotool > /dev/null; then
-    if ydotool windowvisible "$id"; then
+    mapped=$(ydotool windowmap --query "$id" | awk '{print $2}')
+    if [ "$mapped" = "true" ]; then
       # The dropdown window is visible, so hide it
       ydotool windowunmap "$id"
     else
