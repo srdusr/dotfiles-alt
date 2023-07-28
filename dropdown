@@ -4,6 +4,68 @@
 # Created On: Tue 07 Mar 2023 15:06:47 PM CAT
 # Project: Agnostic dropdown/scratchpad terminal that works on most window managers
 
+## List of supported terminals with dropdown class
+#supported_terminals=(
+#  "wezterm"
+#  "kitty"
+#  "alacritty"
+#)
+#
+## Check if any of the supported terminals with dropdown class are running
+#for term in "${supported_terminals[@]}"; do
+#  if pgrep -f "$term.*--class dropdown" > /dev/null; then
+#    my_term="$term"
+#    break
+#  fi
+#done
+#
+## If none of the supported terminals are running, start the first available one
+#if [ -z "$my_term" ]; then
+#  for term in "${supported_terminals[@]}"; do
+#    if command -v "$term" > /dev/null 2>&1; then
+#      my_term="$term"
+#      break
+#    fi
+#  done
+#  if [ -z "$my_term" ]; then
+#    echo "No supported terminal found."
+#    exit 1
+#  fi
+#
+#  # Start the terminal with dropdown class
+#  case "$my_term" in
+#    "wezterm")
+#      wezterm start --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+#      ;;
+#    "kitty")
+#      kitty --class dropdown tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+#      ;;
+#    "alacritty")
+#      alacritty --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+#      ;;
+#  esac
+#fi
+#
+## Get the window ID of the dropdown terminal
+#id="$(xdo id -N dropdown)"
+#
+## Toggle the visibility of the dropdown terminal
+#if [ -n "$id" ]; then
+#  if xwininfo -id "$id" | grep "Map State: IsViewable" > /dev/null; then
+#    # The dropdown window is visible, so hide it
+#    dimensions="$(xwininfo -id "$id" | awk '/Width:|Height:/ { printf("%s=%s;", tolower($1), $2) }')"
+#    xdo hide "$id" 2>/dev/null
+#  else
+#    # The dropdown window is hidden, so show it
+#    xdo show "$id"
+#    # Restore the dimensions of the window
+#    xdotool windowsize "$id" "$(echo "$dimensions" | tr ';' ' ')" 2>/dev/null
+#  fi
+#fi
+
+
+
+
 
 # List of supported terminals with dropdown class
 supported_terminals=(
@@ -11,6 +73,26 @@ supported_terminals=(
   "kitty"
   "alacritty"
 )
+
+# Function to check if the terminal is running and visible
+is_terminal_visible() {
+  local id="$(xdotool search --class "$1" | head -1)"
+  [ -n "$id" ] && xwininfo -id "$id" | grep "Map State: IsViewable" > /dev/null
+}
+
+# Function to toggle the visibility of the dropdown terminal
+toggle_dropdown() {
+  local id="$(xdotool search --class dropdown | head -1)"
+  if [ -n "$id" ]; then
+    if xwininfo -id "$id" | grep "Map State: IsViewable" > /dev/null; then
+      # The dropdown window is visible, so hide it
+      xdotool windowunmap "$id"
+    else
+      # The dropdown window is hidden, so show it
+      xdotool windowmap "$id"
+    fi
+  fi
+}
 
 # Check if any of the supported terminals with dropdown class are running
 for term in "${supported_terminals[@]}"; do
@@ -47,21 +129,16 @@ if [ -z "$my_term" ]; then
   esac
 fi
 
-# Get the window ID of the dropdown terminal
-id="$(xdo id -N dropdown)"
-
-# Toggle the visibility of the dropdown terminal
-if [ -n "$id" ]; then
-  if xwininfo -id "$id" | grep "Map State: IsViewable" > /dev/null; then
-    # The dropdown window is visible, so hide it
-    dimensions="$(xwininfo -id "$id" | awk '/Width:|Height:/ { printf("%s=%s;", tolower($1), $2) }')"
-    xdo hide "$id"
-  else
-    # The dropdown window is hidden, so show it
-    xdo show "$id"
-    # Restore the dimensions of the window
-    xdotool windowsize "$id" "$(echo "$dimensions" | tr ';' ' ')"
-  fi
+# Check if the script is already running and exit if it is
+if pgrep -x "$(basename "$0")" | grep -v $$ > /dev/null; then
+  exit 1
 fi
 
+# Toggle the dropdown terminal visibility
+toggle_dropdown
 
+# Set up a listener to hide the dropdown terminal when it loses focus
+dropdown_id="$(xdotool search --class dropdown | head -1)"
+if [ -n "$dropdown_id" ]; then
+  xdotool behave $dropdown_id focus-out exec "xdotool windowunmap $dropdown_id"
+fi
