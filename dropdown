@@ -4,6 +4,65 @@
 # Created On: Tue 07 Mar 2023 15:06:47 PM CAT
 # Project: Agnostic dropdown/scratchpad terminal that works on most window managers
 
+# List of supported terminals with dropdown class
+supported_terminals=(
+  "wezterm"
+  "kitty"
+  "alacritty"
+)
+
+# Check if any of the supported terminals with dropdown class are running
+for term in "${supported_terminals[@]}"; do
+  if pgrep -f "$term.*--class dropdown" > /dev/null; then
+    my_term="$term"
+    break
+  fi
+done
+
+# If none of the supported terminals are running, start the first available one
+if [ -z "$my_term" ]; then
+  for term in "${supported_terminals[@]}"; do
+    if command -v "$term" > /dev/null 2>&1; then
+      my_term="$term"
+      break
+    fi
+  done
+  if [ -z "$my_term" ]; then
+    echo "No supported terminal found."
+    exit 1
+  fi
+
+  # Start the terminal with dropdown class
+  case "$my_term" in
+    "wezterm")
+      wezterm start --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+      ;;
+    "kitty")
+      kitty --class dropdown tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+      ;;
+    "alacritty")
+      alacritty --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+      ;;
+  esac
+fi
+
+
+# Toggle the visibility of the dropdown terminal
+#if [ -n "$id" ]; then
+if [ -z "$(xdotool search --class dropdown)" ]; then
+  dropdown
+fi
+
+CLASS="dropdown"
+ACTIVE_WINDOW="$(xdotool getactivewindow)"
+APP_WINDOW="$(xdotool search --onlyvisible --class $CLASS)"
+
+if [ "$ACTIVE_WINDOW" = "$APP_WINDOW" ]; then
+  xdotool getactivewindow windowminimize
+else
+  wmctrl -xR "$CLASS"
+fi
+
 ## List of supported terminals with dropdown class
 #supported_terminals=(
 #  "wezterm"
@@ -139,67 +198,67 @@
 #	fi
 #fi
 
-# List of supported terminals with dropdown class
-supported_terminals=(
-  "wezterm"
-  "kitty"
-  "alacritty"
-)
-
-# Check if any of the supported terminals with dropdown class are running
-for term in "${supported_terminals[@]}"; do
-  if pgrep -f "$term.*--class dropdown" > /dev/null; then
-    my_term="$term"
-    break
-  fi
-done
-
-# If none of the supported terminals are running, start the first available one
-if [ -z "$my_term" ]; then
-  for term in "${supported_terminals[@]}"; do
-    if command -v "$term" > /dev/null 2>&1; then
-      my_term="$term"
-      break
-    fi
-  done
-  if [ -z "$my_term" ]; then
-    echo "No supported terminal found."
-    exit 1
-  fi
-
-  # Start the terminal with dropdown class
-  case "$my_term" in
-    "wezterm")
-      wezterm start --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
-      ;;
-    "kitty")
-      kitty --class dropdown tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
-      ;;
-    "alacritty")
-      alacritty --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
-      ;;
-  esac
-fi
-
-
-# Check if wmctrl is available
-if command -v wmctrl > /dev/null 2>&1; then
-  # Get the window ID of the dropdown terminal
-  id="$(wmctrl -l | grep "dropdown" | awk '{print $1}')"
-
-  # Toggle the visibility of the dropdown terminal
-  if [ -n "$id" ]; then
-    state="$(wmctrl -l -G -p -x | grep "$id" | awk '{print $4}')"
-    if [ "$state" = "-1" ]; then
-      # The dropdown window is hidden, so show it
-      wmctrl -i -r "$id" -b remove,hidden
-    else
-      # The dropdown window is visible, so hide it
-      wmctrl -i -r "$id" -b add,hidden
-    fi
-  fi
-else
-  echo "Window manipulation requires wmctrl. Install it and try again."
-  exit 1
-fi
+## List of supported terminals with dropdown class
+#supported_terminals=(
+#  "wezterm"
+#  "kitty"
+#  "alacritty"
+#)
+#
+## Check if any of the supported terminals with dropdown class are running
+#for term in "${supported_terminals[@]}"; do
+#  if pgrep -f "$term.*--class dropdown" > /dev/null; then
+#    my_term="$term"
+#    break
+#  fi
+#done
+#
+## If none of the supported terminals are running, start the first available one
+#if [ -z "$my_term" ]; then
+#  for term in "${supported_terminals[@]}"; do
+#    if command -v "$term" > /dev/null 2>&1; then
+#      my_term="$term"
+#      break
+#    fi
+#  done
+#  if [ -z "$my_term" ]; then
+#    echo "No supported terminal found."
+#    exit 1
+#  fi
+#
+#  # Start the terminal with dropdown class
+#  case "$my_term" in
+#    "wezterm")
+#      wezterm start --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+#      ;;
+#    "kitty")
+#      kitty --class dropdown tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+#      ;;
+#    "alacritty")
+#      alacritty --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
+#      ;;
+#  esac
+#fi
+#
+#
+## Check if wmctrl is available
+#if command -v wmctrl > /dev/null 2>&1; then
+#  # Get the window ID of the dropdown terminal
+#  id="$(wmctrl -l | grep "dropdown" | awk '{print $1}')"
+#
+#  # Toggle the visibility of the dropdown terminal
+#  if [ -n "$id" ]; then
+#    state="$(wmctrl -l -G -p -x | grep "$id" | awk '{print $4}')"
+#    if [ "$state" = "-1" ]; then
+#      # The dropdown window is hidden, so show it
+#      wmctrl -i -r "$id" -b remove,hidden
+#    else
+#      # The dropdown window is visible, so hide it
+#      wmctrl -i -r "$id" -b add,hidden
+#    fi
+#  fi
+#else
+#  echo "Window manipulation requires wmctrl. Install it and try again."
+#  exit 1
+#fi
 
