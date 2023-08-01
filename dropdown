@@ -181,8 +181,9 @@ if [ -z "$my_term" ]; then
   esac
 fi
 
-# Function to toggle the visibility of the dropdown terminal
-toggle_dropdown() {
+
+# Check if wmctrl is available
+if command -v wmctrl > /dev/null 2>&1; then
   # Get the window ID of the dropdown terminal
   id="$(wmctrl -l | grep "dropdown" | awk '{print $1}')"
 
@@ -197,11 +198,6 @@ toggle_dropdown() {
       wmctrl -i -r "$id" -b add,hidden
     fi
   fi
-}
-
-# Check if wmctrl is available
-if command -v wmctrl > /dev/null 2>&1; then
-  toggle_dropdown
 else
   echo "Window manipulation requires wmctrl. Install it and try again."
   exit 1
