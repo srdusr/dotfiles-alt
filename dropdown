@@ -6,62 +6,67 @@
 
 # List of supported terminals with dropdown class
 supported_terminals=(
-  "wezterm"
-  "kitty"
-  "alacritty"
+	"wezterm"
+	"kitty"
+	"alacritty"
 )
 
 # Check if any of the supported terminals with dropdown class are running
 for term in "${supported_terminals[@]}"; do
-  if pgrep -f "$term.*--class dropdown" > /dev/null; then
-    my_term="$term"
-    break
-  fi
+	if pgrep -f "$term.*--class dropdown" >/dev/null; then
+		my_term="$term"
+		break
+	fi
 done
 
 # If none of the supported terminals are running, start the first available one
-if [ -z "$my_term" ]; then
-  for term in "${supported_terminals[@]}"; do
-    if command -v "$term" > /dev/null 2>&1; then
-      my_term="$term"
-      break
-    fi
-  done
-  if [ -z "$my_term" ]; then
-    echo "No supported terminal found."
-    exit 1
-  fi
+if [ "$my_term" = "" ]; then
+	for term in "${supported_terminals[@]}"; do
+		if command -v "$term" >/dev/null 2>&1; then
+			my_term="$term"
+			break
+		fi
+	done
+	if [ "$my_term" = "" ]; then
+		echo "No supported terminal found."
+		exit 1
+	fi
 
-  # Start the terminal with dropdown class
-  case "$my_term" in
-    "wezterm")
-      wezterm start --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
-      ;;
-    "kitty")
-      kitty --class dropdown tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
-      ;;
-    "alacritty")
-      alacritty --class dropdown -e tmux new-session -A -s dropdown -e bash > /dev/null 2>&1 &
-      ;;
-  esac
+	# Start the terminal with dropdown class
+	case "$my_term" in
+	"wezterm")
+		wezterm start --class dropdown -e tmux new-session -A -s dropdown -e bash >/dev/null 2>&1 &
+		;;
+	"kitty")
+		kitty --class dropdown tmux new-session -A -s dropdown -e bash >/dev/null 2>&1 &
+		;;
+	"alacritty")
+		alacritty --class dropdown -e tmux new-session -A -s dropdown -e bash >/dev/null 2>&1 &
+		;;
+	esac
 fi
 
+# Get the window ID of the dropdown terminal
+id="$(xdo id -N dropdown)"
 
 # Toggle the visibility of the dropdown terminal
-#if [ -n "$id" ]; then
-if [ -z "$(xdotool search --class dropdown)" ]; then
-  dropdown
+if [ "$id" != "" ]; then
+	if xwininfo -id "$id" | grep "Map State: IsViewable" >/dev/null; then
+		#	xdotool windowminimize "$id"
+		#else
+		#	wmctrl -xR "$id"
+		xdo hide "$id" 2>/dev/null
+	else
+		# The dropdown window is hidden, so show it
+		xdo show "$id"
+	fi
 fi
 
-CLASS="dropdown"
-ACTIVE_WINDOW="$(xdotool getactivewindow)"
-APP_WINDOW="$(xdotool search --onlyvisible --class $CLASS)"
-
-if [ "$ACTIVE_WINDOW" = "$APP_WINDOW" ]; then
-  xdotool getactivewindow windowminimize
-else
-  wmctrl -xR "$CLASS"
-fi
+#if [ "$ACTIVE_WINDOW" = "$APP_WINDOW" ]; then
+#	xdotool windowminimize "$ACTIVE_WINDOW"
+#else
+#	xdotool windowactivate --sync "$APP_WINDOW" && xdotool windowraise "$APP_WINDOW"
+#fi
 
 ## List of supported terminals with dropdown class
 #supported_terminals=(
@@ -109,17 +114,17 @@ fi
 #id="$(xdo id -N dropdown)"
 #
 ## Toggle the visibility of the dropdown terminal
-#if [ -n "$id" ]; then
-#  if xwininfo -id "$id" | grep "Map State: IsViewable" > /dev/null; then
-#    # The dropdown window is visible, so hide it
-#    dimensions="$(xwininfo -id "$id" | awk '/Width:|Height:/ { printf("%s=%s;", tolower($1), $2) }')"
-#    xdo hide "$id" 2>/dev/null
-#  else
-#    # The dropdown window is hidden, so show it
-#    xdo show "$id"
-#    # Restore the dimensions of the window
-#    xdotool windowsize "$id" "$(echo "$dimensions" | tr ';' ' ')" 2>/dev/null
-#  fi
+#if [ "$id" != "" ]; then
+#	if xwininfo -id "$id" | grep "Map State: IsViewable" >/dev/null; then
+#		# The dropdown window is visible, so hide it
+#		dimensions="$(xwininfo -id "$id" | awk '/Width:|Height:/ { printf("%s=%s;", tolower($1), $2) }')"
+#		xdo hide "$id" 2>/dev/null
+#	else
+#		# The dropdown window is hidden, so show it
+#		xdo show "$id"
+#		# Restore the dimensions of the window
+#		xdotool windowsize "$id" "$(echo "$dimensions" | tr ';' ' ')" 2>/dev/null
+#	fi
 #fi
 
 ## Function to get window ID by window class name
@@ -261,4 +266,3 @@ fi
 #  echo "Window manipulation requires wmctrl. Install it and try again."
 #  exit 1
 #fi
-
