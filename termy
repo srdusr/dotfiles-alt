@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+
+# if app is not open then launch it -- remove this if you don't want your
+# shortcut to launch the application if it hasn't been launched yet
+if [ -z "$(xdotool search --class konsole)" ]; then
+  konsole
+fi
+
+# get current focused window and visible konsole window
+CLASS="konsole"
+ACTIVE_WINDOW="$(xdotool getactivewindow)"
+APP_WINDOW="$(xdotool search --onlyvisible --class $CLASS)"
+
+# if focused, minimize and hide the konsole, otherwise bring konsole to current desktop and open
+if [ "$ACTIVE_WINDOW" = "$APP_WINDOW" ]; then
+  xdotool getactivewindow windowminimize
+else
+  wmctrl -xR "$CLASS"
+fi
+
