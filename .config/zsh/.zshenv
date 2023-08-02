@@ -3,32 +3,32 @@ export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.local/bin/scripts:/usr/local/bin:
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
 ## Conditionally set WM(window manager)
-#available_wms=("bspwm" "mutter" "i3")
-#for wm in "${available_wms[@]}"; do
-#    if command -v "$wm" &> /dev/null; then
-#        export WM="$wm"
-#        break
-#    fi
-#done
-#
-## Conditionally set Display server
-#if [ -n "$WAYLAND_DISPLAY" ]; then
-#  export XDG_SESSION_TYPE=wayland
-#else
-#  export XDG_SESSION_TYPE=x11
-#
-#  # X11-specific variables
-#  export XINITRC="$HOME/.config/X11/.xinitrc"
-#  export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
-#  export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
-#  export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
-#  export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
-#  export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
-#  export ICEAUTHORITY="$XDG_CACHE_HOME/.ICEauthority"
-#fi
+available_wms=("bspwm" "mutter" "i3")
+for wm in "${available_wms[@]}"; do
+    if command -v "$wm" &> /dev/null; then
+        export WM="$wm"
+        break
+    fi
+done
 
+# Conditionally set Display server
+if [ -n "$WAYLAND_DISPLAY" ]; then
+    export XDG_SESSION_TYPE=wayland
+else
+    export XDG_SESSION_TYPE=x11
+
+    # X11-specific variables
+    export XINITRC="$HOME/.config/X11/.xinitrc"
+    export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
+    export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
+    export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
+    export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
+    export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
+    export ICEAUTHORITY="$XDG_CACHE_HOME/.ICEauthority"
+fi
+
+# Conditionally set default term
 available_terms=("wezterm" "alacritty" "xterm")
-
 for term in "${available_terms[@]}"; do
     if command -v "$term" &> /dev/null; then
         export TERMINAL="$term"
@@ -94,10 +94,11 @@ export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
 # Android Home
 export ANDROID_HOME=/opt/android-sdk
+export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
+#export PATH=$ANDROID_HOME/cmdline-tools/bin:$PATH
 export PATH=$ANDROID_HOME/tools:$PATH
 export PATH=$ANDROID_HOME/tools/bin:$PATH
 export PATH=$ANDROID_HOME/platform-tools:$PATH
-export PATH=$ANDROID_HOME/cmdline-tools/latest/bin:$PATH
 # Android emulator PATH
 export PATH=$ANDROID_HOME/emulator:$PATH
 # Android SDK ROOT PATH
@@ -110,8 +111,8 @@ export PATH=$ANDROID_SDK_ROOT:$PATH
 # Rust
 export RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup
 export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo
-[[ -d $CARGO_HOME/bin ]] && path=($CARGO_HOME/bin $path)
-if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
+#[[ -d $CARGO_HOME/bin ]] && path=($CARGO_HOME/bin $path)
+#if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
 #export PATH="$HOME/.cargo/bin:$PATH"
 #export CARGO_HOME=${XDG_DATA_HOME}/cargo
 #export RUSTUP_HOME=${XDG_DATA_HOME}/rustup
@@ -119,12 +120,17 @@ if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
 
 
 # Java
-export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
+#export JAVA_HOME=/usr/lib/jvm/default-java
+#export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
 #export JAVA_HOME='/usr/lib/jvm/java-10-openjdk'
+#export JAVA_HOME='/usr/lib/jvm/java-11-openjdk'
+#export JAVA_HOME='/usr/lib/jvm/java-17-openjdk'
+export JAVA_HOME='/usr/lib/jvm/java-20-openjdk'
 #export PATH=$JAVA_HOME/bin:$PATH
 export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
+#export DEFAULT_JVM_OPTS='"-Dcom.android.sdklib.toolsdir=$APP_HOME" -XX:+IgnoreUnrecognizedVMOptions'
 #export _JAVA_AWT_WM_NONREPARENTING=1
-export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
+#export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee'
 #export JAVA_OPTS='-XX:+IgnoreUnrecognizedVMOptions --add-modules java.xml.bind'
 #Windows:
 #set JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee
