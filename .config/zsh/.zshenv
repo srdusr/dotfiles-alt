@@ -11,12 +11,21 @@ for wm in "${available_wms[@]}"; do
     fi
 done
 
-# Conditionally set Display server
-if [ -n "$WAYLAND_DISPLAY" ]; then
-    export XDG_SESSION_TYPE=wayland
-else
-    export XDG_SESSION_TYPE=x11
+# Set a flag to indicate if the display server type is found
+display_server_found=0
 
+# Conditionally set Display server
+available_displays=("wayland" "x11")
+for display in "${available_displays[@]}"; do
+    if [ "$WAYLAND_DISPLAY" == "$display" ]; then
+        export XDG_SESSION_TYPE="$display"
+        display_server_found=1
+        break
+    fi
+done
+
+# Check if XDG_SESSION_TYPE is "x11" and set X11-specific variables
+if [ "$display_server_found" -eq 1 ] && [ "$XDG_SESSION_TYPE" == "x11" ]; then
     # X11-specific variables
     export XINITRC="$HOME/.config/X11/.xinitrc"
     export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
