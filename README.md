@@ -141,7 +141,10 @@ $ sudo mv flutter /opt/
 ```
 - Export Flutter over Dart by putting this into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions  
 ```bash
+# Flutter/dart path
 export PATH="/opt/flutter:/usr/lib/dart/bin:$PATH"
+# Flutter Web Support
+export PATH=$PATH:/opt/google/chrome
 ```
 - Set permissions since only Root has access    
 ```bash  
@@ -255,7 +258,10 @@ alias android-studio='/opt/android-studio/bin/studio.sh'
   ```bash
   $ curl -L -o commandlinetools.zip "$(curl -s "https://developer.android.com/studio#downloads" | grep -oP 'https://dl.google.com/android/repository/commandlinetools-linux-\d+_latest\.zip' | head -n 1)"
   $ unzip commandlinetools.zip -d android-sdk
+  $ mkdir android-sdk/cmdline-tools/latest
   $ sudo mv android-sdk /opt/
+  or  
+  $ sudo mv android-sdk/cmdline-tools /opt/android-sdk/
   ```
 - If Android SDK was installed separately then configure the user's permissions since android-sdk is installed in /opt/android-sdk directory  
 ```bash
