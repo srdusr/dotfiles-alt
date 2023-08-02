@@ -60,6 +60,9 @@ if [ "$id" != "" ]; then
 		# The dropdown window is hidden, so show it
 		xdo show "$id"
 	fi
+	# Set properties on the dropdown terminal window
+	xprop -id "$id" -f _NET_WM_WINDOW_TYPE 32a -set _NET_WM_WINDOW_TYPE _NET_WM_WINDOW_TYPE_NORMAL
+	xprop -id "$id" -f _NET_WM_STATE 32a -set _NET_WM_STATE _NET_WM_STATE_ABOVE
 fi
 
 #if [ "$ACTIVE_WINDOW" = "$APP_WINDOW" ]; then
