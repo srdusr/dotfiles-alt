@@ -10,9 +10,9 @@
 [[ $- != *i* ]] && return
 
 if [[ -n "$SSH_CLIENT" ]]; then
-  export KEYTIMEOUT=1
+    export KEYTIMEOUT=1
 else
-  export KEYTIMEOUT=15
+    export KEYTIMEOUT=15
 fi
 
 ##########    Vi mode    ##########
@@ -81,64 +81,64 @@ autoload -U colors && colors
 # Prompt with Vi insert-mode/normal-mode and blinking '$', note blinking '$' only works on some terminals.
 terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
 git_branch_test_color() {
-  local ref=$(git symbolic-ref --short HEAD 2> /dev/null)
-  if [ -n "${ref}" ]; then
-    if [ -n "$(git status --porcelain)" ]; then
-      local gitstatuscolor='%F{196}'
+    local ref=$(git symbolic-ref --short HEAD 2> /dev/null)
+    if [ -n "${ref}" ]; then
+        if [ -n "$(git status --porcelain)" ]; then
+            local gitstatuscolor='%F{196}'
+        else
+            local gitstatuscolor='%F{82}'
+        fi
+        echo "${gitstatuscolor}${ref}"
     else
-      local gitstatuscolor='%F{82}'
+        echo ""
     fi
-    echo "${gitstatuscolor}${ref}"
-  else
-    echo ""
-  fi
 }
 
 # Job indicator
 jobs_status_indicator() {
-  local jobs_output
-  declare -p jobs_output >/dev/null 2>&1
-  if [[ $? -eq 0 ]]; then
-    unset jobs_output
-  fi
-  jobs_output=$(jobs -s)
-  if [[ -n "$jobs_output" ]]; then
-    local jobs_count=$(echo "$jobs_output" | wc -l)
-    echo "jobs: ${jobs_count}"
-  fi
+    local jobs_output
+    declare -p jobs_output >/dev/null 2>&1
+    if [[ $? -eq 0 ]]; then
+        unset jobs_output
+    fi
+    jobs_output=$(jobs -s)
+    if [[ -n "$jobs_output" ]]; then
+        local jobs_count=$(echo "$jobs_output" | wc -l)
+        echo "jobs: ${jobs_count}"
+    fi
 }
 
 remote_indicator() {
-  if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-    echo 'ssh '
-  else
-    echo ''
-  fi
+    if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
+        echo 'ssh '
+    else
+        echo ''
+    fi
 }
 
 # Version control (git)
 autoload -Uz add-zsh-hook vcs_info
-zstyle ':vcs_info:*' stagedstr ' +%F{15}staged%f' 
-zstyle ':vcs_info:*' unstagedstr ' -%F{15}unstaged%f' 
+zstyle ':vcs_info:*' stagedstr ' +%F{15}staged%f'
+zstyle ':vcs_info:*' unstagedstr ' -%F{15}unstaged%f'
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' actionformats '%F{5}%F{2}%b%F{3}|%F{1}%a%F{5}%f '
 zstyle ':vcs_info:*' formats '%F{208} '$'\uE0A0'' %f$(git_branch_test_color)%f%F{76}%c%F{3}%u%f '
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
-zstyle ':vcs_info:*' enable git 
+zstyle ':vcs_info:*' enable git
 +vi-git-untracked() {
-  if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-  [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]] ; then
-    hook_com[unstaged]+='%F{196} !%f%F{15}untracked%f'
-  fi
+    if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
+        [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]] ; then
+        hook_com[unstaged]+='%F{196} !%f%F{15}untracked%f'
+    fi
 }
 
 # Prompt
 function insert-mode() {
-  echo "-- INSERT --"
+    echo "-- INSERT --"
 }
 
 function normal-mode() {
-  echo "-- NORMAL --"
+    echo "-- NORMAL --"
 }
 
 function my_precmd () {
@@ -150,72 +150,72 @@ function my_precmd () {
 add-zsh-hook precmd my_precmd
 
 function set-prompt() {
-  if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
-    echo -ne '\e[1 q'
-    VI_MODE=$(normal-mode)
-  elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
-    echo -ne '\e[5 q'
-    VI_MODE=$(insert-mode)
-  fi
+    if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
+        echo -ne '\e[1 q'
+        VI_MODE=$(normal-mode)
+    elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
+        echo -ne '\e[5 q'
+        VI_MODE=$(insert-mode)
+    fi
     PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(remote_indicator)\$(jobs_status_indicator)
     %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
 }
 
 function update-mode-file() {
-  set-prompt
-  local current_mode=$(cat ~/.vi-mode)
-  local new_mode="$VI_MODE"
-  if [[ "$new_mode" != "$current_mode" ]]; then
-    echo "$new_mode" >| ~/.vi-mode
-  fi
-  if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
-    tmux refresh-client -S
-  fi
+    set-prompt
+    local current_mode=$(cat ~/.vi-mode)
+    local new_mode="$VI_MODE"
+    if [[ "$new_mode" != "$current_mode" ]]; then
+        echo "$new_mode" >| ~/.vi-mode
+    fi
+    if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+        tmux refresh-client -S
+    fi
 }
 
 function check-nvim-running() {
-  if pgrep -x "nvim" > /dev/null; then
-    VI_MODE=""
-    update-mode-file
-    if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
-      tmux refresh-client -S
+    if pgrep -x "nvim" > /dev/null; then
+        VI_MODE=""
+        update-mode-file
+        if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+            tmux refresh-client -S
+        fi
+    else
+        if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
+            VI_MODE=$(normal-mode)
+        elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
+            VI_MODE=$(insert-mode)
+        fi
+        update-mode-file
+        if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
+            tmux refresh-client -S
+        fi
     fi
-  else
-    if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
-      VI_MODE=$(normal-mode)
-    elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
-      VI_MODE=$(insert-mode)
-    fi
-    update-mode-file
-    if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
-      tmux refresh-client -S
-    fi
-  fi
 }
 
 function zle-line-init() {
-  zle reset-prompt
-  case "${KEYMAP}" in
-    vicmd)
-      echo -ne '\e[1 q'
-      ;;
-    main|viins|*)
-      echo -ne '\e[5 q'
-      ;;
-  esac
+    zle reset-prompt
+    case "${KEYMAP}" in
+        vicmd)
+            echo -ne '\e[1 q'
+            ;;
+        main|viins|*)
+            echo -ne '\e[5 q'
+            ;;
+    esac
 }
 
 function zle-keymap-select() {
-  update-mode-file
-  zle reset-prompt
-  case "${KEYMAP}" in
-    vicmd)
-      echo -ne '\e[1 q'
-      ;;
-    main|viins|*)
-      echo -ne '\e[5 q'
-      ;;
-  esac
+    update-mode-file
+    zle reset-prompt
+    case "${KEYMAP}" in
+        vicmd)
+            echo -ne '\e[1 q'
+            ;;
+        main|viins|*)
+            echo -ne '\e[5 q'
+            ;;
+    esac
 }
 
 preexec () { print -rn -- $terminfo[el]; echo -ne '\e[5 q' ; }
@@ -224,7 +224,7 @@ zle -N zle-line-init
 zle -N zle-keymap-select
 
 TRAPWINCH() { # Trap the WINCH signal to update the mode file on window size changes
-  update-mode-file
+    update-mode-file
 }
 
 #function nvim-listener() {
@@ -272,48 +272,48 @@ alias j="journalctl xe"
 
 # Enter directory and list contents
 cd() {
-	if [ -n "$1" ]; then
-		builtin cd "$@" && ls -pvA --color=auto --group-directories-first
-	else
-		builtin cd ~ && ls -pvA --color=auto --group-directories-first
-	fi
+    if [ -n "$1" ]; then
+        builtin cd "$@" && ls -pvA --color=auto --group-directories-first
+    else
+        builtin cd ~ && ls -pvA --color=auto --group-directories-first
+    fi
 }
 
 # cd into $XDG_CONFIG_HOME/$1 directory
 c() {
-	local root=${XDG_CONFIG_HOME:-~/.config}
-	local dname="$root/$1"
-	if [[ ! -d "$dname" ]]; then
-		return
-	fi
-	cd "$dname"
+    local root=${XDG_CONFIG_HOME:-~/.config}
+    local dname="$root/$1"
+    if [[ ! -d "$dname" ]]; then
+        return
+    fi
+    cd "$dname"
 }
 
 # Make and cd into directory and any parent directories
 mkcd () {
-	if [[ -z "$1" ]]; then
-		echo "Usage: mkcd <dir>" 1>&2
-		return 1
-	fi
-	mkdir -p "$1"
-	cd "$1"
+    if [[ -z "$1" ]]; then
+        echo "Usage: mkcd <dir>" 1>&2
+        return 1
+    fi
+    mkdir -p "$1"
+    cd "$1"
 }
 
 # Back up a file. Usage "backupthis <filename>"
 backupthis() {
-	cp -riv $1 ${1}-$(date +%Y%m%d%H%M).backup;
+    cp -riv $1 ${1}-$(date +%Y%m%d%H%M).backup;
 }
 
 # Let FZF use ripgrep by default
 if type rg &> /dev/null; then
-  export FZF_DEFAULT_COMMAND='rg --files'
-  export FZF_DEFAULT_OPTS='-m --height 50% --border'
+    export FZF_DEFAULT_COMMAND='rg --files'
+    export FZF_DEFAULT_OPTS='-m --height 50% --border'
 fi
 
 # wget does not support environment variables
 alias wget=wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"
 
-# Spawn a clone of current terminal 
+# Spawn a clone of current terminal
 putstate () {
     declare +x >~/environment.tmp
     declare -x >>~/environment.tmp
@@ -351,7 +351,7 @@ up() {
 openSession () {
     tmux split-window -h -t
     tmux split-window -v -t
-    tmux resize-pane -U 5 
+    tmux resize-pane -U 5
 }
 
 # More history for cd and use "cd -TAB"
@@ -360,7 +360,7 @@ zstyle ':completion:*:directory-stack' list-colors '=(#b) #([0-9]#)*( *)==95=38;
 
 # List upto last 10 visited directories using "d" and quickly cd into any specific one
 # using just a number from "0" to "9"
-alias d="dirs -v | head -10" 
+alias d="dirs -v | head -10"
 alias 0="cd +0"
 alias 1="cd +1"
 alias 2="cd +2"
@@ -374,32 +374,32 @@ alias 9="cd +9"
 
 # Allow nnn filemanager to cd on quit
 nnn() {
-  declare -x +g NNN_TMPFILE=$(mktemp --tmpdir $0.XXXX)
-  trap "rm -f $NNN_TMPFILE" EXIT
-  =nnn $@
-  [ -s $NNN_TMPFILE ] && source $NNN_TMPFILE
+    declare -x +g NNN_TMPFILE=$(mktemp --tmpdir $0.XXXX)
+    trap "rm -f $NNN_TMPFILE" EXIT
+    =nnn $@
+    [ -s $NNN_TMPFILE ] && source $NNN_TMPFILE
 }
 
 # Extract with one command
 extract () {
-     if [ -f $1 ] ; then
-         case $1 in
-             *.tar.bz2)   tar xjf $1        ;;
-             *.tar.gz)    tar xzf $1     ;;
-             *.bz2)       bunzip2 $1       ;;
-             *.rar)       rar x $1     ;;
-             *.gz)        gunzip $1     ;;
-             *.tar)       tar xf $1        ;;
-             *.tbz2)      tar xjf $1      ;;
-             *.tgz)       tar xzf $1       ;;
-             *.zip)       unzip $1     ;;
-             *.Z)         uncompress $1  ;;
-             *.7z)        7z x $1    ;;
-             *)           echo "'$1' cannot be extracted via extract()" ;;
-         esac
-     else
-         echo "'$1' is not a valid file"
-     fi
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xjf $1        ;;
+            *.tar.gz)    tar xzf $1     ;;
+            *.bz2)       bunzip2 $1       ;;
+            *.rar)       rar x $1     ;;
+            *.gz)        gunzip $1     ;;
+            *.tar)       tar xf $1        ;;
+            *.tbz2)      tar xjf $1      ;;
+            *.tgz)       tar xzf $1       ;;
+            *.zip)       unzip $1     ;;
+            *.Z)         uncompress $1  ;;
+            *.7z)        7z x $1    ;;
+            *)           echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
 }
 
 # Time aliases
@@ -413,35 +413,35 @@ alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
 
 # Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {
-  # Check if the current command is a package manager command
-  if [[ "${(%)${(z)history[1]}}" =~ ^(pacman|yay|apt|dnf|brew|npm|pip|gem|go|cargo) ]]; then
-    return
-  fi
-  local git_dir="$(git rev-parse --git-dir -C . 2>/dev/null)"
-  if [[ -n "$git_dir" ]]; then
-    local is_bare="$(git -C "$git_dir" rev-parse --is-bare-repository 2>/dev/null)"
-    if [[ "$is_bare" == "true" ]]; then
-      export GIT_DIR="$HOME/.cfg"
-      export GIT_WORK_TREE=$(realpath $(eval echo ~))
-    else
-      unset GIT_DIR
-      unset GIT_WORK_TREE
+    # Check if the current command is a package manager command
+    if [[ "${(%)${(z)history[1]}}" =~ ^(pacman|yay|apt|dnf|brew|npm|pip|gem|go|cargo) ]]; then
+        return
     fi
-  else
-    local root_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
-    if [[ -n "$root_dir" ]]; then
-      unset GIT_DIR
-      export GIT_WORK_TREE="$root_dir"
+    local git_dir="$(git rev-parse --git-dir -C . 2>/dev/null)"
+    if [[ -n "$git_dir" ]]; then
+        local is_bare="$(git -C "$git_dir" rev-parse --is-bare-repository 2>/dev/null)"
+        if [[ "$is_bare" == "true" ]]; then
+            export GIT_DIR="$HOME/.cfg"
+            export GIT_WORK_TREE=$(realpath $(eval echo ~))
+        else
+            unset GIT_DIR
+            unset GIT_WORK_TREE
+        fi
     else
-      export GIT_DIR="$HOME/.cfg"
-      export GIT_WORK_TREE=$(realpath $(eval echo ~))
+        local root_dir="$(git rev-parse --show-toplevel 2>/dev/null)"
+        if [[ -n "$root_dir" ]]; then
+            unset GIT_DIR
+            export GIT_WORK_TREE="$root_dir"
+        else
+            export GIT_DIR="$HOME/.cfg"
+            export GIT_WORK_TREE=$(realpath $(eval echo ~))
+        fi
     fi
-  fi
 }
 
 # Define an auto_cd hook to automatically update Git environment variables
 function chpwd() {
-  set_git_env_vars
+    set_git_env_vars
 }
 # Call the function to set Git environment variables when the shell starts up
 set_git_env_vars
@@ -510,31 +510,33 @@ alias hibernate='systemctl hibernate'
 # Kubernetes
 # kubernetes aliases
 if command -v kubectl > /dev/null; then
-  function replaceNS() { kubectl config view --minify --flatten --context=$(kubectl config current-context) | yq ".contexts[0].context.namespace=\"$1\"" }
-  alias kks='KUBECONFIG=<(replaceNS "kube-system") kubectl'
-  alias kam='KUBECONFIG=<(replaceNS "authzed-monitoring") kubectl'
-  alias kas='KUBECONFIG=<(replaceNS "authzed-system") kubectl'
-  alias kar='KUBECONFIG=<(replaceNS "authzed-region") kubectl'
-  alias kt='KUBECONFIG=<(replaceNS "tenant") kubectl'
-  if command -v kubectl-krew > /dev/null; then
-    path=($XDG_CONFIG_HOME/krew/bin $path)
-  fi
-  function rmfinalizers() {
-    kubectl get deployment $1 -o json | jq '.metadata.finalizers = null' | k apply -f -
-  }
+    replaceNS() { kubectl config view --minify --flatten --context=$(kubectl config current-context) | yq ".contexts[0].context.namespace=\"$1\"" ; }
+    alias kks='KUBECONFIG=<(replaceNS "kube-system") kubectl'
+    alias kam='KUBECONFIG=<(replaceNS "authzed-monitoring") kubectl'
+    alias kas='KUBECONFIG=<(replaceNS "authzed-system") kubectl'
+    alias kar='KUBECONFIG=<(replaceNS "authzed-region") kubectl'
+    alias kt='KUBECONFIG=<(replaceNS "tenant") kubectl'
+
+    if command -v kubectl-krew > /dev/null; then
+        path=($XDG_CONFIG_HOME/krew/bin $path)
+    fi
+
+    rmfinalizers() {
+        kubectl get deployment "$1" -o json | jq '.metadata.finalizers = null' | kubectl apply -f -
+    }
 fi
 
 # Alias for android-studio
 alias android-studio='/opt/android-studio/bin/studio.sh'
 
 # NVM
-#nvm() {
-#    local green_color
-#    green_color=$(tput setaf 2)
-#    local reset_color
-#    reset_color=$(tput sgr0)
-#    echo -e "${green_color}nvm${reset_color} $@"
-#}
+nvm() {
+    local green_color
+    green_color=$(tput setaf 2)
+    local reset_color
+    reset_color=$(tput sgr0)
+    echo -e "${green_color}nvm${reset_color} $@"
+}
 
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     nvm_cmds=(nvm node npm yarn)
