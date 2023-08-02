@@ -359,11 +359,6 @@ super + semicolon
 super + x
 	~/.local/bin/scripts/scratchpad
 
-# Dropdown
-super + Return
-	~/.local/bin/scripts/dropdown
-
-
 # Heads-Up-Display scratchpad terminal
 super + e
 	~/.local/bin/scripts/Heads-Up-Display
