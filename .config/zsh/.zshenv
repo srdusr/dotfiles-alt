@@ -17,7 +17,7 @@ display_server_found=0
 # Conditionally set Display server
 available_displays=("wayland" "x11")
 for display in "${available_displays[@]}"; do
-    if [ "$WAYLAND_DISPLAY" == "$display" ]; then
+    if [ "$WAYLAND_DISPLAY" = "$display" ]; then
         export XDG_SESSION_TYPE="$display"
         display_server_found=1
         break
