@@ -11,32 +11,58 @@
 - ninja  
 - cmake  
 - fzf  
+```
+$ sudo git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/bin/fzf
+```
+Add to .bashrc/(.zshrc/.zshenv)
+```bash
+export PATH="$PATH:/usr/local/bin/fzf/bin"
+export FZF_BASE="/usr/local/bin/fzf"
+```
+Load fzf keybindings and completion for bash/zsh
+.bashrc:
+```bash
+# bash
+source /usr/local/bin/fzf/shell/key-bindings.bash
+source /usr/local/bin/fzf/shell/completion.bash
+```
+.zshrc:
+```bash
+# zsh
+source /usr/local/bin/fzf/shell/key-bindings.zsh
+source /usr/local/bin/fzf/shell/completion.zsh
+```
 - ripgrep  
 - fd  
 - tree-sitter  
 - vim  
 - nvim  
-- libfuse2
 - wmctrl
 - xdo
 - xdotool
 - wezterm  
+```bash
+$ curl https://sh.rustup.rs -sSf | sh -s
+$ git clone --depth=1 --branch=main --recursive https://github.com/wez/wezterm.git
+$ cd wezterm
+$ git submodule update --init --recursive
+$ ./get-deps
+$ cargo build --release
+$ cargo run --release --bin wezterm -- start
+```
 
-git clone https://github.com/zsh-users/zsh-autosuggestions
-sudo mv zsh-autosuggestions /usr/share/zsh/plugins/
+- zsh plugins
+```bash
+# Clone zsh-you-should-use
+$ git clone https://github.com/MichaelAquilina/zsh-you-should-use.git ~/.config/zsh/plugins/zsh-you-should-use
 
-git clone https://github.com/zsh-users/zsh-syntax-highlighting
-sudo mv zsh-syntax-highlighting /usr/share/zsh/plugins/
+# Clone zsh-syntax-highlighting
+$ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.config/zsh/plugins/zsh-syntax-highlighting
 
-git clone https://github.com/urbainvaes/fzf-marks
-sudo mv fzf-marks /usr/share/fzf/
+# Clone zsh-autosuggestions
+$ git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.config/zsh/plugins/zsh-autosuggestions
+```
 
-git clone https://github.com/MichaelAquilina/zsh-you-should-use.git
-sudo mv zsh-you-should-use /usr/share/zsh/plugins/
-
-git clone --depth 1 https://github.com/junegunn/fzf.git ~/.fzf
-~/.fzf/install
-sudo mv ~/.fzf/shell/key-bindings.zsh ~/.fzf/shell/completion.zsh /usr/share/fzf/
 - - -  
   
 ### Development Environment  
@@ -270,7 +296,7 @@ $ sudo gpasswd -a $USER android-sdk
 $ sudo setfacl -R -m g:android-sdk:rwx /opt/android-sdk  
 $ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk  
 ```
-- If Android SDK was installed separately then install platform-tools and build-tools like this:  
+- If Android SDK has been installed separately then install platform-tools and build-tools like this:  
   - First list `sdkmanager`'s available/installed packages  
   ```bash
   $ sdkmanager --list
@@ -298,7 +324,7 @@ $ sudo setfacl -d -m g:android-sdk:rwX /opt/android-sdk
   ```bash  
   $ flutter config --android-sdk /opt/android-sdk  
   ```  
-  - Accept all of licenses by this command  
+  - Accept all andfoid licenses with this command  
   ```
   $ flutter doctor --android-licenses  
   ```
