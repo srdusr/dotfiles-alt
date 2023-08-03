@@ -1,1 +1,5 @@
 .cfg
+.bash_history
+.zhistory
+.config/zsh/.zhistory
+.config/zsh/plugins
