@@ -60,18 +60,15 @@ vim.diagnostic.config({
   severity_sort = false,    -- default to false
 })
 
-vim.lsp.handlers["textDocument/publishDiagnostics"] =
-    vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
-      underline = false,
-      virtual_text = false,
-      signs = true,
-      update_in_insert = false,
-    })
+vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
+  underline = false,
+  virtual_text = false,
+  signs = true,
+  update_in_insert = false,
+})
 
-vim.lsp.handlers["textDocument/hover"] =
-    vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
-vim.lsp.handlers["textDocument/signatureHelp"] =
-    vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
+vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
+vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
 
 -- Use an on_attach function to only map the following keys after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
@@ -87,31 +84,15 @@ local on_attach = function(client, bufnr)
   -- Mappings
   map("n", "K", "<Cmd>lua vim.lsp.buf.hover()<CR>")
   --map("n", "gd", "<Cmd>lua vim.lsp.buf.definition()<CR>")
-  map(
-    "n",
-    "gd",
-    "<cmd>lua require('goto-preview').goto_preview_definition()<CR>"
-  )
+  map("n", "gd", "<cmd>lua require('goto-preview').goto_preview_definition()<CR>")
   --map("n", "gi", "<Cmd>lua vim.lsp.buf.implementation()<CR>")
-  map(
-    "n",
-    "gi",
-    "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>"
-  )
+  map("n", "gi", "<cmd>lua require('goto-preview').goto_preview_implementation()<CR>")
   --map("n", "gr", "<Cmd>lua vim.lsp.buf.references()<CR>")
-  map(
-    "n",
-    "gr",
-    "<cmd>lua require('goto-preview').goto_preview_references()<CR>"
-  )
+  map("n", "gr", "<cmd>lua require('goto-preview').goto_preview_references()<CR>")
   map("n", "gD", "<Cmd>lua vim.lsp.buf.declaration()<CR>") -- most lsp servers don't implement textDocument/Declaration, so gD is useless for now.
   map("n", "<leader>k", "<Cmd>lua vim.lsp.buf.signature_help()<CR>")
   --map("n", "gt", "<Cmd>lua vim.lsp.buf.type_definition()<CR>")
-  map(
-    "n",
-    "gt",
-    "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>"
-  )
+  map("n", "gt", "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>")
   map("n", "gn", "<Cmd>lua vim.lsp.buf.rename()<CR>")
   map("n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>")
   map("n", "gf", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
@@ -188,8 +169,7 @@ local servers = {
   intelephense = {},
   julials = {
     on_new_config = function(new_config, _)
-      local julia =
-          vim.fn.expand("~/.julia/environments/nvim-lspconfig/bin/julia")
+      local julia = vim.fn.expand("~/.julia/environments/nvim-lspconfig/bin/julia")
       if lspconfig.util.path.is_file(julia) then
         new_config.cmd[1] = julia
       end
@@ -258,9 +238,7 @@ local servers = {
   },
   sqlls = {},
   tsserver = {
-    capabilities = require("cmp_nvim_lsp").default_capabilities(
-      vim.lsp.protocol.make_client_capabilities()
-    ),
+    capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
     on_attach = function(client)
       client.server_capabilities.document_formatting = false
       client.server_capabilities.document_range_formatting = false
@@ -393,10 +371,10 @@ local sources = {
   builtins.formatting.trim_whitespace.with({
     filetypes = { "tmux", "teal", "zsh" },
   }),
-  builtins.formatting.beautysh,
-  --builtins.formatting.beautysh.with({
-  --  filetypes = "zsh",
-  --}),
+  --builtins.formatting.beautysh,
+  builtins.formatting.beautysh.with({
+    filetypes = "zsh",
+  }),
   builtins.formatting.clang_format,
   builtins.formatting.rustfmt,
   builtins.formatting.sql_formatter,
