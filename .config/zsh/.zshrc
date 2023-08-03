@@ -549,20 +549,16 @@ fi
 ##########    Source Plugins, should be last    ##########
 #source /usr/share/nvm/init-nvm.sh
 
-# Load zsh-syntax-highlighting
-source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-#source /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh 2>/dev/null
-
 # Load fzf keybindings and completion
-source /usr/share/fzf/key-bindings.zsh
-source /usr/share/fzf/completion.zsh
-source /usr/share/fzf/fzf-marks/fzf-marks.plugin.zsh
-#source /usr/share/fzf-marks/fzf-marks.plugin.zsh 2>/dev/null
+source /usr/local/bin/fzf/shell/key-bindings.zsh
+source /usr/local/bin/fzf/shell/completion.zsh
 
 # Suggest aliases for commands
-source /usr/share/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh
-#source /usr/share/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh 2>/dev/null
+source ~/.config/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh
+
+# Load zsh-syntax-highlighting
+source ~/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
 
 # Load fish like auto suggestions
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
-source /usr/share/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+source ~/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+source ~/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
