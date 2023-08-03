@@ -100,6 +100,9 @@ export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
 export GPG_TTY=$(tty)
 export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
+# Fzf
+export PATH="$PATH:/usr/local/bin/fzf/bin"
+export FZF_BASE="/usr/local/bin/fzf"
 
 # Android Home
 export ANDROID_HOME=/opt/android-sdk
