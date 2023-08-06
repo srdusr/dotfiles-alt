@@ -13,32 +13,33 @@ local term_opts = { noremap = true, silent = false }
 -- Semi-colon as leader key
 vim.g.mapleader = ";"
 
+-- "jk" and "kj" to exit insert-mode
+map("i", "jk", "<esc>")
+map("i", "kj", "<esc>")
+
 -- Jump to next match on line using `.` instead of `;` NOTE: commented out in favour of "ggandor/flit.nvim"
 --map("n", ".", ";")
 
 -- Repeat last command using `<Space>` instead of `.` NOTE: commented out in favour of "ggandor/flit.nvim"
 --map("n", "<Space>", ".")
 
--- "jk" to exit insert-mode
-map("i", "jk", "<esc>")
-
 -- Reload nvim config
-map("n", "<leader><CR>",
-  "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>")
-
+map(
+  "n",
+  "<leader><CR>",
+  "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>"
+)
 
 --------------- Extended Operations ---------------
 -- Conditional 'q' to quit on floating/quickfix/help windows otherwise still use it for macros
 -- TODO: Have a list of if available on system/packages, example "Zen Mode" to not work on it (quit Zen Mode)
-map('n', 'q', function()
+map("n", "q", function()
   local config = vim.api.nvim_win_get_config(0)
   if config.relative ~= "" then -- is_floating_window?
     return ":silent! close!<CR>"
-  elseif
-      vim.o.buftype == 'quickfix' then
+  elseif vim.o.buftype == "quickfix" then
     return ":quit<CR>"
-  elseif
-      vim.o.buftype == 'help' then
+  elseif vim.o.buftype == "help" then
     return ":close<CR>"
   else
     return "q"
@@ -107,10 +108,10 @@ map("i", "<A-k>", "<up>")
 map("i", "<A-l>", "<right>")
 
 -- Map Alt+(h/j/k/l) in command mode to move directional
-vim.api.nvim_set_keymap('c', '<A-h>', '<Left>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<A-j>', '<Down>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<A-k>', '<Up>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<A-l>', '<Right>', { noremap = true })
+vim.api.nvim_set_keymap("c", "<A-h>", "<Left>", { noremap = true })
+vim.api.nvim_set_keymap("c", "<A-j>", "<Down>", { noremap = true })
+vim.api.nvim_set_keymap("c", "<A-k>", "<Up>", { noremap = true })
+vim.api.nvim_set_keymap("c", "<A-l>", "<Right>", { noremap = true })
 
 -- Create tab, edit and move between them
 map("n", "<C-T>n", ":tabnew<CR>")
@@ -158,7 +159,7 @@ map("v", "<leader>sr", 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 map("n", "<leader>td", "<Cmd>call utils#ToggleDiff()<CR>")
 
 -- Toggle Verbose
-map("n", "<leader>tv", "<Cmd>call utils#ToggleVerbose()<CR>")
+map("n", "<leader>vt", "<Cmd>call utils#VerboseToggle()<CR>")
 
 -- Jump List
 map("n", "<leader>j", "<Cmd>call utils#GotoJump()<CR>")
@@ -170,8 +171,11 @@ map("i", "<C-l>", "<Del>")
 map("n", "<leader><C-l>", "<Cmd>!clear<CR>")
 
 -- Change file to an executable
-map("n", "<Leader>x",
-  ":lua require('user.mods').Toggle_executable()<CR> | :echom ('Toggle executable')<CR> | :sl! | echo ('')<CR>")
+map(
+  "n",
+  "<Leader>x",
+  ":lua require('user.mods').Toggle_executable()<CR> | :echom ('Toggle executable')<CR> | :sl! | echo ('')<CR>"
+)
 --map("n", "<leader>x", ":!chmod +x %<CR>")
 
 -- Paste without replace clipboard
@@ -185,7 +189,7 @@ map("v", "p", '"_dP')
 map("n", "<leader>cd", ":cd %:p:h<CR>:pwd<CR>")
 
 -- Open the current file in the default program (on Mac this should just be just `open`)
-map('n', '<leader>o', ':!xdg-open %<cr><cr>')
+map("n", "<leader>o", ":!xdg-open %<cr><cr>")
 
 -- URL handling
 if vim.fn.has("mac") == 1 then
@@ -195,7 +199,7 @@ elseif vim.fn.has("unix") == 1 then
 elseif vim.fn.has("wsl") == 1 then
   map("", "gx", '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>', {})
 else
-  map[''].gx = { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
+  map[""].gx = { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
 end
 
 -- Substitute globally and locally in the selected region.
@@ -206,8 +210,8 @@ map("v", "ss", ":s//g<Left><Left>")
 map("n", "<Leader>tc", ":lua require('user.mods').toggle_completion()<CR>")
 
 -- Disable default completion.
-map('i', '<C-n>', '<Nop>')
-map('i', '<C-p>', '<Nop>')
+map("i", "<C-n>", "<Nop>")
+map("i", "<C-p>", "<Nop>")
 
 -- Set line wrap
 map("n", "<M-z>", function()
@@ -232,20 +236,20 @@ map("n", "<Space>", "za")
 --vim.cmd([[
 --  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
 --]])
+map("n", "<leader>.b", ":!cp % %.backup<CR>")
 
 -- Toggle transparency
-map('n', '<leader>tb', ':call utils#Toggle_transparent_background()<CR>')
+map("n", "<leader>tb", ":call utils#Toggle_transparent_background()<CR>")
 
 -- Toggle zoom
 map("n", "<leader>z", ":call utils#ZoomToggle()<CR>")
 map("n", "<C-w>z", "<C-w>|<C-w>_")
 
 -- Toggle statusline
-map('n', '<S-h>', ':call ToggleHiddenAll()<CR>')
+map("n", "<S-h>", ":call ToggleHiddenAll()<CR>")
 
 -- Open last closed buffer
 map("n", "<C-t>", ":call OpenLastClosed()<CR>")
-
 
 ---------------- Plugin Operations ----------------
 -- Packer
@@ -256,16 +260,30 @@ map("n", "<leader>PS", "<cmd>PackerStatus<cr>")
 map("n", "<leader>Pu", "<cmd>PackerUpdate<cr>")
 
 -- Tmux navigation (aserowy/tmux.nvim)
-map('n', '<C-h>', '<CMD>NavigatorLeft<CR>')
-map('n', '<C-l>', '<CMD>NavigatorRight<CR>')
-map('n', '<C-k>', '<CMD>NavigatorUp<CR>')
-map('n', '<C-j>', '<CMD>NavigatorDown<CR>')
+map("n", "<C-h>", "<CMD>NavigatorLeft<CR>")
+map("n", "<C-l>", "<CMD>NavigatorRight<CR>")
+map("n", "<C-k>", "<CMD>NavigatorUp<CR>")
+map("n", "<C-j>", "<CMD>NavigatorDown<CR>")
 
 -- ToggleTerm
---map("n", "<leader>tt", "<cmd>ToggleTerm<cr>")
+map({ "n", "t" }, "<leader>tt", "<cmd>ToggleTerm<CR>")
+map({ "n", "t" }, "<leader>th", "<cmd>lua Horizontal_term_toggle()<CR>")
+map({ "n", "t" }, "<leader>tv", "<cmd>lua Vertical_term_toggle()<CR>")
+--  map["<C-\\>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
+--  map["<leader>tn"] = { function() toggle_term_cmd "node" end, desc = "ToggleTerm node" }
+--  map["<leader>tu"] = { function() toggle_term_cmd "ncdu" end, desc = "ToggleTerm NCDU" }
+--  map["<leader>tt"] = { function() toggle_term_cmd "htop" end, desc = "ToggleTerm htop" }
+--  map["<leader>tp"] = { function() toggle_term_cmd "python" end, desc = "ToggleTerm python" }
+--  map["<leader>tl"] = { function() toggle_term_cmd "lazygit" end, desc = "ToggleTerm lazygit" }
+--  map["<leader>tf"] = { "<cmd>ToggleTerm direction=float<cr>", desc = "ToggleTerm float" }
+--  map["<leader>th"] = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "ToggleTerm horizontal split" }
+--  map["<leader>tv"] = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "ToggleTerm vertical split" }
+--end
 
 -- LazyGit
 map({ "n", "t" }, "<leader>gg", "<cmd>lua Lazygit_toggle()<CR>")
+
+map("n", "<leader>tg", "<cmd>lua Gh_dash()<CR>")
 
 -- Fugitive git bindings
 map("n", "<leader>gs", vim.cmd.Git)
@@ -286,19 +304,11 @@ map("n", "<leader>gm", ":Gmove<Space>")
 --map("n", "<leader>go", ":Git checkout<Space>")
 --map("n", "<leader>gps", ":Dispatch! git push<CR>")
 --map("n", "<leader>gpl", ":Dispatch! git pull<CR>")
---  map["<C-\\>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
---  map["<leader>tn"] = { function() toggle_term_cmd "node" end, desc = "ToggleTerm node" }
---  map["<leader>tu"] = { function() toggle_term_cmd "ncdu" end, desc = "ToggleTerm NCDU" }
---  map["<leader>tt"] = { function() toggle_term_cmd "htop" end, desc = "ToggleTerm htop" }
---  map["<leader>tp"] = { function() toggle_term_cmd "python" end, desc = "ToggleTerm python" }
---  map["<leader>tl"] = { function() toggle_term_cmd "lazygit" end, desc = "ToggleTerm lazygit" }
---  map["<leader>tf"] = { "<cmd>ToggleTerm direction=float<cr>", desc = "ToggleTerm float" }
---  map["<leader>th"] = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "ToggleTerm horizontal split" }
---  map["<leader>tv"] = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "ToggleTerm vertical split" }
---end
 
 -- Telescope
-map("n", "<leader>ff", function() require("telescope.builtin").find_files { hidden = true, no_ignore = false } end) -- find all files
+map("n", "<leader>ff", function()
+  require("telescope.builtin").find_files({ hidden = true, no_ignore = false })
+end) -- find all files
 --map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>")                                   -- find files with hidden option
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
@@ -318,8 +328,12 @@ map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>
 map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
 map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
 --map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
-map("n", "<leader>fF", ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>",
-  { noremap = true, silent = true, desc = "Find files in cwd" })
+map(
+  "n",
+  "<leader>fF",
+  ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>",
+  { noremap = true, silent = true, desc = "Find files in cwd" }
+)
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
@@ -328,7 +342,7 @@ map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
 map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
 
 -- Undotree
-map('n', '<leader>u', vim.cmd.UndotreeToggle)
+map("n", "<leader>u", vim.cmd.UndotreeToggle)
 
 -- Markdown-preview
 map("n", "<leader>md", "<Plug>MarkdownPreviewToggle")
@@ -341,7 +355,12 @@ map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
 map("n", "<leader>zm", "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo ('')<CR>")
 
 -- Vim-rooter
-map("n", "<leader>ro", "<CMD>Rooter<CR> | :echom ('cd to root/project directory')<CR> | :sl! | echo ('')<CR>", term_opts)
+map(
+  "n",
+  "<leader>ro",
+  "<CMD>Rooter<CR> | :echom ('cd to root/project directory')<CR> | :sl! | echo ('')<CR>",
+  term_opts
+)
 
 -- Trouble (UI to show diagnostics)
 map("n", "<leader>t", "<CMD>TroubleToggle<CR>")
@@ -351,15 +370,18 @@ map("n", "<leader>tq", "<CMD>TroubleToggle quickfix<CR>")
 map("n", "<leader>tl", "<CMD>TroubleToggle loclist<CR>")
 map("n", "gR", "<CMD>TroubleToggle lsp_references<CR>")
 
+-- Null-ls
+map("n", "<leader>ls", "<CMD>NullLsToggle<CR>")
+
 -- Replacer
-map('n', '<Leader>qr', ':lua require("replacer").run()<CR>')
+map("n", "<Leader>qr", ':lua require("replacer").run()<CR>')
 
 -- Quickfix
 map("n", "<leader>q", function()
   if vim.fn.getqflist({ winid = 0 }).winid ~= 0 then
-    require('plugins.quickfix').close()
+    require("plugins.quickfix").close()
   else
-    require('plugins.quickfix').open()
+    require("plugins.quickfix").open()
     --require("quickfix").open()
   end
 end, { desc = "Toggle quickfix window" })
@@ -373,7 +395,7 @@ if not (dap_ok and dap_ui_ok) then
   return
 end
 
-vim.fn.sign_define('DapBreakpoint', { text = '🐞' })
+vim.fn.sign_define("DapBreakpoint", { text = "🐞" })
 
 -- Start debugging session
 map("n", "<leader>ds", function()
@@ -387,7 +409,9 @@ map("n", "<leader>dC", dap.continue)
 --map("n", "<leader>dC", dap.close)
 --map("n", "<leader>dt", dap.terminate)
 map("n", "<leader>dt", ui.toggle)
-map("n", "<leader>dd", function() dap.disconnect({ terminateDebuggee = true }) end)
+map("n", "<leader>dd", function()
+  dap.disconnect({ terminateDebuggee = true })
+end)
 map("n", "<leader>dn", dap.step_over)
 map("n", "<leader>di", dap.step_into)
 map("n", "<leader>do", dap.step_out)
@@ -397,8 +421,9 @@ map("n", "<leader>dB", function()
   require("notify")("Breakpoints cleared", "warn")
 end)
 map("n", "<leader>dl", require("dap.ui.widgets").hover)
-map("n", "<leader>de", function() require("dapui").float_element() end,
-  { desc = "Open Element" })
+map("n", "<leader>de", function()
+  require("dapui").float_element()
+end, { desc = "Open Element" })
 map("n", "<leader>dq", function()
   require("dapui").close()
   require("dap").repl.close()

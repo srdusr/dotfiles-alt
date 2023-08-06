@@ -1,7 +1,14 @@
-require('mason').setup()
-local lspconfig = require('lspconfig')
-local mason_lspconfig = require('mason-lspconfig')
-local null_ls = require('null-ls')
+--local mason = require('mason')
+require("mason").setup()
+require("mason-null-ls").setup({
+  handlers = {},
+  ensure_installed = nil,
+  automatic_installation = true,
+  automatic_setup = true,
+})
+local lspconfig = require("lspconfig")
+local mason_lspconfig = require("mason-lspconfig")
+local null_ls = require("null-ls")
 --local lsp_lines = require('lsp_lines')
 
 local keymap = vim.keymap
@@ -17,7 +24,6 @@ local border = {
   { "└", "FloatBorder" },
   { "│", "FloatBorder" },
 }
-
 
 local signs = { Error = " ", Warn = "▲", Info = "􀅳", Hint = "⚑" }
 for type, icon in pairs(signs) do
@@ -45,13 +51,13 @@ vim.diagnostic.config({
   virtual_lines = false,
   float = {
     show_header = true,
-    source = 'if_many',
+    source = "if_many",
     --border = 'rounded',
     border = border,
     focusable = true,
   },
-  update_in_insert = false,   -- default to false
-  severity_sort = false,      -- default to false
+  update_in_insert = false, -- default to false
+  severity_sort = false,    -- default to false
 })
 
 vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, {
@@ -67,7 +73,7 @@ vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.s
 -- Use an on_attach function to only map the following keys after the language server attaches to the current buffer
 local on_attach = function(client, bufnr)
   -- Enable completion triggered by <c-x><c-o>
-  vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+  vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
   local map = function(mode, l, r, opts)
     opts = opts or {}
     opts.silent = true
@@ -91,8 +97,11 @@ local on_attach = function(client, bufnr)
   map("n", "ga", "<Cmd>lua vim.lsp.buf.code_action()<CR>")
   map("n", "gf", "<Cmd>lua vim.lsp.buf.formatting()<CR>")
   map("n", "go", "<Cmd>lua vim.diagnostic.open_float()<CR>")
-  map("n", "<leader>go",
-  ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
+  map(
+    "n",
+    "<leader>go",
+    ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>"
+  )
   map("n", "[d", "<Cmd>lua vim.diagnostic.goto_prev()<CR>")
   map("n", "]d", "<Cmd>lua vim.diagnostic.goto_next()<CR>")
   map("n", "gs", "<Cmd>lua vim.lsp.buf.document_symbol()<CR>")
@@ -104,12 +113,12 @@ local on_attach = function(client, bufnr)
   end)
 
   -- TODO: Use the nicer new API for autocommands
-  cmd 'augroup lsp_aucmds'
+  cmd("augroup lsp_aucmds")
   if client.server_capabilities.documentHighlightProvider then
-    cmd 'au CursorHold <buffer> lua vim.lsp.buf.document_highlight()'
-    cmd 'au CursorMoved <buffer> lua vim.lsp.buf.clear_references()'
+    cmd("au CursorHold <buffer> lua vim.lsp.buf.document_highlight()")
+    cmd("au CursorMoved <buffer> lua vim.lsp.buf.clear_references()")
   end
-  cmd 'augroup END'
+  cmd("augroup END")
 end
 
 -- Toggle diagnostics visibility
@@ -141,8 +150,8 @@ capabilities.textDocument.completion.completionItem.snippetSupport = true
 capabilities.offsetEncoding = { "utf-16" }
 
 local function prefer_null_ls_fmt(client)
-  client.server_capabilities.documentHighlightProvider = false
-  client.server_capabilities.documentFormattingProvider = false
+  client.server_capabilities.documentHighlightProvider = true
+  client.server_capabilities.documentFormattingProvider = true
   on_attach(client)
 end
 
@@ -151,35 +160,42 @@ local servers = {
   bashls = {},
   clangd = {},
   cssls = {
-    filetypes = { 'css', 'scss', 'less', 'sass' },
-    root_dir = lspconfig.util.root_pattern('package.json', '.git'),
+    filetypes = { "css", "scss", "less", "sass" },
+    root_dir = lspconfig.util.root_pattern("package.json", ".git"),
   },
   -- ghcide = {},
   html = {},
-  jsonls = { prefer_null_ls = true, cmd = { '--stdio' } },
+  jsonls = { prefer_null_ls = true, cmd = { "--stdio" } },
   intelephense = {},
   julials = {
     on_new_config = function(new_config, _)
-      local julia = vim.fn.expand '~/.julia/environments/nvim-lspconfig/bin/julia'
+      local julia = vim.fn.expand("~/.julia/environments/nvim-lspconfig/bin/julia")
       if lspconfig.util.path.is_file(julia) then
         new_config.cmd[1] = julia
       end
     end,
     settings = { julia = { format = { indent = 2 } } },
   },
-  pyright = { settings = { python = { formatting = { provider = 'yapf' }, linting = { pytypeEnabled = true } } } },
+  pyright = {
+    settings = {
+      python = {
+        formatting = { provider = "yapf" },
+        linting = { pytypeEnabled = true },
+      },
+    },
+  },
   rust_analyzer = {
     settings = {
-      ['rust-analyzer'] = {
+      ["rust-analyzer"] = {
         cargo = { allFeatures = true },
         checkOnSave = {
-          command = 'clippy',
-          extraArgs = { '--no-deps' },
+          command = "clippy",
+          extraArgs = { "--no-deps" },
         },
       },
     },
   },
-  dartls = ({
+  dartls = {
     cmd = { "dart", "language-server", "--protocol=lsp" },
     filetypes = { "dart" },
     init_options = {
@@ -196,10 +212,9 @@ local servers = {
         showTodos = true,
       },
     },
-    on_attach = function(client, bufnr)
-    end,
-  }),
-  lua_ls = ({
+    on_attach = function(client, bufnr) end,
+  },
+  lua_ls = {
     on_attach = on_attach,
     capabilities = capabilities,
     debounce_text_changes = 500,
@@ -207,7 +222,7 @@ local servers = {
       Lua = {
         runtime = {
           version = "LuaJIT",
-          path = vim.split(package.path, ';'),
+          path = vim.split(package.path, ";"),
         },
         diagnostics = {
           enable = true,
@@ -220,7 +235,7 @@ local servers = {
         },
       },
     },
-  }),
+  },
   sqlls = {},
   tsserver = {
     capabilities = require("cmp_nvim_lsp").default_capabilities(vim.lsp.protocol.make_client_capabilities()),
@@ -229,12 +244,12 @@ local servers = {
       client.server_capabilities.document_range_formatting = false
     end,
     filetypes = {
-      'javascript',
-      'javascriptreact',
-      'javascript.jsx',
-      'typescript',
-      'typescriptreact',
-      'typescript.tsx'
+      "javascript",
+      "javascriptreact",
+      "javascript.jsx",
+      "typescript",
+      "typescriptreact",
+      "typescript.tsx",
     },
   },
   vimls = {},
@@ -246,18 +261,30 @@ mason_lspconfig.setup({
   automatic_installation = true,
 })
 
--- Linters/Formatters ensure installed
-local registry = require("mason-registry")
-for _, pkg_name in ipairs { "dart-debug-Adaptor", "stylua", "prettier", "prettierd" } do
-  local ok, pkg = pcall(registry.get_package, pkg_name)
-  if ok then
-    if not pkg:is_installed() then
-       pkg:install()
-    end
-  end
-end
+-- Your other configurations ...
+--require("lspconfig").dartls.setup({ capabilities = capabilities })
+--local installed_lsp = mason_lspconfig.ensure_installed
+--local mason_lspconfig = require("mason-lspconfig").ensure_installed
 
-require("lspconfig").dartls.setup {capabilities = capabilities,}
+--require("lspconfig").setup({
+--  function()
+--    for _, lsp in ipairs(installed_lsp) do
+--      if
+--        lsp ~= "sqls"
+--        --and lsp ~= "sumneko_lua"
+--        --and lsp ~= "stylelint_lsp"
+--        --and lsp ~= "rust_analyzer"
+--        --and lsp ~= "sourcekit"
+--        and lsp ~= "dartls"
+--      then
+--        lspconfig[lsp].setup({
+--          on_attach = on_attach,
+--          capabilities = capabilities,
+--        })
+--      end
+--    end
+--  end,
+--})
 
 for server, config in pairs(servers) do
   if config.prefer_null_ls then
@@ -277,7 +304,6 @@ for server, config in pairs(servers) do
   lspconfig[server].setup(config)
 end
 
-
 -- null_ls setup
 local builtins = null_ls.builtins
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
@@ -290,80 +316,126 @@ local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
 --  prefer_local = true,
 --}
 
-null_ls.setup {
-  sources = {
-    -- Diagnostics
-    builtins.diagnostics.chktex,
-    --null_ls.builtins.code_actions.eslint_d,
-    --null_ls.builtins.diagnostics.eslint_d,
-    --null_ls.builtins.formatting.eslint_d,
-    -- null_ls.builtins.diagnostics.cppcheck,
-    -- null_ls.builtins.diagnostics.proselint,
-    -- null_ls.builtins.diagnostics.pylint,
-    --builtins.diagnostics.selene,
-    builtins.diagnostics.dotenv_linter,
-    builtins.diagnostics.shellcheck.with({
-      -- shell script diagnostics
-      diagnostic_config = {
-        -- see :help vim.diagnostic.config()
-        underline = true,
-        virtual_text = false,
-        signs = true,
-        update_in_insert = false,
-        severity_sort = true,
-      },
-      diagnostics_format = "[#{c}] #{m} (#{s})",
-      -- this will run every time the source runs,
-      -- so you should prefer caching results if possible
-    }),
-    builtins.diagnostics.zsh,
-    builtins.diagnostics.todo_comments,
-    builtins.diagnostics.teal,
-    -- null_ls.builtins.diagnostics.vale,
-    builtins.diagnostics.vint,
-    builtins.diagnostics.tidy,
-    builtins.diagnostics.php,
-    builtins.diagnostics.phpcs,
-    -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
+--null_ls.setup({
+local sources = {
+  -- Diagnostics
+  builtins.diagnostics.chktex,
+  --null_ls.builtins.code_actions.eslint_d,
+  --null_ls.builtins.diagnostics.eslint_d,
+  --null_ls.builtins.formatting.eslint_d,
+  -- null_ls.builtins.diagnostics.cppcheck,
+  -- null_ls.builtins.diagnostics.proselint,
+  -- null_ls.builtins.diagnostics.pylint,
+  --builtins.diagnostics.selene,
+  builtins.diagnostics.dotenv_linter,
+  builtins.diagnostics.shellcheck.with({
+    -- shell script diagnostics
+    diagnostic_config = {
+      -- see :help vim.diagnostic.config()
+      underline = true,
+      virtual_text = false,
+      signs = true,
+      update_in_insert = false,
+      severity_sort = true,
+    },
+    diagnostics_format = "[#{c}] #{m} (#{s})",
+    -- this will run every time the source runs,
+    -- so you should prefer caching results if possible
+  }),
+  builtins.diagnostics.zsh.with({
+    filetypes = "zsh",
+    "sh",
+  }),
+  builtins.diagnostics.todo_comments,
+  builtins.diagnostics.teal,
+  -- null_ls.builtins.diagnostics.vale,
+  builtins.diagnostics.vint,
+  builtins.diagnostics.tidy,
+  builtins.diagnostics.php,
+  builtins.diagnostics.phpcs,
+  builtins.diagnostics.flake8,
+  builtins.diagnostics.eslint_d.with({
+    condition = function(utils)
+      return utils.root_has_file(".eslintrc.json")
+    end,
+  }),
+  builtins.formatting.eslint_d,
+  -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
 
-    -- Formatting
-    builtins.formatting.shfmt.with({
-      filetypes = { "bash", "zsh", "sh" },
-      extra_args = { "-i", "2", "-ci" },
-    }),
-    builtins.formatting.shellharden,
-    builtins.formatting.trim_whitespace.with { filetypes = { "tmux", "teal", "zsh" } },
-    builtins.formatting.clang_format,
-    builtins.formatting.rustfmt,
-    builtins.formatting.sql_formatter,
-    -- null_ls.builtins.formatting.cmake_format,
-    builtins.formatting.isort,
-    builtins.formatting.htmlbeautifier,
-    -- null_ls.builtins.formatting.prettier,
-    builtins.formatting.prettierd,
-    builtins.formatting.prettier.with({
-      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html",
-        "css", "scss", "less", "graphql", "vue", "svelte" },
-      extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" },
-    }),
-    builtins.formatting.rustfmt,
-    builtins.formatting.stylua,
-    builtins.formatting.dart_format,
-    builtins.formatting.trim_whitespace,
-    builtins.formatting.yapf,
-    -- null_ls.builtins.formatting.black
+  -- Formatting
+  builtins.formatting.shfmt.with({
+    filetypes = { "bash", "zsh", "sh" },
+    extra_args = { "-i", "2", "-ci" },
+  }),
+  builtins.formatting.shellharden,
+  builtins.formatting.trim_whitespace.with({
+    filetypes = { "tmux", "teal", "zsh" },
+  }),
+  --builtins.formatting.beautysh,
+  builtins.formatting.beautysh.with({
+    filetypes = "zsh",
+  }),
+  builtins.formatting.clang_format,
+  builtins.formatting.rustfmt,
+  builtins.formatting.sql_formatter,
+  -- null_ls.builtins.formatting.cmake_format,
+  builtins.formatting.isort,
+  builtins.formatting.htmlbeautifier,
+  -- null_ls.builtins.formatting.prettier,
+  builtins.formatting.prettierd,
+  builtins.formatting.prettier.with({
+    filetypes = {
+      "javascript",
+      "javascriptreact",
+      "typescript",
+      "typescriptreact",
+      "json",
+      "yaml",
+      "markdown",
+      "html",
+      "css",
+      "scss",
+      "less",
+      "graphql",
+      "vue",
+      "svelte",
+    },
+    extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" },
+  }),
+  builtins.formatting.rustfmt,
+  builtins.formatting.stylua,
+  --builtins.formatting.dart_format,
+  builtins.formatting.dart_format.with({
+    filetypes = { "dart" },
+  }),
+  builtins.formatting.trim_whitespace,
+  builtins.formatting.yapf,
+  -- null_ls.builtins.formatting.black
 
-    -- Code Actions
-    builtins.code_actions.shellcheck, -- shell script code actions
-    --builtins.code_actions.eslint_d.with(eslint_opts),
-    -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
-    builtins.code_actions.gitsigns,
-    builtins.code_actions.gitrebase,
+  -- Code Actions
+  builtins.code_actions.shellcheck, -- shell script code actions
+  --builtins.code_actions.eslint_d.with(eslint_opts),
+  -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
+  builtins.code_actions.gitsigns,
+  builtins.code_actions.gitrebase,
 
-    -- Hover
-    builtins.hover.dictionary,
-    builtins.hover.printenv,
-  },
+  -- Hover
+  builtins.hover.dictionary,
+  builtins.hover.printenv,
+}
+--})
+-- Linters/Formatters ensure installed
+--for _, pkg_name in ipairs({
+--  "dart-debug-Adaptor",
+--  "stylua",
+--  "prettier",
+--  "prettierd",
+--}) do
+
+-- Import the builtins table from the null-ls module and store it in the null_ls_sources variable
+null_ls.setup({
+  sources = sources,
+  update_in_insert = true,
   on_attach = function(client, bufnr)
     if client.supports_method("textDocument/formatting") then
       vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
@@ -372,8 +444,35 @@ null_ls.setup {
         buffer = bufnr,
         callback = function()
           vim.lsp.buf.format()
-        end
+        end,
       })
     end
   end,
-}
+})
+
+-- Install all the null-ls sources using Mason
+local registry = require("mason-registry")
+for _, source_name in ipairs(sources) do
+  local ok, pkg = pcall(registry.get_package, source_name)
+  if ok then
+    if not pkg:is_installed() then
+      pkg:install()
+    end
+  end
+end
+-- Loop through the null_ls_sources table and install the packages
+-- Install all sources for null-ls
+--local null_ls_sources = require("null-ls").builtins
+
+--for _, source_name in ipairs(null_ls_sources) do
+--  local ok, pkg = pcall(mason.get_package, source_name)
+--  if ok then
+--    if not pkg:is_installed() then
+--      pkg:install()
+--    end
+--  end
+--end
+vim.api.nvim_create_user_command("NullLsToggle", function()
+  -- you can also create commands to disable or enable sources
+  require("null-ls").toggle({})
+end, {})

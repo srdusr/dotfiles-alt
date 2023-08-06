@@ -3,22 +3,15 @@ if not status_ok then
   return
 end
 toggleterm.setup({
-  --size = function(term)
-  --	if term.direction == "horizontal" then
-  --		return 12
-  --	elseif term.direction == "vertical" then
-  --		return vim.o.columns * 0.3
-  --	end
-  --end,
-  --size = 20,
-  open_mapping = [[<leader>tt]],
-  --autochdir = true,
+  --open_mapping = [[<leader>tt]],
+  autochdir = true,
   hide_numbers = true,
   shade_filetypes = {},
-  shade_terminals = false,
+  shade_terminals = true,
   shading_factor = 1,
   start_in_insert = true,
   insert_mappings = true,
+  terminal_mappings = true,
   persist_size = true,
   direction = "float",
   --direction = "vertical",
@@ -28,21 +21,24 @@ toggleterm.setup({
   highlights = {
     -- highlights which map to a highlight group name and a table of it's values
     -- NOTE: this is only a subset of values, any group placed here will be set for the terminal window split
-    Normal = {
-      background = "#000000",
-    },
+    --Normal = {
+    --  background = "#000000",
+    --},
+    Normal = { guibg = 'Black', guifg = 'DarkGray' },
+    FloatBorder = { guibg = 'Black', guifg = 'DarkGray' },
+    NormalFloat = { guibg = 'Black' },
     --float_opts = {
     --  border = as.style.current.border,
     --  winblend = 3,
     --},
-    size = function(term)
-      if term.direction == 'horizontal' then
-        return 15
-      elseif term.direction == 'vertical' then
-        return math.floor(vim.o.columns * 0.4)
-      end
-    end,
   },
+  size = function(term)
+    if term.direction == 'horizontal' then
+      return 7
+    elseif term.direction == 'vertical' then
+      return math.floor(vim.o.columns * 0.4)
+    end
+  end,
   float_opts = {
     width = 70,
     height = 15,
@@ -66,6 +62,7 @@ end
 function _G.set_terminal_keymaps()
   local opts = { noremap = true }
   --local opts = {buffer = 0}
+  --vim.api.nvim_buf_set_keymap(0, "i", ";to", "[[<Esc>]]<cmd>Toggleterm", opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<C-c>", [[<Esc>]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "<esc>", [[<C-\><C-n>]], opts)
   vim.api.nvim_buf_set_keymap(0, "t", "jk", [[<C-\><C-n>]], opts)
@@ -78,6 +75,17 @@ end
 -- if you only want these mappings for toggle term use term://*toggleterm#* instead
 vim.cmd('autocmd! TermOpen term://* lua set_terminal_keymaps()')
 local Terminal = require("toggleterm.terminal").Terminal
+
+local horizontal_term = Terminal:new({ hidden = true, direction = "horizontal" })
+local vertical_term = Terminal:new({ hidden = true, direction = "vertical" })
+
+function Horizontal_term_toggle()
+  horizontal_term:toggle(8, "horizontal")
+end
+function Vertical_term_toggle()
+  horizontal_term:toggle(math.floor(vim.o.columns * 0.5), "vertical")
+end
+
 local lazygit = Terminal:new({
   cmd = "lazygit",
   count = 5,
@@ -151,4 +159,18 @@ local python = Terminal:new({ cmd = "python", hidden = true })
 
 function _PYTHON_TOGGLE()
   python:toggle()
+end
+
+function Gh_dash()
+Terminal:new({
+  cmd = 'gh dash',
+  hidden = true,
+  direction = 'float',
+  on_open = float_handler,
+  float_opts = {
+    height = function() return math.floor(vim.o.lines * 0.8) end,
+    width = function() return math.floor(vim.o.columns * 0.95) end,
+  },
+})
+  Gh_dash:toggle()
 end

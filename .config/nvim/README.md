@@ -1,4 +1,8 @@
 ## Neovim
+#### Dependencies
+nvm
+nvm install --lts
+
 
 #### TODOS:
 - [ ] Markdown filetype plugin or autocommand to add two spaces each line  
