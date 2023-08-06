@@ -1,41 +1,68 @@
-#!/usr/bin/bash
+#!/bin/bash
 
 # Created By: srdusr
-# Created On: Wed 18 Jan 2023 11:15:22 PM CAT
-# Project: bspwm scratchpad with tmux session
+# Created On: Tue 07 Mar 2023 15:06:47 PM CAT
+# Project: Agnostic scratchpad/dropdown terminal that works on most window managers
 
-id=$(xdo id -n scratchpad);
-if [ -z "$id" ]; then
-  wezterm start --class scratchpad -e tmux new-session -A -s tmux -e bash > /dev/null 2>&1 &
-else
-  bspc node "$id" -g hidden -f
+# Set the GDK_BACKEND and QT_QPA_PLATFORM environment variables to x11 to allow working in Wayland
+export GDK_BACKEND=x11
+export QT_QPA_PLATFORM=xcb
+
+# List of supported terminals with dropdown class
+supported_terminals=(
+	"wezterm"
+	"kitty"
+	"alacritty"
+)
+
+# Check if any of the supported terminals with scratchpad class are running
+for term in "${supported_terminals[@]}"; do
+	if pgrep -f "$term.*--class scratchpad" >/dev/null; then
+		my_term="$term"
+		break
+	fi
+done
+
+# If none of the supported terminals are running, start the first available one
+if [ "$my_term" = "" ]; then
+	for term in "${supported_terminals[@]}"; do
+		if command -v "$term" >/dev/null 2>&1; then
+			my_term="$term"
+			break
+		fi
+	done
+	if [ "$my_term" = "" ]; then
+		echo "No supported terminal found."
+		exit 1
+	fi
+
+	# Start the terminal with scratchpad class
+	case "$my_term" in
+	"wezterm")
+		wezterm start --class scratchpad -e tmux new-session -A -s tmux -e bash >/dev/null 2>&1 &
+		;;
+	"kitty")
+		kitty --class scratchpad tmux new-session -A -s tmux -e bash >/dev/null 2>&1 &
+		;;
+	"alacritty")
+		alacritty --class scratchpad -e tmux new-session -A -s tmux -e bash >/dev/null 2>&1 &
+		;;
+	esac
 fi
 
-#- - - - - - - - - -
+# Get the window ID of the scratchpad terminal
+id="$(xdo id -N scratchpad)"
 
-
-### Other Window Managers 
-
-#id=$(xdotool search --class scratchpad);
-#if [ -z "$id" ]; then
-#  wezterm start --class scratchpad -e tmux new-session -A -s scratch -e bash > /dev/null 2>&1 &
-#else
-#  if [ ! -f /tmp/scratchpad ]; then
-#    touch /tmp/scratchpad && xdo hide "$id"
-#  elif [ -f /tmp/scratchpad ]; then
-#    rm /tmp/scratchpad && xdo show "$id"
-#  fi
-#fi
-
-#- - - - - - - - - -
-
-
-### Alacritty alternative
-
-#if id="$(xdo id -N scratch)"
-#        then bspc node "$id" -g hidden -f
-#        else alacritty --class scratch,scratchpad -e tmux new-session -A -s scratch -e bash > /dev/null 2>&1 &
-#fi
-
-#- - - - - - - - - -
-
+# Toggle the visibility of the scratchpad terminal
+if [ "$id" != "" ]; then
+	if xwininfo -id "$id" | grep "Map State: IsViewable" >/dev/null; then
+		# The scratchpad window is visible, so hide it
+		dimensions="$(xwininfo -id "$id" | awk '/Width:|Height:/ { printf("%s=%s;", tolower($1), $2) }')"
+		xdo hide "$id" 2>/dev/null
+	else
+		# The scratchpad window is hidden, so show it
+		xdo show "$id"
+		# Restore the dimensions of the window
+		xdotool windowsize "$id" "$(echo "$dimensions" | tr ';' ' ')" 2>/dev/null
+	fi
+fi
