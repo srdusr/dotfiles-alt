@@ -14,28 +14,6 @@
 ```
 $ sudo git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/bin/fzf
 ```
-```bash
-&#35; ls -l
-&#36; mkdir new_directory
-```
-
-
-HTML:
-```html
-<pre>
-<code>&#35; ls -l
-&#36; mkdir new_directory</code>
-</pre>
-```
-```bash
-&dollar; whoami
-```
-
-```bash
-ls -l
-mkdir new_directory
-```
-
 Add to .bashrc/(.zshrc/.zshenv)
 ```bash
 export PATH="$PATH:/usr/local/bin/fzf/bin"
