@@ -29,3 +29,9 @@ if not exist "%localPacker%\." (
 
 REM Run the script by using this command in the same existing directory: win-nvim.bat
 
+@powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((new-object net.webclient).DownloadString('https://aka.ms/install-winget'))"
+iex ((new-object net.webclient).DownloadString('https://aka.ms/install-winget'))
+curl -o winget-cli.appxbundle https://aka.ms/winget-cli-appxbundle
+
+powershell Add-AppxPackage -Path "winget-cli.appxbundle"
+
