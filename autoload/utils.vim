@@ -57,7 +57,7 @@ endfunction
 
 " Toggle statusline
 let s:hidden_all = 0
-function! ToggleHiddenAll()
+function! utils#ToggleHiddenAll()
     if s:hidden_all  == 0
         let s:hidden_all = 1
         set noshowmode
