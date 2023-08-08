@@ -1,8 +1,9 @@
-## Dotfiles mainly for linux 
+# Dotfiles
+> NOTE: Primarily for Linux but currently under work to make this as agnostic/cross-platform as possible  
     
 - - -  
   
-### Dependencies  
+## Dependencies  
 - curl
 - git  
 - clang  
@@ -10,50 +11,79 @@
 - make  
 - ninja  
 - cmake  
-- fzf  
+- wmctrl
+- xdo
+- xdotool
+- ripgrep  
+- fd  
+- tree-sitter  
+- vim  
+- - -
+
+### Zsh plugins
+- Install the plugins  
+```bash
+# Clone zsh-you-should-use
+$ git clone https://github.com/MichaelAquilina/zsh-you-should-use.git ~/.config/zsh/plugins/zsh-you-should-use
+
+# Clone zsh-syntax-highlighting
+$ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.config/zsh/plugins/zsh-syntax-highlighting
+
+# Clone zsh-autosuggestions
+$ git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.config/zsh/plugins/zsh-autosuggestions
+```
+- Put this into `.zshrc` to allow it to source the plugins across sessions  
+```bash
+# Suggest aliases for commands
+source ~/.config/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh
+
+# Load zsh-syntax-highlighting
+source ~/.config/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+
+# Load fish like auto suggestions
+source ~/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.plugin.zsh
+source ~/.config/zsh/plugins/zsh-autosuggestions/zsh-autosuggestions.zsh
+```
+- - -
+
+### Fzf  
+- Install Fzf
 ```
 $ sudo git clone --depth 1 https://github.com/junegunn/fzf.git /usr/local/bin/fzf
 ```
-Add to .bashrc/(.zshrc/.zshenv)
+- Put this into `.bashrc`/`.zshrc` or any similar shell configuration file to make it persistent across sessions
 ```bash
 export PATH="$PATH:/usr/local/bin/fzf/bin"
 export FZF_BASE="/usr/local/bin/fzf"
 ```
-Load fzf keybindings and completion for bash/zsh
-.bashrc:
+- Also put this in to load fzf keybindings and completions  
 ```bash
 # bash
 source /usr/local/bin/fzf/shell/key-bindings.bash
 source /usr/local/bin/fzf/shell/completion.bash
 ```
-.zshrc:
 ```bash
 # zsh
 source /usr/local/bin/fzf/shell/key-bindings.zsh
 source /usr/local/bin/fzf/shell/completion.zsh
 ```
-- ripgrep  
-- fd  
-- tree-sitter  
-- vim  
-- nvim  
+- - -
 
-
+### Neovim  
 > Dependencies
 
 | Platform           | ninja-build | ninja | base-devel | build-base | coreutils | gmake | cmake | make | gcc | g++ | gcc-c++ | unzip | wget | curl | gettext | gettext-tools | gettext-tiny-dev | automake | autoconf | libtool | libtool-bin | pkg-config | pkgconfig | pkgconf | tree-sitter | patch | doxygen | sha | git | Pack Manager |
 |--------------------|-------------|-------|------------|------------|-----------|-------|-------|------|-----|-----|---------|-------|------|------|---------|---------------|------------------|----------|----------|---------|-------------|------------|-----------|---------|-------------|-------|---------|-----|-----|--------------|
-| Ubuntu/Debian      |      ✔      |       |            |            |           |       |   ✔   |      |     |  ✔  |         |   ✔   |      |  ✔   |    ✔    |               |                  |    ✔     |    ✔     |    ✔    |      ✔      |     ✔      |           |         |             |       |    ✔    |     |     | apt-get      |
-| CentOS/RHEL/Fedora |      ✔      |       |            |            |           |       |   ✔   |  ✔   |  ✔  |     |    ✔    |   ✔   |      |  ✔   |    ✔    |               |                  |    ✔     |    ✔     |    ✔    |             |            |     ✔     |         |             |   ✔   |         |     |     | dnf          |
-| openSUSE           |             |   ✔   |            |            |           |       |   ✔   |      |     |     |    ✔    |       |      |  ✔   |         |       ✔       |                  |    ✔     |    ✔     |    ✔    |             |            |           |         |             |       |         |     |     | zypper       |
-| Arch Linux         |             |   ✔   |     ✔      |            |           |       |   ✔   |      |     |     |         |   ✔   |      |  ✔   |         |               |                  |          |          |         |             |            |           |         |      ✔      |       |         |     |     | pacman       |
-| Alpine Linux       |             |       |            |            |     ✔     |       |   ✔   |      |     |     |         |   ✔   |      |  ✔   |         |               |        ✔         |    ✔     |    ✔     |    ✔    |             |            |           |    ✔    |             |       |         |     |     | apk          |
-| Void Linux         |             |       |     ✔      |     ✔      |           |       |   ✔   |      |     |     |         |       |      |  ✔   |         |               |                  |          |          |         |             |            |           |         |             |       |         |     |  ✔  | xbps         |
-| FreeBSD            |             |       |            |            |           |   ✔   |   ✔   |      |     |     |         |   ✔   |  ✔   |  ✔   |    ✔    |               |                  |          |          |    ✔    |             |            |           |    ✔    |             |       |         |  ✔  |     | pkg          |
-| OpenBSD            |             |       |            |            |           |   ✔   |   ✔   |      |     |     |         |   ✔   |      |  ✔   |         |       ✔       |                  |    ✔     |    ✔     |    ✔    |             |            |           |         |             |       |         |     |     | pkg_add      |
-| macOS/Homebrew     |             |   ✔   |            |            |           |       |   ✔   |      |     |     |         |       |      |  ✔   |    ✔    |               |                  |    ✔     |          |    ✔    |             |     ✔      |           |         |             |       |         |     |     | brew         |
-| macOS/MacPorts     |             |   ✔   |            |            |           |       |   ✔   |      |     |     |         |       |      |      |    ✔    |               |                  |          |          |         |             |            |           |         |             |       |         |     |     | port         |
-
+| Ubuntu/Debian      |      ✓      |       |            |            |           |       |   ✓   |      |     |  ✓  |         |   ✓   |      |  ✓   |    ✓    |               |                  |    ✓     |    ✓     |    ✓    |      ✓      |     ✓      |           |         |             |       |    ✓    |     |     | apt-get      |
+| CentOS/RHEL/Fedora |      ✓      |       |            |            |           |       |   ✓   |  ✓   |  ✓  |     |    ✓    |   ✓   |      |  ✓   |    ✓    |               |                  |    ✓     |    ✓     |    ✓    |             |            |     ✓     |         |             |   ✓   |         |     |     | dnf          |
+| openSUSE           |             |   ✓   |            |            |           |       |   ✓   |      |     |     |    ✓    |       |      |  ✓   |         |       ✓       |                  |    ✓     |    ✓     |    ✓    |             |            |           |         |             |       |         |     |     | zypper       |
+| Arch Linux         |             |   ✓   |     ✓      |            |           |       |   ✓   |      |     |     |         |   ✓   |      |  ✓   |         |               |                  |          |          |         |             |            |           |         |      ✓      |       |         |     |     | pacman       |
+| Alpine Linux       |             |       |            |            |     ✓     |       |   ✓   |      |     |     |         |   ✓   |      |  ✓   |         |               |        ✓         |    ✓     |    ✓     |    ✓    |             |            |           |    ✓    |             |       |         |     |     | apk          |
+| Void Linux         |             |       |     ✓      |     ✓      |           |       |   ✓   |      |     |     |         |       |      |  ✓   |         |               |                  |          |          |         |             |            |           |         |             |       |         |     |  ✓  | xbps         |
+| FreeBSD            |             |       |            |            |           |   ✓   |   ✓   |      |     |     |         |   ✓   |  ✓   |  ✓   |    ✓    |               |                  |          |          |    ✓    |             |            |           |    ✓    |             |       |         |  ✓  |     | pkg          |
+| OpenBSD            |             |       |            |            |           |   ✓   |   ✓   |      |     |     |         |   ✓   |      |  ✓   |         |       ✓       |                  |    ✓     |    ✓     |    ✓    |             |            |           |         |             |       |         |     |     | pkg_add      |
+| macOS/Homebrew     |             |   ✓   |            |            |           |       |   ✓   |      |     |     |         |       |      |  ✓   |    ✓    |               |                  |    ✓     |          |    ✓    |             |     ✓      |           |         |             |       |         |     |     | brew         |
+| macOS/MacPorts     |             |   ✓   |            |            |           |       |   ✓   |      |     |     |         |       |      |      |    ✓    |               |                  |          |          |         |             |            |           |         |             |       |         |     |     | port         |
 
 - Install (default is nightly)
   ```bash
@@ -68,6 +98,7 @@ source /usr/local/bin/fzf/shell/completion.zsh
   ```bash
   $ git checkout release-0.7
   ```
+- Build nvim
   ```bash
   $ make CMAKE_BUILD_TYPE=Release
   $ sudo make install
@@ -77,12 +108,15 @@ source /usr/local/bin/fzf/shell/completion.zsh
   $ sudo rm /usr/local/bin/nvim
   $ sudo rm -r /usr/local/share/nvim/
   ```
-- wmctrl
-- xdo
-- xdotool
-- wezterm  
+- - -
+
+### Wezterm  
+- Make sure Rust is installed first  
 ```bash
 $ curl https://sh.rustup.rs -sSf | sh -s
+```
+- Install and build Wezterm
+```bash
 $ git clone --depth=1 --branch=main --recursive https://github.com/wez/wezterm.git
 $ cd wezterm
 $ git submodule update --init --recursive
@@ -90,37 +124,41 @@ $ ./get-deps
 $ cargo build --release
 $ cargo run --release --bin wezterm -- start
 ```
+- - -
 
-- zsh plugins
-```bash
-# Clone zsh-you-should-use
-$ git clone https://github.com/MichaelAquilina/zsh-you-should-use.git ~/.config/zsh/plugins/zsh-you-should-use
 
-# Clone zsh-syntax-highlighting
-$ git clone https://github.com/zsh-users/zsh-syntax-highlighting.git ~/.config/zsh/plugins/zsh-syntax-highlighting
-
-# Clone zsh-autosuggestions
-$ git clone https://github.com/zsh-users/zsh-autosuggestions.git ~/.config/zsh/plugins/zsh-autosuggestions
-```
 
 - - -  
   
-### Development Environment  
-#### Languages  
-##### Python  
-##### Java  
+## Development Environment  
+### Languages  
+#### Python  
+```bash
+
+```
+- - -
+
+#### Java  
 Recommended to choose Openjdk 8 or 10 otherwise get an error when using Android tools  
-##### Rust  
+```bash
+
+```
+- - -
+
+#### Rust  
 - Download and run rustup script  
 ```bash  
 $ curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh    
 ```  
-##### Go  
+- - -
+
+#### Go  
 ```bash
 
 ```
+- - -
 
-##### Lua  
+#### Lua  
 - Download LuaRocks  
 ```bash
 $ git clone git://github.com/luarocks/luarocks.git  
@@ -139,8 +177,9 @@ export PATH=$PATH:/usr/local/luarocks/bin
 ```bash
 $ luarocks install lua
 ```
+- - -
 
-##### PHP  
+#### PHP  
 - Install PHP  
 - Install Web server (Apache or Nginx)  
 - Install PHP extensions   
@@ -187,9 +226,9 @@ display_errors = On
 ```  
 open_basedir = /srv/http/:/var/www/:/home/:/tmp/:/var/tmp/:/var/cache/:/usr/share/pear/:/usr/share/webapps/:/etc/webapps/  
 ```  
-  
-  
-##### Dart  
+- - -
+
+#### Dart  
 - Install dart or skip and install flutter (recommended) that includes dart    
 ```bash  
 $ curl -O "https://storage.googleapis.com/dart-archive/channels/be/raw/latest/sdk/dartsdk-linux-x64-release.zip"  
@@ -225,7 +264,9 @@ $ sudo chown -R $USER /opt/flutter
 ```  
 - Continue to step ***Android Studio*** section to complete setup  
   
-##### Javascript    
+- - -
+
+#### Javascript    
 - nvm install/update script    
 ```bash  
 $ curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash    
@@ -243,8 +284,10 @@ $ nvm install node
 ```bash
 $ nvm install --lts
 ```
-  
-##### MySQL    
+- - -
+
+### Development Tools  
+#### MySQL    
 - Install MySQL  
   
 - Ensure the MySQL service starts when reboot or startup machine.  
@@ -261,7 +304,9 @@ $ sudo mysql_secure_installation
 ```  
 $ sudo mysql  
 ```  
-##### Android Studio/SDK  
+- - -
+
+#### Android Studio/SDK  
 > NOTE: Android Studio is an Integrated Development Environment (IDE) that provides a comprehensive set of tools for Android app development. It includes the Android SDK (Software Development Kit), which consists of various libraries, tools, and system images necessary for developing Android applications.
 
 > The Android SDK can be installed separately without Android Studio, allowing you to use alternative text editors or IDEs for development. However, Android Studio provides a more streamlined and feature-rich development experience.
@@ -386,12 +431,12 @@ $ sdkmanager --sdk_root=${ANDROID_HOME} tools
 $ sdkmanager --licenses  
 ```
 - - -  
-  
-### Commands  
+
+## Commands  
   
   
 - - -  
-### Windows  
+#### Windows  
 - Install nvim natively to Windows  
   - First allow script execution, run the following command in PowerShell as an administrator:  
   ```dos
