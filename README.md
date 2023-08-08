@@ -37,6 +37,46 @@ source /usr/local/bin/fzf/shell/completion.zsh
 - tree-sitter  
 - vim  
 - nvim  
+
+
+> Dependencies
+
+| Platform           | ninja-build | ninja | base-devel | build-base | coreutils | gmake | cmake | make | gcc | g++ | gcc-c++ | unzip | wget | curl | gettext | gettext-tools | gettext-tiny-dev | automake | autoconf | libtool | libtool-bin | pkg-config | pkgconfig | pkgconf | tree-sitter | patch | doxygen | sha | git | Pack Manager |
+|--------------------|-------------|-------|------------|------------|-----------|-------|-------|------|-----|-----|---------|-------|------|------|---------|---------------|------------------|----------|----------|---------|-------------|------------|-----------|---------|-------------|-------|---------|-----|-----|--------------|
+| Ubuntu/Debian      |      ✔      |       |            |            |           |       |   ✔   |      |     |  ✔  |         |   ✔   |      |  ✔   |    ✔    |               |                  |    ✔     |    ✔     |    ✔    |      ✔      |     ✔      |           |         |             |       |    ✔    |     |     | apt-get      |
+| CentOS/RHEL/Fedora |      ✔      |       |            |            |           |       |   ✔   |  ✔   |  ✔  |     |    ✔    |   ✔   |      |  ✔   |    ✔    |               |                  |    ✔     |    ✔     |    ✔    |             |            |     ✔     |         |             |   ✔   |         |     |     | dnf          |
+| openSUSE           |             |   ✔   |            |            |           |       |   ✔   |      |     |     |    ✔    |       |      |  ✔   |         |       ✔       |                  |    ✔     |    ✔     |    ✔    |             |            |           |         |             |       |         |     |     | zypper       |
+| Arch Linux         |             |   ✔   |     ✔      |            |           |       |   ✔   |      |     |     |         |   ✔   |      |  ✔   |         |               |                  |          |          |         |             |            |           |         |      ✔      |       |         |     |     | pacman       |
+| Alpine Linux       |             |       |            |            |     ✔     |       |   ✔   |      |     |     |         |   ✔   |      |  ✔   |         |               |        ✔         |    ✔     |    ✔     |    ✔    |             |            |           |    ✔    |             |       |         |     |     | apk          |
+| Void Linux         |             |       |     ✔      |     ✔      |           |       |   ✔   |      |     |     |         |       |      |  ✔   |         |               |                  |          |          |         |             |            |           |         |             |       |         |     |  ✔  | xbps         |
+| FreeBSD            |             |       |            |            |           |   ✔   |   ✔   |      |     |     |         |   ✔   |  ✔   |  ✔   |    ✔    |               |                  |          |          |    ✔    |             |            |           |    ✔    |             |       |         |  ✔  |     | pkg          |
+| OpenBSD            |             |       |            |            |           |   ✔   |   ✔   |      |     |     |         |   ✔   |      |  ✔   |         |       ✔       |                  |    ✔     |    ✔     |    ✔    |             |            |           |         |             |       |         |     |     | pkg_add      |
+| macOS/Homebrew     |             |   ✔   |            |            |           |       |   ✔   |      |     |     |         |       |      |  ✔   |    ✔    |               |                  |    ✔     |          |    ✔    |             |     ✔      |           |         |             |       |         |     |     | brew         |
+| macOS/MacPorts     |             |   ✔   |            |            |           |       |   ✔   |      |     |     |         |       |      |      |    ✔    |               |                  |          |          |         |             |            |           |         |             |       |         |     |     | port         |
+
+
+- Install (default is nightly)
+  ```bash
+  $ git clone https://github.com/neovim/neovim.git
+  $ cd neovim
+  ```
+  - Optional install stable version  
+  ```bash
+  $ git checkout stable
+  ```
+  - Or a specific version by tag  
+  ```bash
+  $ git checkout release-0.7
+  ```
+  ```bash
+  $ make CMAKE_BUILD_TYPE=Release
+  $ sudo make install
+  ```
+- Uninstall:
+  ```bash
+  $ sudo rm /usr/local/bin/nvim
+  $ sudo rm -r /usr/local/share/nvim/
+  ```
 - wmctrl
 - xdo
 - xdotool
