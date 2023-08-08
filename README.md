@@ -1,6 +1,27 @@
 # Dotfiles
 > NOTE: Primarily for Linux but currently under work to make this as agnostic/cross-platform as possible  
     
+## Installing onto a new system (bare git repository)  
+  1. Avoid weird behaviour/recursion issues when .cfg tries to track itself  
+  ```bash
+  $ echo ".cfg" >> .gitignore
+  ```
+  2. Clone this repo  
+  ```bash
+  $ git clone --bare https://github.com/srdusr/dotfiles.git $HOME/.cfg
+  ```
+  3. Set up the alias 'config'  
+  ```bash
+  $ alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
+  ```
+  4. Set local configuration into .cfg to ignore untracked files  
+  ```bash
+  $ config config --local status.showUntrackedFiles no
+  ```
+  5. Checkout  
+  ```bash
+  $ config checkout
+  ```
 - - -  
   
 ## Dependencies  
@@ -262,7 +283,7 @@ $ sudo chmod -R g+w /opt/flutter/
 ```bash  
 $ sudo chown -R $USER /opt/flutter  
 ```  
-- Continue to step ***Android Studio*** section to complete setup  
+- Continue to step ***Development Tools/Android Studio*** section to complete setup  
   
 - - -
 
