@@ -290,11 +290,11 @@ alt + {Up,Down}
 
 # Volume control
 XF86Audio{Raise,Lower}Volume
-	pulsemixer --change-volume {+,-}10
+	pulsemixer --change-volume {+,-}5
 
 # Use arrow keys as volume keys
 alt + {Right,Left}
-	pulsemixer --change-volume {+,-}10
+	pulsemixer --change-volume {+,-}5
 
 
 #---------------------------------------------------------------
