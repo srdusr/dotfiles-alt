@@ -11,8 +11,7 @@ local fb_actions = require("telescope").extensions.file_browser.actions
 --local pickers = require("telescope.pickers")
 local themes = require("telescope.themes")
 
-
-require('telescope').setup({
+require("telescope").setup({
   defaults = {
     vimgrep_arguments = {
       "rg",
@@ -150,13 +149,13 @@ require('telescope').setup({
   sorting_strategy = "ascending",
   scroll_strategy = "limit",
   color_devicons = true,
-  layout_strategy = 'horizontal',
+  layout_strategy = "horizontal",
   layout_config = {
     horizontal = {
       height = 0.95,
       preview_cutoff = 70,
       width = 0.92,
-      preview_width = { 0.55, max = 50 }
+      preview_width = { 0.55, max = 50 },
     },
     bottom_pane = {
       height = 12,
@@ -209,9 +208,9 @@ require('telescope').setup({
   --	show_line = false,
   --},
   find_files = {
-    cwd = '%:p:h',
+    cwd = "%:p:h",
     --cwd = vim.fn.getcwd(),
-    prompt_prefix = ' ',
+    prompt_prefix = " ",
     hidden = true,
     follow = true,
   },
@@ -279,14 +278,14 @@ require('telescope').setup({
 
 -- Load extensions:
 -- have to be loaded after telescope setup/config
-require('telescope').load_extension('fzf')
-require('telescope').load_extension('ui-select')
+require("telescope").load_extension("fzf")
+require("telescope").load_extension("ui-select")
 require("telescope").load_extension("file_browser")
-require('telescope').load_extension('changed_files')
-require('telescope').load_extension('media_files')
+require("telescope").load_extension("changed_files")
+require("telescope").load_extension("media_files")
 --require('telescope').extensions.notify.notify()
-require('telescope').load_extension('notify')
-require('telescope').load_extension('dap')
+require("telescope").load_extension("notify")
+require("telescope").load_extension("dap")
 require("telescope").load_extension("session-lens")
 require("telescope").load_extension("flutter")
 
@@ -301,7 +300,7 @@ require("telescope").load_extension("flutter")
 --end
 
 function M.find_configs()
-  require("telescope.builtin").find_files {
+  require("telescope.builtin").find_files({
     hidden = true,
     no_ignore = false,
     prompt_title = " Find Configs",
@@ -329,6 +328,7 @@ function M.find_configs()
     -- cwd = "~/.config/nvim/",
     file_ignore_patterns = {
       "~/.config/nvim/startup.log",
+      "~/.config/zsh/plugins",
       "packer_compiled.lua",
       "resurrect",
       "tmux/plugins",
@@ -341,11 +341,11 @@ function M.find_configs()
     },
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
-  }
+  })
 end
 
 function M.find_scripts()
-  require("telescope.builtin").find_files {
+  require("telescope.builtin").find_files({
     hidden = true,
     no_ignore = true,
     prompt_title = " Find Scripts",
@@ -355,11 +355,11 @@ function M.find_scripts()
     },
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
-  }
+  })
 end
 
 function M.find_projects()
-  require("telescope.builtin").find_files {
+  require("telescope.builtin").find_files({
     hidden = true,
     no_ignore = true,
     prompt_title = " Find Projects",
@@ -369,7 +369,7 @@ function M.find_projects()
     },
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
-  }
+  })
 end
 
 function M.grep_notes()
@@ -385,7 +385,7 @@ function M.grep_notes()
 end
 
 function M.find_notes()
-  require("telescope.builtin").find_files {
+  require("telescope.builtin").find_files({
     hidden = false,
     prompt_title = " Find Notes",
     path_display = { "smart" },
@@ -396,7 +396,7 @@ function M.find_notes()
     --cwd = "~documents/notes",
     layout_strategy = "horizontal",
     layout_config = { preview_width = 0.65, width = 0.75 },
-  }
+  })
 end
 
 function M.file_explorer()
@@ -418,16 +418,16 @@ end
 
 --------------------------------------------------------------------------------
 
-local dropdown = require('telescope.themes').get_dropdown({
+local dropdown = require("telescope.themes").get_dropdown({
   hidden = true,
   no_ignore = true,
   previewer = false,
-  prompt_title = '',
-  preview_title = '',
-  results_title = '',
+  prompt_title = "",
+  preview_title = "",
+  results_title = "",
   layout_config = {
     --anchor = "S",
-    prompt_position = 'top'
+    prompt_position = "top",
   },
 })
 
@@ -440,17 +440,17 @@ local dropdown = require('telescope.themes').get_dropdown({
 local with_title = function(opts, extra)
   extra = extra or {}
   local path = opts.cwd or opts.path or extra.cwd or extra.path or nil
-  local title = ''
-  local buf_path = vim.fn.expand('%:p:h')
+  local title = ""
+  local buf_path = vim.fn.expand("%:p:h")
   local cwd = vim.fn.getcwd()
   if path ~= nil and buf_path ~= cwd then
-    title = require('plenary.path'):new(buf_path):make_relative(cwd)
+    title = require("plenary.path"):new(buf_path):make_relative(cwd)
   else
-    title = vim.fn.fnamemodify(cwd, ':t')
+    title = vim.fn.fnamemodify(cwd, ":t")
   end
 
-  return vim.tbl_extend('force', opts, {
-    prompt_title = title
+  return vim.tbl_extend("force", opts, {
+    prompt_title = title,
   }, extra or {})
 end
 
@@ -460,19 +460,18 @@ end
 --vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").findhere()')
 --vim.api.nvim_command('augroup END')
 
-
 --local findhere = function()
 function M.findhere()
   -- Open file browser if argument is a folder
-  local arg = vim.api.nvim_eval('argv(0)')
+  local arg = vim.api.nvim_eval("argv(0)")
   if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
     vim.defer_fn(function()
-      require('telescope.builtin').find_files(with_title(dropdown))
---      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
---        hidden = true,
---        results_title = '',
---        layout_config = { prompt_position = 'top' },
---      }))
+      require("telescope.builtin").find_files(with_title(dropdown))
+      --      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
+      --        hidden = true,
+      --        results_title = '',
+      --        layout_config = { prompt_position = 'top' },
+      --      }))
     end, 10)
   end
 end
