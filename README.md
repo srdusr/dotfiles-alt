@@ -37,6 +37,7 @@
 - xdotool
 - ripgrep  
 - fd  
+- tmux
 - tree-sitter  
 - vim  
 - - -
@@ -123,6 +124,11 @@ source /usr/local/bin/fzf/shell/completion.zsh
   ```bash
   $ make CMAKE_BUILD_TYPE=Release
   $ sudo make install
+  ```
+- Install Packer (package manager)
+  ```bash
+  $ git clone --depth 1 https://github.com/wbthomason/packer.nvim\
+  ~/.local/share/nvim/site/pack/packer/start/packer.nvim
   ```
 - Uninstall:
   ```bash
