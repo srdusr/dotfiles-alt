@@ -193,13 +193,29 @@ map("n", "<leader>o", ":!xdg-open %<cr><cr>")
 
 -- URL handling
 if vim.fn.has("mac") == 1 then
-  map("", "gx", '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>', {})
+  map(
+    "",
+    "gx",
+    '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>',
+    {}
+  )
 elseif vim.fn.has("unix") == 1 then
-  map("", "gx", '<Cmd>call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})<CR>', {})
+  map(
+    "",
+    "gx",
+    '<Cmd>call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})<CR>',
+    {}
+  )
 elseif vim.fn.has("wsl") == 1 then
-  map("", "gx", '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>', {})
+  map(
+    "",
+    "gx",
+    '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>',
+    {}
+  )
 else
-  map[""].gx = { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
+  map[""].gx =
+  { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
 end
 
 -- Substitute globally and locally in the selected region.
@@ -246,7 +262,7 @@ map("n", "<leader>z", ":call utils#ZoomToggle()<CR>")
 map("n", "<C-w>z", "<C-w>|<C-w>_")
 
 -- Toggle statusline
-map("n", "<S-h>", ":call ToggleHiddenAll()<CR>")
+map("n", "<S-h>", ":call utils#ToggleHiddenAll()<CR>")
 
 -- Open last closed buffer
 map("n", "<C-t>", ":call OpenLastClosed()<CR>")
@@ -314,19 +330,55 @@ map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
 map("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>")
-map("n", "<leader>ffc", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
+map(
+  "n",
+  "<leader>ffc",
+  "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>"
+)
 map("n", "<leader>cf", "<cmd>Telescope changed_files<cr>")
 map("n", "<leader>fp", "<cmd>Telescope pickers<cr>")
-map("n", "<leader>fr", "<cmd>lua require('telescope.builtin').registers({})<CR>") -- registers picker
-map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
+map(
+  "n",
+  "<leader>fr",
+  "<cmd>lua require('telescope.builtin').registers({})<CR>"
+) -- registers picker
+map(
+  "n",
+  "<leader>fd",
+  "<cmd>lua require('telescope.builtin').diagnostics()<cr>"
+)
 map("n", "<leader>fk", "<cmd>lua require('telescope.builtin').keymaps()<cr>")
-map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])                   -- find notes
-map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]])                  -- search notes
-map("n", "<leader>f.", [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]])                 -- find configs
-map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]])                 -- find scripts
-map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])                -- find projects
-map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
-map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
+map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]]) -- find notes
+map(
+  "n",
+  "<leader>fgn",
+  [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]]
+) -- search notes
+map(
+  "n",
+  "<leader>f.",
+  [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]]
+) -- find configs
+map(
+  "n",
+  "<leader>fs",
+  [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]]
+) -- find scripts
+map(
+  "n",
+  "<leader>fw",
+  [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]]
+) -- find projects
+map(
+  "n",
+  "<leader>fm",
+  "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>"
+) -- find media files
+map(
+  "n",
+  "<leader>fi",
+  "<cmd>lua require('telescope').extensions.notify.notify({})<cr>"
+) -- find notifications
 --map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
 map(
   "n",
@@ -352,7 +404,11 @@ map("n", "<leader>mg", "<CMD>Glow<CR>")
 map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
 
 -- Zen-mode toggle
-map("n", "<leader>zm", "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo ('')<CR>")
+map(
+  "n",
+  "<leader>zm",
+  "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo ('')<CR>"
+)
 
 -- Vim-rooter
 map(
@@ -401,7 +457,11 @@ vim.fn.sign_define("DapBreakpoint", { text = "🐞" })
 map("n", "<leader>ds", function()
   dap.continue()
   ui.toggle({})
-  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false) -- Spaces buffers evenly
+  vim.api.nvim_feedkeys(
+    vim.api.nvim_replace_termcodes("<C-w>=", false, true, true),
+    "n",
+    false
+  ) -- Spaces buffers evenly
 end)
 
 -- Set breakpoints, get variable values, step into/out of functions, etc.
