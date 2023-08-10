@@ -33,6 +33,7 @@ require("telescope").setup({
     --path_display = { "smart" },
     file_ignore_patterns = {
       "packer_compiled.lua",
+      "~/.config/zsh/plugins",
       "zcompdump",
       "%.DS_Store",
       "%.git/",
@@ -288,6 +289,7 @@ require("telescope").load_extension("notify")
 require("telescope").load_extension("dap")
 require("telescope").load_extension("session-lens")
 require("telescope").load_extension("flutter")
+require("telescope").load_extension("recent_files")
 
 --M.curbuf = function(opts)
 --  opts = opts
