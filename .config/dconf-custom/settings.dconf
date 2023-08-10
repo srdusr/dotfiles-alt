@@ -1,0 +1,10 @@
+[org/gnome/desktop/screensaver]
+lock-enabled=false
+
+[org/gnome/settings-daemon/plugins/media-keys]
+custom-keybinding-names=['custom-keybinding']
+
+[org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom-keybinding]
+name='scratchpad'
+command='scratchpad'
+binding='<Primary><Alt>T'
