@@ -53,13 +53,13 @@ packer.init({
 -- Install plugins here
 return packer.startup(function(use)
   -- Defaults
-  use("wbthomason/packer.nvim")  -- Have packer manage itself (package manager)
-  use("nvim-lua/plenary.nvim")   -- Useful lua functions used by lots of plugins
+  use("wbthomason/packer.nvim")   -- Have packer manage itself (package manager)
+  use("nvim-lua/plenary.nvim")    -- Useful lua functions used by lots of plugins
   use("lewis6991/impatient.nvim") -- Faster loading/startup times
 
   -- Tree-sitter
   use({ "nvim-treesitter/nvim-treesitter", run = ":TSUpdate" }) -- For language parsing, examples: highlighting, folding, jumping, refactoring...
-  use("nvim-treesitter/nvim-treesitter-refactor")              -- Refactor module for nvim-treesitter
+  use("nvim-treesitter/nvim-treesitter-refactor")               -- Refactor module for nvim-treesitter
 
   -- lsp
   use("williamboman/mason.nvim")           -- Package manager to install and manage LSP servers, DAP servers, linters and formatters
@@ -75,7 +75,7 @@ return packer.startup(function(use)
 
   -- Debugger
   use("mfussenegger/nvim-dap") -- Debug Adapter Protocol client implementation for Neovim
-  use("rcarriga/nvim-dap-ui") -- UI for nvim-dap
+  use("rcarriga/nvim-dap-ui")  -- UI for nvim-dap
   --use { "rcarriga/nvim-dap-ui", requires = {"mfussenegger/nvim-dap"} }
   use("theHamsta/nvim-dap-virtual-text")
   use("gabrielpoca/replacer.nvim")
@@ -91,7 +91,7 @@ return packer.startup(function(use)
   --})
 
   -- Linters/Formatters
-  use('mhartington/formatter.nvim')
+  use("mhartington/formatter.nvim")
   use("jay-babu/mason-null-ls.nvim")
   --use({"jayp0521/mason-null-ls.nvim",
   --  config = function()
@@ -106,62 +106,63 @@ return packer.startup(function(use)
   })
 
   -- Completion
-  use("hrsh7th/nvim-cmp")                   -- Completion engine plugin
-  use("hrsh7th/cmp-nvim-lsp")               -- Completion source for nvim-lsp
-  use("hrsh7th/cmp-buffer")                 -- Completion source for content of current buffer
-  use("hrsh7th/cmp-path")                   -- Completion source for paths
-  use("hrsh7th/cmp-cmdline")                -- Completion source for command-line
-  use("petertriho/cmp-git")                 -- Completion source for git
-  use("tamago324/cmp-zsh")                  -- Completion source for zsh
-  use("f3fora/cmp-spell")                   -- Completion source for spell-checking
-  use("hrsh7th/cmp-calc")                   -- Completion source for math calculation
-  use("saadparwaiz1/cmp_luasnip")           -- Completion source for snippets, specifically for luasnip
+  use("hrsh7th/nvim-cmp")                    -- Completion engine plugin
+  use("hrsh7th/cmp-nvim-lsp")                -- Completion source for nvim-lsp
+  use("hrsh7th/cmp-buffer")                  -- Completion source for content of current buffer
+  use("hrsh7th/cmp-path")                    -- Completion source for paths
+  use("hrsh7th/cmp-cmdline")                 -- Completion source for command-line
+  use("petertriho/cmp-git")                  -- Completion source for git
+  use("tamago324/cmp-zsh")                   -- Completion source for zsh
+  use("f3fora/cmp-spell")                    -- Completion source for spell-checking
+  use("hrsh7th/cmp-calc")                    -- Completion source for math calculation
+  use("saadparwaiz1/cmp_luasnip")            -- Completion source for snippets, specifically for luasnip
   use("hrsh7th/cmp-nvim-lsp-signature-help") -- Completion source for displaying function signatures with the current parameter emphasized
   use("rcarriga/cmp-dap")
 
   -- Snippets
-  use("L3MON4D3/LuaSnip")            -- Snippet engine
+  use("L3MON4D3/LuaSnip")             -- Snippet engine
   use("rafamadriz/friendly-snippets") -- Collection of snippets to use
 
   -- Git
-  use("tpope/vim-fugitive")     --
+  use("tpope/vim-fugitive")      --
   --use("dinhhuy258/git.nvim") -- For git blame & browse
-  use("kdheepak/lazygit.nvim")  -- Terminal UI for git commands
+  use("kdheepak/lazygit.nvim")   -- Terminal UI for git commands
   use("lewis6991/gitsigns.nvim") -- Git decorations
 
   -- File explorer/fuzzy finder
   use("kyazdani42/nvim-tree.lua") -- File explorer
-  use('ibhagwan/fzf-lua')        -- Fuzzy finder
-  use('ThePrimeagen/harpoon')
+  use("ibhagwan/fzf-lua")         -- Fuzzy finder
+  use("ThePrimeagen/harpoon")
   --use("nvim-telescope/telescope.nvim") --  Fuzzy finder with lots of features/extendabilities
   use({
-    'nvim-telescope/telescope.nvim',
-    branch = '0.1.x',
+    "nvim-telescope/telescope.nvim",
+    branch = "0.1.x",
     --config = function()
     --  require('plugins.telescope').setup()
     --end,
     requires = {
-      'nvim-lua/plenary.nvim',
-      'nvim-telescope/telescope-live-grep-args.nvim',
-      'nvim-telescope/telescope-file-browser.nvim',
-      { 'nvim-telescope/telescope-fzf-native.nvim', run = 'make' },
-    }
+      "nvim-lua/plenary.nvim",
+      "nvim-telescope/telescope-live-grep-args.nvim",
+      "nvim-telescope/telescope-file-browser.nvim",
+      { "nvim-telescope/telescope-fzf-native.nvim", run = "make" },
+    },
   })
-  use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })         -- Support fzf syntax/algorithm
-  use("nvim-telescope/telescope-ui-select.nvim")                            --
-  use("nvim-telescope/telescope-project.nvim")                              --
-  use("nvim-telescope/telescope-media-files.nvim")                          --
-  use("nvim-telescope/telescope-file-browser.nvim")                         --
+  use({ "nvim-telescope/telescope-fzf-native.nvim", run = "make" })          -- Support fzf syntax/algorithm
+  use("nvim-telescope/telescope-ui-select.nvim")                             --
+  use("nvim-telescope/telescope-project.nvim")                               --
+  use("nvim-telescope/telescope-media-files.nvim")                           --
+  use("nvim-telescope/telescope-file-browser.nvim")                          --
   use({ "nvim-telescope/telescope-symbols.nvim", after = "telescope.nvim" }) -- Search emoji(s) and other symbols
   use("nvim-telescope/telescope-dap.nvim")
-  use("axkirillov/telescope-changed-files")                                 --
+  use("axkirillov/telescope-changed-files")                                  --
+  use("smartpde/telescope-recent-files")
 
   -- UX
   use("folke/neodev.nvim")
   use({
-    'numToStr/Navigator.nvim', -- Navigate between Tmux and Nvim
+    "numToStr/Navigator.nvim", -- Navigate between Tmux and Nvim
     config = function()
-      require('Navigator').setup()
+      require("Navigator").setup()
     end,
   })
   use({ "tpope/vim-eunuch", cmd = { "Rename", "Delete" } }) -- Handy unix commands inside Vim (Rename, Move etc.)
@@ -171,24 +172,25 @@ return packer.startup(function(use)
   --use("vimpostor/vim-tpipeline") --
   --use("nathom/filetype.nvim") --
   use("mbbill/undotree")
-  use({ "myusuf3/numbers.vim", --
-    vim.cmd("let g:numbers_exclude = ['dashboard']")
+  use({
+    "myusuf3/numbers.vim", --
+    vim.cmd("let g:numbers_exclude = ['dashboard']"),
   })
-  use("windwp/nvim-autopairs")       --
-  use("numToStr/Comment.nvim")       --
-  use("akinsho/toggleterm.nvim")     --
+  use("windwp/nvim-autopairs")        --
+  use("numToStr/Comment.nvim")        --
+  use("akinsho/toggleterm.nvim")      --
   use("tweekmonster/startuptime.vim") --
   use({
-    "ggandor/leap.nvim",             --
+    "ggandor/leap.nvim",              --
     config = function()
-      require('leap').add_default_mappings()
+      require("leap").add_default_mappings()
       --require("leap").set_default_keymaps()
       --vim.keymap.set('n', '-', '<Plug>(leap-forward)', {})
       --vim.keymap.set('n', '_', '<Plug>(leap-backward)', {})
     end,
   })
   use({
-    "ggandor/flit.nvim",     --
+    "ggandor/flit.nvim", --
     config = function()
       require("flit").setup()
     end,
@@ -201,7 +203,8 @@ return packer.startup(function(use)
     "folke/trouble.nvim",
     requires = "nvim-tree/nvim-web-devicons",
   })
-  use({ "airblade/vim-rooter", --
+  use({
+    "airblade/vim-rooter", --
     --vim.cmd("let g:rooter_change_directory_for_non_project_files = ''"),
     --vim.cmd("let g:rooter_change_directory_for_non_project_files = 'current'")
   })
@@ -228,15 +231,16 @@ return packer.startup(function(use)
         "nvim-neotest/neotest-plenary",
         "nvim-neotest/neotest-vim-test",
       },
-    }
+    },
   })
   use({
-    'rmagatti/session-lens',
-    requires = { 'rmagatti/auto-session', 'nvim-telescope/telescope.nvim' },
+    "rmagatti/session-lens",
+    requires = { "rmagatti/auto-session", "nvim-telescope/telescope.nvim" },
     config = function()
-      require('session-lens').setup({ --[[your custom config--]] })
-      vim.keymap.set('n', '<leader>s', require('session-lens').search_session) -- <-- this sets it to `Ctrl + s`
-    end
+      require("session-lens").setup({ --[[your custom config--]]
+      })
+      vim.keymap.set("n", "<leader>s", require("session-lens").search_session) -- <-- this sets it to `Ctrl + s`
+    end,
   })
 
   -- Colorschemes
@@ -247,46 +251,46 @@ return packer.startup(function(use)
   use("nyngwang/nvimgelion")
   use("projekt0n/github-nvim-theme")
   use({
-    'folke/tokyonight.nvim',
+    "folke/tokyonight.nvim",
     config = function()
-      require('tokyonight').setup({
+      require("tokyonight").setup({
         transparent = true,
         dim_inactive = false,
       })
-    end
+    end,
   })
 
   -- UI
-  use("kyazdani42/nvim-web-devicons")                                      --
-  use("onsails/lspkind-nvim")                                              --
-  use({ 'kevinhwang91/nvim-ufo', requires = 'kevinhwang91/promise-async' }) -- Fold code
+  use("kyazdani42/nvim-web-devicons")                                       --
+  use("onsails/lspkind-nvim")                                               --
+  use({ "kevinhwang91/nvim-ufo", requires = "kevinhwang91/promise-async" }) -- Fold code
   use({
     "luukvbaal/statuscol.nvim",
     config = function()
-      local builtin = require "statuscol.builtin"
-      require("statuscol").setup {
+      local builtin = require("statuscol.builtin")
+      require("statuscol").setup({
         relculright = true,
         segments = {
           { text = { builtin.foldfunc },      click = "v:lua.ScFa" },
           { text = { "%s" },                  click = "v:lua.ScSa" },
           { text = { builtin.lnumfunc, " " }, click = "v:lua.ScLa" },
         },
-      }
-    end
+      })
+    end,
   })
   use({
-    'glepnir/dashboard-nvim',
+    "glepnir/dashboard-nvim",
     --event = 'VimEnter',
-    requires = { 'nvim-tree/nvim-web-devicons' }
+    requires = { "nvim-tree/nvim-web-devicons" },
   })
-  use("rcarriga/nvim-notify")      -- Notification plugin
-  use("karb94/neoscroll.nvim")     -- Faster/smooth scrolling
+  use("rcarriga/nvim-notify")  -- Notification plugin
+  use("karb94/neoscroll.nvim") -- Faster/smooth scrolling
   --use("MunifTanjim/prettier.nvim") -- Prettier plugin for Neovim's built-in LSP client
   use({
-    'norcalli/nvim-colorizer.lua', -- colorize hexa and rgb strings
-    cmd = { 'ColorizerToggle', 'ColorizerAttachToBuffer' },
+    "norcalli/nvim-colorizer.lua", -- colorize hexa and rgb strings
+    cmd = { "ColorizerToggle", "ColorizerAttachToBuffer" },
     config = function()
-      require('colorizer').setup({
+      require("colorizer").setup({
         --'*';
         user_default_options = {
           RGB = true,
@@ -295,31 +299,33 @@ return packer.startup(function(use)
           RRGGBBAA = false,
           css = false,
           css_fn = true,
-          mode = 'foreground',
+          mode = "foreground",
         },
       })
-    end
+    end,
   })
-  use({"j-hui/fidget.nvim",
-    tag = 'legacy',
-  })               -- UI to show nvim-lsp progress
-  use({ "simrat39/symbols-outline.nvim", --
+  use({
+    "j-hui/fidget.nvim",
+    tag = "legacy",
+  })                                 -- UI to show nvim-lsp progress
+  use({
+    "simrat39/symbols-outline.nvim", --
     config = function()
       require("symbols-outline").setup({
         auto_close = true,
       })
-    end
+    end,
   })
   use({
-    "kosayoda/nvim-lightbulb",     --
+    "kosayoda/nvim-lightbulb", --
     requires = "antoinemadec/FixCursorHold.nvim",
   })
   use({
     "SmiteshP/nvim-navic", -- Statusline/Winbar component that uses LSP to show current code context
-    requires = "neovim/nvim-lspconfig"
+    requires = "neovim/nvim-lspconfig",
   })
   use({
-    'rebelot/heirline.nvim', -- Statusline that is highly configurable
+    "rebelot/heirline.nvim", -- Statusline that is highly configurable
     --requires = 'kyazdani42/nvim-web-devicons',
     --event = 'VimEnter',
   })
@@ -340,7 +346,7 @@ return packer.startup(function(use)
       "stevearc/dressing.nvim", -- optional for vim.ui.select
     },
     config = function()
-      require('flutter-tools').setup({
+      require("flutter-tools").setup({
         debugger = {
           enabled = true,
           run_via_dap = true,
@@ -350,7 +356,9 @@ return packer.startup(function(use)
   })
   use({
     "iamcco/markdown-preview.nvim", -- Markdown Preview
-    run = function() vim.fn["mkdp#util#install"]() end,
+    run = function()
+      vim.fn["mkdp#util#install"]()
+    end,
   })
   use({
     "ellisonleao/glow.nvim", -- Markdown Preview
@@ -358,7 +366,7 @@ return packer.startup(function(use)
       require("glow").setup({
         style = "dark",
       })
-    end
+    end,
   })
 
   --------------------------------------------------
