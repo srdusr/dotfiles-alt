@@ -1,0 +1,41 @@
+root = true
+
+
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 4
+max_line_length = 10000
+
+# TypeScript/JavaScript config
+[**.{ts,js}]
+indent_size = 2
+
+# Json config
+[**.json]
+indent_size = 2
+
+# Lua config
+[**.lua]
+indent_size = 2
+
+# Latex config
+[**.tex]
+trim_trailing_whitespace = false
+
+# Markdown config
+[**.md]
+trim_trailing_whitespace = false
+
+# Textfile config
+[**.txt]
+trim_trailing_whitespace = false
+insert_final_newline = false
+
+# Snippets config
+[**.snippets]
+indent_style = tab
+
