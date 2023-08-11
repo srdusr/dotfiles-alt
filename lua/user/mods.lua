@@ -46,6 +46,9 @@ require("null-ls").setup({
   end,
 })
 
+vim.cmd([[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]])
+--vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
+
 --------------------------------------------------
 
 ---Determine if a value of any type is empty
@@ -247,11 +250,6 @@ vim.cmd([[augroup END]])
 
 --------------------------------------------------
 
-vim.cmd([[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]])
---vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
-
---------------------------------------------------
-
 --- Update Tmux Status Vi-mode
 function M.update_tmux_status()
   local mode = vim.api.nvim_eval("mode()")
@@ -300,6 +298,7 @@ vim.cmd([[
 --autocmd FocusGained * lua require("user.mods").update_tmux_status()
 --autocmd FocusLost * lua require("user.mods").update_tmux_status()
 --autocmd CmdwinEnter,CmdwinLeave * lua require("user.mods").update_tmux_status()
+
 --------------------------------------------------
 
 -- function OpenEmulatorList()
@@ -444,5 +443,16 @@ end
 
 -- Bind a keymap to the update_neovim function (optional)
 vim.api.nvim_set_keymap("n", "<leader>U", '<cmd> lua require("user.mods").Update_neovim()<CR>', { noremap = true, silent = true })
+
+--------------------------------------------------
+
+-- Fix closing nvim error message (/src/unix/core.c:147: uv_close: Assertion `!uv__is_closing(handle)' failed.)
+vim.api.nvim_create_autocmd({ "VimLeave" }, {
+  callback = function()
+    vim.fn.jobstart('notify-send "hello"', { detach = true })
+  end,
+})
+
+--------------------------------------------------
 
 return M
