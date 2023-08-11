@@ -1,4 +1,5 @@
---[[ key.lua ]]
+--[[ keys.lua ]]
+
 ------------- Shorten Function Names --------------
 local keymap = vim.keymap
 local map = function(mode, l, r, opts)
@@ -24,11 +25,7 @@ map("i", "kj", "<esc>")
 --map("n", "<Space>", ".")
 
 -- Reload nvim config
-map(
-  "n",
-  "<leader><CR>",
-  "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>"
-)
+map("n", "<leader><CR>", "<cmd>luafile ~/.config/nvim/init.lua<CR> | :echom ('Nvim config loading...') | :sl! | echo ('')<CR>")
 
 --------------- Extended Operations ---------------
 -- Conditional 'q' to quit on floating/quickfix/help windows otherwise still use it for macros
@@ -63,8 +60,6 @@ map("n", "<Leader>m", ":marks<CR>")
 -- Messages
 map("n", "<Leader>M", ":messages<CR>")
 
--- Clear messages
-
 -- Clear messages or just refresh/redraw the screen
 map("n", "<leader>u", ":echo '' | redraw<CR>")
 
@@ -76,18 +71,11 @@ map("n", "<leader>$", ":NumbersToggle<CR>")
 map("n", "<leader>%", ":NumbersOnOff<CR>")
 
 -- Easier split navigations, just ctrl-j instead of ctrl-w then j
---map("n", "<C-J>", "<C-W><C-J>")
---map("n", "<C-K>", "<C-W><C-K>")
---map("n", "<C-L>", "<C-W><C-L>")
---map("n", "<C-H>", "<C-W><C-H>")
 map("t", "<C-[>", "<C-\\><C-N>")
 map("t", "<C-h>", "<C-\\><C-N><C-h>")
 map("t", "<C-j>", "<C-\\><C-N><C-j>")
 map("t", "<C-k>", "<C-\\><C-N><C-k>")
 map("t", "<C-l>", "<C-\\><C-N><C-l>")
---map("t", "<C-x>", "<C-c>")
---map("n", "<C-x>", "<C-c>")
---map("n", "<C-r>", ":<C-u>call MyFunc(v:count)<CR>")
 
 -- Split window
 map("n", "<leader>h", ":split<CR>")
@@ -171,12 +159,8 @@ map("i", "<C-l>", "<Del>")
 map("n", "<leader><C-l>", "<Cmd>!clear<CR>")
 
 -- Change file to an executable
-map(
-  "n",
-  "<Leader>x",
-  ":lua require('user.mods').Toggle_executable()<CR> | :echom ('Toggle executable')<CR> | :sl! | echo ('')<CR>"
-)
---map("n", "<leader>x", ":!chmod +x %<CR>")
+map("n", "<Leader>x", ":lua require('user.mods').Toggle_executable()<CR> | :echom ('Toggle executable')<CR> | :sl! | echo ('')<CR>")
+-- map("n", "<leader>x", ":!chmod +x %<CR>")
 
 -- Paste without replace clipboard
 map("v", "p", '"_dP')
@@ -193,29 +177,13 @@ map("n", "<leader>o", ":!xdg-open %<cr><cr>")
 
 -- URL handling
 if vim.fn.has("mac") == 1 then
-  map(
-    "",
-    "gx",
-    '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>',
-    {}
-  )
+  map("", "gx", '<Cmd>call jobstart(["open", expand("<cfile>")], {"detach": v:true})<CR>', {})
 elseif vim.fn.has("unix") == 1 then
-  map(
-    "",
-    "gx",
-    '<Cmd>call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})<CR>',
-    {}
-  )
+  map("", "gx", '<Cmd>call jobstart(["xdg-open", expand("<cfile>")], {"detach": v:true})<CR>', {})
 elseif vim.fn.has("wsl") == 1 then
-  map(
-    "",
-    "gx",
-    '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>',
-    {}
-  )
+  map("", "gx", '<Cmd>call jobstart(["wslview", expand("<cfile>")], {"detach": v:true})<CR>', {})
 else
-  map[""].gx =
-  { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
+  map[""].gx = { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
 end
 
 -- Substitute globally and locally in the selected region.
@@ -250,7 +218,7 @@ map("n", "<Space>", "za")
 
 -- Make a copy of current file
 --vim.cmd([[
---  map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
+-- map <leader>s :up \| saveas! %:p:r-<C-R>=strftime("%y.%m.%d-%H:%M")<CR>-bak.<C-R>=expand("%:e")<CR> \| 3sleep \| e #<CR>
 --]])
 map("n", "<leader>.b", ":!cp % %.backup<CR>")
 
@@ -285,16 +253,6 @@ map("n", "<C-j>", "<CMD>NavigatorDown<CR>")
 map({ "n", "t" }, "<leader>tt", "<cmd>ToggleTerm<CR>")
 map({ "n", "t" }, "<leader>th", "<cmd>lua Horizontal_term_toggle()<CR>")
 map({ "n", "t" }, "<leader>tv", "<cmd>lua Vertical_term_toggle()<CR>")
---  map["<C-\\>"] = { "<cmd>ToggleTerm<cr>", desc = "Toggle terminal" }
---  map["<leader>tn"] = { function() toggle_term_cmd "node" end, desc = "ToggleTerm node" }
---  map["<leader>tu"] = { function() toggle_term_cmd "ncdu" end, desc = "ToggleTerm NCDU" }
---  map["<leader>tt"] = { function() toggle_term_cmd "htop" end, desc = "ToggleTerm htop" }
---  map["<leader>tp"] = { function() toggle_term_cmd "python" end, desc = "ToggleTerm python" }
---  map["<leader>tl"] = { function() toggle_term_cmd "lazygit" end, desc = "ToggleTerm lazygit" }
---  map["<leader>tf"] = { "<cmd>ToggleTerm direction=float<cr>", desc = "ToggleTerm float" }
---  map["<leader>th"] = { "<cmd>ToggleTerm size=10 direction=horizontal<cr>", desc = "ToggleTerm horizontal split" }
---  map["<leader>tv"] = { "<cmd>ToggleTerm size=80 direction=vertical<cr>", desc = "ToggleTerm vertical split" }
---end
 
 -- LazyGit
 map({ "n", "t" }, "<leader>gg", "<cmd>lua Lazygit_toggle()<CR>")
@@ -325,67 +283,28 @@ map("n", "<leader>gm", ":Gmove<Space>")
 map("n", "<leader>ff", function()
   require("telescope.builtin").find_files({ hidden = true, no_ignore = false })
 end) -- find all files
+map("n", "<leader>fF", ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>", { noremap = true, silent = true, desc = "Find files in cwd" })
 --map("n", "<leader>fF", "<cmd>lua require('telescope.builtin').find_files()<cr>")                                   -- find files with hidden option
 map("n", "<leader>fg", "<cmd>lua require('telescope.builtin').live_grep()<cr>")
 map("n", "<leader>fb", "<cmd>lua require('telescope.builtin').buffers()<cr>")
 map("n", "<leader>fh", "<cmd>lua require('telescope.builtin').help_tags()<cr>")
 map("n", "<leader>fc", "<cmd>lua require('telescope.builtin').commands()<cr>")
-map(
-  "n",
-  "<leader>ffc",
-  "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>"
-)
+map("n", "<leader>ffc", "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map("n", "<leader>cf", "<cmd>Telescope changed_files<cr>")
 map("n", "<leader>fp", "<cmd>Telescope pickers<cr>")
-map(
-  "n",
-  "<leader>fr",
-  "<cmd>lua require('telescope.builtin').registers({})<CR>"
-) -- registers picker
-map(
-  "n",
-  "<leader>fd",
-  "<cmd>lua require('telescope.builtin').diagnostics()<cr>"
-)
+map("n", "<leader>fd", "<cmd>lua require('telescope.builtin').diagnostics()<cr>")
 map("n", "<leader>fk", "<cmd>lua require('telescope.builtin').keymaps()<cr>")
-map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]]) -- find notes
-map(
-  "n",
-  "<leader>fgn",
-  [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]]
-) -- search notes
-map(
-  "n",
-  "<leader>f.",
-  [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]]
-) -- find configs
-map(
-  "n",
-  "<leader>fs",
-  [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]]
-) -- find scripts
-map(
-  "n",
-  "<leader>fw",
-  [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]]
-) -- find projects
-map(
-  "n",
-  "<leader>fm",
-  "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>"
-) -- find media files
-map(
-  "n",
-  "<leader>fi",
-  "<cmd>lua require('telescope').extensions.notify.notify({})<cr>"
-) -- find notifications
+map("n", "<leader>fr", "<cmd>lua require('telescope.builtin').registers({})<CR>")                  -- registers picker
+map("n", "<leader>fn", [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])                   -- find notes
+map("n", "<leader>fgn", [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]])                  -- search notes
+map("n", "<leader>f.", [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]])                 -- find configs
+map("n", "<leader>fs", [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]])                 -- find scripts
+map("n", "<leader>fw", [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])                -- find projects
+map("n", "<leader>fm", "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
+map("n", "<leader>fi", "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
+map("n", "<Leader>ffr", "<cmd>lua require('telescope').extensions.recent_files.pick()<CR>")
 --map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
-map(
-  "n",
-  "<leader>fF",
-  ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>",
-  { noremap = true, silent = true, desc = "Find files in cwd" }
-)
+-- Map a shortcut to open the picker.
 
 -- FZF
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
@@ -404,19 +323,10 @@ map("n", "<leader>mg", "<CMD>Glow<CR>")
 map("n", "<leader>ww", "<cmd>lua require('user.mods').Toggle_autopairs()<CR>")
 
 -- Zen-mode toggle
-map(
-  "n",
-  "<leader>zm",
-  "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo ('')<CR>"
-)
+map("n", "<leader>zm", "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo ('')<CR>")
 
 -- Vim-rooter
-map(
-  "n",
-  "<leader>ro",
-  "<CMD>Rooter<CR> | :echom ('cd to root/project directory')<CR> | :sl! | echo ('')<CR>",
-  term_opts
-)
+map("n", "<leader>ro", "<CMD>Rooter<CR> | :echom ('cd to root/project directory')<CR> | :sl! | echo ('')<CR>", term_opts)
 
 -- Trouble (UI to show diagnostics)
 map("n", "<leader>t", "<CMD>TroubleToggle<CR>")
@@ -438,7 +348,7 @@ map("n", "<leader>q", function()
     require("plugins.quickfix").close()
   else
     require("plugins.quickfix").open()
-    --require("quickfix").open()
+    -- require("quickfix").open()
   end
 end, { desc = "Toggle quickfix window" })
 
@@ -457,17 +367,13 @@ vim.fn.sign_define("DapBreakpoint", { text = "🐞" })
 map("n", "<leader>ds", function()
   dap.continue()
   ui.toggle({})
-  vim.api.nvim_feedkeys(
-    vim.api.nvim_replace_termcodes("<C-w>=", false, true, true),
-    "n",
-    false
-  ) -- Spaces buffers evenly
+  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false) -- Spaces buffers evenly
 end)
 
 -- Set breakpoints, get variable values, step into/out of functions, etc.
 map("n", "<leader>dC", dap.continue)
---map("n", "<leader>dC", dap.close)
---map("n", "<leader>dt", dap.terminate)
+-- map("n", "<leader>dC", dap.close)
+-- map("n", "<leader>dt", dap.terminate)
 map("n", "<leader>dt", ui.toggle)
 map("n", "<leader>dd", function()
   dap.disconnect({ terminateDebuggee = true })
@@ -503,11 +409,11 @@ end, { desc = "DAP-Telescope: Commands" })
 
 -- Close debugger and clear breakpoints
 --map("n", "<leader>de", function()
---  dap.clear_breakpoints()
---  ui.toggle({})
---  dap.terminate()
---  vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false)
---  require("notify")("Debugger session ended", "warn")
+-- dap.clear_breakpoints()
+-- ui.toggle({})
+-- dap.terminate()
+-- vim.api.nvim_feedkeys(vim.api.nvim_replace_termcodes("<C-w>=", false, true, true), "n", false)
+-- require("notify")("Debugger session ended", "warn")
 --end)
 
 -- Dashboard
