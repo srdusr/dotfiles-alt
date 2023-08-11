@@ -8,15 +8,16 @@ require("mason-null-ls").setup({ handlers = {}, ensure_installed = nil, automati
 local keymap = vim.keymap
 local cmd = vim.cmd
 
-local border = { { "┌", "FloatBorder" }, { "─", "FloatBorder" }, { "┐", "FloatBorder" }, { "│", "FloatBorder" }, { "┘", "FloatBorder" }, { "─", "FloatBorder" },
-  { "└", "FloatBorder" }, { "│", "FloatBorder" } }
+local border = { { "┌", "FloatBorder" }, { "─", "FloatBorder" }, { "┐", "FloatBorder" }, { "│", "FloatBorder" }, { "┘", "FloatBorder" }, { "─", "FloatBorder" }, { "└", "FloatBorder" }, { "│", "FloatBorder" } }
 
 -- Set up LSP servers if not done before
 if not vim.g.lsp_setup_done then
   -- Clear existing LSP clients
   for _, bufnr in ipairs(vim.api.nvim_list_bufs()) do
     local clients = vim.lsp.get_clients({ buffer = bufnr })
-    for _, client in ipairs(clients) do client.stop() end
+    for _, client in ipairs(clients) do
+      client.stop()
+    end
   end
 
   local signs = { Error = " ", Warn = "▲", Info = "􀅳", Hint = "⚑" }
@@ -40,20 +41,19 @@ if not vim.g.lsp_setup_done then
   vim.diagnostic.config({
     underline = false,
     signs = true,
-    virtual_text = true,                                                       -- virtual_lines = { only_current_line = true },
+    virtual_text = true, -- virtual_lines = { only_current_line = true },
     virtual_lines = false,
     float = {
       show_header = true,
-      source = "if_many",                                                      -- border = 'rounded',
+      source = "if_many", -- border = 'rounded',
       border = border,
-      focusable = true
+      focusable = true,
     },
-    update_in_insert = false,                                                  -- default to false
-    severity_sort = false                                                      -- default to false
+    update_in_insert = false, -- default to false
+    severity_sort = false,    -- default to false
   })
 
-  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics,
-    { underline = false, virtual_text = false, signs = true, update_in_insert = false })
+  vim.lsp.handlers["textDocument/publishDiagnostics"] = vim.lsp.with(vim.lsp.diagnostic.on_publish_diagnostics, { underline = false, virtual_text = false, signs = true, update_in_insert = false })
 
   vim.lsp.handlers["textDocument/hover"] = vim.lsp.with(vim.lsp.handlers.hover, { border = "rounded" })
   vim.lsp.handlers["textDocument/signatureHelp"] = vim.lsp.with(vim.lsp.handlers.signature_help, { border = "rounded" })
@@ -92,7 +92,9 @@ if not vim.g.lsp_setup_done then
     map("n", "gw", "<Cmd>lua vim.lsp.buf.workspace_symbol()<CR>")
     map("n", "<leader>wa", "<Cmd>lua vim.lsp.buf.add_workspace_folder()<CR>")
     map("n", "<leader>wr", "<Cmd>lua vim.lsp.buf.remove_workspace_folder()<CR>")
-    map("n", "<leader>wl", function() print(vim.inspect(vim.lsp.buf.list_workspace_folders())) end)
+    map("n", "<leader>wl", function()
+      print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end)
 
     -- TODO: Use the nicer new API for autocommands
     cmd("augroup lsp_aucmds")
@@ -141,16 +143,18 @@ augroup END
     asm_lsp = {},
     bashls = {},
     clangd = {},
-    cssls = { filetypes = { "css", "scss", "less", "sass" }, root_dir = lspconfig.util.root_pattern("package.json", ".git") },            -- ghcide = {},
+    cssls = { filetypes = { "css", "scss", "less", "sass" }, root_dir = lspconfig.util.root_pattern("package.json", ".git") }, -- ghcide = {},
     html = {},
     jsonls = { prefer_null_ls = true, cmd = { "--stdio" } },
     intelephense = {},
     julials = {
       on_new_config = function(new_config, _)
         local julia = vim.fn.expand("~/.julia/environments/nvim-lspconfig/bin/julia")
-        if lspconfig.util.path.is_file(julia) then new_config.cmd[1] = julia end
+        if lspconfig.util.path.is_file(julia) then
+          new_config.cmd[1] = julia
+        end
       end,
-      settings = { julia = { format = { indent = 2 } } }
+      settings = { julia = { format = { indent = 2 } } },
     },
     pyright = { settings = { python = { formatting = { provider = "yapf" }, linting = { pytypeEnabled = true } } } },
     rust_analyzer = { settings = { ["rust-analyzer"] = { cargo = { allFeatures = true }, checkOnSave = { command = "clippy", extraArgs = { "--no-deps" } } } } },
@@ -162,10 +166,10 @@ augroup END
         flutterOutline = true,
         onlyAnalyzeProjectsWithOpenFiles = true,
         outline = true,
-        suggestFromUnimportedLibraries = true
-      },                                                                             -- root_dir = root_pattern("pubspec.yaml"),
+        suggestFromUnimportedLibraries = true,
+      }, -- root_dir = root_pattern("pubspec.yaml"),
       settings = { dart = { completeFunctionCalls = true, showTodos = true } },
-      on_attach = function(client, bufnr) end
+      on_attach = function(client, bufnr) end,
     },
     lua_ls = {
       on_attach = on_attach,
@@ -175,9 +179,9 @@ augroup END
         Lua = {
           runtime = { version = "LuaJIT", path = vim.split(package.path, ";") },
           diagnostics = { enable = true, globals = { "vim" } },
-          workspace = { maxPreload = 2000, preloadFileSize = 50000, checkThirdParty = false }
-        }
-      }
+          workspace = { maxPreload = 2000, preloadFileSize = 50000, checkThirdParty = false },
+        },
+      },
     },
     sqlls = {},
     tsserver = {
@@ -186,15 +190,15 @@ augroup END
         client.server_capabilities.document_formatting = false
         client.server_capabilities.document_range_formatting = false
       end,
-      filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" }
+      filetypes = { "javascript", "javascriptreact", "javascript.jsx", "typescript", "typescriptreact", "typescript.tsx" },
     },
     vimls = {},
-    yamlls = {}
+    yamlls = {},
   }
 
   mason_lspconfig.setup({
-    ensure_installed = servers,                      -- will be installed by mason
-    automatic_installation = true
+    ensure_installed = servers, -- will be installed by mason
+    automatic_installation = true,
   })
 
   -- Your other configurations ...
@@ -253,7 +257,7 @@ augroup END
   -- }
 
   -- null_ls.setup({
-  local sources = {            -- Diagnostics
+  local sources = {              -- Diagnostics
     builtins.diagnostics.chktex, -- null_ls.builtins.code_actions.eslint_d,
     -- null_ls.builtins.diagnostics.eslint_d,
     -- null_ls.builtins.formatting.eslint_d,
@@ -261,46 +265,74 @@ augroup END
     -- null_ls.builtins.diagnostics.proselint,
     -- null_ls.builtins.diagnostics.pylint,
     -- builtins.diagnostics.selene,
-    builtins.diagnostics.dotenv_linter, builtins.diagnostics.shellcheck.with({                                                                     -- shell script diagnostics
-    diagnostic_config = {                                                                                                                          -- see :help vim.diagnostic.config()
-      underline = true, virtual_text = false, signs = true, update_in_insert = false, severity_sort = true },
-    diagnostics_format = "[#{c}] #{m} (#{s})"                                                                                                      -- this will run every time the source runs,
-    -- so you should prefer caching results if possible
-  }), builtins.diagnostics.zsh.with({ filetypes = "zsh", "sh" }), builtins.diagnostics.todo_comments, builtins.diagnostics.teal,
+    builtins.diagnostics.dotenv_linter,
+    builtins.diagnostics.shellcheck.with({ -- shell script diagnostics
+      diagnostic_config = {                -- see :help vim.diagnostic.config()
+        underline = true,
+        virtual_text = false,
+        signs = true,
+        update_in_insert = false,
+        severity_sort = true,
+      },
+      diagnostics_format = "[#{c}] #{m} (#{s})", -- this will run every time the source runs,
+      -- so you should prefer caching results if possible
+    }),
+    builtins.diagnostics.zsh.with({ filetypes = "zsh", "sh" }),
+    builtins.diagnostics.todo_comments,
+    builtins.diagnostics.teal,
     -- null_ls.builtins.diagnostics.vale,
-    builtins.diagnostics.vint, builtins.diagnostics.tidy, builtins.diagnostics.php, builtins.diagnostics.phpcs, builtins.diagnostics.flake8,
-    builtins.diagnostics.eslint_d.with({ condition = function(utils) return utils.root_has_file(".eslintrc.json") end }), builtins.formatting.eslint_d,
+    builtins.diagnostics.vint,
+    builtins.diagnostics.tidy,
+    builtins.diagnostics.php,
+    builtins.diagnostics.phpcs,
+    builtins.diagnostics.flake8,
+    builtins.diagnostics.eslint_d.with({
+      condition = function(utils)
+        return utils.root_has_file(".eslintrc.json")
+      end,
+    }),
+    builtins.formatting.eslint_d,
     -- null_ls.builtins.diagnostics.write_good.with { filetypes = { 'markdown', 'tex' } },
 
     -- Formatting
-    builtins.formatting.shfmt.with({ filetypes = { "bash", "zsh", "sh" }, extra_args = { "-i", "2", "-ci" } }), builtins.formatting.shellharden,
+    builtins.formatting.shfmt.with({ filetypes = { "bash", "zsh", "sh" }, extra_args = { "-i", "2", "-ci" } }),
+    builtins.formatting.shellharden,
     builtins.formatting.trim_whitespace.with({ filetypes = { "tmux", "teal", "zsh" } }), -- builtins.formatting.beautysh,
-    builtins.formatting.beautysh.with({ filetypes = "zsh" }), builtins.formatting.clang_format, builtins.formatting.rustfmt, builtins.formatting.sql_formatter,
+    builtins.formatting.beautysh.with({ filetypes = "zsh" }),
+    builtins.formatting.clang_format,
+    builtins.formatting.rustfmt,
+    builtins.formatting.sql_formatter,
     -- null_ls.builtins.formatting.cmake_format,
-    builtins.formatting.isort, builtins.formatting.htmlbeautifier, -- null_ls.builtins.formatting.prettier,
+    builtins.formatting.isort,
+    builtins.formatting.htmlbeautifier, -- null_ls.builtins.formatting.prettier,
     builtins.formatting.prettierd,
     builtins.formatting.prettier.with({
-      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html", "css",
-        "scss", "less", "graphql", "vue", "svelte" },
-      extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" }
-    }), builtins.formatting.rustfmt,
+      filetypes = { "javascript", "javascriptreact", "typescript", "typescriptreact", "json", "yaml", "markdown", "html", "css", "scss", "less", "graphql", "vue", "svelte" },
+      extra_args = { "--single-quote", "--tab-width 4", "--print-width 200" },
+    }),
+    builtins.formatting.rustfmt,
     -- builtins.formatting.stylua,
     -- builtins.formatting.lua_format,
     builtins.formatting.stylua.with({
       filetypes = { "lua" },
       command = "stylua",
-      args = { "--indent-width", "2", "--column-width", "160", "--indent-type", "Spaces", "-" }
+      args = { "--indent-width", "2", "--column-width", "160", "--indent-type", "Spaces", "-" },
     }),
     -- builtins.formatting.dart_format,
-    builtins.formatting.dart_format.with({ filetypes = { "dart" } }), builtins.formatting.trim_whitespace, builtins.formatting.yapf,
+    builtins.formatting.dart_format.with({ filetypes = { "dart" } }),
+    builtins.formatting.trim_whitespace,
+    builtins.formatting.yapf,
     -- null_ls.builtins.formatting.black
 
     -- Code Actions
     builtins.code_actions.shellcheck, -- shell script code actions
     -- builtins.code_actions.eslint_d.with(eslint_opts),
     -- null_ls.builtins.code_actions.refactoring.with { filetypes = { 'javascript', 'typescript', 'lua', 'python', 'c', 'cpp' } },
-    builtins.code_actions.gitsigns, builtins.code_actions.gitrebase, -- Hover
-    builtins.hover.dictionary, builtins.hover.printenv }
+    builtins.code_actions.gitsigns,
+    builtins.code_actions.gitrebase, -- Hover
+    builtins.hover.dictionary,
+    builtins.hover.printenv,
+  }
   -- })
   -- Linters/Formatters ensure installed
   -- for _, pkg_name in ipairs({
@@ -317,16 +349,26 @@ augroup END
     on_attach = function(client, bufnr)
       if client.supports_method("textDocument/formatting") then
         vim.api.nvim_clear_autocmds({ group = augroup, buffer = bufnr })
-        vim.api.nvim_create_autocmd("BufWritePre", { group = augroup, buffer = bufnr, callback = function() vim.lsp.buf.format() end })
+        vim.api.nvim_create_autocmd("BufWritePre", {
+          group = augroup,
+          buffer = bufnr,
+          callback = function()
+            vim.lsp.buf.format()
+          end,
+        })
       end
-    end
+    end,
   })
 
   -- Install all the null-ls sources using Mason
   local registry = require("mason-registry")
   for _, source_name in ipairs(sources) do
     local ok, pkg = pcall(registry.get_package, source_name)
-    if ok then if not pkg:is_installed() then pkg:install() end end
+    if ok then
+      if not pkg:is_installed() then
+        pkg:install()
+      end
+    end
   end
   -- Loop through the null_ls_sources table and install the packages
   -- Install all sources for null-ls
@@ -347,8 +389,14 @@ augroup END
 
   local null_ls_stop = function()
     local null_ls_client
-    for _, client in ipairs(vim.lsp.get_clients()) do if client.name == "null-ls" then null_ls_client = client end end
-    if not null_ls_client then return end
+    for _, client in ipairs(vim.lsp.get_clients()) do
+      if client.name == "null-ls" then
+        null_ls_client = client
+      end
+    end
+    if not null_ls_client then
+      return
+    end
 
     null_ls_client.stop()
   end
