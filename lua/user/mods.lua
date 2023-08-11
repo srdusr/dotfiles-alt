@@ -24,9 +24,7 @@ M.has = function(feat)
   return false
 end
 
-
 --------------------------------------------------
-
 
 -- Format on save
 local augroup = vim.api.nvim_create_augroup("LspFormatting", {})
@@ -48,18 +46,25 @@ require("null-ls").setup({
   end,
 })
 
-
 --------------------------------------------------
 
 ---Determine if a value of any type is empty
 ---@param item any
 ---@return boolean?
 function M.empty(item)
-  if not item then return true end
+  if not item then
+    return true
+  end
   local item_type = type(item)
-  if item_type == 'string' then return item == '' end
-  if item_type == 'number' then return item <= 0 end
-  if item_type == 'table' then return vim.tbl_isempty(item) end
+  if item_type == "string" then
+    return item == ""
+  end
+  if item_type == "number" then
+    return item <= 0
+  end
+  if item_type == "table" then
+    return vim.tbl_isempty(item)
+  end
   return item ~= nil
 end
 
@@ -104,7 +109,6 @@ M.toggle_completion = function()
     print("completion not available")
   end
 end
-
 
 --------------------------------------------------
 
@@ -165,6 +169,7 @@ function M.findFilesInCwd()
     vim.cmd("let g:rooter_manual_only = 0") -- Change back to automatic rooter
   end, 100)
 end
+
 --function M.findFilesInCwd()
 --  vim.cmd("let g:rooter_manual_only = 1") -- Toggle the rooter plugin
 --  require("plugins.telescope").findhere()
@@ -175,17 +180,17 @@ end
 
 -- Toggle the executable permission
 function M.Toggle_executable()
-  local current_file = vim.fn.expand('%:p')
+  local current_file = vim.fn.expand("%:p")
   local executable = vim.fn.executable(current_file) == 1
 
   if executable then
     -- File is executable, unset the executable permission
-    vim.fn.system('chmod -x ' .. current_file)
+    vim.fn.system("chmod -x " .. current_file)
     --print(current_file .. ' is no longer executable.')
     print("No longer executable")
   else
     -- File is not executable, set the executable permission
-    vim.fn.system('chmod +x ' .. current_file)
+    vim.fn.system("chmod +x " .. current_file)
     --print(current_file .. ' is now executable.')
     print("Now executable")
   end
@@ -234,34 +239,34 @@ function M.Set_git_env_vars()
   end
 end
 
-vim.cmd [[augroup my_git_env_vars]]
-vim.cmd [[  autocmd!]]
-vim.cmd [[  autocmd BufEnter * lua require('user.mods').Set_git_env_vars()]]
-vim.cmd [[  autocmd VimEnter * lua require('user.mods').Set_git_env_vars()]]
-vim.cmd [[augroup END]]
+vim.cmd([[augroup my_git_env_vars]])
+vim.cmd([[  autocmd!]])
+vim.cmd([[  autocmd BufEnter * lua require('user.mods').Set_git_env_vars()]])
+vim.cmd([[  autocmd VimEnter * lua require('user.mods').Set_git_env_vars()]])
+vim.cmd([[augroup END]])
 
 --------------------------------------------------
 
-vim.cmd [[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]]
+vim.cmd([[autocmd BufWritePre <buffer> lua vim.lsp.buf.format()]])
 --vim.cmd [[autocmd BufWritePre * lua vim.lsp.buf.format()]]
 
 --------------------------------------------------
 
 --- Update Tmux Status Vi-mode
 function M.update_tmux_status()
-  local mode = vim.api.nvim_eval('mode()')
+  local mode = vim.api.nvim_eval("mode()")
   -- Determine the mode name based on the mode value
   local mode_name
-  if mode == 'n' then
-    mode_name = '-- NORMAL --'
-  elseif mode == 'i' or mode == 'ic' then
-    mode_name = '-- INSERT --'
+  if mode == "n" then
+    mode_name = "-- NORMAL --"
+  elseif mode == "i" or mode == "ic" then
+    mode_name = "-- INSERT --"
   else
-    mode_name = '-- NORMAL --' --'-- COMMAND --'
+    mode_name = "-- NORMAL --" --'-- COMMAND --'
   end
 
   -- Write the mode name to the file
-  local file = io.open(os.getenv('HOME') .. '/.vi-mode', 'w')
+  local file = io.open(os.getenv("HOME") .. "/.vi-mode", "w")
   file:write(mode_name)
   file:close()
   if nvim_running then
@@ -310,8 +315,6 @@ vim.cmd([[
 -- end
 --
 -- vim.api.nvim_create_user_command('OpenEmulators', OpenEmulatorList, {})
-
-
 
 --local api = vim.api
 --local fn = vim.fn
@@ -414,8 +417,7 @@ function M.Update_neovim()
 
   -- Download the latest version of Neovim
   append_line("Downloading the latest version of Neovim...")
-  os.execute(
-    "curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz")
+  os.execute("curl -L -o nvim-linux64.tar.gz https://github.com/neovim/neovim/releases/latest/download/nvim-linux64.tar.gz")
   append_line("Download complete.")
 
   -- Extract the downloaded archive
@@ -441,8 +443,6 @@ function M.Update_neovim()
 end
 
 -- Bind a keymap to the update_neovim function (optional)
-vim.api.nvim_set_keymap('n', '<leader>U', '<cmd> lua require("user.mods").Update_neovim()<CR>',
-  { noremap = true, silent = true })
-
+vim.api.nvim_set_keymap("n", "<leader>U", '<cmd> lua require("user.mods").Update_neovim()<CR>', { noremap = true, silent = true })
 
 return M
