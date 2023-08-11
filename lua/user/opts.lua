@@ -1,35 +1,4 @@
 --[[ opts.lua ]]
--- " Load indent files, to automatically do language-dependent indenting.
---vim.cmd([[
---    "filetype plugin indent on
---]])
-
--- Let clipboard register be +
-vim.cmd([[
-    let g:clipbrdDefaultReg = '+'
-]])
-
---vim.cmd([[
---    "autocmd BufEnter * :syntax sync fromstart
---    "syntax enable
---    "set nocompatible
---    "autocmd FileType lua set comments=s1:---,m:--,ex:--
---]])
-
--- Fast macros without lazyredraw
-vim.cmd([[
-    set re=0
-    nnoremap @ <cmd>execute "noautocmd norm! " . v:count1 . "@" . getcharstr()<cr>
-    xnoremap @ :<C-U>execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<cr>
-]])
-
--- Stop annoying auto commenting on new lines
-vim.cmd [[
-  augroup annoying
-    au!
-    au BufEnter * set fo-=c fo-=r fo-=o
-  augroup end
-]]
 
 -- Environment
 --vim.opt.shell = "zsh" --
@@ -127,19 +96,19 @@ vim.opt.report = 0      -- Always report changed lines.
 local prefix = vim.env.XDG_CONFIG_HOME or vim.fn.expand("~/.config")
 --vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undodir = { prefix .. "/nvim/tmp/.undo//" }
-vim.opt.backupdir = { prefix .. "/nvim/tmp/.backup//" }
 vim.opt.directory = { prefix .. "/nvim/tmp/.swp//" }
-vim.opt.backup = false   --
---vim.opt.undofile = false --
+vim.opt.backupdir = { prefix .. "/nvim/tmp/.backup//" }
 vim.opt.undofile = true --
-vim.opt.swapfile = true  --
+vim.opt.swapfile = true --
+vim.opt.backup = true   --
+--vim.opt.backupcopy =
 -- Add timestamp as extension for backup files
-vim.api.nvim_create_autocmd('BufWritePre', {
-  group = vim.api.nvim_create_augroup('timestamp_backupext', { clear = true }),
-  desc = 'Add timestamp to backup extension',
-  pattern = '*',
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = vim.api.nvim_create_augroup("timestamp_backupext", { clear = true }),
+  desc = "Add timestamp to backup extension",
+  pattern = "*",
   callback = function()
-    vim.opt.backupext = '-' .. vim.fn.strftime('%Y%m%d%H%M')
+    vim.opt.backupext = "-" .. vim.fn.strftime("%Y%m%d%H%M")
   end,
 })
 
@@ -219,7 +188,7 @@ vim.opt.pumheight = 10      -- pop up menu height
 -- Better Completion
 vim.opt.complete = { ".", "w", "b", "u", "t" } --
 --vim.opt.completeopt = { "longest,menuone,preview" } --
-vim.opt.completeopt = { 'menu', 'menuone', 'noselect' }
+vim.opt.completeopt = { "menu", "menuone", "noselect" }
 --vim.opt.completeopt = { "menuone", "noselect" }   -- mostly just for cmp
 --vim.opt.completeopt = { "menu", "menuone", "noselect" } --
 
@@ -252,6 +221,38 @@ vim.opt.sessionoptions = "blank,buffers,curdir,folds,help,tabpages,winsize,winpo
 vim.g.netrw_browse_split = 0
 vim.g.netrw_banner = 0
 vim.g.netrw_winsize = 25
+
+-- " Load indent files, to automatically do language-dependent indenting.
+--vim.cmd([[
+--    "filetype plugin indent on
+--]])
+
+-- Let clipboard register be +
+vim.cmd([[
+    let g:clipbrdDefaultReg = '+'
+]])
+
+--vim.cmd([[
+--    "autocmd BufEnter * :syntax sync fromstart
+--    "syntax enable
+--    "set nocompatible
+--    "autocmd FileType lua set comments=s1:---,m:--,ex:--
+--]])
+
+-- Fast macros without lazyredraw
+vim.cmd([[
+    set re=0
+    nnoremap @ <cmd>execute "noautocmd norm! " . v:count1 . "@" . getcharstr()<cr>
+    xnoremap @ :<C-U>execute "noautocmd '<,'>norm! " . v:count1 . "@" . getcharstr()<cr>
+]])
+
+-- Stop annoying auto commenting on new lines
+vim.cmd([[
+  augroup annoying
+    au!
+    au BufEnter * set fo-=c fo-=r fo-=o
+  augroup end
+]])
 
 -- Cursorline
 vim.cmd([[                                        " Only show cursorline in the current window and in normal mode
