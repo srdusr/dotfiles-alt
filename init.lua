@@ -49,14 +49,12 @@ if impatient_ok then
   impatient.enable_profile()
 end
 
-
 -- Schedule reading shadafile to improve the startup time
 vim.opt.shadafile = "NONE"
 vim.schedule(function()
   vim.opt.shadafile = ""
   vim.cmd("silent! rsh")
 end)
-
 
 -- Load/reload modules
 local modules = {
@@ -98,17 +96,15 @@ local modules = {
   --"plugins.modify-blend",
 }
 
-
 -- Refresh module cache
 for k, v in pairs(modules) do
   package.loaded[v] = nil
   require(v)
 end
 
-
 -- Check if we have the latest stable version of nvim
 local mods = require("user.mods")
-local expected_ver = "0.9.0"
+local expected_ver = "0.10.0"
 local nvim_ver = mods.get_nvim_version()
 
 if nvim_ver ~= expected_ver then
@@ -116,7 +112,6 @@ if nvim_ver ~= expected_ver then
   vim.api.nvim_err_writeln(msg)
   return
 end
-
 
 -- Snippets
 vim.g.snippets = "luasnip"
