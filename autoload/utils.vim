@@ -148,3 +148,19 @@ endfunction
 
 
 "-------------------------------------------------
+
+" Disable annoying auto line break
+fu! utils#DisableBr()
+    set wrap
+    set linebreak
+    set nolist  " list disables linebreak
+    set textwidth=0
+    set wrapmargin=0
+    set formatoptions-=t
+endfu
+
+" Disable line breaks for all file types
+autocmd! BufNewFile,BufRead *.* call utils#DisableBr()
+
+
+"-------------------------------------------------
