@@ -1,6 +1,9 @@
 [org/gnome/desktop/screensaver]
 lock-enabled=false
 
+[org.gnome.mutter]
+overlay-key=''
+
 [org/gnome/settings-daemon/plugins/media-keys]
 custom-keybinding-names=['custom-keybinding']
 
