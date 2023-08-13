@@ -8,32 +8,24 @@
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 NC='\033[0m' # No Color
-BOLD=$(tput bold)
-NORMAL=$(tput sgr0)
 
-# Define the variable for the date difference command
-DATEDIFF_COMMAND="datediff"
+# Function to handle errors
+handle_error() {
+    local message="$1"
+    printf "${RED}Error: $message${NC}\n"
+    exit 1
+}
 
 # Check if necessary dependencies are installed
 check_dependencies() {
-    missing_dependencies=()
+    DOWNLOAD_COMMAND=""
 
-    for cmd in wget curl xmllint; do
-        if ! [ -x "$(command -v "$cmd")" ]; then
-            missing_dependencies+=("$cmd")
-        fi
-    done
-
-    if [ -x "$(command -v datediff)" ]; then
-        DATEDIFF_COMMAND="datediff"
-    elif [ -x "$(command -v dateutils.ddiff)" ]; then
-        DATEDIFF_COMMAND="dateutils.ddiff"
+    if [ -x "$(command -v wget)" ]; then
+        DOWNLOAD_COMMAND="wget -q -O"
+    elif [ -x "$(command -v curl)" ]; then
+        DOWNLOAD_COMMAND="curl -sSL -o"
     else
-        missing_dependencies+=("datediff")
-    fi
-
-    if [ ${#missing_dependencies[@]} -gt 0 ]; then
-        printf "\n${RED}Missing dependencies: ${missing_dependencies[*]}. Please install them to continue!${NC}\n"
+        printf "${RED}Error: Neither wget nor curl found. Please install one of them to continue!${NC}\n"
         exit 1
     fi
 }
@@ -63,67 +55,168 @@ check_privilege_tools() {
     fi
 }
 
-check_privilege_tools
+# Check if Neovim is already installed
+check_neovim_installed() {
+    if [ -x "$(command -v nvim)" ]; then
+        return 0 # Neovim is installed
+    else
+        return 1 # Neovim is not installed
+    fi
+}
+
+# Nightly version
+nightly_version() {
+    local url="https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage"
+    install_neovim "$url"
+}
+
+# Stable version
+stable_version() {
+    local url="https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"
+    install_neovim "$url"
+}
+
+# Specific version
+specific_version() {
+    local version="$1"
+    local url="https://github.com/neovim/neovim/releases/download/$version/nvim.appimage"
+    install_neovim "$url"
+}
+
+# Function to download a file using wget or curl
+download_file() {
+    local url="$1"
+    local output="$2"
+
+    $DOWNLOAD_COMMAND "$output" "$url"
+}
+
+# Check if a specific version of Neovim exists
+version_exists() {
+    local version="$1"
+    local url="https://github.com/neovim/neovim/releases/tag/$version"
+
+    # Send a HEAD request and check the response status using wget or curl
+    if $DOWNLOAD_COMMAND /dev/null "$url" 2>/dev/null; then
+        return 0 # Version exists
+    else
+        return 1 # Version does not exist
+    fi
+}
+
+# Choose Version
+choose_version() {
+    printf "${GREEN}Choose what version to install...${NC}\n"
+
+    # Ask user for version preference
+    read -p "Installation options:
+    1. Nightly version (default)
+    2. Stable version
+    3. Specific version
+    Enter the number corresponding to your choice (1/2/3): " version_choice
+
+    case $version_choice in
+        1) nightly_version ;;
+        2) stable_version ;;
+        3)
+            # Ask user for specific version
+            read -p "Enter the specific version (e.g., v0.1.0): " specific_version
+            # Check if the specific version exists on GitHub releases
+            if version_exists "$specific_version"; then
+                # Install specific version
+                specific_version "$specific_version"
+            else
+                printf "${RED}The specified version $specific_version does not exist. Aborting...${NC}\n"
+                exit 1
+            fi
+            ;;
+        *)
+            echo "Invalid choice. Exiting..."
+            exit 1
+            ;;
+    esac
+}
 
 # Install Neovim
 install_neovim() {
-    printf "${GREEN}Installing Neovim...${NC}\n"
-
-    # Detect the operating system to determine the appropriate installation method
+    local url="$1"
+    printf "Downloading and installing Neovim $version_choice...\n"
+    # Determine the platform-specific installation steps
     case "$(uname -s)" in
-    Linux)
-        printf "Detected Linux OS.\n"
-        # Check if FUSE is available
-        if [ -x "$(command -v fusermount)" ]; then
-            printf "FUSE is available. Downloading and running the AppImage...\n"
-            wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -q -O nvim.appimage
-            chmod u+x nvim.appimage
-            "$PRIVILEGE_TOOL" cp nvim.appimage /usr/local/bin/nvim
-            "$PRIVILEGE_TOOL" mv nvim.appimage /usr/bin/nvim
-            nvim
-        else
-            printf "FUSE is not available. Downloading and extracting the AppImage...\n"
-            wget https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage -q -O nvim.appimage
-            chmod u+x nvim.appimage
-            ./nvim.appimage --appimage-extract
-            "$PRIVILEGE_TOOL" cp squashfs-root/usr/bin/nvim /usr/local/bin
-            "$PRIVILEGE_TOOL" mv squashfs-root/usr/bin/nvim /usr/bin
-            nvim
-        fi
-        ;;
+        Linux)
+            printf "Detected Linux OS.\n"
+            if [ -x "$(command -v fusermount)" ]; then
+                printf "FUSE is available. Downloading and running the AppImage...\n"
+                download_file "$url" -q -O nvim.appimage
+                chmod u+x nvim.appimage
+                "$PRIVILEGE_TOOL" cp nvim.appimage /usr/local/bin/nvim
+                "$PRIVILEGE_TOOL" mv nvim.appimage /usr/bin/nvim
+                nvim
+            else
+                printf "FUSE is not available. Downloading and extracting the AppImage...\n"
+                download_file "$url" -q -O nvim.appimage
+                chmod u+x nvim.appimage
+                ./nvim.appimage --appimage-extract
+                "$PRIVILEGE_TOOL" cp squashfs-root/usr/bin/nvim /usr/local/bin
+                "$PRIVILEGE_TOOL" mv squashfs-root/usr/bin/nvim /usr/bin
+                nvim
+            fi
 
-    Darwin)
-        printf "Detected macOS.\n"
-        wget https://github.com/neovim/neovim/releases/download/nightly/nvim-macos.tar.gz -q -O nvim-macos.tar.gz
-        xattr -c ./nvim-macos.tar.gz
-        tar xzvf nvim-macos.tar.gz
-        "$PRIVILEGE_TOOL" cp nvim-macos/bin/nvim /usr/local/bin
-        "$PRIVILEGE_TOOL" mv nvim-macos/bin/nvim /usr/bin
-        nvim
-        ;;
+            ;;
 
-    MINGW*)
-        printf "Detected Windows.\n"
-        if [ "$PRIVILEGE_TOOL" = "sudo" ]; then
-            curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod +x nvim.appimage
-            "$PRIVILEGE_TOOL" cp nvim.appimage /usr/local/bin/nvim
-            "$PRIVILEGE_TOOL" mv /usr/local/bin/nvim /usr/bin
+        Darwin)
+            printf "Detected macOS.\n"
+            download_file "$url" -q -O nvim-macos.tar.gz
+            xattr -c ./nvim-macos.tar.gz
+            tar xzvf nvim-macos.tar.gz
+            "$PRIVILEGE_TOOL" cp nvim-macos/bin/nvim /usr/local/bin
+            "$PRIVILEGE_TOOL" mv nvim-macos/bin/nvim /usr/bin/nvim
             nvim
-        elif [ "$PRIVILEGE_TOOL" = "" ]; then
-            curl -LO https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage && chmod +x nvim.appimage
-            cp nvim.appimage /usr/local/bin/nvim
-            mv /usr/local/bin/nvim /usr/bin
-            nvim
-        else
-            printf "No privilege escalation tool found. Cannot install Neovim on Windows.\n"
-        fi
-        ;;
-    *)
-        printf "Unsupported operating system.\n"
-        ;;
+            ;;
+
+        MINGW*)
+            printf "Detected Windows.\n"
+            download_file "$url" -q -O nvim.appimage
+            chmod +x nvim.appimage
+            if [ "$PRIVILEGE_TOOL" = "sudo" ]; then
+                "$PRIVILEGE_TOOL" cp nvim.appimage /usr/local/bin/nvim
+                "$PRIVILEGE_TOOL" mv /usr/local/bin/nvim /usr/bin
+                nvim
+            elif [ "$PRIVILEGE_TOOL" = "" ]; then
+                cp nvim.appimage /usr/local/bin/nvim
+                mv /usr/local/bin/nvim /usr/bin
+                nvim
+            else
+                printf "No privilege escalation tool found. Cannot install Neovim on Windows.\n"
+            fi
+            ;;
+        *)
+            printf "Unsupported operating system.\n"
+            exit 1
+            ;;
     esac
 
-    printf "${GREEN}Neovim has been installed successfully!${NC}\n"
+    printf "${GREEN}Neovim $version_choice has been installed successfully!${NC}\n"
+}
+
+# Update Neovim to the latest version (nightly/stable)
+update_version() {
+    printf "${GREEN}Updating Neovim to the latest version...${NC}\n"
+
+    # Determine which version to update to (nightly/stable)
+    printf "Select version to update to:
+    1. Nightly
+    2. Stable
+    Enter the number corresponding to your choice (1/2): "
+    read update_choice
+
+    case $update_choice in
+        1) nightly_version ;;
+        2) stable_version ;;
+        *) echo "Invalid choice. Exiting..." && exit 1 ;;
+    esac
+
+    printf "${GREEN}Neovim has been updated successfully!${NC}\n"
 }
 
 # Uninstall Neovim
@@ -163,187 +256,84 @@ uninstall_neovim() {
     printf "${GREEN}Neovim has been uninstalled successfully!${NC}\n"
 }
 
-# Check if Neovim is already installed
-check_neovim_installed() {
-    if [ -x "$(command -v nvim)" ]; then
-        return 0 # Neovim is installed
-    else
-        return 1 # Neovim is not installed
-    fi
-}
-
 # Define the variable to control the prompt
 SHOW_PROMPT=1
 
 # Check if necessary dependencies are installed
 check_dependencies
 
+# Check for privilege escalation tools
+check_privilege_tools
+
 # Check if Neovim is already installed
 if check_neovim_installed; then
     printf "${GREEN}Neovim is already installed!${NC}\n"
 else
-    # Prompt user for initial installation
-    read -p "Neovim is not installed. Do you want to install it? [yes/no] " install_choice
-    case $install_choice in
-    [Yy]*) install_neovim ;;
-    [Nn]*) ;;
-    *) echo "Please answer yes or no." ;;
-    esac
+    choose_version
 fi
 
-# Fetch the latest Neovim Nightly release information from GitHub
-wget https://github.com/neovim/neovim/releases/tag/nightly -q -O - >/tmp/nvim_release_info
-RESPONSE=$(wget https://github.com/neovim/neovim/releases/tag/nightly --save-headers -O - 2>&1)
+# Function to check for updates and display breaking changes
+check_version_updates() {
+    local latest_version_url="https://api.github.com/repos/neovim/neovim/releases/latest"
+    local latest_version=""
 
-# Check if the release exists
-if [[ "$RESPONSE" =~ 404\ Not\ Found ]]; then
-    printf "${RED}Unable to fetch latest Neovim Nightly info. Exiting...${NC}\n"
-    exit
-fi
-
-# Initialize variables
-should_prompt=0
-current_version=$(nvim --version | head -n 1)
-new_version=$(xmllint --html --xpath "//pre//code/node()" /tmp/nvim_release_info 2>/dev/null | grep NVIM)
-current_datetime_iso=$(date --iso-8601=ns)
-new_release_datetime_iso=$(xmllint --html --xpath "string(//relative-time/@datetime)" /tmp/nvim_release_info 2>/dev/null)
-time_since_release=$("DATEDIFF_COMMAND" "$new_release_datetime_iso" "$current_datetime_iso" -f "%H hours %M minutes ago")
-
-# Check if the new Neovim version is available
-if [[ "$new_version" == "" ]]; then
-    printf "\n${RED}Failed to retrieve latest Neovim Nightly version from the repository. Aborting...${NC}\n"
-    exit
-fi
-
-# Check if the current version is already the latest
-if [[ "$current_version" == "$new_version" ]]; then
-    printf "\n${RED}No new ${BOLD}Neovim Nightly${NORMAL}${RED} version found!\n${NC}Last release: ${time_since_release}\nExiting...\n"
-    exit
-fi
-
-# If a newer version is found, prompt the user
-if [[ "$current_version" != "$new_version" ]]; then
-    printf "\n${GREEN}New ${BOLD}Neovim Nightly${NORMAL}${GREEN} version available!${NC}\n${current_version} -> ${BOLD}${new_version}${NORMAL}\nReleased: ${time_since_release}\n\n"
-    should_prompt=1
-fi
-
-# Function to update Neovim Nightly
-update_neovim() {
-    printf "${RED}Updating Neovim Nightly...${NC}\n"
-    download_url="https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage"
-    curl_command="curl -L -w http_code=%{http_code}"
-    curl_output=$("$curl_command" "$download_url" -o /tmp/nvim)
-    http_code=$(echo "$curl_output" | sed -e 's/.*\http_code=//')
-    error_message=$(echo "$curl_output" | sed -e 's/http_code.*//')
-
-    if [[ $http_code == 200 ]]; then
-        chmod +x /tmp/nvim
-        "$PRIVILEGE_TOOL" cp /tmp/nvim /usr/local/bin
-        "$PRIVILEGE_TOOL" mv /tmp/nvim /usr/bin
-        printf "${GREEN}Neovim Nightly updated successfully!${NC}\n"
+    if [ -x "$(command -v curl)" ]; then
+        latest_version=$(curl -sSL "$latest_version_url" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
+    elif [ -x "$(command -v wget)" ]; then
+        latest_version=$(wget -qO - "$latest_version_url" | grep '"tag_name":' | sed -E 's/.*"([^"]+)".*/\1/')
     else
-        printf "${RED}Failed to update Neovim Nightly! ERROR: ${error_message}${NC}\n"
-    fi
-}
-
-rm /tmp/nvim_release_info
-
-downgrade_neovim() {
-    # Fetch all the release tags from GitHub
-    ALL_TAGS=$(curl -s "https://api.github.com/repos/neovim/neovim/tags" | grep '"name":' | cut -d '"' -f 4)
-
-    # Filter out major version tags (assumes version tag format is "vx.y.z")
-    MAJOR_VERSIONS=$(echo "$ALL_TAGS" | grep -E "^v[0-9]+\.[0-9]+\.0$")
-
-    # Show available major versions to the user
-    echo "Available major versions:"
-    echo "$MAJOR_VERSIONS"
-
-    # Ask user to choose a version
-    read -p "Enter the major version to downgrade to (e.g., v0.1, v0.2, ...): " DESIRED_MAJOR_VERSION
-
-    # Construct the desired version tag
-    DESIRED_VERSION=$(echo "$MAJOR_VERSIONS" | grep "$DESIRED_MAJOR_VERSION")
-
-    if [ "$DESIRED_VERSION" = "" ]; then
-        echo "Invalid major version. Exiting..."
+        printf "${RED}Error: Neither curl nor wget found. Please install one of them to continue!${NC}\n"
         exit 1
     fi
 
-    printf "${RED}Downgrading Neovim to version $DESIRED_VERSION...${NC}\n"
-
-    # Construct the URL for the desired version's release page on GitHub
-    RELEASE_URL="https://github.com/neovim/neovim/releases/tag/$DESIRED_VERSION"
-
-    # Download the release page HTML
-    wget "$RELEASE_URL" -q -O /tmp/neovim_release.html
-
-    # Find the download URL for the desired version's binary
-    DOWNLOAD_URL=$(grep -o "https://github.com/neovim/neovim/releases/download/$DESIRED_VERSION/nvim.appimage" /tmp/neovim_release.html)
-
-    # Download the desired version of Neovim
-    wget "$DOWNLOAD_URL" -q -O /tmp/nvim
-
-    # Make the downloaded binary executable
-    chmod +x /tmp/nvim
-
-    # Install the downloaded binary to appropriate locations
-    "$PRIVILEGE_TOOL" cp /tmp/nvim /usr/local/bin
-    "$PRIVILEGE_TOOL" mv /tmp/nvim /usr/bin
-
-    # Clean up temporary files
-    rm /tmp/neovim_release.html
-
-    printf "${GREEN}Neovim has been downgraded to version $DESIRED_VERSION successfully!${NC}\n"
+    if version_exists "$latest_version"; then
+        printf "${GREEN}An update is available!${NC}\n"
+        display_breaking_changes "$latest_version"
+    else
+        printf "You have the latest version of Neovim.\n"
+    fi
 }
 
-use_stable_neovim() {
-    # Fetch the latest stable version tag from GitHub releases
-    STABLE_NVIM_VERSION=$(curl -s "https://api.github.com/repos/neovim/neovim/releases/latest" | grep '"tag_name":' | cut -d '"' -f 4)
+# Function to display breaking changes for a specific version
+display_breaking_changes() {
+    local version="$1"
+    local changelog_url="https://github.com/neovim/neovim/releases/tag/$version"
+    local changelog=""
 
-    printf "${RED}Using Latest Stable Neovim version $STABLE_NVIM_VERSION...${NC}\n"
+    if [ -x "$(command -v curl)" ]; then
+        changelog=$(curl -sSL "$changelog_url" | grep -oE '<h1>Breaking Changes.*?</ul>' | sed 's/<[^>]*>//g')
+    elif [ -x "$(command -v wget)" ]; then
+        changelog=$(wget -qO - "$changelog_url" | grep -oE '<h1>Breaking Changes.*?</ul>' | sed 's/<[^>]*>//g')
+    else
+        printf "${RED}Error: Neither curl nor wget found. Please install one of them to continue!${NC}\n"
+        exit 1
+    fi
 
-    # Construct the URL for the latest stable version's release page on GitHub
-    RELEASE_URL="https://github.com/neovim/neovim/releases/tag/$STABLE_NVIM_VERSION"
-
-    # Download the release page HTML
-    wget "$RELEASE_URL" -q -O /tmp/neovim_release.html
-
-    # Find the download URL for the latest stable version's binary
-    DOWNLOAD_URL=$(grep -o "https://github.com/neovim/neovim/releases/download/$STABLE_NVIM_VERSION/nvim.appimage" /tmp/neovim_release.html)
-
-    # Download the latest stable version of Neovim
-    wget "$DOWNLOAD_URL" -q -O /tmp/nvim
-
-    # Make the downloaded binary executable
-    chmod +x /tmp/nvim
-
-    # Install the downloaded binary to appropriate locations
-    "$PRIVILEGE_TOOL" cp /tmp/nvim /usr/local/bin
-    "$PRIVILEGE_TOOL" mv /tmp/nvim /usr/bin
-
-    # Clean up temporary files
-    rm /tmp/neovim_release.html
-
-    printf "${GREEN}Latest Stable Neovim version $STABLE_NVIM_VERSION has been set up successfully!${NC}\n"
+    printf "\nBreaking Changes in Neovim $version:\n"
+    printf "$changelog\n"
 }
 
+# Main loop
 while [ "$SHOW_PROMPT" -gt 0 ]; do
-    read -p "Do you wish to update, downgrade, or use stable Neovim? [update/downgrade/stable/no] " choice
+    read -p "Do you wish to update, check for updates, change to a specific version, uninstall Neovim, or do nothing? [update/check/specific/uninstall/no] " choice
     case $choice in
-    [Uu]*)
-        update_neovim
-        break
-        ;;
-    [Dd]*)
-        downgrade_neovim
-        break
-        ;;
-    [Ss]*)
-        use_stable_neovim
-        break
-        ;;
-    [Nn]*) exit ;;
-    *) echo "Please choose update, downgrade, stable, or no." ;;
+        [Uu]*)
+            update_version
+            break ;;
+        [Ss]*)
+            choose_version
+            break ;;
+        [Rr]*)
+            uninstall_neovim
+            break ;;
+        [Nn]*)
+            echo "Exiting..."
+            exit ;;
+        [Cc]*)
+            check_version_updates
+            break ;;
+        *)
+            handle_error "Invalid choice. Please choose update, check, specific, uninstall, or no."
+            ;;
     esac
 done
