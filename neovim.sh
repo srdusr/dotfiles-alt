@@ -21,6 +21,10 @@ check_dependencies() {
         fi
     done
 
+    if [ "${missing_dependencies[*]}" = "datediff" ] && [ -x "$(command -v dateutils.ddiff)" ]; then
+        alias datediff='dateutils.ddiff'
+    fi
+
     if [ ${#missing_dependencies[@]} -gt 0 ]; then
         printf "\n${RED}Missing dependencies: ${missing_dependencies[*]}. Please install them to continue!${NC}\n"
         exit 1
