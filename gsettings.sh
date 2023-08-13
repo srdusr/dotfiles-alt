@@ -7,13 +7,12 @@ gsettings set org.gnome.desktop.screensaver lock-enabled false
 gsettings set org.gnome.mutter overlay-key ''
 
 # Disable update notification
-gsettings set org.gnome.software enable-receipts false
+gsettings set org.gnome.software download-updates false
 
 # Custom Keybinding Names
-gsettings set org.gnome.settings-daemon.plugins.media-keys custom-keybinding-names "['custom-keybinding']"
+gsettings set org.gnome.settings-daemon.plugins,media-keys custom-keybindings "['/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/']"
 
 # Custom Keybinding 0
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom-keybinding/ name "scratchpad"
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom-keybinding/ command "scratchpad"
-gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybindings:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom-keybinding/ binding "<Primary><Alt>T"
-
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ binding "<Primary><Alt>T"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ command "scratchpad"
+gsettings set org.gnome.settings-daemon.plugins.media-keys.custom-keybinding:/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/custom0/ name "scratchpad"
