@@ -11,18 +11,25 @@ NC='\033[0m' # No Color
 BOLD=$(tput bold)
 NORMAL=$(tput sgr0)
 
-# Check if necessary applications are installed
+# Define the variable for the date difference command
+DATEDIFF_COMMAND="datediff"
+
+# Check if necessary dependencies are installed
 check_dependencies() {
     missing_dependencies=()
 
-    for cmd in wget curl xmllint datediff; do
+    for cmd in wget curl xmllint; do
         if ! [ -x "$(command -v "$cmd")" ]; then
             missing_dependencies+=("$cmd")
         fi
     done
 
-    if [ "${missing_dependencies[*]}" = "datediff" ] && [ -x "$(command -v dateutils.ddiff)" ]; then
-        alias datediff='dateutils.ddiff'
+    if [ -x "$(command -v datediff)" ]; then
+        DATEDIFF_COMMAND="datediff"
+    elif [ -x "$(command -v dateutils.ddiff)" ]; then
+        DATEDIFF_COMMAND="dateutils.ddiff"
+    else
+        missing_dependencies+=("datediff")
     fi
 
     if [ ${#missing_dependencies[@]} -gt 0 ]; then
@@ -200,7 +207,7 @@ current_version=$(nvim --version | head -n 1)
 new_version=$(xmllint --html --xpath "//pre//code/node()" /tmp/nvim_release_info 2>/dev/null | grep NVIM)
 current_datetime_iso=$(date --iso-8601=ns)
 new_release_datetime_iso=$(xmllint --html --xpath "string(//relative-time/@datetime)" /tmp/nvim_release_info 2>/dev/null)
-time_since_release=$(datediff "$new_release_datetime_iso" "$current_datetime_iso" -f "%H hours %M minutes ago")
+time_since_release=$("DATEDIFF_COMMAND" "$new_release_datetime_iso" "$current_datetime_iso" -f "%H hours %M minutes ago")
 
 # Check if the new Neovim version is available
 if [[ "$new_version" == "" ]]; then
