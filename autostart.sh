@@ -2,3 +2,5 @@
 
 # Launch the dconf command with dbus-launch and load custom dconf settings
 dbus-launch /usr/bin/dconf load / <"$HOME"/.config/dconf-custom/settings.dconf
+#dconf load / < ~/.config/dconf/user.d/settings.conf
+
