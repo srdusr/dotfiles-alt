@@ -530,13 +530,13 @@ fi
 alias android-studio='/opt/android-studio/bin/studio.sh'
 
 # NVM
-nvm() {
-    local green_color
-    green_color=$(tput setaf 2)
-    local reset_color
-    reset_color=$(tput sgr0)
-    echo -e "${green_color}nvm${reset_color} $@"
-}
+#nvm() {
+#    local green_color
+#    green_color=$(tput setaf 2)
+#    local reset_color
+#    reset_color=$(tput sgr0)
+#    echo -e "${green_color}nvm${reset_color} $@"
+#}
 
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     nvm_cmds=(nvm node npm yarn)
