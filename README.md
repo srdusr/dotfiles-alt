@@ -206,14 +206,11 @@ $ cargo run --release --bin wezterm -- start
 
 ### Gnome Custom Settings
 
-- Run gnome settings at startup by editing `cron` jobs for current user
+- Run gnome settings script
 ```bash
-$ crontab -e
+$ gsettings.sh
 ```
-- Add this line to the crontab to run script at startup:
-```bash
-@reboot $HOME/.local/bin/scripts/autostart.sh
-```
+
 ---
 
 ## Development Environment
@@ -604,6 +601,8 @@ $ sdkmanager --licenses
   - First allow script execution, run the following command in PowerShell as an administrator:
   ```dos
     Set-ExecutionPolicy RemoteSigned
+    # or
+    Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
   ```
   - Then run the script by using this command in the same existing directory:
   ```dos
