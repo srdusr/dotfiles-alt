@@ -480,7 +480,13 @@ function gsp
     done
 }
 
-alias vi='nvim'
+# Define alias for nvim/vim (fallback to vim)
+if command -v nvim > /dev/null; then
+    alias vi='nvim'
+else
+    alias vi='vim'
+fi
+
 alias nv='nvim'
 alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
 alias ec='$EDITOR $HOME/.config/zsh/.zshrc'
