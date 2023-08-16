@@ -449,10 +449,97 @@ vim.api.nvim_set_keymap("n", "<leader>U", '<cmd> lua require("user.mods").Update
 -- Fix closing nvim error message (/src/unix/core.c:147: uv_close: Assertion `!uv__is_closing(handle)' failed.)
 vim.api.nvim_create_autocmd({ "VimLeave" }, {
   callback = function()
-    vim.fn.jobstart('notify-send "hello"', { detach = true })
+    vim.cmd("silent! !notify-send 'hello' >/dev/null 2>&1 &")
   end,
 })
 
 --------------------------------------------------
+
+vim.cmd([[autocmd BufEnter * lua vim.cmd('Rooter')]])
+
+-- nvim-tree is also there in modified buffers so this function filter it out
+local modifiedBufs = function(bufs)
+  local t = 0
+  for k, v in pairs(bufs) do
+    if v.name:match("NvimTree_") == nil then
+      t = t + 1
+    end
+  end
+  return t
+end
+
+function M.DeleteCurrentBuffer()
+  local cbn = vim.api.nvim_get_current_buf()
+  local buffers = vim.fn.getbufinfo({ buflisted = true })
+  local size = #buffers
+  local idx = 0
+
+  for n, e in ipairs(buffers) do
+    if e.bufnr == cbn then
+      idx = n
+      break -- Exit loop as soon as we find the buffer
+    end
+  end
+
+  if idx == 0 then
+    return
+  end
+
+  if idx == size then
+    vim.cmd("bprevious")
+  else
+    vim.cmd("bnext")
+  end
+
+  vim.cmd("silent! bdelete " .. cbn)
+
+  -- Open a new blank window
+  vim.cmd("silent! enew") -- Opens a new vertical split
+  -- OR
+  -- vim.cmd("new")  -- Opens a new horizontal split
+  -- Delay before opening a new split
+  --vim.defer_fn(function()
+  --  vim.cmd("enew") -- Opens a new vertical split
+  --end, 100)         -- Adjust the delay as needed (in milliseconds)
+  -- Delay before closing the nvim-tree window
+end
+
+--
+vim.cmd([[autocmd FileType NvimTree lua require("user.mods").DeleteCurrentBuffer()]])
+-- On :bd nvim-tree should behave as if it wasn't opened
+vim.api.nvim_create_autocmd("BufEnter", {
+  nested = true,
+  callback = function()
+    -- Only 1 window with nvim-tree left: we probably closed a file buffer
+    if #vim.api.nvim_list_wins() == 1 and require("nvim-tree.utils").is_nvim_tree_buf() then
+      local api = require("nvim-tree.api")
+      -- Required to let the close event complete. An error is thrown without this.
+      vim.defer_fn(function()
+        -- close nvim-tree: will go to the last buffer used before closing
+        api.tree.toggle({ find_file = true, focus = true })
+        -- re-open nivm-tree
+        api.tree.toggle({ find_file = true, focus = true })
+        -- nvim-tree is still the active window. Go to the previous window.
+        vim.cmd("wincmd p")
+      end, 0)
+    end
+  end,
+})
+
+-- Autocmd to dismiss notifications when opening nvim-tree window
+local function isNvimTreeOpen()
+  local win = vim.fn.win_findbuf(vim.fn.bufnr("NvimTree"))
+  return vim.fn.empty(win) == 0
+end
+
+function M.DisableNotify()
+  if isNvimTreeOpen() then
+    require("notify").dismiss()
+  end
+end
+
+vim.cmd([[
+  autocmd! WinEnter,WinLeave * lua require('user.mods').DisableNotify()
+]])
 
 return M
