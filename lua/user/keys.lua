@@ -187,8 +187,8 @@ else
 end
 
 -- Substitute globally and locally in the selected region.
-map("n", "ss", ":%s//g<Left><Left>")
-map("v", "ss", ":s//g<Left><Left>")
+map("n", "<leader>ss", ":%s//g<Left><Left>")
+map("v", "<leader>ss", ":s//g<Left><Left>")
 
 -- Toggle completion
 map("n", "<Leader>tc", ":lua require('user.mods').toggle_completion()<CR>")
@@ -310,7 +310,8 @@ map("n", "<Leader>ffr", "<cmd>lua require('telescope').extensions.recent_files.p
 map("n", "<leader>fz", "<cmd>lua require('fzf-lua').files()<CR>")
 
 -- Nvim-tree
-map("n", "<leader>f", ":NvimTreeToggle<CR>", {})
+map("n", "<leader>f", "<cmd>Rooter<CR>:NvimTreeToggle<CR>", {})
+map("n", "<F4>", ":NvimTreeFindFileToggle<CR>", { noremap = false, silent = true })
 
 -- Undotree
 map("n", "<leader>u", vim.cmd.UndotreeToggle)
