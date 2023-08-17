@@ -446,19 +446,22 @@ vim.api.nvim_set_keymap("n", "<leader>U", '<cmd> lua require("user.mods").Update
 
 --------------------------------------------------
 
--- Fix closing nvim error message (/src/unix/core.c:147: uv_close: Assertion `!uv__is_closing(handle)' failed.)
+-- Fix or suppress closing nvim error message (/src/unix/core.c:147: uv_close: Assertion `!uv__is_closing(handle)' failed.)
 vim.api.nvim_create_autocmd({ "VimLeave" }, {
   callback = function()
-    vim.cmd("silent! !notify-send 'hello' >/dev/null 2>&1 &")
+    vim.fn.jobstart("!notify-send 2>/dev/null &", { detach = true })
   end,
 })
 
 --------------------------------------------------
 
+-- Rooter
 vim.cmd([[autocmd BufEnter * lua vim.cmd('Rooter')]])
 
--- nvim-tree is also there in modified buffers so this function filter it out
-local modifiedBufs = function(bufs)
+--------------------------------------------------
+
+-- Nvim-tree
+local modifiedBufs = function(bufs) -- nvim-tree is also there in modified buffers so this function filter it out
   local t = 0
   for k, v in pairs(bufs) do
     if v.name:match("NvimTree_") == nil then
@@ -468,6 +471,7 @@ local modifiedBufs = function(bufs)
   return t
 end
 
+-- Deleting current file opened behaviour
 function M.DeleteCurrentBuffer()
   local cbn = vim.api.nvim_get_current_buf()
   local buffers = vim.fn.getbufinfo({ buflisted = true })
@@ -504,8 +508,8 @@ function M.DeleteCurrentBuffer()
   -- Delay before closing the nvim-tree window
 end
 
---
 vim.cmd([[autocmd FileType NvimTree lua require("user.mods").DeleteCurrentBuffer()]])
+
 -- On :bd nvim-tree should behave as if it wasn't opened
 vim.api.nvim_create_autocmd("BufEnter", {
   nested = true,
@@ -526,7 +530,7 @@ vim.api.nvim_create_autocmd("BufEnter", {
   end,
 })
 
--- Autocmd to dismiss notifications when opening nvim-tree window
+-- Dismiss notifications when opening nvim-tree window
 local function isNvimTreeOpen()
   local win = vim.fn.win_findbuf(vim.fn.bufnr("NvimTree"))
   return vim.fn.empty(win) == 0
@@ -541,5 +545,27 @@ end
 vim.cmd([[
   autocmd! WinEnter,WinLeave * lua require('user.mods').DisableNotify()
 ]])
+
+--------------------------------------------------
+
+-- Toggle Dashboard
+local is_dashboard_open = false
+local previous_bufnr = nil
+
+function M.toggle_dashboard()
+  if is_dashboard_open then
+    vim.cmd("Dashboard")
+    is_dashboard_open = false
+    if previous_bufnr then
+      vim.cmd("buffer " .. previous_bufnr)
+    end
+  else
+    previous_bufnr = vim.fn.bufnr("%")
+    vim.cmd("Dashboard")
+    is_dashboard_open = true
+  end
+end
+
+--------------------------------------------------
 
 return M
