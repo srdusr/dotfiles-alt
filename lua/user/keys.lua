@@ -417,8 +417,8 @@ end, { desc = "DAP-Telescope: Commands" })
 -- require("notify")("Debugger session ended", "warn")
 --end)
 
--- Dashboard
-map("n", "<leader><Space>", "<CMD>Dashboard<CR>")
+-- Toggle Dashboard
+map("n", "<leader><Space>", "<CMD>lua require('user.mods').toggle_dashboard()<CR>")
 
 -- Lsp Lines toggle
 map("", "<Leader>l", require("lsp_lines").toggle, { desc = "Toggle lsp_lines" })
