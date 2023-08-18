@@ -12,6 +12,8 @@ local db = require("dashboard")
 db.setup({
   theme = "hyper",
   config = {
+    mru = { limit = 10 },
+    project = { limit = 10 },
     header = {
       [[  ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗]],
       [[  ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║]],
