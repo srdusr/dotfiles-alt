@@ -102,17 +102,6 @@ for k, v in pairs(modules) do
   require(v)
 end
 
--- Check if we have the latest stable version of nvim
-local mods = require("user.mods")
-local expected_ver = "0.10.0"
-local nvim_ver = mods.get_nvim_version()
-
-if nvim_ver ~= expected_ver then
-  local msg = string.format("Unsupported nvim version: expect %s, but got %s instead!", expected_ver, nvim_ver)
-  vim.api.nvim_err_writeln(msg)
-  return
-end
-
 -- Snippets
 vim.g.snippets = "luasnip"
 
