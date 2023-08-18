@@ -7,7 +7,7 @@ end_of_line = lf
 insert_final_newline = true
 trim_trailing_whitespace = true
 indent_style = space
-#indent_size = 4
+indent_size = 4
 max_line_length = 10000
 
 # TypeScript/JavaScript config
@@ -19,8 +19,20 @@ indent_size = 2
 indent_size = 2
 
 # Lua config
-[**.lua]
+[*.lua]
 indent_size = 2
+tab_width = 2
+# none/single/double
+quote_style = single
+# [line break]
+break_all_list_when_line_exceed = false
+auto_collapse_lines = false
+break_before_braces = false
+# [preference]
+ignore_space_after_colon = false
+remove_call_expression_list_finish_comma = false
+end_statement_with_semicolon = keep
+
 
 # Python config
 [*.py]
