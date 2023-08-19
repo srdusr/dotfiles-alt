@@ -1,91 +1,91 @@
 local M = {}
 
 -- Shorten function names
-local actions = require("telescope.actions")
-local fb_actions = require("telescope").extensions.file_browser.actions
+local actions = require('telescope.actions')
+local fb_actions = require('telescope').extensions.file_browser.actions
 --local builtin = require("telescope.builtin")
 --local themes = require("telescope.themes")
 --local utils = require("telescope.utils")
 --local action_state = require("telescope.actions.state")
 --local layout_actions = require("telescope.actions.layout")
 --local pickers = require("telescope.pickers")
-local themes = require("telescope.themes")
+local themes = require('telescope.themes')
 
-require("telescope").setup({
+require('telescope').setup({
   defaults = {
     vimgrep_arguments = {
-      "rg",
-      "--color=never",
-      "--no-heading",
-      "--with-filename",
-      "--line-number",
-      "--column",
-      "--smart-case",
-      "--hidden",
-      "--fixed-strings",
-      "--trim",
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case',
+      '--hidden',
+      '--fixed-strings',
+      '--trim',
     },
-    prompt_prefix = " ",
-    selection_caret = " ",
-    entry_prefix = "  ",
-    path_display = { "tail" },
+    prompt_prefix = ' ',
+    selection_caret = ' ',
+    entry_prefix = '  ',
+    path_display = { 'tail' },
     --path_display = { "truncate" },
     --path_display = { "smart" },
     file_ignore_patterns = {
-      "packer_compiled.lua",
-      "~/.config/zsh/plugins",
-      "zcompdump",
-      "%.DS_Store",
-      "%.git/",
-      "%.spl",
+      'packer_compiled.lua',
+      '~/.config/zsh/plugins',
+      'zcompdump',
+      '%.DS_Store',
+      '%.git/',
+      '%.spl',
       --"%.log",
-      "%[No Name%]", -- new files / sometimes folders (netrw)
-      "/$",          -- ignore folders (netrw)
-      "node_modules",
-      "%.png",
-      "%.zip",
-      "%.pxd",
-      "^.vim/",
-      "^.local/",
-      "^.cache/",
-      "^downloads/",
-      "^music/",
+      '%[No Name%]', -- new files / sometimes folders (netrw)
+      '/$',          -- ignore folders (netrw)
+      'node_modules',
+      '%.png',
+      '%.zip',
+      '%.pxd',
+      --"^.vim/",
+      '^.local/',
+      '^.cache/',
+      '^downloads/',
+      '^music/',
       --"^node_modules/",
       --"^undodir/",
     },
     mappings = {
       i = {
-        ["<C-n>"] = actions.cycle_history_next,
-        ["<C-p>"] = actions.cycle_history_prev,
+        ['<C-n>'] = actions.cycle_history_next,
+        ['<C-p>'] = actions.cycle_history_prev,
 
-        ["<C-j>"] = actions.move_selection_next,
-        ["<C-k>"] = actions.move_selection_previous,
+        ['<C-j>'] = actions.move_selection_next,
+        ['<C-k>'] = actions.move_selection_previous,
 
         --["<C-c>"] = actions.close,
-        ["<Esc>"] = actions.close,   -- close w/ one esc
+        ['<Esc>'] = actions.close,   -- close w/ one esc
         --["<Esc>"] = "close", -- close w/ one esc
-        ["<?>"] = actions.which_key, -- keys from pressing <C-/>
+        ['<?>'] = actions.which_key, -- keys from pressing <C-/>
 
-        ["<Down>"] = actions.move_selection_next,
-        ["<Up>"] = actions.move_selection_previous,
+        ['<Down>'] = actions.move_selection_next,
+        ['<Up>'] = actions.move_selection_previous,
 
-        ["<CR>"] = actions.select_default,
-        ["<C-x>"] = actions.select_horizontal,
-        ["<C-y>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
+        ['<CR>'] = actions.select_default,
+        ['<C-x>'] = actions.select_horizontal,
+        ['<C-y>'] = actions.select_vertical,
+        ['<C-t>'] = actions.select_tab,
 
-        ["<C-u>"] = actions.preview_scrolling_up,
-        ["<C-d>"] = actions.preview_scrolling_down,
+        ['<C-u>'] = actions.preview_scrolling_up,
+        ['<C-d>'] = actions.preview_scrolling_down,
 
-        ["<PageUp>"] = actions.results_scrolling_up,
-        ["<PageDown>"] = actions.results_scrolling_down,
+        ['<PageUp>'] = actions.results_scrolling_up,
+        ['<PageDown>'] = actions.results_scrolling_down,
 
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
-        ["<C-l>"] = actions.complete_tag,
-        ["<C-_>"] = actions.which_key, -- keys from pressing <C-/>
+        ['<Tab>'] = actions.toggle_selection + actions.move_selection_worse,
+        ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_better,
+        ['<C-q>'] = actions.send_to_qflist + actions.open_qflist,
+        ['<M-q>'] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['<C-l>'] = actions.complete_tag,
+        ['<C-_>'] = actions.which_key, -- keys from pressing <C-/>
         --["<C-o>"] = function(prompt_bufnr)
         --	local selection = require("telescope.actions.state").get_selected_entry()
         --	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
@@ -102,36 +102,36 @@ require("telescope").setup({
         --  -- Depending on what you want put `cd`, `lcd`, `tcd`
         --  vim.cmd(string.format("silent lcd %s", dir))
         --end,
-        ["<esc>"] = actions.close,
-        ["<q>"] = actions.close,
-        ["<CR>"] = actions.select_default,
-        ["<C-x>"] = actions.select_horizontal,
-        ["<C-y>"] = actions.select_vertical,
-        ["<C-t>"] = actions.select_tab,
+        ['<esc>'] = actions.close,
+        ['<q>'] = actions.close,
+        ['<CR>'] = actions.select_default,
+        ['<C-x>'] = actions.select_horizontal,
+        ['<C-y>'] = actions.select_vertical,
+        ['<C-t>'] = actions.select_tab,
 
-        ["<Tab>"] = actions.toggle_selection + actions.move_selection_worse,
-        ["<S-Tab>"] = actions.toggle_selection + actions.move_selection_better,
-        ["<C-q>"] = actions.send_to_qflist + actions.open_qflist,
-        ["<M-q>"] = actions.send_selected_to_qflist + actions.open_qflist,
+        ['<Tab>'] = actions.toggle_selection + actions.move_selection_worse,
+        ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_better,
+        ['<C-q>'] = actions.send_to_qflist + actions.open_qflist,
+        ['<M-q>'] = actions.send_selected_to_qflist + actions.open_qflist,
 
-        ["j"] = actions.move_selection_next,
-        ["k"] = actions.move_selection_previous,
-        ["H"] = actions.move_to_top,
-        ["M"] = actions.move_to_middle,
-        ["L"] = actions.move_to_bottom,
+        ['j'] = actions.move_selection_next,
+        ['k'] = actions.move_selection_previous,
+        ['H'] = actions.move_to_top,
+        ['M'] = actions.move_to_middle,
+        ['L'] = actions.move_to_bottom,
 
-        ["<Down>"] = actions.move_selection_next,
-        ["<Up>"] = actions.move_selection_previous,
-        ["gg"] = actions.move_to_top,
-        ["G"] = actions.move_to_bottom,
+        ['<Down>'] = actions.move_selection_next,
+        ['<Up>'] = actions.move_selection_previous,
+        ['gg'] = actions.move_to_top,
+        ['G'] = actions.move_to_bottom,
 
-        ["<C-u>"] = actions.preview_scrolling_up,
-        ["<C-d>"] = actions.preview_scrolling_down,
+        ['<C-u>'] = actions.preview_scrolling_up,
+        ['<C-d>'] = actions.preview_scrolling_down,
 
-        ["<PageUp>"] = actions.results_scrolling_up,
-        ["<PageDown>"] = actions.results_scrolling_down,
+        ['<PageUp>'] = actions.results_scrolling_up,
+        ['<PageDown>'] = actions.results_scrolling_down,
 
-        ["?"] = actions.which_key,
+        ['?'] = actions.which_key,
         --["<C-o>"] = function(prompt_bufnr)
         --	local selection = require("telescope.actions.state").get_selected_entry()
         --	local dir = vim.fn.fnamemodify(selection.path, ":p:h")
@@ -146,11 +146,11 @@ require("telescope").setup({
     filesize_limit = 3,
     timeout = 250,
   },
-  selection_strategy = "reset",
-  sorting_strategy = "ascending",
-  scroll_strategy = "limit",
+  selection_strategy = 'reset',
+  sorting_strategy = 'ascending',
+  scroll_strategy = 'limit',
   color_devicons = true,
-  layout_strategy = "horizontal",
+  layout_strategy = 'horizontal',
   layout_config = {
     horizontal = {
       height = 0.95,
@@ -161,8 +161,16 @@ require("telescope").setup({
     bottom_pane = {
       height = 12,
       preview_cutoff = 70,
-      prompt_position = "bottom",
+      prompt_position = 'bottom',
     },
+  },
+  find_files = {
+    --cwd = '%:p:h',
+    cwd = vim.fn.getcwd(),
+    prompt_prefix = ' ',
+    --hidden = true,
+    --no_ignore = false,
+    follow = true,
   },
   --pickers = {
   --  live_grep = {
@@ -208,13 +216,6 @@ require("telescope").setup({
   --	prompt_prefix=' ',
   --	show_line = false,
   --},
-  find_files = {
-    cwd = "%:p:h",
-    --cwd = vim.fn.getcwd(),
-    prompt_prefix = " ",
-    hidden = true,
-    follow = true,
-  },
   --keymaps = { prompt_prefix='? ' },
   --oldfiles = { prompt_prefix=' ' },
   --highlights = { prompt_prefix=' ' },
@@ -251,20 +252,20 @@ require("telescope").setup({
 
   extensions = {
     file_browser = {
-      theme = "dropdown",
+      theme = 'dropdown',
       -- disables netrw and use telescope-file-browser in its place
       hijack_netrw = true,
       mappings = {
         -- your custom insert mode mappings
-        ["i"] = {
-          ["<C-w>"] = function()
-            vim.cmd("normal vbd")
+        ['i'] = {
+          ['<C-w>'] = function()
+            vim.cmd('normal vbd')
           end,
           --["<C-h>"] = fb_actions.goto_parent_dir,
         },
-        ["n"] = {
+        ['n'] = {
           -- your custom normal mode mappings
-          ["N"] = fb_actions.create,
+          ['N'] = fb_actions.create,
           --["<C-h>"] = fb_actions.goto_parent_dir,
           --["/"] = function()
           --	vim.cmd("startinsert")
@@ -279,17 +280,17 @@ require("telescope").setup({
 
 -- Load extensions:
 -- have to be loaded after telescope setup/config
-require("telescope").load_extension("fzf")
-require("telescope").load_extension("ui-select")
-require("telescope").load_extension("file_browser")
-require("telescope").load_extension("changed_files")
-require("telescope").load_extension("media_files")
+require('telescope').load_extension('fzf')
+require('telescope').load_extension('ui-select')
+require('telescope').load_extension('file_browser')
+require('telescope').load_extension('changed_files')
+require('telescope').load_extension('media_files')
 --require('telescope').extensions.notify.notify()
-require("telescope").load_extension("notify")
-require("telescope").load_extension("dap")
-require("telescope").load_extension("session-lens")
-require("telescope").load_extension("flutter")
-require("telescope").load_extension("recent_files")
+require('telescope').load_extension('notify')
+require('telescope').load_extension('dap')
+require('telescope').load_extension('session-lens')
+require('telescope').load_extension('flutter')
+require('telescope').load_extension('recent_files')
 
 --M.curbuf = function(opts)
 --  opts = opts
@@ -302,78 +303,78 @@ require("telescope").load_extension("recent_files")
 --end
 
 function M.find_configs()
-  require("telescope.builtin").find_files({
+  require('telescope.builtin').find_files({
     hidden = true,
     no_ignore = false,
-    prompt_title = " Find Configs",
-    results_title = "Config Files",
-    path_display = { "smart" },
+    prompt_title = ' Find Configs',
+    results_title = 'Config Files',
+    path_display = { 'smart' },
     search_dirs = {
-      "~/.config/nvim",
-      "~/.config/zsh",
-      "~/.config/tmux",
-      "~/.config/X11",
-      "~/.config/alacritty",
-      "~/.config/kitty",
-      "~/.config/wezterm",
-      "~/.config/bspwm",
-      "~/.config/sxhkd",
-      "~/.config/picom",
-      "~/.config/polybar",
-      "~/.bashrc",
-      "~/.vim",
-      "~/.profile",
-      "~/.zprofile",
-      "~/.gitconfig",
-      "~/.gitsubtrees",
-      "~/.gitignore",
-      "~/.editorconfig",
-      "~/.prettierrc.yml",
-      "~/README.md",
+      '~/.config/nvim',
+      '~/.config/zsh',
+      '~/.config/tmux',
+      '~/.config/X11',
+      '~/.config/alacritty',
+      '~/.config/kitty',
+      '~/.config/wezterm',
+      '~/.config/bspwm',
+      '~/.config/sxhkd',
+      '~/.config/picom',
+      '~/.config/polybar',
+      '~/.bashrc',
+      '~/.vim',
+      '~/.profile',
+      '~/.zprofile',
+      '~/.gitconfig',
+      '~/.gitsubtrees',
+      '~/.gitignore',
+      '~/.editorconfig',
+      '~/.prettierrc.yml',
+      '~/README.md',
     },
     file_ignore_patterns = {
-      "/nvim/startup.log",
-      "zsh/plugins",
-      "packer_compiled.lua",
-      "resurrect",
-      "tmux/plugins",
+      '/nvim/startup.log',
+      'zsh/plugins',
+      'packer_compiled.lua',
+      'resurrect',
+      'tmux/plugins',
       --"^~/.config/tmux/plugins",
-      "%.txt",
-      ".git/",
-      "autoload/plugged",
-      "plug.vim",
-      "zcompdump",
+      '%.txt',
+      '.git/',
+      'autoload/plugged',
+      'plug.vim',
+      'zcompdump',
     },
-    layout_strategy = "horizontal",
+    layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
   })
 end
 
 function M.find_scripts()
-  require("telescope.builtin").find_files({
+  require('telescope.builtin').find_files({
     hidden = true,
     no_ignore = true,
-    prompt_title = " Find Scripts",
-    path_display = { "smart" },
+    prompt_title = ' Find Scripts',
+    path_display = { 'smart' },
     search_dirs = {
-      "~/.ssh",
-      "~/.local/bin/scripts",
+      '~/.ssh',
+      '~/.local/bin/scripts',
     },
-    layout_strategy = "horizontal",
+    layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
   })
 end
 
 function M.find_projects()
-  require("telescope.builtin").find_files({
+  require('telescope.builtin').find_files({
     hidden = true,
     no_ignore = true,
-    prompt_title = " Find Projects",
-    path_display = { "smart" },
+    prompt_title = ' Find Projects',
+    path_display = { 'smart' },
     search_dirs = {
-      "~/projects",
+      '~/projects',
     },
-    layout_strategy = "horizontal",
+    layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
   })
 end
@@ -382,58 +383,58 @@ function M.grep_notes()
   local opts = {}
   opts.hidden = false
   opts.search_dirs = {
-    "~/documents/notes/",
+    '~/documents/notes/',
   }
-  opts.prompt_prefix = "   "
-  opts.prompt_title = " Grep Notes"
-  opts.path_display = { "smart" }
-  require("telescope.builtin").live_grep(opts)
+  opts.prompt_prefix = '   '
+  opts.prompt_title = ' Grep Notes'
+  opts.path_display = { 'smart' }
+  require('telescope.builtin').live_grep(opts)
 end
 
 function M.find_notes()
-  require("telescope.builtin").find_files({
+  require('telescope.builtin').find_files({
     hidden = false,
-    prompt_title = " Find Notes",
-    path_display = { "smart" },
+    prompt_title = ' Find Notes',
+    path_display = { 'smart' },
     search_dirs = {
-      "~/documents/notes/private/",
-      "~/documents/notes",
+      '~/documents/notes/private/',
+      '~/documents/notes',
     },
     --cwd = "~documents/notes",
-    layout_strategy = "horizontal",
+    layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
   })
 end
 
 function M.file_explorer()
-  require("telescope.builtin").file_browser({
-    prompt_title = "File Browser",
-    cwd = "~",
-    layout_strategy = "horizontal",
+  require('telescope.builtin').file_browser({
+    prompt_title = 'File Browser',
+    cwd = '~',
+    layout_strategy = 'horizontal',
   })
 end
 
 function M.grep_current_dir()
-  local buffer_dir = require("telescope.utils").buffer_dir()
+  local buffer_dir = require('telescope.utils').buffer_dir()
   local opts = {
-    prompt_title = "Live Grep in " .. buffer_dir,
+    prompt_title = 'Live Grep in ' .. buffer_dir,
     cwd = buffer_dir,
   }
-  require("telescope.builtin").live_grep(opts)
+  require('telescope.builtin').live_grep(opts)
 end
 
 --------------------------------------------------------------------------------
 
-local dropdown = require("telescope.themes").get_dropdown({
+local dropdown = require('telescope.themes').get_dropdown({
   hidden = true,
   no_ignore = true,
   previewer = false,
-  prompt_title = "",
-  preview_title = "",
-  results_title = "",
+  prompt_title = '',
+  preview_title = '',
+  results_title = '',
   layout_config = {
     --anchor = "S",
-    prompt_position = "top",
+    prompt_position = 'top',
   },
 })
 
@@ -446,16 +447,16 @@ local dropdown = require("telescope.themes").get_dropdown({
 local with_title = function(opts, extra)
   extra = extra or {}
   local path = opts.cwd or opts.path or extra.cwd or extra.path or nil
-  local title = ""
-  local buf_path = vim.fn.expand("%:p:h")
+  local title = ''
+  local buf_path = vim.fn.expand('%:p:h')
   local cwd = vim.fn.getcwd()
   if path ~= nil and buf_path ~= cwd then
-    title = require("plenary.path"):new(buf_path):make_relative(cwd)
+    title = require('plenary.path'):new(buf_path):make_relative(cwd)
   else
-    title = vim.fn.fnamemodify(cwd, ":t")
+    title = vim.fn.fnamemodify(cwd, ':t')
   end
 
-  return vim.tbl_extend("force", opts, {
+  return vim.tbl_extend('force', opts, {
     prompt_title = title,
   }, extra or {})
 end
@@ -469,10 +470,10 @@ end
 --local findhere = function()
 function M.findhere()
   -- Open file browser if argument is a folder
-  local arg = vim.api.nvim_eval("argv(0)")
-  if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == "") then
+  local arg = vim.api.nvim_eval('argv(0)')
+  if arg and (vim.fn.isdirectory(arg) ~= 0 or arg == '') then
     vim.defer_fn(function()
-      require("telescope.builtin").find_files(with_title(dropdown))
+      require('telescope.builtin').find_files(with_title(dropdown))
       --      require'telescope.builtin'.find_files(require('telescope.themes').get_dropdown({
       --        hidden = true,
       --        results_title = '',
