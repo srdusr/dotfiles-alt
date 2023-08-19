@@ -61,29 +61,36 @@ check_neovim_installed() {
     fi
 }
 
-version_id=""
-action=""
-
 # Nightly version
 nightly_version() {
     local url="https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage"
     install_neovim "$url"
-    version_id=$(echo "$url" | grep -oP 'v\d+\.\d+\.\d+')
+    local version_output=$(nvim --version)
+    version_id="Nightly $(echo "$version_output" | grep -oP 'v\d+\.\d+\.\d+')"
 }
 
 # Stable version
 stable_version() {
     local url="https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"
     install_neovim "$url"
-    version_id=$(echo "$url" | grep -oP 'v\d+\.\d+\.\d+')
+    local version_output=$(nvim --version)
+    version_id="Stable $(echo "$version_output" | grep -oP 'v\d+\.\d+\.\d+')"
+
 }
 
 # Specific version
 specific_version() {
     local version="$1"
+
+    # Add 'v' prefix if not present
+    if [[ $version != v* ]]; then
+        version="v$version"
+    fi
+
     local url="https://github.com/neovim/neovim/releases/download/$version/nvim.appimage"
     install_neovim "$url"
-    version_id=$(echo "$url" | grep -oP 'v\d+\.\d+\.\d+')
+    local version_output=$(nvim --version)
+    version_id="Stable $(echo "$version_output" | grep -oP 'v\d+\.\d+\.\d+')"
 }
 
 # Function to download a file using wget or curl
@@ -104,67 +111,35 @@ download_file() {
 # Check if a specific version of Neovim exists
 version_exists() {
     local version="$1"
+
+    # Add 'v' prefix if not present
     if [[ $version != v* ]]; then
         version="v$version"
     fi
-    local url="https://github.com/neovim/neovim/releases/tag/$version"
 
-    # Send a HEAD request and check the response status using wget or curl
-    if "$DOWNLOAD_COMMAND" /dev/null "$url" 2>/dev/null; then
+    # Fetch all the release tags from GitHub
+    ALL_TAGS=$(curl -s "https://api.github.com/repos/neovim/neovim/tags" | grep '"name":' | cut -d '"' -f 4)
+
+    # Check if the desired version is in the list of release tags
+    if echo "$ALL_TAGS" | grep -q "$version"; then
         return 0 # Version exists
     else
         return 1 # Version does not exist
     fi
 }
 
-# Choose Version
-choose_version() {
-    printf "${GREEN}Choose what version to install...${NC}\n"
-
-    valid_choice=false
-    while [ "$valid_choice" = false ]; do
-        # Ask user for version preference
-        printf "Installation options:\n"
-        printf "  1. Nightly version (default)\n"
-        printf "  2. Stable version\n"
-        printf "  3. Specific version\n"
-        printf "Enter the number corresponding to your choice (1/2/3): "
-        read -r version_choice
-
-        case $version_choice in
-        1)
-            nightly_version
-            valid_choice=true
-            ;;
-        2)
-            stable_version
-            valid_choice=true
-            ;;
-        3)
-            # Ask user for specific version
-            read -p "Enter the specific version (e.g., v0.1.0): " specific_version
-            # Check if the specific version exists on GitHub releases
-            if version_exists "$specific_version"; then
-                # Install specific version
-                specific_version "$specific_version"
-                valid_choice=true
-            else
-                printf "${RED}The specified version $specific_version does not exist.${NC}\n"
-            fi
-            ;;
-        *)
-            handle_error "Invalid choice. Please enter a valid option (1, 2, or 3)."
-            ;;
-        esac
-    done
-}
-
 # Install Neovim
 install_neovim() {
     local url="$1"
-    local install_action="$2"
-    version_id="$3"
-    printf "Downloading and installing Neovim $version_id...\n"
+    local install_type="$2" # Pass the install type as an argument
+    local install_action="$3"
+
+    if [ "$install_action" = "installed" ]; then
+        printf "Downloading and installing $install_type Neovim $version_id...\n"
+    else
+        printf "${GREEN}Updating $install_type Neovim to the latest version...${NC}\n"
+    fi
+
     # Determine the platform-specific installation steps
     case "$(uname -s)" in
     Linux)
@@ -214,45 +189,59 @@ install_neovim() {
         exit 1
         ;;
     esac
-
     if [ "$install_action" = "installed" ]; then
-        printf "${GREEN}Neovim $version_id has been installed successfully!${NC}\n"
+        printf "${GREEN}$install_type Neovim $version_id has been installed successfully!${NC}\n"
+    else
+        printf "${GREEN}$install_type Neovim has been updated successfully to $version_id!${NC}\n"
     fi
 }
 
 # Update Neovim to the latest version (nightly/stable)
 update_version() {
-    printf "${GREEN}Updating Neovim to the latest version...${NC}\n"
-
     valid_choice=false
     while [ "$valid_choice" = false ]; do
         # Determine which version to update to (nightly/stable)
         printf "Select version to update to:\n"
         printf "  1. Nightly\n"
         printf "  2. Stable\n"
-        printf "Enter the number corresponding to your choice (1/2): "
+        printf "  3. Choose specific version by tag\n"
+        printf "Enter the number corresponding to your choice (1/2/3): "
         read update_choice
 
         case $update_choice in
         1)
-            nightly_version
             action="updated"
+            nightly_version
             valid_choice=true
             ;;
         2)
-            stable_version
             action="updated"
+            stable_version
             valid_choice=true
             ;;
+        3)
+            # Ask user for specific version
+            read -p "Enter the specific version (e.g., v0.1.0): " version
+            # Normalize version
+            if [[ $version != v* ]]; then
+                version="v$version"
+            fi
+            # Check if the specific version exists on GitHub releases
+            if version_exists "$version"; then
+                # Install specific version
+                specific_version "$version" # Pass the normalized version to the function
+                valid_choice=true
+            else
+                printf "${RED}The specified version $version does not exist.${NC}\n"
+            fi
+            ;;
+
         *)
-            handle_error "Invalid choice. Please enter a valid option (1 or 2)."
+            handle_error "Invalid choice. Please enter a valid option (1, 2 or 3)."
             ;;
         esac
     done
 
-    if [ "$action" = "updated" ]; then
-        printf "${GREEN}Neovim has been updated successfully to $version_id!${NC}\n"
-    fi
 }
 
 # Uninstall Neovim
@@ -374,14 +363,13 @@ display_breaking_changes() {
 
 # Main loop
 while [ "$SHOW_PROMPT" -gt 0 ]; do
-    printf "Select an action:\n"
+    printf "Select an option:\n"
     printf "  1. Update Neovim\n"
     printf "  2. Check for updates\n"
-    printf "  3. Change to a specific version\n"
-    printf "  4. Uninstall Neovim\n"
-    printf "  5. Run Neovim\n"
-    printf "  6. Exit\n"
-    read -p "Enter the number or 'q' to exit: " choice
+    printf "  3. Uninstall Neovim\n"
+    printf "  4. Run Neovim\n"
+    printf "  5. Quit\n"
+    read -p "Enter a number or press 'q' to quit: " choice
 
     case $choice in
     1)
@@ -391,20 +379,17 @@ while [ "$SHOW_PROMPT" -gt 0 ]; do
         check_version_updates
         ;;
     3)
-        choose_version
-        ;;
-    4)
         uninstall_neovim
         ;;
-    5)
+    4)
         nvim
         ;;
-    6 | [Qq])
+    5 | [Qq])
         echo "Exiting..."
         exit
         ;;
     *)
-        handle_error "Invalid choice. Please choose a valid option by entering the corresponding number or 'q' to 'exit'."
+        handle_error "Invalid choice. Please choose a valid option by entering the corresponding number or press 'q' to 'quit'."
         ;;
     esac
 done
