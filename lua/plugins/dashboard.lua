@@ -1,4 +1,4 @@
-local db = require("dashboard")
+local db = require('dashboard')
 
 --vim.api.nvim_create_autocmd("VimEnter", {
 --    callback = function()
@@ -10,9 +10,9 @@ local db = require("dashboard")
 --})
 
 db.setup({
-  theme = "hyper",
+  theme = 'hyper',
   config = {
-    mru = { limit = 10 },
+    mru = { limit = 10, label = '' },
     project = { limit = 10 },
     header = {
       [[  ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗]],
@@ -24,45 +24,45 @@ db.setup({
     },
     disable_move = false,
     shortcut = {
-      { desc = " Plugins", group = "Number", action = "PackerStatus", key = "p" },
+      { desc = ' Plugins', group = 'Number', action = 'PackerStatus', key = 'p' },
       --{ desc = " Plugins", group = "@property", action = "PackerStatus", key = "p" },
       {
-        desc = " Files",
-        group = "Number",
+        desc = ' Files',
+        group = 'Number',
         --group = "Label",
-        action = "Telescope find_files",
-        key = "f",
+        action = 'Telescope find_files',
+        key = 'f',
       },
       {
-        desc = " Text",
-        group = "Number",
+        desc = ' Text',
+        group = 'Number',
         --group = "Label",
-        action = "enew",
-        key = "t",
+        action = 'enew',
+        key = 't',
       },
       {
-        desc = " Grep",
-        group = "Number",
+        desc = ' Grep',
+        group = 'Number',
         --group = "Label",
-        action = "Telescope live_grep",
-        key = "g",
+        action = 'Telescope live_grep',
+        key = 'g',
       },
       {
-        desc = " Scheme",
-        group = "Number",
+        desc = ' Scheme',
+        group = 'Number',
         --group = "Label",
-        action = "Telescope colorscheme",
-        key = "s",
+        action = 'Telescope colorscheme',
+        key = 's',
       },
       {
-        desc = " Config",
-        group = "Number",
+        desc = ' Config',
+        group = 'Number',
         --group = "Label",
-        action = ":edit ~/.config.nvim/init.lua",
-        key = "c",
+        action = ':edit ~/.config.nvim/init.lua',
+        key = 'c',
       },
     },
-    footer = { "", "Hello World!" },
+    footer = { '', 'Hello World!' },
   },
   hide = {
     statusline = false,
