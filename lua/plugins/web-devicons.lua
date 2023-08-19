@@ -1,17 +1,22 @@
---local status, icons = pcall(require, "nvim-web-devicons")
---if (not status) then return end
---icons.setup {
-require'nvim-web-devicons'.setup {
+local devicons = require('nvim-web-devicons')
+
+-- Set devicons overrides early.
+devicons.setup({
   override = {
+    js = { icon = '󰌞', color = '#f5c06f', name = 'Js' },
+    jsx = { icon = '', color = '#689fb6', name = 'Jsx' },
+    ts = { icon = '󰛦', color = '#4377c1', name = 'Ts' },
+    tsx = { icon = '', color = '#4377c1', name = 'Tsx' },
+    png = { icon = '󰋩', color = '#d4843e', name = 'Png' },
+    webp = { icon = '󰋩', color = '#3498db', name = 'Webp' },
+    jpg = { icon = '󰋩', color = '#16a085', name = 'Jpg' },
+    svg = { icon = '󰋩', color = '#3affdb', name = 'Svg' },
     zsh = {
-    icon = "",
-    color = "#428850",
-    cterm_color = "65",
-    name = "Zsh"
-  };
-  color_icons = true;
+      icon = '',
+      color = '#428850',
+      cterm_color = '65',
+      name = 'Zsh',
+    },
   },
-  -- globally enable default icons (default to false)
-  -- will get overriden by `get_icons` option
-  --default = true
-}
+  color_icons = true,
+})
