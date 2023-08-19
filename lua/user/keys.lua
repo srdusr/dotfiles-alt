@@ -309,7 +309,7 @@ map('n', '<leader>fz', "<cmd>lua require('fzf-lua').files()<CR>")
 
 -- Nvim-tree
 map('n', '<leader>f', '<cmd>Rooter<CR>:NvimTreeToggle<CR>', {})
-map('n', '<F4>', ':NvimTreeFindFileToggle<CR>', { noremap = false, silent = true })
+map('n', '<leader>F', ':NvimTreeFindFileToggle<CR>', { noremap = false, silent = true })
 
 -- Undotree
 map('n', '<leader>u', vim.cmd.UndotreeToggle)
