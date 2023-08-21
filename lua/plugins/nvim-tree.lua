@@ -6,9 +6,9 @@
 --- To see default mappings `:nvim-tree-default-mappings`
 
 local icons = {
-  git_placement = "after",
-  modified_placement = "after",
-  padding = " ",
+  git_placement = 'after',
+  modified_placement = 'after',
+  padding = ' ',
   show = {
     file = true,
     folder = true,
@@ -18,26 +18,26 @@ local icons = {
   },
 
   glyphs = {
-    default = "󰈔",
-    symlink = "",
+    default = '󰈔',
+    symlink = '',
     folder = {
-      arrow_open = "",
-      arrow_closed = "",
-      default = " ",
-      open = " ",
-      empty = " ",
-      empty_open = " ",
-      symlink = "",
-      symlink_open = "",
+      arrow_open = '',
+      arrow_closed = '',
+      default = ' ',
+      open = ' ',
+      empty = ' ',
+      empty_open = ' ',
+      symlink = '',
+      symlink_open = '',
     },
     git = {
-      deleted = "",
-      unmerged = "",
-      untracked = "",
-      unstaged = "",
-      staged = "",
-      renamed = "➜",
-      ignored = "◌",
+      deleted = '',
+      unmerged = '',
+      untracked = '',
+      unstaged = '',
+      staged = '',
+      renamed = '➜',
+      ignored = '◌',
     },
   },
 }
@@ -48,17 +48,17 @@ local renderer = {
     enable = true,
     inline_arrows = true,
     icons = {
-      corner = "└",
-      edge = "│",
-      item = "│",
-      bottom = "─",
-      none = " ",
+      corner = '└',
+      edge = '│',
+      item = '│',
+      bottom = '─',
+      none = ' ',
     },
   },
   icons = icons,
 }
 
-local system_open = { cmd = "zathura" }
+local system_open = { cmd = 'zathura' }
 
 local HEIGHT_RATIO = 0.8
 local WIDTH_RATIO = 0.15
@@ -75,8 +75,8 @@ local float = {
     local center_x = (screen_w - window_w) / 2
     local center_y = ((vim.opt.lines:get() - window_h) / 2) - vim.opt.cmdheight:get()
     return {
-      border = "rounded",
-      relative = "editor",
+      border = 'rounded',
+      relative = 'editor',
       row = center_y,
       col = center_x,
       width = window_w_int,
@@ -89,97 +89,97 @@ local view = {
   cursorline = false,
   hide_root_folder = false,
   float = float,
-  signcolumn = "no",
+  signcolumn = 'no',
   width = function()
     return math.floor(vim.opt.columns:get() * WIDTH_RATIO)
   end,
-  side = "left",
+  side = 'left',
 }
 
-local api = require("nvim-tree.api")
+local api = require('nvim-tree.api')
 local function on_attach(bufnr)
   local function opts(desc)
-    return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+    return { desc = 'nvim-tree: ' .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
   end
 
   local mappings = {
-    ["<C-]>"] = { api.tree.change_root_to_node, "CD" },
-    ["<C-e>"] = { api.node.open.replace_tree_buffer, "Open: In Place" },
-    ["<C-k>"] = { api.node.show_info_popup, "Info" },
-    ["<C-r>"] = { api.fs.rename_sub, "Rename: Omit Filename" },
-    ["<C-t>"] = { api.node.open.tab, "Open: New Tab" },
-    ["<C-v>"] = { api.node.open.vertical, "Open: Vertical Split" },
-    ["<C-x>"] = { api.node.open.horizontal, "Open: Horizontal Split" },
-    ["<BS>"] = { api.node.navigate.parent_close, "Close Directory" },
+    ['<C-]>'] = { api.tree.change_root_to_node, 'CD' },
+    ['<C-e>'] = { api.node.open.replace_tree_buffer, 'Open: In Place' },
+    ['<C-k>'] = { api.node.show_info_popup, 'Info' },
+    ['<C-r>'] = { api.fs.rename_sub, 'Rename: Omit Filename' },
+    ['<C-t>'] = { api.node.open.tab, 'Open: New Tab' },
+    ['<C-v>'] = { api.node.open.vertical, 'Open: Vertical Split' },
+    ['<C-x>'] = { api.node.open.horizontal, 'Open: Horizontal Split' },
+    ['<BS>'] = { api.node.navigate.parent_close, 'Close Directory' },
     -- ["<CR>"] = { api.node.open.edit, "Open" },
-    ["<Tab>"] = { api.node.open.preview, "Open Preview" },
-    [">"] = { api.node.navigate.sibling.next, "Next Sibling" },
-    ["<"] = { api.node.navigate.sibling.prev, "Previous Sibling" },
-    ["."] = { api.node.run.cmd, "Run Command" },
-    ["-"] = { api.tree.change_root_to_parent, "Up" },
-    ["a"] = { api.fs.create, "Create" },
-    ["bmv"] = { api.marks.bulk.move, "Move Bookmarked" },
-    ["B"] = { api.tree.toggle_no_buffer_filter, "Toggle No Buffer" },
-    ["c"] = { api.fs.copy.node, "Copy" },
+    ['<Tab>'] = { api.node.open.preview, 'Open Preview' },
+    ['>'] = { api.node.navigate.sibling.next, 'Next Sibling' },
+    ['<'] = { api.node.navigate.sibling.prev, 'Previous Sibling' },
+    ['.'] = { api.node.run.cmd, 'Run Command' },
+    ['-'] = { api.tree.change_root_to_parent, 'Up' },
+    ['a'] = { api.fs.create, 'Create' },
+    ['bmv'] = { api.marks.bulk.move, 'Move Bookmarked' },
+    ['B'] = { api.tree.toggle_no_buffer_filter, 'Toggle No Buffer' },
+    ['c'] = { api.fs.copy.node, 'Copy' },
     -- ["C"] = { api.tree.toggle_git_clean_filter, "Toggle Git Clean" },
-    ["[c"] = { api.node.navigate.git.prev, "Prev Git" },
-    ["]c"] = { api.node.navigate.git.next, "Next Git" },
-    ["d"] = { api.fs.remove, "Delete" },
-    ["D"] = { api.fs.trash, "Trash" },
-    ["E"] = { api.tree.expand_all, "Expand All" },
-    ["e"] = { api.fs.rename_basename, "Rename: Basename" },
-    ["]e"] = { api.node.navigate.diagnostics.next, "Next Diagnostic" },
-    ["[e"] = { api.node.navigate.diagnostics.prev, "Prev Diagnostic" },
-    ["F"] = { api.live_filter.clear, "Clean Filter" },
-    ["f"] = { api.live_filter.start, "Filter" },
-    ["g?"] = { api.tree.toggle_help, "Help" },
-    ["gy"] = { api.fs.copy.absolute_path, "Copy Absolute Path" },
-    ["H"] = { api.tree.toggle_hidden_filter, "Toggle Dotfiles" },
-    ["I"] = { api.tree.toggle_gitignore_filter, "Toggle Git Ignore" },
-    ["J"] = { api.node.navigate.sibling.last, "Last Sibling" },
-    ["K"] = { api.node.navigate.sibling.first, "First Sibling" },
-    ["m"] = { api.marks.toggle, "Toggle Bookmark" },
+    ['[c'] = { api.node.navigate.git.prev, 'Prev Git' },
+    [']c'] = { api.node.navigate.git.next, 'Next Git' },
+    ['d'] = { api.fs.remove, 'Delete' },
+    ['D'] = { api.fs.trash, 'Trash' },
+    ['E'] = { api.tree.expand_all, 'Expand All' },
+    ['e'] = { api.fs.rename_basename, 'Rename: Basename' },
+    [']e'] = { api.node.navigate.diagnostics.next, 'Next Diagnostic' },
+    ['[e'] = { api.node.navigate.diagnostics.prev, 'Prev Diagnostic' },
+    ['F'] = { api.live_filter.clear, 'Clean Filter' },
+    ['f'] = { api.live_filter.start, 'Filter' },
+    ['g?'] = { api.tree.toggle_help, 'Help' },
+    ['gy'] = { api.fs.copy.absolute_path, 'Copy Absolute Path' },
+    ['H'] = { api.tree.toggle_hidden_filter, 'Toggle Dotfiles' },
+    ['I'] = { api.tree.toggle_gitignore_filter, 'Toggle Git Ignore' },
+    ['J'] = { api.node.navigate.sibling.last, 'Last Sibling' },
+    ['K'] = { api.node.navigate.sibling.first, 'First Sibling' },
+    ['m'] = { api.marks.toggle, 'Toggle Bookmark' },
     -- ["o"] = { api.node.open.edit, "Open" },
-    ["O"] = { api.node.open.no_window_picker, "Open: No Window Picker" },
-    ["p"] = { api.fs.paste, "Paste" },
-    ["P"] = { api.node.navigate.parent, "Parent Directory" },
-    ["q"] = { api.tree.close, "Close" },
-    ["r"] = { api.fs.rename, "Rename" },
-    ["R"] = { api.tree.reload, "Refresh" },
-    ["s"] = { api.node.run.system, "Run System" },
-    ["S"] = { api.tree.search_node, "Search" },
-    ["U"] = { api.tree.toggle_custom_filter, "Toggle Hidden" },
-    ["W"] = { api.tree.collapse_all, "Collapse" },
-    ["x"] = { api.fs.cut, "Cut" },
-    ["y"] = { api.fs.copy.filename, "Copy Name" },
-    ["Y"] = { api.fs.copy.relative_path, "Copy Relative Path" },
-    ["<2-LeftMouse>"] = { api.node.open.edit, "Open" },
-    ["<2-RightMouse>"] = { api.tree.change_root_to_node, "CD" },
+    ['O'] = { api.node.open.no_window_picker, 'Open: No Window Picker' },
+    ['p'] = { api.fs.paste, 'Paste' },
+    ['P'] = { api.node.navigate.parent, 'Parent Directory' },
+    ['q'] = { api.tree.close, 'Close' },
+    ['r'] = { api.fs.rename, 'Rename' },
+    ['R'] = { api.tree.reload, 'Refresh' },
+    ['s'] = { api.node.run.system, 'Run System' },
+    ['S'] = { api.tree.search_node, 'Search' },
+    ['U'] = { api.tree.toggle_custom_filter, 'Toggle Hidden' },
+    ['W'] = { api.tree.collapse_all, 'Collapse' },
+    ['x'] = { api.fs.cut, 'Cut' },
+    ['y'] = { api.fs.copy.filename, 'Copy Name' },
+    ['Y'] = { api.fs.copy.relative_path, 'Copy Relative Path' },
+    ['<2-LeftMouse>'] = { api.node.open.edit, 'Open' },
+    ['<2-RightMouse>'] = { api.tree.change_root_to_node, 'CD' },
 
     -- Mappings migrated from view.mappings.list
-    ["l"] = { api.node.open.edit, "Open" },
-    ["<CR>"] = { api.node.open.edit, "Open" },
-    ["o"] = { api.node.open.edit, "Open" },
-    ["h"] = { api.node.navigate.parent_close, "Close Directory" },
-    ["v"] = { api.node.open.vertical, "Open: Vertical Split" },
-    ["C"] = { api.tree.change_root_to_node, "CD" },
+    ['l'] = { api.node.open.edit, 'Open' },
+    ['<CR>'] = { api.node.open.edit, 'Open' },
+    ['o'] = { api.node.open.edit, 'Open' },
+    ['h'] = { api.node.navigate.parent_close, 'Close Directory' },
+    ['v'] = { api.node.open.vertical, 'Open: Vertical Split' },
+    ['C'] = { api.tree.change_root_to_node, 'CD' },
   }
   for keys, mapping in pairs(mappings) do
-    vim.keymap.set("n", keys, mapping[1], opts(mapping[2]))
+    vim.keymap.set('n', keys, mapping[1], opts(mapping[2]))
   end
 end
 api.events.subscribe(api.events.Event.FileCreated, function(file)
-  vim.cmd("edit" .. file.fname)
+  vim.cmd('edit' .. file.fname)
 end)
 
-require("nvim-tree").setup({
+require('nvim-tree').setup({
   disable_netrw = true,
   hijack_netrw = true,
   auto_reload_on_write = true,
   update_focused_file = {
     enable = true,
     update_cwd = false,
-    update_root = false,
+    update_root = true,
     ignore_list = {},
   },
   root_dirs = {},
@@ -203,14 +203,14 @@ require("nvim-tree").setup({
     enable = true,
     show_on_dirs = true,
     icons = {
-      hint = "⚑",
-      info = "􀅳",
-      warning = "▲",
-      error = "",
+      hint = '⚑',
+      info = '􀅳',
+      warning = '▲',
+      error = '',
     },
   },
   trash = {
-    cmd = "gio trash",
+    cmd = 'gio trash',
     require_confirm = true,
   },
   modified = {
@@ -233,17 +233,17 @@ require("nvim-tree").setup({
       resize_window = false,
       window_picker = {
         enable = true,
-        chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890",
+        chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890',
         exclude = {
-          filetype = { "notify", "packer", "qf", "diff", "fugitive", "fugitiveblame" },
-          buftype = { "nofile", "terminal", "help" },
+          filetype = { 'notify', 'packer', 'qf', 'diff', 'fugitive', 'fugitiveblame' },
+          buftype = { 'nofile', 'terminal', 'help' },
         },
       },
     },
   },
 })
 
-local api = require("nvim-tree.api")
+local api = require('nvim-tree.api')
 local event = api.events.Event
 api.events.subscribe(event.TreeOpen, function(_)
   vim.cmd([[setlocal statuscolumn=\ ]])
@@ -254,17 +254,17 @@ api.events.subscribe(event.TreeOpen, function(_)
 end)
 
 local function open_nvim_tree(data)
-  vim.cmd.cd(data.file:match("(.+)/[^/]*$"))
+  vim.cmd.cd(data.file:match('(.+)/[^/]*$'))
   local directory = vim.fn.isdirectory(data.file) == 1
   if not directory then
     return
   end
-  require("nvim-tree.api").tree.open()
+  require('nvim-tree.api').tree.open()
 end
-vim.api.nvim_create_autocmd({ "VimEnter" }, { callback = open_nvim_tree })
+vim.api.nvim_create_autocmd({ 'VimEnter' }, { callback = open_nvim_tree })
 
 -- Highlight Groups
-vim.api.nvim_command("highlight NvimTreeNormal guibg=none")
+vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
 --vim.api.nvim_command("highlight NvimTreeSymlink ")
 --vim.api.nvim_command("highlight NvimTreeSymlinkFolderName ")   --(Directory)
 --vim.api.nvim_command("highlight NvimTreeFolderName ")          --(Directory)
