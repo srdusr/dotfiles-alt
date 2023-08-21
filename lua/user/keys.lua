@@ -276,9 +276,7 @@ map('n', '<leader>gm', ':Gmove<Space>')
 --map("n", "<leader>gpl", ":Dispatch! git pull<CR>")
 
 -- Telescope
-map('n', '<leader>ff', function()
-  require('telescope.builtin').find_files({ hidden = true, no_ignore = false })
-end) -- find files
+map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').find_files()<cr>") -- find files with hidden option
 map('n', '<leader>fF', ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>", { noremap = true, silent = true, desc = 'Find files in cwd' })
 map('n', '<leader>ff.', function()
   require('telescope.builtin').find_files({ hidden = false, no_ignore = true })
