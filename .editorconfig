@@ -33,7 +33,6 @@ ignore_space_after_colon = false
 remove_call_expression_list_finish_comma = false
 end_statement_with_semicolon = keep
 
-
 # Python config
 [*.py]
 indent_size = 4
@@ -52,6 +51,7 @@ trim_trailing_whitespace = false
 
 # Markdown config
 [**.md]
+indent_size = 2
 trim_trailing_whitespace = false
 
 # Textfile config
