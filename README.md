@@ -1,8 +1,11 @@
 # Dotfiles
 
+### Welcome, and make yourself at ***$HOME***
 > NOTE: Primarily for Linux but currently under work to make this as agnostic/cross-platform as possible
 
-## Installing onto a new system (bare git repository)
+- - -
+
+### Installing onto a new system (bare git repository)
 
 1. Avoid weird behaviour/recursion issues when .cfg tries to track itself
 
@@ -206,7 +209,7 @@ $ cargo run --release --bin wezterm -- start
 
 ### Gnome Custom Settings
 
-- Run gnome settings script
+- Run gnome custom settings script, located at `~/.local/bin/scripts`:
 ```bash
 $ gsettings.sh
 ```
