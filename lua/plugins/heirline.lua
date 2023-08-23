@@ -1153,8 +1153,8 @@ end, { Tab, TablineFileNameBlock, TablineCloseButton })
 
 local BufferLine = utils.make_buflist(
   TablineBufferBlock,
-  { provider = '􀰎 ', hl = { fg = colors.white } }, -- left truncation, optional (defaults to "<")
-  { provider = ' 􀰓', hl = { fg = colors.white } } -- right trunctation, also optional (defaults to ...... yep, ">")
+  { provider = ' ', hl = { fg = colors.white } }, -- left truncation, optional (defaults to "<")
+  { provider = ' ', hl = { fg = colors.white } } -- right trunctation, also optional (defaults to ...... yep, ">")
 -- by the way, open a lot of buffers and try clicking them ;)
 )
 -- TabList
