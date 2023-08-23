@@ -792,8 +792,9 @@ local sections = { left, middle, right }
 local DefaultStatusline = { sections }
 
 local specialleft = {
-  { ViMode,    hl = { fg = utils.get_highlight('statusline').bg, force = true } },
-  { LeftSpace, hl = { bg = colors.nobg, force = true } },
+  { RightSpace, hl = { bg = colors.nobg, force = true } },
+  { ViMode,     hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { LeftSpace,  hl = { bg = colors.nobg, force = true } },
 }
 
 local specialmiddle = {
@@ -805,6 +806,7 @@ local specialmiddle = {
 local specialright = {
   { RightSpace, hl = { bg = colors.nobg, force = true } },
   { Ruler,      hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { LeftSpace,  hl = { bg = colors.nobg, force = true } },
 }
 
 local specialsections = { specialleft, specialmiddle, specialright }
