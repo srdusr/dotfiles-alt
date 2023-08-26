@@ -633,7 +633,7 @@ local ShowCmd = {
 }
 
 local cursor_location = {
-  { provider = ' %1(%4l:%-3(%c%)%)%*', hl = { fg = colors.black, bold = true } },
+  { provider = '%1(%4l:%-3(%c%)%) %*', hl = { fg = colors.black, bold = true } },
 }
 
 local Ruler = { cursor_location }
@@ -1209,13 +1209,15 @@ local TabLineOffset = {
     local pad = math.ceil((width - #title) / 2)
     return string.rep(' ', pad) .. title .. string.rep(' ', pad)
   end,
-  hl = function(self)
-    if vim.api.nvim_get_current_win() == self.winid then
-      return 'TablineSel'
-    else
-      return 'TablineFill'
-    end
-  end,
+  hl = { fg = colors.white, bold = false },
+
+  --hl = function(self)
+  --  if vim.api.nvim_get_current_win() == self.winid then
+  --    return 'TablineSel'
+  --  else
+  --    return 'TablineFill'
+  --  end
+  --end,
 }
 
 local TabLine = {
