@@ -12,7 +12,6 @@ vim.g.mapleader = ';'
 
 -- "jk" and "kj" to exit insert-mode
 map('i', 'jk', '<esc>')
-map('i', 'kj', '<esc>')
 
 -- Jump to next match on line using `.` instead of `;` NOTE: commented out in favour of "ggandor/flit.nvim"
 --map("n", ".", ";")
