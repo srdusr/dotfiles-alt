@@ -244,6 +244,8 @@ vim.g.netrw_winsize = 25
 --vim.cmd([[
 --    "filetype plugin indent on
 --]])
+vim.cmd('filetype plugin on')
+vim.cmd('filetype indent off')
 
 -- Let clipboard register be +
 vim.cmd([[
