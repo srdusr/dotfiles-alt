@@ -165,7 +165,7 @@ return packer.startup(function(use)
       require('Navigator').setup()
     end,
   })
-  use({ 'tpope/vim-eunuch', cmd = { 'Rename', 'Delete' } }) -- Handy unix commands inside Vim (Rename, Move etc.)
+  use({ 'tpope/vim-eunuch', cmd = { 'Rename', 'Delete', 'Mkdir' } }) -- Handy unix commands inside Vim (Rename, Move etc.)
   --use("tpope/vim-surround") --
   --use("tpope/vim-obsession") --
   use('tpope/vim-unimpaired') --
