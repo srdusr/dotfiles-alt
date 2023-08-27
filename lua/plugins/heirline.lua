@@ -26,8 +26,8 @@ local colors = {
     info = utils.get_highlight('DiagnosticSignInfo').fg,
   },
   git = {
-    del = '#e95678',
-    add = '#a6e22e',
+    del = '#ff5555',
+    add = '#50fa7b',
     change = '#ae81ff',
   },
 }
