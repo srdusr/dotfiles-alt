@@ -310,7 +310,7 @@ local Git = {
     provider = function(self)
       local count = self.status_dict.changed or 0
       --return count > 0 and ("~" .. count)
-      return count > 0 and (' 柳' .. count)
+      return count > 0 and ('  ' .. count)
     end,
     --hl = { fg = "git_change" },
     hl = { fg = colors.git.change, bg = colors.bg },
