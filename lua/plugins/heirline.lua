@@ -271,14 +271,14 @@ local Git = {
     self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
   end,
   --hl = { fg = "orange" },
-  hl = { fg = colors.orange, bg = colors.bg },
+  --hl = { fg = colors.orange, bg = colors.bg },
   {
     -- git branch name
     provider = function(self)
       return ' ' .. self.status_dict.head
     end,
     --hl = { bold = true },
-    hl = { bold = true, bg = colors.bg },
+    hl = { fg = colors.orange, bold = true, bg = colors.bg },
   },
   -- You could handle delimiters, icons and counts similar to Diagnostics
   {
