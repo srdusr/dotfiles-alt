@@ -265,6 +265,7 @@ vim.api.nvim_create_autocmd({ 'VimEnter' }, { callback = open_nvim_tree })
 
 -- Highlight Groups
 vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
+
 --vim.api.nvim_command("highlight NvimTreeSymlink ")
 --vim.api.nvim_command("highlight NvimTreeSymlinkFolderName ")   --(Directory)
 --vim.api.nvim_command("highlight NvimTreeFolderName ")          --(Directory)
@@ -292,15 +293,9 @@ vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
 --vim.api.nvim_command("highlight NvimTreeGitNew ")
 --vim.api.nvim_command("highlight NvimTreeGitDeleted ")
 --vim.api.nvim_command("highlight NvimTreeGitIgnored ")      --(Comment)
---vim.api.nvim_command("highlight NvimTreeWindowPicker ")
 --vim.api.nvim_command("highlight NvimTreeNormal ")
 --vim.api.nvim_command("highlight NvimTreeEndOfBuffer ")     --(NonText)
---vim.api.nvim_command("highlight NvimTreeCursorLine ")      --(CursorLine)
---vim.api.nvim_command("highlight NvimTreeCursorLineNr ")    --(CursorLineNr)
---vim.api.nvim_command("highlight NvimTreeLineNr ")          --(LineNr)
---vim.api.nvim_command("highlight NvimTreeWinSeparator ")    --(WinSeparator)
 --vim.api.nvim_command("highlight NvimTreeCursorColumn ")    --(CursorColumn)
-
 --vim.api.nvim_command("highlight NvimTreeFileDirty ")       --(NvimTreeGitDirty)
 --vim.api.nvim_command("highlight NvimTreeFileStaged ")      --(NvimTreeGitStaged)
 --vim.api.nvim_command("highlight NvimTreeFileMerge ")       --(NvimTreeGitMerge)
@@ -308,8 +303,6 @@ vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
 --vim.api.nvim_command("highlight NvimTreeFileNew ")         --(NvimTreeGitNew)
 --vim.api.nvim_command("highlight NvimTreeFileDeleted ")     --(NvimTreeGitDeleted)
 --vim.api.nvim_command("highlight NvimTreeFileIgnored ")     --(NvimTreeGitIgnored)
-
 --vim.api.nvim_command("highlight NvimTreeLiveFilterPrefix ")
 --vim.api.nvim_command("highlight NvimTreeLiveFilterValue ")
-
 --vim.api.nvim_command("highlight NvimTreeBookmark ")
