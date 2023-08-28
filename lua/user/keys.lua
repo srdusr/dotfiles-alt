@@ -135,9 +135,6 @@ map('x', '>', '>gv', term_opts)
 map('n', '<A-k>', ':let save_a=@a<Cr><Up>"add"ap<Up>:let @a=save_a<Cr>')
 map('n', '<A-j>', ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>')
 
--- Search and replace
-map('v', '<leader>sr', 'y:%s/<C-r><C-r>"//g<Left><Left>c')
-
 -- Toggle Diff
 map('n', '<leader>td', '<Cmd>call utils#ToggleDiff()<CR>')
 
@@ -181,12 +178,15 @@ else
   map[''].gx = { '<Cmd>lua print("Error: gx is not supported on this OS!")<CR>' }
 end
 
+-- Search and replace
+map('v', '<leader>sr', 'y:%s/<C-r><C-r>"//g<Left><Left>c')
+
 -- Substitute globally and locally in the selected region.
 map('n', '<leader>ss', ':%s//g<Left><Left>')
 map('v', '<leader>ss', ':s//g<Left><Left>')
 
 -- Toggle completion
-map('n', '<Leader>tc', ":lua require('user.mods').toggle_completion()<CR>")
+map('n', '<Leader>tc', ':lua require("user.mods").toggle_completion()<CR>')
 
 -- Disable default completion.
 map('i', '<C-n>', '<Nop>')
@@ -413,7 +413,7 @@ end, { desc = 'DAP-Telescope: Commands' })
 --end)
 
 -- Toggle Dashboard
-map('n', '<leader><Space>', "<CMD>lua require('user.mods').toggle_dashboard()<CR>")
+map('n', '<leader><Space>', '<CMD>lua require("user.mods").toggle_dashboard()<CR>')
 
 -- Lsp Lines toggle
 map('', '<Leader>l', require('lsp_lines').toggle, { desc = 'Toggle lsp_lines' })
