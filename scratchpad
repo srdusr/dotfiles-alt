@@ -21,30 +21,30 @@ supported_terminals=("wezterm" "kitty" "alacritty")
 
 # Check if any supported terminal with scratchpad class is running
 for term in "${supported_terminals[@]}"; do
-	if pgrep -f "$term.*--class scratchpad" >/dev/null; then
-		my_term="$term"
-		break
-	fi
+    if pgrep -f "$term.*--class scratchpad" >/dev/null; then
+        my_term="$term"
+        break
+    fi
 done
 
 # If no supported terminal is running, start the first available one
 if [ "$my_term" = "" ]; then
-	for term in "${supported_terminals[@]}"; do
-		if command -v "$term" >/dev/null 2>&1; then
-			my_term="$term"
-			break
-		fi
-	done
-	if [ "$my_term" = "" ]; then
-		echo "No supported terminal found." && exit 1
-	fi
+    for term in "${supported_terminals[@]}"; do
+        if command -v "$term" >/dev/null 2>&1; then
+            my_term="$term"
+            break
+        fi
+    done
+    if [ "$my_term" = "" ]; then
+        echo "No supported terminal found." && exit 1
+    fi
 
-	# Start terminal with scratchpad class
-	case "$my_term" in
-	"wezterm") wezterm start --class scratchpad -e tmux new-session -A -s tmux -e bash & ;;
-	"kitty") kitty --class scratchpad tmux new-session -A -s tmux -e bash & ;;
-	"alacritty") alacritty --class scratchpad -e tmux new-session -A -s tmux -e bash & ;;
-	esac
+    # Start terminal with scratchpad class
+    case "$my_term" in
+    "wezterm") wezterm start --class scratchpad -e tmux new-session -A -s tmux -e bash & ;;
+    "kitty") kitty --class scratchpad tmux new-session -A -s tmux -e bash & ;;
+    "alacritty") alacritty --class scratchpad -e tmux new-session -A -s tmux -e bash & ;;
+    esac
 fi
 
 # Get the window ID of the scratchpad terminal
@@ -52,13 +52,13 @@ id="$(xdo id -N scratchpad)"
 
 # Toggle scratchpad terminal visibility
 if [ "$id" != "" ]; then
-	if xwininfo -id "$id" | grep "Map State: IsViewable" >/dev/null; then
-		# Scratchpad is visible, hide it
-		dimensions="$(xwininfo -id "$id" | awk '/Width:|Height:/ { printf("%s=%s;", tolower($1), $2) }')"
-		xdo hide "$id" 2>/dev/null
-	else
-		# Scratchpad is hidden, show it and restore dimensions
-		xdo show "$id"
-		xdotool windowsize "$id" "$(echo "$dimensions" | tr ';' ' ')" 2>/dev/null
-	fi
+    if xwininfo -id "$id" | grep "Map State: IsViewable" >/dev/null; then
+        # Scratchpad is visible, hide it
+        dimensions="$(xwininfo -id "$id" | awk '/Width:|Height:/ { printf("%s=%s;", tolower($1), $2) }')"
+        xdo hide "$id" 2>/dev/null
+    else
+        # Scratchpad is hidden, show it and restore dimensions
+        xdo show "$id"
+        xdotool windowsize "$id" "$(echo "$dimensions" | tr ';' ' ')" 2>/dev/null
+    fi
 fi
