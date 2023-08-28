@@ -1225,7 +1225,7 @@ local TabLineOffset = {
     local pad = math.ceil((width - #title) / 2)
     return string.rep(' ', pad) .. title .. string.rep(' ', pad)
   end,
-  hl = { fg = colors.white, bold = false },
+  hl = { fg = colors.white, bg = '#333842', bold = true },
 
   --hl = function(self)
   --  if vim.api.nvim_get_current_win() == self.winid then
