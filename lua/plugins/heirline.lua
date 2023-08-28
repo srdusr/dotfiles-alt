@@ -271,18 +271,32 @@ local Git = {
     self.status_dict = vim.b.gitsigns_status_dict
     self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
   end,
-  --hl = { fg = "orange" },
-  --hl = { fg = colors.orange, bg = colors.bg },
+  --{
+  --  -- git branch name
+  --  provider = function(self)
+  --    --return ' ' .. self.status_dict.head
+  --    return '   ' .. self.status_dict.head
+  --  end,
+  --  --hl = { bold = true },
+  --  hl = { fg = colors.git.active, bold = true, bg = colors.bg },
+  --},
+  -- You could handle delimiters, icons and counts similar to Diagnostics
+  {
+    -- git branch icon
+    provider = function()
+      return '  '
+    end,
+    hl = { fg = colors.git.active, bg = colors.bg },
+  },
+
   {
     -- git branch name
     provider = function(self)
-      --return ' ' .. self.status_dict.head
-      return '   ' .. self.status_dict.head
+      return self.status_dict.head
     end,
-    --hl = { bold = true },
-    hl = { fg = colors.git.active, bold = true, bg = colors.bg },
+    hl = { fg = colors.white, bg = colors.bg },
   },
-  -- You could handle delimiters, icons and counts similar to Diagnostics
+
   {
     condition = function(self)
       return self.has_changes
