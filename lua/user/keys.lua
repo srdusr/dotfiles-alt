@@ -417,3 +417,6 @@ map('n', '<leader><Space>', '<CMD>lua require("user.mods").toggle_dashboard()<CR
 
 -- Lsp Lines toggle
 map('', '<Leader>l', require('lsp_lines').toggle, { desc = 'Toggle lsp_lines' })
+
+-- SnipRun
+map({ 'n', 'v' }, '<leader>r', '<Plug>SnipRun<CR>')
