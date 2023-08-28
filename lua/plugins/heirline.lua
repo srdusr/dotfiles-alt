@@ -26,6 +26,7 @@ local colors = {
     info = utils.get_highlight('DiagnosticSignInfo').fg,
   },
   git = {
+    active = '#f34f29',
     del = '#ff5555',
     add = '#50fa7b',
     change = '#ae81ff',
@@ -275,10 +276,11 @@ local Git = {
   {
     -- git branch name
     provider = function(self)
-      return ' ' .. self.status_dict.head
+      --return ' ' .. self.status_dict.head
+      return '   ' .. self.status_dict.head
     end,
     --hl = { bold = true },
-    hl = { fg = colors.orange, bold = true, bg = colors.bg },
+    hl = { fg = colors.git.active, bold = true, bg = colors.bg },
   },
   -- You could handle delimiters, icons and counts similar to Diagnostics
   {
@@ -286,7 +288,7 @@ local Git = {
       return self.has_changes
     end,
     --provider = "("
-    provider = ' ',
+    provider = '',
   },
   {
     provider = function(self)
