@@ -420,3 +420,6 @@ map('', '<Leader>l', require('lsp_lines').toggle, { desc = 'Toggle lsp_lines' })
 
 -- SnipRun
 map({ 'n', 'v' }, '<leader>r', '<Plug>SnipRun<CR>')
+
+-- Codi
+map('n', '<leader>co', '<CMD>lua require("user.mods").toggleCodi()<CR>')
