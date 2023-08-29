@@ -308,7 +308,8 @@ return packer.startup(function(use)
   use({
     'j-hui/fidget.nvim',
     tag = 'legacy',
-  })                                 -- UI to show nvim-lsp progress
+  }) -- UI to show nvim-lsp progress
+  use('metakirby5/codi.vim')
   use({
     'simrat39/symbols-outline.nvim', --
     config = function()
