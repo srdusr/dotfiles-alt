@@ -423,3 +423,6 @@ map({ 'n', 'v' }, '<leader>r', '<Plug>SnipRun<CR>')
 
 -- Codi
 map('n', '<leader>co', '<CMD>lua require("user.mods").toggleCodi()<CR>')
+
+-- Scratch buffer
+map('n', '<leader>s', '<CMD>lua require("user.mods").Scratch()<CR>')
