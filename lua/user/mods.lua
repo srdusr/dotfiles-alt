@@ -612,5 +612,37 @@ end
 
 --------------------------------------------------
 
+-- Function to create or toggle a scratch buffer
+function M.Scratch()
+  local scratch_dir = vim.fn.expand('~')
+  local scratch_date = os.date('%Y-%m-%d')
+  local scratch_file = 'notes-' .. scratch_date .. '.md'
+  local scratch_buf = vim.fn.bufnr(scratch_file)
+  local bufinfo = vim.fn.getbufinfo(scratch_buf)
+
+  if scratch_buf == -1 then
+    -- If the buffer doesn't exist, create it
+    vim.cmd('vsplit ' .. scratch_dir .. '/' .. scratch_file)
+    if vim.fn.empty(vim.fn.glob(scratch_dir .. '/' .. scratch_file)) == 1 then
+      vim.cmd(':normal i# Quick Notes - ' .. scratch_date)
+      vim.cmd(':normal o')
+      vim.cmd(':normal 28a-')
+      vim.cmd(':normal o')
+      vim.cmd(':w')
+      --vim.cmd(':startinsert')
+    end
+  elseif vim.fn.empty(bufinfo[1].windows) == 1 then
+    -- If the buffer exists but is not open, open it
+    vim.cmd('vsplit +buffer' .. scratch_buf)
+  else
+    -- If the buffer exists and is open, close it
+    local scratch_win = vim.fn.filter(vim.fn.getwininfo(), 'v:val.bufnr == ' .. scratch_buf)[1].winnr
+    vim.cmd(':w')
+    vim.cmd(scratch_win .. 'wincmd c')
+  end
+end
+
+--------------------------------------------------
+
 -- ...
 return M
