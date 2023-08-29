@@ -594,5 +594,23 @@ end
 
 --------------------------------------------------
 
+-- Toggle Codi
+-- Define a global variable to track Codi's state
+local is_codi_open = false
+
+function M.toggleCodi()
+  if is_codi_open then
+    -- Close Codi
+    vim.cmd('Codi!')
+    is_codi_open = false
+  else
+    -- Open Codi
+    vim.cmd('Codi')
+    is_codi_open = true
+  end
+end
+
+--------------------------------------------------
+
 -- ...
 return M
