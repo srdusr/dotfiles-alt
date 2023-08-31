@@ -79,6 +79,7 @@ local modules = {
   --"plugins.fugitive",
   'plugins.gitsigns',
   'plugins.sniprun',
+  'plugins.session',
   'plugins.neoscroll',
   'plugins.statuscol',
   'plugins.trouble',
