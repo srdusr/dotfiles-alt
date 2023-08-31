@@ -240,7 +240,7 @@ return packer.startup(function(use)
     config = function()
       require('session-lens').setup({ --[[your custom config--]]
       })
-      vim.keymap.set('n', '<leader>s', require('session-lens').search_session) -- <-- this sets it to `Ctrl + s`
+      vim.keymap.set('n', '<leader>ss', require('session-lens').search_session) -- <-- this sets it to `Ctrl + s`
     end,
   })
 
