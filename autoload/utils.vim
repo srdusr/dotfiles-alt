@@ -164,3 +164,16 @@ autocmd! BufNewFile,BufRead *.* call utils#DisableBr()
 
 
 "-------------------------------------------------
+
+" Annoying timestamp issue on write (The file has been changed since reading it...)
+function! utils#ProcessFileChangedShell()
+  if v:fcs_reason == 'mode' || v:fcs_reason == 'time'
+    let v:fcs_choice = ''
+  else
+    let v:fcs_choice = 'ask'
+  endif
+endfunction
+autocmd FileChangedShell <buffer> call utils#ProcessFileChangedShell()
+
+
+"-------------------------------------------------
