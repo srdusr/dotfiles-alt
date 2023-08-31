@@ -156,6 +156,8 @@ return packer.startup(function(use)
   use('nvim-telescope/telescope-dap.nvim')
   use('axkirillov/telescope-changed-files')                                  --
   use('smartpde/telescope-recent-files')
+  use('rmagatti/auto-session')
+  use('rmagatti/session-lens')
 
   -- UX
   use('folke/neodev.nvim')
@@ -233,15 +235,6 @@ return packer.startup(function(use)
         'nvim-neotest/neotest-vim-test',
       },
     },
-  })
-  use({
-    'rmagatti/session-lens',
-    requires = { 'rmagatti/auto-session', 'nvim-telescope/telescope.nvim' },
-    config = function()
-      require('session-lens').setup({ --[[your custom config--]]
-      })
-      vim.keymap.set('n', '<leader>ss', require('session-lens').search_session) -- <-- this sets it to `Ctrl + s`
-    end,
   })
 
   -- Colorschemes
