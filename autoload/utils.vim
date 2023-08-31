@@ -166,6 +166,24 @@ autocmd! BufNewFile,BufRead *.* call utils#DisableBr()
 "-------------------------------------------------
 
 " Annoying timestamp issue on write (The file has been changed since reading it...)
+"function! utils#ProcessFileChangedShell()
+"  if v:fcs_reason == 'mode' || v:fcs_reason == 'time'
+"    let v:fcs_choice = ''
+"  else
+"    let v:fcs_choice = 'ask'
+"  endif
+"endfunction
+"autocmd FileChangedShell <buffer> call utils#ProcessFileChangedShell()
+"
+"let lastline = line('$')
+"let bufcontents = getline(1, lastline)
+"edit!
+"call setline(1, bufcontents)
+"if line('$') > lastline
+"  execute lastline+1.',$:d _'
+"endif
+
+" Annoying timestamp issue on write (The file has been changed since reading it...)
 function! utils#ProcessFileChangedShell()
   if v:fcs_reason == 'mode' || v:fcs_reason == 'time'
     let v:fcs_choice = ''
@@ -173,7 +191,21 @@ function! utils#ProcessFileChangedShell()
     let v:fcs_choice = 'ask'
   endif
 endfunction
+
+" Triggered when the file is changed externally
 autocmd FileChangedShell <buffer> call utils#ProcessFileChangedShell()
 
+" Triggered before writing the buffer to the file
+autocmd BufWritePre <buffer> call utils#BeforeWrite()
+
+function! utils#BeforeWrite()
+  let lastline = line('$')
+  let bufcontents = getline(1, lastline)
+  edit!
+  call setline(1, bufcontents)
+  if line('$') > lastline
+    execute lastline+1.',$:d _'
+  endif
+endfunction
 
 "-------------------------------------------------
