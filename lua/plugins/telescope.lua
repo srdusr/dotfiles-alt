@@ -291,7 +291,6 @@ require('telescope').load_extension('ui-select')
 require('telescope').load_extension('file_browser')
 require('telescope').load_extension('changed_files')
 require('telescope').load_extension('media_files')
---require('telescope').extensions.notify.notify()
 require('telescope').load_extension('notify')
 require('telescope').load_extension('dap')
 require('telescope').load_extension('session-lens')
@@ -316,6 +315,8 @@ function M.find_configs()
     results_title = 'Config Files',
     path_display = { 'smart' },
     search_dirs = {
+      '~/.ssh',
+      '~/.vim',
       '~/.config/nvim',
       '~/.config/zsh',
       '~/.config/tmux',
@@ -328,7 +329,6 @@ function M.find_configs()
       '~/.config/picom',
       '~/.config/polybar',
       '~/.bashrc',
-      '~/.vim',
       '~/.profile',
       '~/.zprofile',
       '~/.gitconfig',
@@ -363,7 +363,6 @@ function M.find_scripts()
     prompt_title = ' Find Scripts',
     path_display = { 'smart' },
     search_dirs = {
-      '~/.ssh',
       '~/.local/bin/scripts',
     },
     layout_strategy = 'horizontal',
@@ -371,7 +370,7 @@ function M.find_scripts()
   })
 end
 
-function M.find_projects()
+function M.find_projects() -- aka Workspaces
   require('telescope.builtin').find_files({
     hidden = true,
     no_ignore = true,
