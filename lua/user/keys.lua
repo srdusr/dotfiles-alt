@@ -298,6 +298,7 @@ map('n', '<leader>fw', [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>
 map('n', '<leader>fm', "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
 map('n', '<leader>fi', "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
 map('n', '<Leader>ffr', "<cmd>lua require('telescope').extensions.recent_files.pick()<CR>")
+map('n', '<Leader>ffb', "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>")
 --map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
 -- Map a shortcut to open the picker.
 
