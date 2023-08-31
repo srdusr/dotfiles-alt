@@ -49,6 +49,9 @@ map('n', '<leader>n', ':bn<cr>')
 map('n', '<leader>p', ':bp<cr>')
 map('n', '<leader>d', ':bd<cr>')
 
+-- Delete file of current buffer
+map('n', '<leader>rm', "<CMD>call delete(expand('%')) | bdelete!<CR>")
+
 -- List marks
 map('n', '<Leader>m', ':marks<CR>')
 
