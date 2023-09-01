@@ -315,7 +315,6 @@ function M.find_configs()
     results_title = 'Config Files',
     path_display = { 'smart' },
     search_dirs = {
-      '~/.ssh',
       '~/.vim',
       '~/.config/nvim',
       '~/.config/zsh',
@@ -336,6 +335,7 @@ function M.find_configs()
       '~/.gitignore',
       '~/.editorconfig',
       '~/.prettierrc.yml',
+      '~/.ssh',
       '~/README.md',
     },
     file_ignore_patterns = {
@@ -398,14 +398,16 @@ end
 
 function M.find_notes()
   require('telescope.builtin').find_files({
-    hidden = false,
+    hidden = true,
+    no_ignore = false,
     prompt_title = ' Find Notes',
     path_display = { 'smart' },
     search_dirs = {
       '~/documents/notes/private/',
       '~/documents/notes',
+      '~/notes/private',
+      '~/notes',
     },
-    --cwd = "~documents/notes",
     layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
   })
