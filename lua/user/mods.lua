@@ -614,12 +614,16 @@ end
 
 -- Function to create or toggle a scratch buffer
 function M.Scratch()
-  local scratch_dir = vim.fn.expand('~')
+  local scratch_dir = vim.fn.expand('~/notes/private')
   local scratch_date = os.date('%Y-%m-%d')
-  local scratch_file = 'notes-' .. scratch_date .. '.md'
+  local scratch_file = 'scratch-' .. scratch_date .. '.md'
   local scratch_buf = vim.fn.bufnr(scratch_file)
   local bufinfo = vim.fn.getbufinfo(scratch_buf)
 
+  -- Check if the directory exists, and create it if it doesn't
+  if vim.fn.isdirectory(scratch_dir) == 0 then
+    vim.fn.mkdir(scratch_dir, 'p')
+  end
   if scratch_buf == -1 then
     -- If the buffer doesn't exist, create it
     vim.cmd('vsplit ' .. scratch_dir .. '/' .. scratch_file)
