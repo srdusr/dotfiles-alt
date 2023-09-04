@@ -139,7 +139,7 @@ map('n', '<A-k>', ':let save_a=@a<Cr><Up>"add"ap<Up>:let @a=save_a<Cr>')
 map('n', '<A-j>', ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>')
 
 -- Toggle Diff
-map('n', '<leader>td', '<Cmd>call utils#ToggleDiff()<CR>')
+map('n', '<leader>df', '<Cmd>call utils#ToggleDiff()<CR>')
 
 -- Toggle Verbose
 map('n', '<leader>vt', '<Cmd>call utils#VerboseToggle()<CR>')
