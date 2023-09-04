@@ -333,8 +333,30 @@ vim.api.nvim_create_autocmd({ 'CursorHold' }, {
     vim.opt.guicursor:append('a:Cursor/lCursor')
   end,
 })
+
+vim.api.nvim_create_autocmd({ 'BufLeave', 'WinClosed', 'WinLeave' }, {
+  pattern = 'NvimTree*',
+  callback = function()
+    local def = vim.api.nvim_get_hl_by_name('Cursor', true)
+    vim.api.nvim_set_hl(
+      0,
+      'Cursor',
+      vim.tbl_extend('force', def, {
+        blend = 0,
+      })
+    )
+    vim.opt.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20'
+  end,
+})
 -- Highlight Groups
 vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
+vim.api.nvim_command('highlight NvimTreeCursorLine guibg=#50fa7b guifg=#000000')
+vim.api.nvim_command('highlight NvimTreeSymlinkFolderName guifg=#f8f8f2')
+vim.api.nvim_command('highlight NvimTreeFolderName guifg=#f8f8f2')
+vim.api.nvim_command('highlight NvimTreeRootFolder guifg=#f8f8f2')
+vim.api.nvim_command('highlight NvimTreeEmptyFolderName guifg=#f8f8f2')  --(Directory)
+vim.api.nvim_command('highlight NvimTreeOpenedFolderName guifg=#f8f8f2') --(Directory)
+vim.api.nvim_command('highlight NvimTreeOpenedFile guifg=#50fa7b guibg=#000000')
 
 --vim.api.nvim_command("highlight NvimTreeSymlink ")
 --vim.api.nvim_command("highlight NvimTreeSymlinkFolderName ")   --(Directory)
