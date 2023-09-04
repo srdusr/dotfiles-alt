@@ -185,8 +185,8 @@ end
 map('v', '<leader>sr', 'y:%s/<C-r><C-r>"//g<Left><Left>c')
 
 -- Substitute globally and locally in the selected region.
-map('n', '<leader>ss', ':%s//g<Left><Left>')
-map('v', '<leader>ss', ':s//g<Left><Left>')
+map('n', '<leader>s', ':%s//g<Left><Left>')
+map('v', '<leader>s', ':s//g<Left><Left>')
 
 -- Toggle completion
 map('n', '<Leader>tc', ':lua require("user.mods").toggle_completion()<CR>')
@@ -430,4 +430,6 @@ map({ 'n', 'v' }, '<leader>r', '<Plug>SnipRun<CR>')
 map('n', '<leader>co', '<CMD>lua require("user.mods").toggleCodi()<CR>')
 
 -- Scratch buffer
-map('n', '<leader>s', '<CMD>lua require("user.mods").Scratch()<CR>')
+map('n', '<leader>ss', '<CMD>lua require("user.mods").Scratch("float")<CR>')
+map('n', '<leader>sh', '<CMD>lua require("user.mods").Scratch("horizontal")<CR>')
+map('n', '<leader>sv', '<CMD>lua require("user.mods").Scratch("vertical")<CR>')
