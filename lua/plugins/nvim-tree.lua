@@ -6,7 +6,8 @@
 --- To see default mappings `:nvim-tree-default-mappings`
 
 local icons = {
-  git_placement = 'after',
+  webdev_colors = true,
+  git_placement = 'signcolumn',
   modified_placement = 'after',
   padding = ' ',
   show = {
@@ -30,6 +31,7 @@ local icons = {
       symlink = '',
       symlink_open = '',
     },
+
     git = {
       deleted = '',
       unmerged = '',
@@ -38,6 +40,12 @@ local icons = {
       staged = '',
       renamed = '➜',
       ignored = '◌',
+    },
+  },
+  web_devicons = {
+    folder = {
+      enable = true,
+      color = true,
     },
   },
 }
