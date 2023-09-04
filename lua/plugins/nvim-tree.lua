@@ -294,6 +294,18 @@ local function change_root_to_global_cwd()
   local global_cwd = vim.fn.getcwd(-1, -1)
   api.tree.change_root(global_cwd)
 end
+
+local function copy_file_to(node)
+  local file_src = node['absolute_path']
+  -- The args of input are {prompt}, {default}, {completion}
+  -- Read in the new file path using the existing file's path as the baseline.
+  local file_out = vim.fn.input('COPY TO: ', file_src, 'file')
+  -- Create any parent dirs as required
+  local dir = vim.fn.fnamemodify(file_out, ':h')
+  vim.fn.system({ 'mkdir', '-p', dir })
+  -- Copy the file
+  vim.fn.system({ 'cp', '-R', file_src, file_out })
+end
 -- Highlight Groups
 vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
 
