@@ -87,17 +87,11 @@ map('n', '<Leader><', ':vertical resize +5<CR>')
 map('n', '<Leader>>', ':vertical resize -5<CR>')
 map('n', '<Leader>=', '<C-w>=')
 
--- Map Alt+(h/j/k/l) in insert mode to move directional
-map('i', '<A-h>', '<left>')
-map('i', '<A-j>', '<down>')
-map('i', '<A-k>', '<up>')
-map('i', '<A-l>', '<right>')
-
--- Map Alt+(h/j/k/l) in command mode to move directional
-vim.api.nvim_set_keymap('c', '<A-h>', '<Left>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<A-j>', '<Down>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<A-k>', '<Up>', { noremap = true })
-vim.api.nvim_set_keymap('c', '<A-l>', '<Right>', { noremap = true })
+-- Map Alt+(h/j/k/l) in insert(include terminal/command) mode to move directional
+map({ 'i', 't', 'c' }, '<A-h>', '<left>')
+map({ 'i', 't', 'c' }, '<A-j>', '<down>')
+map({ 'i', 't', 'c' }, '<A-k>', '<up>')
+map({ 'i', 't', 'c' }, '<A-l>', '<right>')
 
 -- Create tab, edit and move between them
 map('n', '<C-T>n', ':tabnew<CR>')
