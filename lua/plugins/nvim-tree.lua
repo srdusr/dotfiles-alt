@@ -187,18 +187,21 @@ api.events.subscribe(api.events.Event.FileCreated, function(file)
 end)
 
 require('nvim-tree').setup({
+  auto_reload_on_write = true,
+  create_in_closed_folder = false,
+  hijack_cursor = true,
   disable_netrw = true,
   hijack_netrw = true,
-  auto_reload_on_write = true,
+  hijack_unnamed_buffer_when_opening = false,
+  --ignore_buffer_on_setup = false,
   update_focused_file = {
     enable = true,
-    update_cwd = false,
+    update_cwd = true,
     update_root = true,
     ignore_list = {},
   },
   root_dirs = {},
   prefer_startup_root = true,
-  hijack_cursor = true,
   --hijack_directories = {
   --  enable = false,
   --},
@@ -228,9 +231,16 @@ require('nvim-tree').setup({
     require_confirm = true,
   },
   modified = {
-    enable = false,
+    enable = true,
     show_on_dirs = true,
     show_on_open_dirs = true,
+  },
+  filters = {
+    dotfiles = false,
+    git_clean = false,
+    no_buffer = false,
+    custom = {},
+    exclude = {},
   },
   actions = {
     use_system_clipboard = true,
@@ -243,7 +253,8 @@ require('nvim-tree').setup({
       close_window = true,
     },
     open_file = {
-      quit_on_open = true,
+      quit_on_open = false,
+      eject = true,
       resize_window = false,
       window_picker = {
         enable = true,
