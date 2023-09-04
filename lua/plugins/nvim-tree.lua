@@ -306,6 +306,33 @@ local function copy_file_to(node)
   -- Copy the file
   vim.fn.system({ 'cp', '-R', file_src, file_out })
 end
+
+local function edit_and_close(node)
+  api.node.open.edit(node, {})
+  api.tree.close()
+end
+
+vim.api.nvim_create_augroup('NvimTreeRefresh', {})
+vim.api.nvim_create_autocmd('BufEnter', {
+  pattern = 'NvimTree_1',
+  command = 'NvimTreeRefresh',
+  group = 'NvimTreeRefresh',
+})
+
+vim.api.nvim_create_autocmd({ 'CursorHold' }, {
+  pattern = 'NvimTree*',
+  callback = function()
+    local def = vim.api.nvim_get_hl_by_name('Cursor', true)
+    vim.api.nvim_set_hl(
+      0,
+      'Cursor',
+      vim.tbl_extend('force', def, {
+        blend = 100,
+      })
+    )
+    vim.opt.guicursor:append('a:Cursor/lCursor')
+  end,
+})
 -- Highlight Groups
 vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
 
