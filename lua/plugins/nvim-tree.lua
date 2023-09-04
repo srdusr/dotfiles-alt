@@ -270,13 +270,13 @@ require('nvim-tree').setup({
 
 local api = require('nvim-tree.api')
 local event = api.events.Event
-api.events.subscribe(event.TreeOpen, function(_)
-  vim.cmd([[setlocal statuscolumn=\ ]])
-  vim.cmd([[setlocal cursorlineopt=number]])
-  vim.cmd([[setlocal fillchars+=vert:🮇]])
-  vim.cmd([[setlocal fillchars+=horizup:🮇]])
-  vim.cmd([[setlocal fillchars+=vertright:🮇]])
-end)
+--api.events.subscribe(event.TreeOpen, function(_)
+--  vim.cmd([[setlocal statuscolumn=\ ]])
+--  vim.cmd([[setlocal cursorlineopt=number]])
+--  vim.cmd([[setlocal fillchars+=vert:🮇]])
+--  vim.cmd([[setlocal fillchars+=horizup:🮇]])
+--  vim.cmd([[setlocal fillchars+=vertright:🮇]])
+--end)
 
 local function open_nvim_tree(data)
   vim.cmd.cd(data.file:match('(.+)/[^/]*$'))
@@ -288,6 +288,12 @@ local function open_nvim_tree(data)
 end
 vim.api.nvim_create_autocmd({ 'VimEnter' }, { callback = open_nvim_tree })
 
+-- Change Root To Global Current Working Directory
+local function change_root_to_global_cwd()
+  local api = require('nvim-tree.api')
+  local global_cwd = vim.fn.getcwd(-1, -1)
+  api.tree.change_root(global_cwd)
+end
 -- Highlight Groups
 vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
 
