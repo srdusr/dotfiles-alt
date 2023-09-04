@@ -100,10 +100,10 @@ local float = {
 }
 
 local view = {
-  cursorline = false,
+  cursorline = true,
   hide_root_folder = false,
   float = float,
-  signcolumn = 'no',
+  --signcolumn = 'no',
   width = function()
     return math.floor(vim.opt.columns:get() * WIDTH_RATIO)
   end,
@@ -182,9 +182,9 @@ local function on_attach(bufnr)
     vim.keymap.set('n', keys, mapping[1], opts(mapping[2]))
   end
 end
-api.events.subscribe(api.events.Event.FileCreated, function(file)
-  vim.cmd('edit' .. file.fname)
-end)
+--api.events.subscribe(api.events.Event.FileCreated, function(file)
+--  vim.cmd('edit' .. file.fname)
+--end)
 
 require('nvim-tree').setup({
   auto_reload_on_write = true,
@@ -348,6 +348,7 @@ vim.api.nvim_create_autocmd({ 'BufLeave', 'WinClosed', 'WinLeave' }, {
     vim.opt.guicursor = 'n-v-c-sm:block,i-ci-ve:ver25,r-cr-o:hor20'
   end,
 })
+
 -- Highlight Groups
 vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
 vim.api.nvim_command('highlight NvimTreeCursorLine guibg=#50fa7b guifg=#000000')
