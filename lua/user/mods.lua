@@ -612,37 +612,109 @@ end
 
 --------------------------------------------------
 
--- Function to create or toggle a scratch buffer
-function M.Scratch()
-  local scratch_dir = vim.fn.expand('~/notes/private')
-  local scratch_date = os.date('%Y-%m-%d')
-  local scratch_file = 'scratch-' .. scratch_date .. '.md'
-  local scratch_buf = vim.fn.bufnr(scratch_file)
-  local bufinfo = vim.fn.getbufinfo(scratch_buf)
+---- Function to create or toggle a scratch buffer
+local scratch_buf = nil -- Store the scratch buffer globally
+local scratch_win = nil -- Store the scratch window globally
+local scratch_date = os.date('%Y-%m-%d')
+local scratch_dir = vim.fn.expand('~/notes/private')
+local scratch_file = 'scratch-' .. scratch_date .. '.md'
 
+function M.Scratch(Split_direction)
   -- Check if the directory exists, and create it if it doesn't
   if vim.fn.isdirectory(scratch_dir) == 0 then
     vim.fn.mkdir(scratch_dir, 'p')
   end
-  if scratch_buf == -1 then
-    -- If the buffer doesn't exist, create it
-    vim.cmd('vsplit ' .. scratch_dir .. '/' .. scratch_file)
-    if vim.fn.empty(vim.fn.glob(scratch_dir .. '/' .. scratch_file)) == 1 then
-      vim.cmd(':normal i# Quick Notes - ' .. scratch_date)
-      vim.cmd(':normal o')
-      vim.cmd(':normal 28a-')
-      vim.cmd(':normal o')
-      vim.cmd(':w')
-      --vim.cmd(':startinsert')
-    end
-  elseif vim.fn.empty(bufinfo[1].windows) == 1 then
-    -- If the buffer exists but is not open, open it
-    vim.cmd('vsplit +buffer' .. scratch_buf)
+
+  -- Determine the window type based on Split_direction
+  local current_window_type = 'float'
+  if Split_direction == 'float' then
+    current_window_type = 'float'
+  elseif Split_direction == 'vertical' then
+    current_window_type = 'vertical'
+  elseif Split_direction == 'horizontal' then
+    current_window_type = 'horizontal'
+  end
+
+  local file_path = scratch_dir .. '/' .. scratch_file
+
+  if scratch_win and vim.api.nvim_win_is_valid(scratch_win) then
+    -- Window exists, save buffer to file and close it
+    WriteScratchBufferToFile(scratch_buf, file_path)
+    vim.cmd(':w!')
+    vim.api.nvim_win_close(scratch_win, true)
+    scratch_win = nil
   else
-    -- If the buffer exists and is open, close it
-    local scratch_win = vim.fn.filter(vim.fn.getwininfo(), 'v:val.bufnr == ' .. scratch_buf)[1].winnr
+    if scratch_buf and vim.api.nvim_buf_is_valid(scratch_buf) then
+      -- Buffer exists, reuse it
+      OpenScratchWindow(scratch_buf, current_window_type)
+    else
+      -- Buffer doesn't exist, create it and load the file if it exists
+      scratch_buf = OpenScratchBuffer(file_path)
+      OpenScratchWindow(scratch_buf, current_window_type)
+    end
+  end
+end
+
+function WriteScratchBufferToFile(buf, file_path)
+  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+  local content = table.concat(lines, '\n')
+  local escaped_file_path = vim.fn.fnameescape(file_path)
+
+  -- Write the buffer content to the file
+  local file = io.open(escaped_file_path, 'w')
+  if file then
+    file:write(content)
+    file:close()
+  end
+end
+
+function OpenScratchBuffer(file_path)
+  local buf = vim.api.nvim_create_buf(true, false)
+
+  -- Set the file name for the buffer
+  local escaped_file_path = vim.fn.fnameescape(file_path)
+  vim.api.nvim_buf_set_name(buf, escaped_file_path)
+
+  -- Check if the file exists and load it if it does
+  if vim.fn.filereadable(file_path) == 1 then
+    local file_contents = vim.fn.readfile(file_path)
+    vim.api.nvim_buf_set_lines(buf, 0, -1, true, file_contents)
+  else
+    -- Insert initial content
+    vim.api.nvim_buf_set_lines(buf, 0, -1, true, {
+      '# Quick Notes - ' .. scratch_date,
+      '--------------------------',
+      '',
+    })
+
+    -- Save the initial content to the file
     vim.cmd(':w')
-    vim.cmd(scratch_win .. 'wincmd c')
+  end
+
+  return buf
+end
+
+function OpenScratchWindow(buf, current_window_type)
+  if current_window_type == 'float' then
+    local opts = {
+      relative = 'win',
+      width = 120,
+      height = 10,
+      border = 'single',
+      row = 20,
+      col = 20,
+    }
+    scratch_win = vim.api.nvim_open_win(buf, true, opts)
+    -- Go to the last line of the buffer
+    vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(buf), 1 })
+  elseif current_window_type == 'vertical' then
+    vim.cmd('vsplit')
+    vim.api.nvim_win_set_buf(0, buf)
+    scratch_win = 0
+  elseif current_window_type == 'horizontal' then
+    vim.cmd('split')
+    vim.api.nvim_win_set_buf(0, buf)
+    scratch_win = 0
   end
 end
 
