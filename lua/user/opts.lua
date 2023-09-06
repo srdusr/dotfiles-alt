@@ -13,9 +13,6 @@ vim.g.sh_noisk = 1                           -- iskeyword word boundaries when e
 vim.o.autochdir = true
 --vim.o.writeany= true
 
--- Colors
-vim.opt.termguicolors = true
-
 -- Clipboard
 vim.opt.clipboard:append({ 'unnamedplus' }) -- Install xclip or this will slowdown startup
 
