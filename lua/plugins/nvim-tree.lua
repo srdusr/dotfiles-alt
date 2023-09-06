@@ -6,7 +6,7 @@
 --- To see default mappings `:nvim-tree-default-mappings`
 
 local icons = {
-  webdev_colors = true,
+  --webdev_colors = true,
   git_placement = 'signcolumn',
   modified_placement = 'after',
   padding = ' ',
@@ -312,12 +312,12 @@ local function edit_and_close(node)
   api.tree.close()
 end
 
-vim.api.nvim_create_augroup('NvimTreeRefresh', {})
-vim.api.nvim_create_autocmd('BufEnter', {
-  pattern = 'NvimTree_1',
-  command = 'NvimTreeRefresh',
-  group = 'NvimTreeRefresh',
-})
+--vim.api.nvim_create_augroup('NvimTreeRefresh', {})
+--vim.api.nvim_create_autocmd('BufEnter', {
+--  pattern = 'NvimTree_1',
+--  command = 'NvimTreeRefresh',
+--  group = 'NvimTreeRefresh',
+--})
 
 vim.api.nvim_create_autocmd({ 'CursorHold' }, {
   pattern = 'NvimTree*',
@@ -351,6 +351,8 @@ vim.api.nvim_create_autocmd({ 'BufLeave', 'WinClosed', 'WinLeave' }, {
 
 -- Highlight Groups
 vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
+vim.api.nvim_command('highlight NvimTreeNormalFloat guibg=none')
+vim.api.nvim_command('highlight NvimTreeEndOfBuffer guibg=none') --(NonText)
 vim.api.nvim_command('highlight NvimTreeCursorLine guibg=#50fa7b guifg=#000000')
 vim.api.nvim_command('highlight NvimTreeSymlinkFolderName guifg=#f8f8f2')
 vim.api.nvim_command('highlight NvimTreeFolderName guifg=#f8f8f2')
