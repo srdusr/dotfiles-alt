@@ -481,7 +481,7 @@ vim.api.nvim_create_autocmd({ 'VimLeave' }, {
 --------------------------------------------------
 
 -- Rooter
-vim.cmd([[autocmd BufEnter * lua vim.cmd('Rooter')]])
+--vim.cmd([[autocmd BufEnter * lua vim.cmd('Rooter')]])
 
 --------------------------------------------------
 
