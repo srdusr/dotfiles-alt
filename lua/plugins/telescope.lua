@@ -260,19 +260,19 @@ require('telescope').setup({
     file_browser = {
       theme = 'dropdown',
       -- disables netrw and use telescope-file-browser in its place
-      hijack_netrw = true,
+      hijack_netrw = false,
       mappings = {
         -- your custom insert mode mappings
         ['i'] = {
           ['<C-w>'] = function()
             vim.cmd('normal vbd')
           end,
-          --["<C-h>"] = fb_actions.goto_parent_dir,
+          ['<C-h>'] = fb_actions.goto_parent_dir,
         },
         ['n'] = {
           -- your custom normal mode mappings
           ['N'] = fb_actions.create,
-          --["<C-h>"] = fb_actions.goto_parent_dir,
+          ['<C-h>'] = fb_actions.goto_parent_dir,
           --["/"] = function()
           --	vim.cmd("startinsert")
           --end,
@@ -296,6 +296,7 @@ require('telescope').load_extension('dap')
 require('telescope').load_extension('session-lens')
 require('telescope').load_extension('flutter')
 require('telescope').load_extension('recent_files')
+require('telescope').load_extension('projects')
 
 --M.curbuf = function(opts)
 --  opts = opts
@@ -498,5 +499,47 @@ vim.cmd('command! Findhere lua require("plugins.telescope").findhere()')
 
 -- Merge the existing M table with the startup function table
 --M = vim.tbl_extend('force', M, { findhere = findhere })
+
+-- Find project dirs
+function M.find_dirs()
+  local actions = require('telescope.actions')
+  local actions_set = require('telescope.actions.set')
+  local actions_state = require('telescope.actions.state')
+  local finders = require('telescope.finders')
+  local pickers = require('telescope.pickers')
+  local conf = require('telescope.config').values
+  local search_dir = '~/projects'
+
+  pickers
+      .new({}, {
+        prompt_title = 'Change Directory',
+        finder = finders.new_oneshot_job({
+          'find',
+          vim.fn.expand(search_dir),
+          '-type',
+          'd',
+          '-maxdepth',
+          '4',
+        }),
+        previewer = require('telescope.previewers').vim_buffer_cat.new({}),
+        sorter = conf.generic_sorter({}),
+        attach_mappings = function(prompt_bufnr, map)
+          actions_set.select:replace(function()
+            local entry = actions_state.get_selected_entry()
+            if entry ~= nil then
+              local dir = entry.value
+              actions.close(prompt_bufnr, false)
+              --vim.cmd('lcd ' .. vim.fn.fnameescape(dir))
+              vim.fn.chdir(dir)
+              vim.cmd('e .')
+              vim.cmd("echon ''")
+              print('cwd: ' .. vim.fn.getcwd())
+            end
+          end)
+          return true
+        end,
+      })
+      :find()
+end
 
 return M
