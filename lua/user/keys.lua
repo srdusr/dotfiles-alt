@@ -269,9 +269,9 @@ map('n', '<leader>gm', ':Gmove<Space>')
 --map("n", "<leader>gpl", ":Dispatch! git pull<CR>")
 
 -- Telescope
-map('n', '<leader>ff', "<cmd>lua require('telescope.builtin').find_files()<cr>") -- find files with hidden option
+map('n', '<leader>ff', ":cd %:p:h<CR>:pwd<CR><cmd>lua require('telescope.builtin').find_files()<cr>") -- find files with hidden option
 map('n', '<leader>fF', ":cd %:p:h<CR>:pwd<CR><cmd>lua require('user.mods').findFilesInCwd()<CR>", { noremap = true, silent = true, desc = 'Find files in cwd' })
-map('n', '<leader>ff.', function()
+map('n', '<leader>f.', function()
   require('telescope.builtin').find_files({ hidden = false, no_ignore = true })
 end) -- find all files
 map('n', '<leader>fg', "<cmd>lua require('telescope.builtin').live_grep()<cr>")
@@ -285,15 +285,17 @@ map('n', '<leader>fk', "<cmd>lua require('telescope.builtin').keymaps()<cr>")
 map('n', '<leader>fr', "<cmd>lua require('telescope.builtin').registers({})<CR>")                  -- registers picker
 map('n', '<leader>fm', "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
 map('n', '<leader>fi', "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
-map('n', '<leader>f.', [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]])                 -- find configs
-map('n', '<leader>fs', [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]])                 -- find scripts
-map('n', '<leader>fw', [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])                -- find projects
-map('n', '<leader>fn', [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])                   -- find notes
+map('n', '<Leader>fs', '<cmd>lua require("session-lens").search_session()<CR>')
+map('n', '<leader>ff.', [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]])                -- find configs
+map('n', '<leader>ffs', [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]])                -- find scripts
+map('n', '<leader>ffw', [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])               -- find projects
+map('n', '<leader>ffp', [[<Cmd>lua require'plugins.telescope'.find_dirs()<CR>]])                   -- find projects
+map('n', '<leader>ffn', [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])                  -- find notes
 map('n', '<leader>fgn', [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]])                  -- search notes
-map('n', '<leader>ffc', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<Leader>ffr', "<cmd>lua require('telescope').extensions.recent_files.pick()<CR>")
+map('n', '<leader>ffc', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
 map('n', '<Leader>ffb', "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>")
-map('n', '<Leader>ffs', '<cmd>lua require("session-lens").search_session()<CR>')
+--map('n', '<Leader>ffp', "<cmd>lua require('telescope').extensions.projects.projects()<CR>")
 --map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
 -- Map a shortcut to open the picker.
 
