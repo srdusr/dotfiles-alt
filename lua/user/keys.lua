@@ -6,6 +6,7 @@ local map = function(mode, l, r, opts)
   keymap.set(mode, l, r, opts)
 end
 local term_opts = { noremap = true, silent = false }
+local bufnr = vim.api.nvim_get_current_buf()
 
 -- Semi-colon as leader key
 vim.g.mapleader = ';'
@@ -114,10 +115,6 @@ map('n', '<leader>7', '7gt<CR>')
 map('n', '<leader>8', '8gt<CR>')
 map('n', '<leader>9', '9gt<CR>')
 map('n', '<leader>0', '10gt<CR>')
-
--- Move to the next and previous item in the quickfixlist
---map("n", "]c", "<Cmd>cnext<CR>")
---map("n", "[c", "<Cmd>cprevious<CR>")
 
 -- Hitting ESC when inside a terminal to get into normal mode
 --map("t", "<Esc>", [[<C-\><C-N>]])
@@ -324,11 +321,11 @@ map('n', '<leader>zm', "<CMD>ZenMode<CR> | :echom ('Zen Mode')<CR> | :sl! | echo
 map('n', '<leader>ro', "<CMD>Rooter<CR> | :echom ('cd to root/project directory')<CR> | :sl! | echo ('')<CR>", term_opts)
 
 -- Trouble (UI to show diagnostics)
-map('n', '<leader>t', '<CMD>TroubleToggle<CR>')
-map('n', '<leader>tw', '<CMD>TroubleToggle workspace_diagnostics<CR>')
-map('n', '<leader>td', '<CMD>TroubleToggle document_diagnostics<CR>')
-map('n', '<leader>tq', '<CMD>TroubleToggle quickfix<CR>')
-map('n', '<leader>tl', '<CMD>TroubleToggle loclist<CR>')
+map('n', '<leader>t', ':cd %:p:h<CR>:pwd<CR><CMD>TroubleToggle<CR>')
+map('n', '<leader>tw', ':cd %:p:h<CR>:pwd<CR><CMD>TroubleToggle workspace_diagnostics<CR>')
+map('n', '<leader>td', ':cd %:p:h<CR>:pwd<CR><CMD>TroubleToggle document_diagnostics<CR>')
+map('n', '<leader>tq', ':cd %:p:h<CR>:pwd<CR><CMD>TroubleToggle quickfix<CR>')
+map('n', '<leader>tl', ':cd %:p:h<CR>:pwd<CR><CMD>TroubleToggle loclist<CR>')
 map('n', 'gR', '<CMD>TroubleToggle lsp_references<CR>')
 
 -- Null-ls
@@ -343,9 +340,15 @@ map('n', '<leader>q', function()
     require('plugins.quickfix').close()
   else
     require('plugins.quickfix').open()
-    -- require("quickfix").open()
   end
 end, { desc = 'Toggle quickfix window' })
+
+-- Move to the next and previous item in the quickfixlist
+map('n', ']c', '<Cmd>cnext<CR>')
+map('n', '[c', '<Cmd>cprevious<CR>')
+
+-- Location list
+map('n', '<leader>l', '<cmd>lua require("plugins.loclist").loclist_toggle()<CR>')
 
 -- Dap (debugging)
 local dap_ok, dap = pcall(require, 'dap')
@@ -415,7 +418,7 @@ end, { desc = 'DAP-Telescope: Commands' })
 map('n', '<leader><Space>', '<CMD>lua require("user.mods").toggle_dashboard()<CR>')
 
 -- Lsp Lines toggle
-map('', '<Leader>l', require('lsp_lines').toggle, { desc = 'Toggle lsp_lines' })
+map('', '<Leader>ll', require('lsp_lines').toggle, { desc = 'Toggle lsp_lines' })
 
 -- SnipRun
 map({ 'n', 'v' }, '<leader>r', '<Plug>SnipRun<CR>')
