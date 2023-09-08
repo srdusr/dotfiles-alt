@@ -4,12 +4,14 @@ local M = {}
 local actions = require('telescope.actions')
 local fb_actions = require('telescope').extensions.file_browser.actions
 --local builtin = require("telescope.builtin")
---local themes = require("telescope.themes")
 --local utils = require("telescope.utils")
---local action_state = require("telescope.actions.state")
 --local layout_actions = require("telescope.actions.layout")
---local pickers = require("telescope.pickers")
-local themes = require('telescope.themes')
+--local themes = require('telescope.themes')
+local actions_set = require('telescope.actions.set')
+local actions_state = require('telescope.actions.state')
+local finders = require('telescope.finders')
+local pickers = require('telescope.pickers')
+local config = require('telescope.config').values
 
 require('telescope').setup({
   defaults = {
@@ -296,7 +298,7 @@ require('telescope').load_extension('dap')
 require('telescope').load_extension('session-lens')
 require('telescope').load_extension('flutter')
 require('telescope').load_extension('recent_files')
-require('telescope').load_extension('projects')
+--require('telescope').load_extension('projects')
 
 --M.curbuf = function(opts)
 --  opts = opts
@@ -371,18 +373,51 @@ function M.find_scripts()
   })
 end
 
-function M.find_projects() -- aka Workspaces
-  require('telescope.builtin').find_files({
-    hidden = true,
-    no_ignore = true,
-    prompt_title = ' Find Projects',
-    path_display = { 'smart' },
-    search_dirs = {
-      '~/projects',
-    },
-    layout_strategy = 'horizontal',
-    layout_config = { preview_width = 0.65, width = 0.75 },
-  })
+--function M.find_projects() -- aka Workspaces
+--  require('telescope.builtin').find_files({
+--    hidden = true,
+--    no_ignore = true,
+--    prompt_title = ' Find Projects',
+--    path_display = { 'smart' },
+--    search_dirs = {
+--      '~/projects',
+--    },
+--    layout_strategy = 'horizontal',
+--    layout_config = { preview_width = 0.65, width = 0.75 },
+--  })
+--end
+
+function M.find_projects()
+  local search_dir = '~/projects'
+  pickers
+      .new({}, {
+        prompt_title = 'Change Directory',
+        finder = finders.new_oneshot_job({
+          'find',
+          vim.fn.expand(search_dir),
+          '-type',
+          'd',
+          '-maxdepth',
+          '4',
+        }),
+        previewer = require('telescope.previewers').vim_buffer_cat.new({}),
+        sorter = config.generic_sorter({}),
+        attach_mappings = function(prompt_bufnr, map)
+          actions_set.select:replace(function()
+            local entry = actions_state.get_selected_entry()
+            if entry ~= nil then
+              local dir = entry.value
+              actions.close(prompt_bufnr, false)
+              vim.fn.chdir(dir)
+              vim.cmd('e .')
+              vim.cmd("echon ''")
+              print('cwd: ' .. vim.fn.getcwd())
+            end
+          end)
+          return true
+        end,
+      })
+      :find()
 end
 
 function M.grep_notes()
@@ -408,6 +443,21 @@ function M.find_notes()
       '~/documents/notes',
       '~/notes/private',
       '~/notes',
+    },
+    layout_strategy = 'horizontal',
+    layout_config = { preview_width = 0.65, width = 0.75 },
+  })
+end
+
+function M.find_books()
+  require('telescope.builtin').find_files({
+    hidden = true,
+    no_ignore = false,
+    prompt_title = ' Find Books',
+    path_display = { 'smart' },
+    search_dirs = {
+      '~/documents/books',
+      '~/books',
     },
     layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
@@ -469,13 +519,7 @@ local with_title = function(opts, extra)
   }, extra or {})
 end
 
---vim.api.nvim_create_augroup('findhere', { clear = true })
---vim.api.nvim_command('augroup findhere')
---vim.api.nvim_command('autocmd!')
---vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").findhere()')
---vim.api.nvim_command('augroup END')
-
---local findhere = function()
+-- Find here
 function M.findhere()
   -- Open file browser if argument is a folder
   local arg = vim.api.nvim_eval('argv(0)')
@@ -494,43 +538,48 @@ end
 -- Define the custom command findhere/startup
 vim.cmd('command! Findhere lua require("plugins.telescope").findhere()')
 --vim.cmd('command! Startup lua require("plugins.telescope").findhere()')
-
 --vim.api.nvim_command('autocmd VimEnter * lua require("plugins/telescope").findhere()')
 
--- Merge the existing M table with the startup function table
---M = vim.tbl_extend('force', M, { findhere = findhere })
-
--- Find project dirs
+-- Find dirs
 function M.find_dirs()
-  local actions = require('telescope.actions')
-  local actions_set = require('telescope.actions.set')
-  local actions_state = require('telescope.actions.state')
-  local finders = require('telescope.finders')
-  local pickers = require('telescope.pickers')
-  local conf = require('telescope.config').values
-  local search_dir = '~/projects'
+  local root_dir = vim.fn.input('Enter the root directory: ')
+
+  -- Check if root_dir is empty
+  if root_dir == '' then
+    print('No directory entered. Aborting.')
+    return
+  end
+
+  local entries = {}
+
+  -- Use vim.fn.expand() to get an absolute path
+  local root_path = vim.fn.expand(root_dir)
+
+  local subdirs = vim.fn.readdir(root_path)
+  if subdirs then
+    for _, subdir in ipairs(subdirs) do
+      if vim.fn.isdirectory(root_path .. '/' .. subdir) == 1 then
+        table.insert(entries, subdir)
+      end
+    end
+  end
 
   pickers
       .new({}, {
         prompt_title = 'Change Directory',
-        finder = finders.new_oneshot_job({
-          'find',
-          vim.fn.expand(search_dir),
-          '-type',
-          'd',
-          '-maxdepth',
-          '4',
+        finder = finders.new_table({
+          results = entries,
         }),
-        previewer = require('telescope.previewers').vim_buffer_cat.new({}),
-        sorter = conf.generic_sorter({}),
+        previewer = config.file_previewer({}),
+        sorter = config.generic_sorter({}),
         attach_mappings = function(prompt_bufnr, map)
           actions_set.select:replace(function()
             local entry = actions_state.get_selected_entry()
             if entry ~= nil then
-              local dir = entry.value
+              local selected_subdir = entry.value
               actions.close(prompt_bufnr, false)
-              --vim.cmd('lcd ' .. vim.fn.fnameescape(dir))
-              vim.fn.chdir(dir)
+              local selected_path = root_path .. '/' .. selected_subdir
+              vim.fn.chdir(selected_path)
               vim.cmd('e .')
               vim.cmd("echon ''")
               print('cwd: ' .. vim.fn.getcwd())
