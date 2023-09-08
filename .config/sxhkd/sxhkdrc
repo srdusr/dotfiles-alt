@@ -60,8 +60,9 @@ super + w
 	$BROWSER
 
 # Show clipmenu
-alt + x
-  diodon
+#alt + x
+#    parcellite
+    #~/.local/bin/scripts/clip.sh
 
 # Screenshots tool (selection)
 ctrl + Print
