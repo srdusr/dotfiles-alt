@@ -286,16 +286,16 @@ map('n', '<leader>fr', "<cmd>lua require('telescope.builtin').registers({})<CR>"
 map('n', '<leader>fm', "<cmd>lua require('telescope').extensions.media_files.media_files({})<cr>") -- find media files
 map('n', '<leader>fi', "<cmd>lua require('telescope').extensions.notify.notify({})<cr>")           -- find notifications
 map('n', '<Leader>fs', '<cmd>lua require("session-lens").search_session()<CR>')
+map('n', '<leader>ffd', [[<Cmd>lua require'plugins.telescope'.find_dirs()<CR>]])                   -- find dies
 map('n', '<leader>ff.', [[<Cmd>lua require'plugins.telescope'.find_configs()<CR>]])                -- find configs
 map('n', '<leader>ffs', [[<Cmd>lua require'plugins.telescope'.find_scripts()<CR>]])                -- find scripts
 map('n', '<leader>ffw', [[<Cmd>lua require'plugins.telescope'.find_projects()<CR>]])               -- find projects
-map('n', '<leader>ffp', [[<Cmd>lua require'plugins.telescope'.find_dirs()<CR>]])                   -- find projects
+map('n', '<leader>ffb', [[<Cmd>lua require'plugins.telescope'.find_books()<CR>]])                  -- find books
 map('n', '<leader>ffn', [[<Cmd>lua require'plugins.telescope'.find_notes()<CR>]])                  -- find notes
 map('n', '<leader>fgn', [[<Cmd>lua require'plugins.telescope'.grep_notes()<CR>]])                  -- search notes
 map('n', '<Leader>ffr', "<cmd>lua require('telescope').extensions.recent_files.pick()<CR>")
 map('n', '<leader>ffc', "<cmd>lua require('telescope.builtin').current_buffer_fuzzy_find()<cr>")
-map('n', '<Leader>ffb', "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>")
---map('n', '<Leader>ffp', "<cmd>lua require('telescope').extensions.projects.projects()<CR>")
+map('n', '<Leader>f/', "<cmd>lua require('telescope').extensions.file_browser.file_browser()<CR>")
 --map("n", "<leader>f/", "<cmd>lua require('plugins.telescope').curbuf()<cr>")                       -- find files with hidden option
 -- Map a shortcut to open the picker.
 
