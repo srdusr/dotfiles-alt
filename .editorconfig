@@ -11,6 +11,16 @@ indent_style = space
 indent_size = 4
 max_line_length = 10000
 
+# Makefile-specific settings
+[Makefile]
+indent_style = tab
+indent_size = 4
+
+# C/C++ source files
+[*.c]
+indent_style = tab
+indent_size = 4
+
 # TypeScript/JavaScript config
 [**.{ts,js}]
 indent_size = 2
