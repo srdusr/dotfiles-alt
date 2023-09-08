@@ -44,7 +44,7 @@ bspc rule -a Plank layer=above border=off
 pgrep -x sxhkd >/dev/null || sxhkd &
 picom -b --experimental-backends &
 if [[ $(xrandr -q | grep 'HDMI-1 connected') ]]; then
-	xrandr --output LVDS-1 --primary --mode 1366x768 --rotate normal --output HDMI-1 --mode 1920x1080 --rotate normal --right-of LVDS-1
+    xrandr --output LVDS-1 --primary --mode 1366x768 --rotate normal --output HDMI-1 --mode 1920x1080 --rotate normal --right-of LVDS-1
 fi
 xfce4-panel --disable-wm-check &
 "$HOME"/.config/polybar/launch.sh &
@@ -70,8 +70,8 @@ bspc rule -a scratchpad sticky=on state=floating
 bspc rule -a Heads-Up-Display sticky=on state=floating rectangle=360x160+990+40
 
 [ "$1" = 0 ] && {
-	nm-applet &
-	plank &
+    nm-applet &
+    plank &
 }
 
 pkill xfce4-power-manager
@@ -80,16 +80,16 @@ pkill volumeicon
 sleep 2 && nice -n 2 volumeicon &
 pkill mictray
 sleep 2 && nice -n 2 mictray &
-pkill diodon
-sleep 2 && nice -n 2 diodon &
+pkill parcellite
+sleep 2 && nice -n 2 parcellite &
 
 bspc subscribe node_state | while read -r _ _ _ _ state flag; do
-	if [[ "$state" != fullscreen ]]; then continue; fi
-	if [[ "$flag" == on ]]; then
-		xdo lower -N Plank
-	else
-		xdo raise -N Plank
-	fi
+    if [[ "$state" != fullscreen ]]; then continue; fi
+    if [[ "$flag" == on ]]; then
+        xdo lower -N Plank
+    else
+        xdo raise -N Plank
+    fi
 done &
 
 bspc config external_rules_command ~/.config/bspwm/scripts/external_rules.sh
