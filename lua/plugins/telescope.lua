@@ -398,7 +398,7 @@ function M.find_projects()
           '-type',
           'd',
           '-maxdepth',
-          '4',
+          '1',
         }),
         previewer = require('telescope.previewers').vim_buffer_cat.new({}),
         sorter = config.generic_sorter({}),
