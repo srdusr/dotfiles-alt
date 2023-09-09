@@ -6,7 +6,7 @@
 --- To see default mappings `:nvim-tree-default-mappings`
 
 local icons = {
-  --webdev_colors = true,
+  webdev_colors = true,
   git_placement = 'signcolumn',
   modified_placement = 'after',
   padding = ' ',
@@ -187,12 +187,12 @@ end
 --end)
 
 require('nvim-tree').setup({
-  auto_reload_on_write = true,
-  create_in_closed_folder = false,
-  hijack_cursor = true,
-  disable_netrw = true,
-  hijack_netrw = true,
-  hijack_unnamed_buffer_when_opening = false,
+  --auto_reload_on_write = true,
+  --create_in_closed_folder = false,
+  --hijack_cursor = true,
+  --disable_netrw = true,
+  --hijack_netrw = true,
+  --hijack_unnamed_buffer_when_opening = false,
   --ignore_buffer_on_setup = false,
   update_focused_file = {
     enable = true,
@@ -201,7 +201,7 @@ require('nvim-tree').setup({
     ignore_list = {},
   },
   root_dirs = {},
-  prefer_startup_root = true,
+  --prefer_startup_root = true,
   --hijack_directories = {
   --  enable = false,
   --},
@@ -235,13 +235,13 @@ require('nvim-tree').setup({
     show_on_dirs = true,
     show_on_open_dirs = true,
   },
-  filters = {
-    dotfiles = false,
-    git_clean = false,
-    no_buffer = false,
-    custom = {},
-    exclude = {},
-  },
+  --filters = {
+  --  dotfiles = false,
+  --  git_clean = false,
+  --  no_buffer = false,
+  --  custom = {},
+  --  exclude = {},
+  --},
   actions = {
     use_system_clipboard = true,
     change_dir = {
@@ -253,8 +253,8 @@ require('nvim-tree').setup({
       close_window = true,
     },
     open_file = {
-      quit_on_open = false,
-      eject = true,
+      quit_on_open = true,
+      --eject = true,
       resize_window = false,
       window_picker = {
         enable = true,
@@ -350,16 +350,17 @@ vim.api.nvim_create_autocmd({ 'BufLeave', 'WinClosed', 'WinLeave' }, {
 })
 
 -- Highlight Groups
-vim.api.nvim_command('highlight NvimTreeNormal guibg=none')
-vim.api.nvim_command('highlight NvimTreeNormalFloat guibg=none')
-vim.api.nvim_command('highlight NvimTreeEndOfBuffer guibg=none') --(NonText)
+vim.api.nvim_command('highlight NvimTreeNormal guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NvimTreeNormalNC guibg=NONE ctermbg=NONE guifg=NONE')
+vim.api.nvim_command('highlight NvimTreeNormalFloat guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NvimTreeEndOfBuffer guibg=NONE ctermbg=NONE') --(NonText)
 vim.api.nvim_command('highlight NvimTreeCursorLine guibg=#50fa7b guifg=#000000')
-vim.api.nvim_command('highlight NvimTreeSymlinkFolderName guifg=#f8f8f2')
-vim.api.nvim_command('highlight NvimTreeFolderName guifg=#f8f8f2')
-vim.api.nvim_command('highlight NvimTreeRootFolder guifg=#f8f8f2')
-vim.api.nvim_command('highlight NvimTreeEmptyFolderName guifg=#f8f8f2')  --(Directory)
-vim.api.nvim_command('highlight NvimTreeOpenedFolderName guifg=#f8f8f2') --(Directory)
-vim.api.nvim_command('highlight NvimTreeOpenedFile guifg=#50fa7b guibg=#000000')
+vim.api.nvim_command('highlight NvimTreeSymlinkFolderName guifg=#f8f8f2 guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NvimTreeFolderName guifg=#f8f8f2 guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NvimTreeRootFolder guifg=#f8f8f2 guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NvimTreeEmptyFolderName guifg=#f8f8f2 guibg=NONE ctermbg=NONE')  --(Directory)
+vim.api.nvim_command('highlight NvimTreeOpenedFolderName guifg=#f8f8f2 guibg=NONE ctermbg=NONE') --(Directory)
+vim.api.nvim_command('highlight NvimTreeOpenedFile guifg=#50fa7b guibg=NONE ctermbg=NONE')
 
 --vim.api.nvim_command("highlight NvimTreeSymlink ")
 --vim.api.nvim_command("highlight NvimTreeSymlinkFolderName ")   --(Directory)
