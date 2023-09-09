@@ -9,3 +9,8 @@ vim.opt.softtabstop = 2 -- Tab key indents by 2 spaces.
 vim.opt.shiftwidth = 2  -- >> indents by 2 spaces.
 
 vim.b[0].undo_ftplugin = "setlocal nospell nowrap nolinebreak nobreakindent conceallevel=0"
+
+vim.cmd([[
+  autocmd FileType markdown iabbrev <buffer> `` ``
+]])
+
