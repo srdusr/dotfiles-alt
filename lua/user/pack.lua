@@ -354,6 +354,7 @@ return packer.startup(function(use)
     run = function()
       vim.fn['mkdp#util#install']()
     end,
+        vim.cmd("let g:mkdp_auto_close = 0"),
   })
   use({
     'ellisonleao/glow.nvim', -- Markdown Preview
