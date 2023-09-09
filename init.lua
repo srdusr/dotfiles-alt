@@ -137,7 +137,7 @@ vim.g.do_filetype_lua = 1
 vim.g.did_load_filetypes = 0
 
 -- Snippets
-vim.g.snippets = 'luasnip'
+--vim.g.snippets = 'luasnip'
 
 -- Notifications
 vim.notify = require('notify') -- Requires plugin "rcarriga/nvim-notify"
@@ -150,8 +150,18 @@ vim.opt.termguicolors = true
 -- Available colorschemes:
 -- [[ nightfly ayu onedark doom-one nvimgelion github_dark tokyonight ]]
 
+require('tokyonight').setup({
+  style = 'night',
+  transparent = true,
+  transparent_sidebar = true,
+  styles = {
+    sidebars = 'transparent',
+    floats = 'transparent',
+  },
+})
+
 -- Define default color scheme
-local default_colorscheme = 'tokyonight-night'
+local default_colorscheme = 'tokyonight'
 local fallback_colorscheme = 'desert'
 
 -- Attempt to set the default color scheme
@@ -163,22 +173,23 @@ if not status_ok then
 end
 
 vim.api.nvim_command('syntax on')
-vim.api.nvim_command('highlight Normal guibg=none')
-vim.api.nvim_command('highlight NormalNC guibg=none')
-vim.api.nvim_command('highlight SignColumn guibg=none')
-vim.api.nvim_command('highlight FoldColumn guibg=none')
-vim.api.nvim_command('highlight CursorLineSign guibg=none ctermbg=NONE')
+vim.api.nvim_command('highlight Normal guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NonText guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NormalNC guibg=NONE')
+vim.api.nvim_command('highlight SignColumn guibg=NONE')
+vim.api.nvim_command('highlight FoldColumn guibg=NONE')
+vim.api.nvim_command('highlight CursorLineSign guibg=NONE ctermbg=NONE')
 vim.api.nvim_command('highlight TabLine guibg=#333842 gui=bold')
-vim.api.nvim_command('highlight Title guibg=none gui=bold')
+vim.api.nvim_command('highlight Title guibg=NONE gui=bold')
 vim.api.nvim_command('highlight TabLineSel guibg=#333842 gui=bold')
-vim.api.nvim_command('highlight TabLineFill guibg=none gui=bold')
-vim.api.nvim_command('highlight WinBar guibg=none gui=bold')
-vim.api.nvim_command('highlight NormalFloat guibg=none')
-vim.api.nvim_command('highlight LineNr guibg=none')
-vim.api.nvim_command('highlight WinSeparator guibg=none gui=bold')
-vim.api.nvim_command('highlight MsgSeparator guibg=none')
-vim.api.nvim_command('highlight PmenuSel guibg=none')
-vim.api.nvim_command('highlight winblend guibg=none')
+vim.api.nvim_command('highlight TabLineFill guibg=NONE gui=bold')
+vim.api.nvim_command('highlight WinBar guibg=NONE gui=bold')
+vim.api.nvim_command('highlight NormalFloat guibg=NONE')
+vim.api.nvim_command('highlight LineNr guibg=NONE')
+vim.api.nvim_command('highlight WinSeparator guibg=NONE gui=bold')
+vim.api.nvim_command('highlight MsgSeparator guibg=NONE')
+vim.api.nvim_command('highlight PmenuSel guibg=NONE')
+vim.api.nvim_command('highlight winblend guibg=NONE')
 vim.api.nvim_command('highlight EndOfBuffer guibg=NONE guifg=Normal')
 
 -- Set different window separator colorscheme
