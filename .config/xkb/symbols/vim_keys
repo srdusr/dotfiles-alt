@@ -1,0 +1,30 @@
+// ~/.config/xkb/symbols/vim_keys
+
+// Clear existing modifiers
+default partial modifier_keys
+xkb_symbols "basic" {
+    clear  lock;
+    clear  mod5;
+
+    // Define a custom modifier (Mode_switch)
+    modifier_map Mod5 { <MDSW> };
+
+    // Remap Caps Lock to AltGr (ISO_Level3_Shift)
+    key <CAPS> {
+        type[Group1] = "ONE_LEVEL",
+        symbols[Group1] = [ ISO_Level3_Shift ],
+        actions[Group1] = [ SetMods(modifiers=Mod5) ]
+    };
+
+    // Remap h, j, k, l to arrow keys when Mode_switch is active
+    key <AC06> { [ Left ] };
+    key <AC07> { [ Down ] };
+    key <AC08> { [ Up ] };
+    key <AC09> { [ Right ] };
+
+    // Make 'q' act as Escape when in Mode_switch
+    key <AD03> { [ q, Q, Escape ] };
+
+    // Shift+Caps to use normal Caps Lock
+    modifier_map Mod5 { Shift+CapsLock, <MDSW> };
+};
