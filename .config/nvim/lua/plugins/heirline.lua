@@ -1,44 +1,45 @@
-local conditions = require("heirline.conditions")
-local utils = require("heirline.utils")
+local conditions = require('heirline.conditions')
+local utils = require('heirline.utils')
 
 local colors = {
   --bg = "#23232e",
   bg = nil,
-  nobg = "NONE",
-  white = "#f8f8f2",
-  black = "#000000",
-  darkgray = "#23232e",
-  gray = "#2d2b3a",
-  lightgray = "#d6d3ea",
-  pink = "#f92672",
-  green = "#50fa7b",
-  blue = "#39BAE6",
-  yellow = "#f1fa8c",
-  orange = "#ffb86c",
-  purple = "#BF40BF",
-  violet = "#7F00FF",
-  red = "#ff5555",
-  cyan = "#66d9eC",
+  nobg = 'NONE',
+  white = '#f8f8f2',
+  black = '#000000',
+  darkgray = '#23232e',
+  gray = '#2d2b3a',
+  lightgray = '#d6d3ea',
+  pink = '#f92672',
+  green = '#50fa7b',
+  blue = '#39BAE6',
+  yellow = '#f1fa8c',
+  orange = '#ffb86c',
+  purple = '#BF40BF',
+  violet = '#7F00FF',
+  red = '#ff5555',
+  cyan = '#66d9eC',
   diag = {
-    warn = utils.get_highlight("DiagnosticSignWarn").fg,
-    error = utils.get_highlight("DiagnosticSignError").fg,
-    hint = utils.get_highlight("DiagnosticSignHint").fg,
-    info = utils.get_highlight("DiagnosticSignInfo").fg,
+    warn = utils.get_highlight('DiagnosticSignWarn').fg,
+    error = utils.get_highlight('DiagnosticSignError').fg,
+    hint = utils.get_highlight('DiagnosticSignHint').fg,
+    info = utils.get_highlight('DiagnosticSignInfo').fg,
   },
   git = {
-    del = "#e95678",
-    add = "#a6e22e",
-    change = "#ae81ff",
+    active = '#f34f29',
+    del = '#ff5555',
+    add = '#50fa7b',
+    change = '#ae81ff',
   },
 }
 
-require("heirline").load_colors(colors)
+require('heirline').load_colors(colors)
 
-local Align = { provider = "%=", hl = { bg = colors.bg } }
-local Space = { provider = " ", hl = { bg = colors.bg } }
-local Tab = { provider = " " }
-local LeftSpace = { provider = "" }
-local RightSpace = { provider = "" }
+local Align = { provider = '%=', hl = { bg = colors.bg } }
+local Space = { provider = ' ', hl = { bg = colors.bg } }
+local Tab = { provider = ' ' }
+local LeftSpace = { provider = '' }
+local RightSpace = { provider = '' }
 
 local ViMode = {
   init = function(self)
@@ -50,100 +51,104 @@ local ViMode = {
   end,
   static = {
     mode_names = {
-      n = " NORMAL ",
-      no = "PENDING ",
-      nov = "   N?   ",
-      noV = "   N?   ",
-      ["no\22"] = "   N?   ",
-      niI = "   Ni   ",
-      niR = "   Nr   ",
-      niV = "   Nv   ",
-      nt = "TERMINAL",
-      v = " VISUAL ",
-      vs = "   Vs   ",
-      V = " V·LINE ",
-      ["\22"] = "V·BLOCK ",
-      ["\22s"] = "V·BLOCK ",
-      s = " SELECT ",
-      S = " S·LINE ",
-      ["\19"] = "S·BLOCK ",
-      i = " INSERT ",
-      ix = "insert x",
-      ic = "insert c",
-      R = "REPLACE ",
-      Rc = "   Rc   ",
-      Rx = "   Rx   ",
-      Rv = "V·REPLACE ",
-      Rvc = "   Rv   ",
-      Rvx = "   Rv   ",
-      c = "COMMAND ",
-      cv = " VIM EX ",
-      ce = "   EX   ",
-      r = " PROMPT ",
-      rm = "  MORE  ",
-      ["r?"] = "CONFIRM ",
-      ["!"] = " SHELL  ",
-      t = "TERMINAL",
+      n = ' NORMAL ',
+      no = 'PENDING ',
+      nov = '   N?   ',
+      noV = '   N?   ',
+      ['no\22'] = '   N?   ',
+      niI = '   Ni   ',
+      niR = '   Nr   ',
+      niV = '   Nv   ',
+      nt = 'TERMINAL',
+      v = ' VISUAL ',
+      vs = '   Vs   ',
+      V = ' V·LINE ',
+      ['\22'] = 'V·BLOCK ',
+      ['\22s'] = 'V·BLOCK ',
+      s = ' SELECT ',
+      S = ' S·LINE ',
+      ['\19'] = 'S·BLOCK ',
+      i = ' INSERT ',
+      ix = 'insert x',
+      ic = 'insert c',
+      R = 'REPLACE ',
+      Rc = '   Rc   ',
+      Rx = '   Rx   ',
+      Rv = 'V·REPLACE ',
+      Rvc = '   Rv   ',
+      Rvx = '   Rv   ',
+      c = 'COMMAND ',
+      cv = ' VIM EX ',
+      ce = '   EX   ',
+      r = ' PROMPT ',
+      rm = '  MORE  ',
+      ['r?'] = 'CONFIRM ',
+      ['!'] = ' SHELL  ',
+      t = 'TERMINAL',
     },
   },
   provider = function(self)
-    return "  %2(" .. self.mode_names[self.mode] .. "%) "
+    return ' %2(' .. self.mode_names[self.mode] .. '%) '
   end,
-  hl = function(self) return { fg = "darkgray", bg = self.mode_color, bold = true } end,
+  hl = function(self)
+    return { fg = 'darkgray', bg = self.mode_color, bold = true }
+  end,
   update = {
-    "ModeChanged",
+    'ModeChanged',
   },
 }
 
 -- LSP
 local LSPActive = {
   condition = conditions.lsp_attached,
-  update = { "LspAttach", "LspDetach" },
+  update = { 'LspAttach', 'LspDetach' },
   provider = function()
     local buf_clients = vim.lsp.buf_get_clients()
     local buf_client_names = {}
 
     -- add client
     for _, client in pairs(buf_clients) do
-      if client.name ~= "null-ls" then
+      if client.name ~= 'null-ls' then
         table.insert(buf_client_names, client.name)
       end
     end
-    return "⚙️ " .. table.concat(buf_client_names, "")
+    return '⚙️ ' .. table.concat(buf_client_names, '')
   end,
   hl = { fg = colors.lightgray, bold = false },
 }
 local Navic = {
-  condition = function() return require("nvim-navic").is_available() end,
+  condition = function()
+    return require('nvim-navic').is_available()
+  end,
   static = {
     -- create a type highlight map
     type_hl = {
-      File = "Directory",
-      Module = "@include",
-      Namespace = "@namespace",
-      Package = "@include",
-      Class = "@structure",
-      Method = "@method",
-      Property = "@property",
-      Field = "@field",
-      Constructor = "@constructor",
-      Enum = "@field",
-      Interface = "@type",
-      Function = "@function",
-      Variable = "@variable",
-      Constant = "@constant",
-      String = "@string",
-      Number = "@number",
-      Boolean = "@boolean",
-      Array = "@field",
-      Object = "@type",
-      Key = "@keyword",
-      Null = "@comment",
-      EnumMember = "@field",
-      Struct = "@structure",
-      Event = "@keyword",
-      Operator = "@operator",
-      TypeParameter = "@type",
+      File = 'Directory',
+      Module = '@include',
+      Namespace = '@namespace',
+      Package = '@include',
+      Class = '@structure',
+      Method = '@method',
+      Property = '@property',
+      Field = '@field',
+      Constructor = '@constructor',
+      Enum = '@field',
+      Interface = '@type',
+      Function = '@function',
+      Variable = '@variable',
+      Constant = '@constant',
+      String = '@string',
+      Number = '@number',
+      Boolean = '@boolean',
+      Array = '@field',
+      Object = '@type',
+      Key = '@keyword',
+      Null = '@comment',
+      EnumMember = '@field',
+      Struct = '@structure',
+      Event = '@keyword',
+      Operator = '@operator',
+      TypeParameter = '@type',
     },
     -- bit operation dark magic, see below...
     enc = function(line, col, winnr)
@@ -155,10 +160,10 @@ local Navic = {
       local col = bit.band(bit.rshift(c, 6), 1023)
       local winnr = bit.band(c, 63)
       return line, col, winnr
-    end
+    end,
   },
   init = function(self)
-    local data = require("nvim-navic").get_data() or {}
+    local data = require('nvim-navic').get_data() or {}
     local children = {}
     -- create a child for each level
     for i, d in ipairs(data) do
@@ -171,7 +176,7 @@ local Navic = {
         },
         {
           -- escape `%`s (elixir) and buggy default separators
-          provider = d.name:gsub("%%", "%%%%"):gsub("%s*->%s*", ''),
+          provider = d.name:gsub('%%', '%%%%'):gsub('%s*->%s*', ''),
           -- highlight icon only or location name as well
           -- hl = self.type_hl[d.type],
 
@@ -183,14 +188,14 @@ local Navic = {
               local line, col, winnr = self.dec(minwid)
               vim.api.nvim_win_set_cursor(vim.fn.win_getid(winnr), { line, col })
             end,
-            name = "heirline_navic",
+            name = 'heirline_navic',
           },
         },
       }
       -- add a separator only if needed
       if #data > 1 and i < #data then
         table.insert(child, {
-          provider = " > ",
+          provider = ' > ',
           hl = { fg = 'bright_fg' },
         })
       end
@@ -203,18 +208,18 @@ local Navic = {
   provider = function(self)
     return self.child:eval()
   end,
-  hl = { fg = "gray" },
-  update = 'CursorMoved'
+  hl = { fg = 'gray' },
+  update = 'CursorMoved',
 }
 
 -- Diagnostics
 local Diagnostics = {
   condition = conditions.has_diagnostics,
   static = {
-    error_icon = vim.fn.sign_getdefined("DiagnosticSignError")[1].text,
-    warn_icon = vim.fn.sign_getdefined("DiagnosticSignWarn")[1].text,
-    info_icon = vim.fn.sign_getdefined("DiagnosticSignInfo")[1].text,
-    hint_icon = vim.fn.sign_getdefined("DiagnosticSignHint")[1].text,
+    error_icon = vim.fn.sign_getdefined('DiagnosticSignError')[1].text,
+    warn_icon = vim.fn.sign_getdefined('DiagnosticSignWarn')[1].text,
+    info_icon = vim.fn.sign_getdefined('DiagnosticSignInfo')[1].text,
+    hint_icon = vim.fn.sign_getdefined('DiagnosticSignHint')[1].text,
   },
   init = function(self)
     self.errors = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.ERROR })
@@ -222,23 +227,23 @@ local Diagnostics = {
     self.hints = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.HINT })
     self.info = #vim.diagnostic.get(0, { severity = vim.diagnostic.severity.INFO })
   end,
-  update = { "DiagnosticChanged", "BufEnter" },
+  update = { 'DiagnosticChanged', 'BufEnter' },
   {
     provider = function(self)
       -- 0 is just another output, we can decide to print it or not!
-      return self.errors > 0 and (self.error_icon .. self.errors .. " ")
+      return self.errors > 0 and (self.error_icon .. self.errors .. ' ')
     end,
     hl = { fg = colors.diag.error, bg = colors.bg },
   },
   {
     provider = function(self)
-      return self.warnings > 0 and (self.warn_icon .. self.warnings .. " ")
+      return self.warnings > 0 and (self.warn_icon .. self.warnings .. ' ')
     end,
     hl = { fg = colors.diag.warn, bg = colors.bg },
   },
   {
     provider = function(self)
-      return self.info > 0 and (self.info_icon .. self.info .. " ")
+      return self.info > 0 and (self.info_icon .. self.info .. ' ')
     end,
     hl = { fg = colors.diag.info, bg = colors.bg },
   },
@@ -250,11 +255,11 @@ local Diagnostics = {
   },
   on_click = {
     callback = function()
-      require("trouble").toggle({ mode = "document_diagnostics" })
+      require('trouble').toggle({ mode = 'document_diagnostics' })
       -- or
       -- vim.diagnostic.setqflist()
     end,
-    name = "heirline_diagnostics",
+    name = 'heirline_diagnostics',
   },
 }
 
@@ -266,29 +271,44 @@ local Git = {
     self.status_dict = vim.b.gitsigns_status_dict
     self.has_changes = self.status_dict.added ~= 0 or self.status_dict.removed ~= 0 or self.status_dict.changed ~= 0
   end,
-  --hl = { fg = "orange" },
-  hl = { fg = colors.orange, bg = colors.bg },
+  --{
+  --  -- git branch name
+  --  provider = function(self)
+  --    --return ' ' .. self.status_dict.head
+  --    return '   ' .. self.status_dict.head
+  --  end,
+  --  --hl = { bold = true },
+  --  hl = { fg = colors.git.active, bold = true, bg = colors.bg },
+  --},
+  -- You could handle delimiters, icons and counts similar to Diagnostics
+  {
+    -- git branch icon
+    provider = function()
+      return '  '
+    end,
+    hl = { fg = colors.git.active, bg = colors.bg },
+  },
+
   {
     -- git branch name
     provider = function(self)
-      return " " .. self.status_dict.head
+      return self.status_dict.head
     end,
-    --hl = { bold = true },
-    hl = { bold = true, bg = colors.bg },
+    hl = { fg = colors.white, bg = colors.bg },
   },
-  -- You could handle delimiters, icons and counts similar to Diagnostics
+
   {
     condition = function(self)
       return self.has_changes
     end,
     --provider = "("
-    provider = " ",
+    provider = '',
   },
   {
     provider = function(self)
       local count = self.status_dict.added or 0
       --return count > 0 and ("+" .. count)
-      return count > 0 and ("  " .. count)
+      return count > 0 and ('  ' .. count)
     end,
     --hl = { fg = "git_add" },
     hl = { fg = colors.git.add, bg = colors.bg },
@@ -297,7 +317,7 @@ local Git = {
     provider = function(self)
       local count = self.status_dict.removed or 0
       --return count > 0 and ("-" .. count)
-      return count > 0 and ("  " .. count)
+      return count > 0 and ('  ' .. count)
     end,
     --hl = { fg = "git_del" },
     hl = { fg = colors.git.del, bg = colors.bg },
@@ -306,7 +326,7 @@ local Git = {
     provider = function(self)
       local count = self.status_dict.changed or 0
       --return count > 0 and ("~" .. count)
-      return count > 0 and (" 柳" .. count)
+      return count > 0 and ('  ' .. count)
     end,
     --hl = { fg = "git_change" },
     hl = { fg = colors.git.change, bg = colors.bg },
@@ -327,10 +347,10 @@ local Git = {
       -- opening of a floating window
       -- (this also applies to telescope)
       vim.defer_fn(function()
-        vim.cmd("Lazygit")
+        vim.cmd('Lazygit')
       end, 100)
     end,
-    name = "heirline_git",
+    name = 'heirline_git',
   },
 }
 
@@ -455,12 +475,11 @@ local FileNameBlock = {
 local FileIcon = {
   init = function(self)
     local filename = self.filename
-    local extension = vim.fn.fnamemodify(filename, ":e")
-    self.icon, self.icon_color =
-        require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
+    local extension = vim.fn.fnamemodify(filename, ':e')
+    self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color(filename, extension, { default = true })
   end,
   provider = function(self)
-    return self.icon and (self.icon .. " ")
+    return self.icon and (self.icon .. ' ')
   end,
   hl = function(self)
     return { fg = self.icon_color, bg = colors.bg }
@@ -471,9 +490,9 @@ local FileName = {
   provider = function(self)
     -- first, trim the pattern relative to the current directory. For other
     -- options, see :h filename-modifers
-    local filename = vim.fn.fnamemodify(self.filename, ":.")
-    if filename == "" then
-      return "No Name"
+    local filename = vim.fn.fnamemodify(self.filename, ':.')
+    if filename == '' then
+      return 'No Name'
     end
     -- now, if the filename would occupy more than 1/4th of the available
     -- space, we trim the file path to its initials
@@ -491,7 +510,7 @@ local FileFlags = {
   {
     provider = function()
       if vim.bo.modified then
-        return " [+]" -- ±[+]
+        return ' [+]' -- ±[+]
       end
     end,
     hl = { fg = colors.green, bg = colors.bg },
@@ -499,7 +518,7 @@ local FileFlags = {
   {
     provider = function()
       if not vim.bo.modifiable or vim.bo.readonly then
-        return " "
+        return ' '
       end
     end,
     --hl = { fg = colors.orange },
@@ -526,7 +545,7 @@ local FileType = {
 local FileEncoding = {
   Space,
   provider = function()
-    local enc = (vim.bo.fenc ~= "" and vim.bo.fenc) or vim.o.enc -- :h 'enc'
+    local enc = (vim.bo.fenc ~= '' and vim.bo.fenc) or vim.o.enc -- :h 'enc'
     return enc:lower()
   end,
   --hl = { fg = utils.get_highlight("Statusline").fg, bold = true, bg = colors.bg },
@@ -537,34 +556,34 @@ local FileFormat = {
   provider = function()
     local fmt = vim.bo.fileformat
     --return fmt ~= "unix" and fmt:upper()
-    return fmt ~= "unix" and fmt:lower()
+    return fmt ~= 'unix' and fmt:lower()
   end,
-  hl = { fg = utils.get_highlight("Statusline").fg, bold = true, bg = colors.bg },
+  hl = { fg = utils.get_highlight('Statusline').fg, bold = true, bg = colors.bg },
 }
 
 -- FileSize and FileLastModified
 local FileSize = {
   provider = function()
     -- stackoverflow, compute human readable file size
-    local suffix = { "b", "k", "M", "G", "T", "P", "E" }
+    local suffix = { 'b', 'k', 'M', 'G', 'T', 'P', 'E' }
     local fsize = vim.fn.getfsize(vim.api.nvim_buf_get_name(0))
     fsize = (fsize < 0 and 0) or fsize
     if fsize < 1024 then
       return fsize .. suffix[1]
     end
     local i = math.floor((math.log(fsize) / math.log(1024)))
-    return string.format("%.2g%s", fsize / math.pow(1024, i), suffix[i + 1])
+    return string.format('%.2g%s', fsize / math.pow(1024, i), suffix[i + 1])
   end,
-  hl = { fg = utils.get_highlight("Statusline").fg, bold = true, bg = colors.bg },
+  hl = { fg = utils.get_highlight('Statusline').fg, bold = true, bg = colors.bg },
 }
 
 local FileLastModified = {
   -- did you know? Vim is full of functions!
   provider = function()
     local ftime = vim.fn.getftime(vim.api.nvim_buf_get_name(0))
-    return (ftime > 0) and os.date("%c", ftime)
+    return (ftime > 0) and os.date('%c', ftime)
   end,
-  hl = { fg = utils.get_highlight("Statusline").fg, bold = true, bg = colors.bg },
+  hl = { fg = utils.get_highlight('Statusline').fg, bold = true, bg = colors.bg },
 }
 
 -- Spell
@@ -573,17 +592,17 @@ local Spell = {
   condition = function()
     return vim.wo.spell
   end,
-  provider = " 暈",
+  provider = ' 暈',
   hl = { bold = true, fg = colors.yellow },
 }
 
 local HelpFileName = {
   condition = function()
-    return vim.bo.filetype == "help"
+    return vim.bo.filetype == 'help'
   end,
   provider = function()
     local filename = vim.api.nvim_buf_get_name(0)
-    return vim.fn.fnamemodify(filename, ":t")
+    return vim.fn.fnamemodify(filename, ':t')
   end,
   hl = { fg = colors.blue },
 }
@@ -600,37 +619,37 @@ local SearchCount = {
   end,
   provider = function(self)
     local search = self.search
-    return string.format("[%d/%d]", search.current, math.min(search.total, search.maxcount))
+    return string.format('[%d/%d]', search.current, math.min(search.total, search.maxcount))
   end,
 }
 
 local MacroRec = {
   condition = function()
-    return vim.fn.reg_recording() ~= "" and vim.o.cmdheight == 0
+    return vim.fn.reg_recording() ~= '' and vim.o.cmdheight == 0
   end,
-  provider = " ",
-  hl = { fg = "orange", bold = true },
-  utils.surround({ "[", "]" }, nil, {
+  provider = ' ',
+  hl = { fg = 'orange', bold = true },
+  utils.surround({ '[', ']' }, nil, {
     provider = function()
       return vim.fn.reg_recording()
     end,
-    hl = { fg = "green", bold = true },
+    hl = { fg = 'green', bold = true },
   }),
   update = {
-    "RecordingEnter",
-    "RecordingLeave",
-  }
+    'RecordingEnter',
+    'RecordingLeave',
+  },
 }
 
 local ShowCmd = {
   condition = function()
     return vim.o.cmdheight == 0
   end,
-  provider = ":%3.5(%S%)",
+  provider = ':%3.5(%S%)',
 }
 
 local cursor_location = {
-  { provider = " %1(%4l:%-3(%c%)  %)%*", hl = { fg = colors.black, bold = true } },
+  { provider = '%1(%4l:%-3(%c%)%) %*', hl = { fg = colors.black, bold = true } },
 }
 
 local Ruler = { cursor_location }
@@ -655,16 +674,16 @@ local WordCount = {
   condition = function()
     return conditions.buffer_matches({
       filetype = {
-        "markdown",
-        "txt",
-        "vimwiki",
+        'markdown',
+        'txt',
+        'vimwiki',
       },
     })
   end,
   Space,
   {
     provider = function()
-      return "W:" .. vim.fn.wordcount().words
+      return 'W:' .. vim.fn.wordcount().words
     end,
   },
 }
@@ -672,31 +691,31 @@ local WordCount = {
 -- Working Directory
 local WorkDir = {
   init = function(self)
-    self.icon = (vim.fn.haslocaldir(0) == 1 and "l" or "g") .. " " .. " "
+    self.icon = (vim.fn.haslocaldir(0) == 1 and 'l' or 'g') .. ' ' .. ' '
     local cwd = vim.fn.getcwd(0)
-    self.cwd = vim.fn.fnamemodify(cwd, ":~")
+    self.cwd = vim.fn.fnamemodify(cwd, ':~')
   end,
-  hl = { fg = "colors.blue", bold = true },
+  hl = { fg = 'colors.blue', bold = true },
   flexible = 1,
   {
     -- evaluates to the full-lenth path
     provider = function(self)
-      local trail = self.cwd:sub(-1) == "/" and "" or "/"
-      return self.icon .. self.cwd .. trail .. " "
+      local trail = self.cwd:sub(-1) == '/' and '' or '/'
+      return self.icon .. self.cwd .. trail .. ' '
     end,
   },
   {
     -- evaluates to the shortened path
     provider = function(self)
       local cwd = vim.fn.pathshorten(self.cwd)
-      local trail = self.cwd:sub(-1) == "/" and "" or "/"
-      return self.icon .. cwd .. trail .. " "
+      local trail = self.cwd:sub(-1) == '/' and '' or '/'
+      return self.icon .. cwd .. trail .. ' '
     end,
   },
   {
     -- evaluates to "", hiding the component
-    provider = "",
-  }
+    provider = '',
+  },
 }
 
 -- Snippets Indicator
@@ -720,7 +739,7 @@ FileNameBlock = utils.insert(
   FileIcon,
   utils.insert(FileNameModifier, FileName), -- a new table where FileName is a child of FileNameModifier
   unpack(FileFlags),                        -- A small optimisation, since their parent does nothing
-  { provider = "%<" }                       -- this means that the statusline is cut here when there's not enough space
+  { provider = '%<' }                       -- this means that the statusline is cut here when there's not enough space
 )
 
 local FileInfoBlock = {
@@ -735,30 +754,32 @@ FileInfoBlock = utils.insert(
   Space,
   FileIcon,
   FileType,
-  { provider = "%<" } -- this means that the statusline is cut here when there's not enough space
+  { provider = '%<' } -- this means that the statusline is cut here when there's not enough space
 )
 
-LeftSpace = utils.surround({ "", " " }, function(self)
+LeftSpace = utils.surround({ '', '' }, function(self)
   return self:mode_color()
-end, { LeftSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
+end, { LeftSpace, hl = { fg = utils.get_highlight('statusline').bg, force = true } })
 
-RightSpace = utils.surround({ "", "" }, function(self)
+RightSpace = utils.surround({ '', '' }, function(self)
   return self:mode_color()
-end, { RightSpace, hl = { fg = utils.get_highlight("statusline").bg, force = true } })
+end, { RightSpace, hl = { fg = utils.get_highlight('statusline').bg, force = true } })
 
-LSPActive = utils.surround({ "", "" }, function(self)
+LSPActive = utils.surround({ '', '' }, function(self)
   return self:mode_color()
 end, { Space, LSPActive, hl = { bg = colors.darkgray, force = true } })
 
-FileInfoBlock = utils.surround({ "", "" }, function(self)
+FileInfoBlock = utils.surround({ '', '' }, function(self)
   return self:mode_color()
 end, { FileInfoBlock, Space, hl = { bg = colors.gray, force = true } })
 
-Ruler = utils.surround({ "", "" }, colors.gray, { Ruler, hl = { fg = colors.gray, force = true } })
+Ruler = utils.surround({ '', '' }, colors.gray, { Ruler, hl = { fg = colors.gray, force = true } })
 
 local left = {
-  { ViMode,        hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  { RightSpace,    hl = { bg = colors.nobg, force = true } },
+  { ViMode,        hl = { fg = utils.get_highlight('statusline').bg, force = true } },
   { LeftSpace,     hl = { bg = colors.nobg, force = true } },
+  { Space,         hl = { bg = colors.nobg, force = true } },
   { FileNameBlock, hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { Git,           hl = { bg = colors.nobg, force = true } },
@@ -779,15 +800,17 @@ local right = {
   { Space,         hl = { bg = colors.nobg, force = true } },
   { FileInfoBlock, hl = { bg = colors.nobg, force = true } },
   { RightSpace,    hl = { bg = colors.nobg, force = true } },
-  { Ruler,         hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  { Ruler,         hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { LeftSpace,     hl = { bg = colors.nobg, force = true } },
 }
 
 local sections = { left, middle, right }
 local DefaultStatusline = { sections }
 
 local specialleft = {
-  { ViMode,    hl = { fg = utils.get_highlight("statusline").bg, force = true } },
-  { LeftSpace, hl = { bg = colors.nobg, force = true } },
+  { RightSpace, hl = { bg = colors.nobg, force = true } },
+  { ViMode,     hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { LeftSpace,  hl = { bg = colors.nobg, force = true } },
 }
 
 local specialmiddle = {
@@ -798,7 +821,8 @@ local specialmiddle = {
 
 local specialright = {
   { RightSpace, hl = { bg = colors.nobg, force = true } },
-  { Ruler,      hl = { fg = utils.get_highlight("statusline").bg, force = true } },
+  { Ruler,      hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { LeftSpace,  hl = { bg = colors.nobg, force = true } },
 }
 
 local specialsections = { specialleft, specialmiddle, specialright }
@@ -807,26 +831,26 @@ local InactiveStatusline = {
   condition = conditions.is_not_active,
   --{ FileNameBlock, hl = { bg = colors.nobg, force = true } },
   --{ Align,         hl = { bg = colors.nobg, force = true } },
-  specialsections
+  specialsections,
 }
 
 local SpecialStatusline = {
   condition = function()
     return conditions.buffer_matches({
-      buftype = { "nofile", "prompt", "help", "quickfix" },
-      filetype = { "^git.*", "fugitive", "dashboard", },
+      buftype = { 'nofile', 'prompt', 'help', 'quickfix' },
+      filetype = { '^git.*', 'fugitive', 'dashboard' },
     })
   end,
-  specialsections
+  specialsections,
 }
 
 --local InactiveStatusline = SpecialStatusline
 
 local TerminalStatusline = {
   condition = function()
-    return conditions.buffer_matches({ buftype = { "terminal" } })
+    return conditions.buffer_matches({ buftype = { 'terminal' } })
   end,
-  specialsections
+  specialsections,
 }
 
 local StatusLine = {
@@ -851,7 +875,7 @@ local StatusLine = {
       no = colors.blue,
       nov = colors.blue,
       noV = colors.blue,
-      ["no\22"] = colors.blue,
+      ['no\22'] = colors.blue,
       niI = colors.blue,
       niR = colors.blue,
       niV = colors.blue,
@@ -859,11 +883,11 @@ local StatusLine = {
       v = colors.purple,
       vs = colors.purple,
       V = colors.purple,
-      ["\22"] = colors.purple,
-      ["\22s"] = colors.purple,
+      ['\22'] = colors.purple,
+      ['\22s'] = colors.purple,
       s = colors.purple,
       S = colors.purple,
-      ["\19"] = colors.purple,
+      ['\19'] = colors.purple,
       i = colors.green,
       ix = colors.green,
       ic = colors.green,
@@ -878,12 +902,12 @@ local StatusLine = {
       ce = colors.orange,
       r = colors.red,
       rm = colors.red,
-      ["r?"] = colors.red,
-      ["!"] = colors.orange,
+      ['r?'] = colors.red,
+      ['!'] = colors.orange,
       t = colors.orange,
     },
     mode_color = function(self)
-      local mode = conditions.is_active() and vim.fn.mode() or "n"
+      local mode = conditions.is_active() and vim.fn.mode() or 'n'
       return self.mode_colors[mode]
     end,
     hl = function(self)
@@ -897,7 +921,6 @@ local StatusLine = {
   InactiveStatusline,
   DefaultStatusline,
 }
-
 
 --
 --- WinBar
@@ -914,9 +937,9 @@ local WinbarFileName = {
   provider = function(self)
     -- first, trim the pattern relative to the current directory. For other
     -- options, see :h filename-modifers
-    local filename = vim.fn.fnamemodify(self.filename, ":.")
-    if filename == "" then
-      return "No Name"
+    local filename = vim.fn.fnamemodify(self.filename, ':.')
+    if filename == '' then
+      return 'No Name'
     end
     -- now, if the filename would occupy more than 1/4th of the available
     -- space, we trim the file path to its initials
@@ -935,15 +958,15 @@ WinbarFileNameBlock = utils.insert(
   FileIcon,
   utils.insert(WinbarFileName), -- a new table where FileName is a child of FileNameModifier
   unpack(FileFlags),            -- A small optimisation, since their parent does nothing
-  { provider = "%<" }           -- this means that the statusline is cut here when there's not enough space
+  { provider = '%<' }           -- this means that the statusline is cut here when there's not enough space
 )
 
-vim.api.nvim_create_autocmd("User", {
-  pattern = "HeirlineInitWinbar",
+vim.api.nvim_create_autocmd('User', {
+  pattern = 'HeirlineInitWinbar',
   callback = function(args)
     local buf = args.buf
-    local buftype = vim.tbl_contains({ "prompt", "nofile", "help", "quickfix" }, vim.bo[buf].buftype)
-    local filetype = vim.tbl_contains({ "gitcommit", "fugitive" }, vim.bo[buf].filetype)
+    local buftype = vim.tbl_contains({ 'prompt', 'nofile', 'help', 'quickfix' }, vim.bo[buf].buftype)
+    local filetype = vim.tbl_contains({ 'gitcommit', 'fugitive' }, vim.bo[buf].filetype)
     if buftype or filetype then
       vim.opt_local.winbar = nil
     end
@@ -970,11 +993,11 @@ local CloseButton = {
   end,
   -- a small performance improvement:
   -- re register the component callback only on layout/buffer changes.
-  update = { "WinNew", "WinClosed", "BufEnter" },
-  { provider = " " },
+  update = { 'WinNew', 'WinClosed', 'BufEnter' },
+  { provider = ' ' },
   {
-    provider = "",
-    hl = { fg = "gray" },
+    provider = '',
+    hl = { fg = 'gray' },
     On_click = {
       minwid = function()
         return vim.api.nvim_get_current_win()
@@ -982,7 +1005,7 @@ local CloseButton = {
       callback = function(_, minwid)
         vim.api.nvim_win_close(minwid, true)
       end,
-      name = "heirline_winbar_close_button",
+      name = 'heirline_winbar_close_button',
     },
   },
 }
@@ -993,8 +1016,8 @@ local Center = {
     -- Hide the winbar for special buffers
     condition = function()
       return conditions.buffer_matches({
-        buftype = { "terminal", "nofile", "prompt", "help", "quickfix" },
-        filetype = { "dap-ui", "NvimTree", "^git.*", "fugitive", "dashboard", },
+        buftype = { 'terminal', 'nofile', 'prompt', 'help', 'quickfix' },
+        filetype = { 'dap-ui', 'NvimTree', '^git.*', 'fugitive', 'dashboard' },
       })
     end,
     init = function()
@@ -1004,7 +1027,7 @@ local Center = {
   {
     -- A special winbar for terminals
     condition = function()
-      return conditions.buffer_matches({ buftype = { "terminal" } })
+      return conditions.buffer_matches({ buftype = { 'terminal' } })
     end,
     FileType,
     Space,
@@ -1016,15 +1039,14 @@ local Center = {
       return not conditions.is_active()
     end,
     --utils.surround({ "", "" }, colors.nobg, { FileIcon, { WinbarFileName, hl = { fg = colors.gray } }, FileFlags } ),
-    utils.surround({ "", "" }, colors.nobg, { WinbarFileNameBlock }),
+    utils.surround({ '', '' }, colors.nobg, { WinbarFileNameBlock }),
   },
   -- A winbar for regular files
-  utils.surround({ "", "" }, colors.nobg, { FileNameBlock }),
+  utils.surround({ '', '' }, colors.nobg, { FileNameBlock }),
 }
 
 --local WinBar = { Align, Center, Align }
 local WinBar = { Space, Center }
-
 
 -- TabLine
 --local TablineBufnr = {
@@ -1040,7 +1062,7 @@ local TablineFileName = {
   provider = function(self)
     -- self.filename will be defined later, just keep looking at the example!
     local filename = self.filename
-    filename = filename == "" and "No Name" or vim.fn.fnamemodify(filename, ":t")
+    filename = filename == '' and 'No Name' or vim.fn.fnamemodify(filename, ':t')
     return filename
   end,
   hl = function(self)
@@ -1052,7 +1074,7 @@ local TablineFileFlags = {
   {
     provider = function(self)
       if vim.bo[self.bufnr].modified then
-        return " [+] "
+        return ' [+] '
       end
     end,
     hl = { fg = colors.green },
@@ -1060,22 +1082,21 @@ local TablineFileFlags = {
   {
     provider = function(self)
       if not vim.bo[self.bufnr].modifiable or vim.bo[self.bufnr].readonly then
-        return "  "
+        return '  '
       end
     end,
-    hl = { fg = "orange" },
+    hl = { fg = 'orange' },
   },
 }
 
 local TablineFileIcon = {
   init = function(self)
     local filename = self.filename
-    local extension = vim.fn.fnamemodify(filename, ":e")
-    self.icon, self.icon_color =
-        require("nvim-web-devicons").get_icon_color(filename, extension, { default = true })
+    local extension = vim.fn.fnamemodify(filename, ':e')
+    self.icon, self.icon_color = require('nvim-web-devicons').get_icon_color(filename, extension, { default = true })
   end,
   provider = function(self)
-    return self.icon and (" " .. self.icon .. " ")
+    return self.icon and (' ' .. self.icon .. ' ')
   end,
   hl = function(self)
     return { fg = self.icon_color }
@@ -1089,17 +1110,17 @@ local TablineFileNameBlock = {
   end,
   hl = function(self)
     if self.is_active then
-      return "TabLineSel"
+      return 'TabLineSel'
       -- why not?
       --elseif not vim.api.nvim_buf_is_loaded(self.bufnr) then
       --return { fg = "gray", bg = colors.bg }
     else
-      return "TabLineFill"
+      return 'TabLineFill'
     end
   end,
   on_click = {
     callback = function(_, minwid, _, button)
-      if button == "m" then -- close on mouse middle click
+      if button == 'm' then -- close on mouse middle click
         vim.api.nvim_buf_delete(minwid, { force = false })
       else
         vim.api.nvim_win_set_buf(0, minwid)
@@ -1108,7 +1129,7 @@ local TablineFileNameBlock = {
     minwid = function(self)
       return self.bufnr
     end,
-    name = "heirline_tabline_buffer_callback",
+    name = 'heirline_tabline_buffer_callback',
   },
   --TablineBufnr,
   TablineFileIcon,
@@ -1119,11 +1140,11 @@ local TablineFileNameBlock = {
 -- a nice "x" button to close the buffer
 local TablineCloseButton = {
   condition = function(self)
-    return not vim.api.nvim_buf_get_option(self.bufnr, "modified")
+    return not vim.api.nvim_buf_get_option(self.bufnr, 'modified')
   end,
-  { provider = " " },
+  { provider = ' ' },
   {
-    provider = " ",
+    provider = ' ',
     --hl = { fg = "red", bg = colors.bg },
     hl = { fg = colors.red },
     on_click = {
@@ -1133,43 +1154,43 @@ local TablineCloseButton = {
       minwid = function(self)
         return self.bufnr
       end,
-      name = "heirline_tabline_close_buffer_callback",
+      name = 'heirline_tabline_close_buffer_callback',
     },
   },
 }
 
 -- The final touch!
-local TablineBufferBlock = utils.surround({ "", "" }, function(self)
+local TablineBufferBlock = utils.surround({ '', '' }, function(self)
   --local TablineBufferBlock = utils.surround({ "█", "█" }, function(self)
   if self.is_active then
-    return utils.get_highlight("TabLineSel").bg
+    return utils.get_highlight('TabLineSel').bg
   else
-    return utils.get_highlight("TabLineFill").bg
+    return utils.get_highlight('TabLineFill').bg
   end
 end, { Tab, TablineFileNameBlock, TablineCloseButton })
 
 local BufferLine = utils.make_buflist(
   TablineBufferBlock,
-  { provider = "􀰎 ", hl = { fg = colors.white } }, -- left truncation, optional (defaults to "<")
-  { provider = " 􀰓", hl = { fg = colors.white } } -- right trunctation, also optional (defaults to ...... yep, ">")
+  { provider = ' ', hl = { fg = colors.white } }, -- left truncation, optional (defaults to "<")
+  { provider = ' ', hl = { fg = colors.white } } -- right trunctation, also optional (defaults to ...... yep, ">")
 -- by the way, open a lot of buffers and try clicking them ;)
 )
 -- TabList
 local Tabpage = {
   provider = function(self)
-    return "%" .. self.tabnr .. "T " .. self.tabnr .. " %T"
+    return '%' .. self.tabnr .. 'T ' .. self.tabnr .. ' %T'
   end,
   hl = function(self)
     if not self.is_active then
-      return "TabLineFill"
+      return 'TabLineFill'
     else
-      return "TabLineSel"
+      return 'TabLineSel'
     end
   end,
 }
 
 local TabpageClose = {
-  provider = "%999X  %X",
+  provider = '%999X  %X',
   --hl = "TabLine",
   hl = { fg = colors.red, bg = colors.bg },
 }
@@ -1180,7 +1201,7 @@ local TabPages = {
     return #vim.api.nvim_list_tabpages() >= 2
   end,
   {
-    provider = "%=",
+    provider = '%=',
   },
   utils.make_tablist(Tabpage),
   TabpageClose,
@@ -1193,8 +1214,8 @@ local TabLineOffset = {
     local bufnr = vim.api.nvim_win_get_buf(win)
     self.winid = win
 
-    if vim.api.nvim_buf_get_option(bufnr, "filetype") == "NvimTree" then
-      self.title = "NvimTree"
+    if vim.api.nvim_buf_get_option(bufnr, 'filetype') == 'NvimTree' then
+      self.title = 'NvimTree'
       return true
     end
   end,
@@ -1202,15 +1223,17 @@ local TabLineOffset = {
     local title = self.title
     local width = vim.api.nvim_win_get_width(self.winid)
     local pad = math.ceil((width - #title) / 2)
-    return string.rep(" ", pad) .. title .. string.rep(" ", pad)
+    return string.rep(' ', pad) .. title .. string.rep(' ', pad)
   end,
-  hl = function(self)
-    if vim.api.nvim_get_current_win() == self.winid then
-      return "TablineSel"
-    else
-      return "TablineFill"
-    end
-  end,
+  hl = { fg = colors.white, bg = '#333842', bold = true },
+
+  --hl = function(self)
+  --  if vim.api.nvim_get_current_win() == self.winid then
+  --    return 'TablineSel'
+  --  else
+  --    return 'TablineFill'
+  --  end
+  --end,
 }
 
 local TabLine = {
@@ -1219,7 +1242,7 @@ local TabLine = {
   TabPages,
 }
 
-require("heirline").setup({
+require('heirline').setup({
   statusline = StatusLine,
   winbar = WinBar,
   tabline = TabLine,
@@ -1245,7 +1268,7 @@ local function goto_buf(index)
 end
 
 local function addKey(key, index)
-  vim.keymap.set("", "<A-" .. key .. ">", function()
+  vim.keymap.set('', '<A-' .. key .. '>', function()
     goto_buf(index)
   end, { noremap = true, silent = true })
 end
@@ -1253,4 +1276,4 @@ end
 for i = 1, 9 do
   addKey(i, i)
 end
-addKey("0", 10)
+addKey('0', 10)

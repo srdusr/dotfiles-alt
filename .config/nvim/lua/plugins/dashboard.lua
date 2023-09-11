@@ -1,4 +1,5 @@
-local db = require("dashboard")
+local db = require('dashboard')
+
 --vim.api.nvim_create_autocmd("VimEnter", {
 --    callback = function()
 --        -- disable line numbers
@@ -7,69 +8,74 @@ local db = require("dashboard")
 --        -- always start in insert mode
 --    end,
 --})
+
 db.setup({
-	theme = "hyper",
-	config = {
-		header = {
-			[[  ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗]],
-			[[  ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║]],
-			[[  ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║]],
-			[[  ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║]],
-			[[  ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║]],
-			[[  ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝]],
-		},
+  theme = 'hyper',
+  config = {
+    mru = { limit = 10, label = '' },
+    project = { limit = 10 },
+    header = {
+      [[  ███╗   ██╗ ███████╗ ██████╗  ██╗   ██╗ ██╗ ███╗   ███╗]],
+      [[  ████╗  ██║ ██╔════╝██╔═══██╗ ██║   ██║ ██║ ████╗ ████║]],
+      [[  ██╔██╗ ██║ █████╗  ██║   ██║ ██║   ██║ ██║ ██╔████╔██║]],
+      [[  ██║╚██╗██║ ██╔══╝  ██║   ██║ ╚██╗ ██╔╝ ██║ ██║╚██╔╝██║]],
+      [[  ██║ ╚████║ ███████╗╚██████╔╝  ╚████╔╝  ██║ ██║ ╚═╝ ██║]],
+      [[  ╚═╝  ╚═══╝ ╚══════╝ ╚═════╝    ╚═══╝   ╚═╝ ╚═╝     ╚═╝]],
+    },
     disable_move = false,
-		shortcut = {
-			{ desc = " Plugins", group = "Number", action = "PackerStatus", key = "p" },
-			--{ desc = " Plugins", group = "@property", action = "PackerStatus", key = "p" },
-			{
-				desc = " Files",
-        group = "Number",
-				--group = "Label",
-				action = "Telescope find_files",
-				key = "f",
-			},
-			{
-				desc = " Text",
-        group = "Number",
-				--group = "Label",
-        action =  'enew',
-				key = "t",
-			},
-			{
-				desc = " Grep",
-        group = "Number",
-				--group = "Label",
-				action = "Telescope live_grep",
-				key = "g",
-			},
-			{
-				desc = " Scheme",
-        group = "Number",
-				--group = "Label",
-				action = "Telescope colorscheme",
-				key = "s",
-			},
-			{
+    shortcut = {
+      { desc = ' Plugins', group = 'Number', action = 'PackerStatus', key = 'p' },
+      --{ desc = " Plugins", group = "@property", action = "PackerStatus", key = "p" },
+      {
+        desc = ' Files',
+        group = 'Number',
+        --group = "Label",
+        action = 'Telescope find_files',
+        key = 'f',
+      },
+      {
+        desc = ' Text',
+        group = 'Number',
+        --group = "Label",
+        action = 'enew',
+        key = 't',
+      },
+      {
+        desc = ' Grep',
+        group = 'Number',
+        --group = "Label",
+        action = 'Telescope live_grep',
+        key = 'g',
+      },
+      {
+        desc = ' Scheme',
+        group = 'Number',
+        --group = "Label",
+        action = 'Telescope colorscheme',
+        key = 's',
+      },
+      {
         desc = ' Config',
-        group = "Number",
-				--group = "Label",
+        group = 'Number',
+        --group = "Label",
         action = ':edit ~/.config.nvim/init.lua',
-        key = "c",
-			},
-		},
-	},
-	hide = {
-	  statusline = false,
-	  tabline = false,
-	  winbar = false,
-	},
-	--  preview = {
---    command,       -- preview command
---    file_path,     -- preview file path
---    file_height,   -- preview file height
---    file_width,    -- preview file width
---  },
---  footer = {}  --your footer
+        key = 'c',
+      },
+    },
+    footer = { '', 'Hello World!' },
+  },
+  hide = {
+    statusline = false,
+    tabline = false,
+    winbar = false,
+  },
 })
 
+--highlights
+---- General
+--DashboardHeader DashboardFooter
+---- Hyper theme
+--DashboardProjectTitle DashboardProjectTitleIcon DashboardProjectIcon
+--DashboardMruTitle DashboardMruIcon DashboardFiles DashboardShotCutIcon
+---- Doome theme
+--DashboardDesc DashboardKey DashboardIcon DashboardShotCut

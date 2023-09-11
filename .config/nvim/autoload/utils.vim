@@ -57,7 +57,7 @@ endfunction
 
 " Toggle statusline
 let s:hidden_all = 0
-function! ToggleHiddenAll()
+function! utils#ToggleHiddenAll()
     if s:hidden_all  == 0
         let s:hidden_all = 1
         set noshowmode
@@ -146,5 +146,66 @@ function! utils#GotoJump()
   endif
 endfunction
 
+
+"-------------------------------------------------
+
+" Disable annoying auto line break
+fu! utils#DisableBr()
+    set wrap
+    set linebreak
+    set nolist  " list disables linebreak
+    set textwidth=0
+    set wrapmargin=0
+    set formatoptions-=t
+endfu
+
+" Disable line breaks for all file types
+autocmd! BufNewFile,BufRead *.* call utils#DisableBr()
+
+
+"-------------------------------------------------
+
+" Annoying timestamp issue on write (The file has been changed since reading it...)
+"function! utils#ProcessFileChangedShell()
+"  if v:fcs_reason == 'mode' || v:fcs_reason == 'time'
+"    let v:fcs_choice = ''
+"  else
+"    let v:fcs_choice = 'ask'
+"  endif
+"endfunction
+"autocmd FileChangedShell <buffer> call utils#ProcessFileChangedShell()
+"
+"let lastline = line('$')
+"let bufcontents = getline(1, lastline)
+"edit!
+"call setline(1, bufcontents)
+"if line('$') > lastline
+"  execute lastline+1.',$:d _'
+"endif
+
+" Annoying timestamp issue on write (The file has been changed since reading it...)
+function! utils#ProcessFileChangedShell()
+  if v:fcs_reason == 'mode' || v:fcs_reason == 'time'
+    let v:fcs_choice = ''
+  else
+    let v:fcs_choice = 'ask'
+  endif
+endfunction
+
+" Triggered when the file is changed externally
+autocmd FileChangedShell <buffer> call utils#ProcessFileChangedShell()
+
+" Triggered before writing the buffer to the file
+autocmd BufWritePre <buffer> call utils#BeforeWrite()
+
+function! utils#BeforeWrite()
+  let lastline = line('$')
+  let bufcontents = getline(1, lastline)
+  edit!
+  call setline(1, bufcontents)
+  if line('$') > lastline
+    execute lastline+1.',$:d _'
+  endif
+endfunction
 
 "-------------------------------------------------
