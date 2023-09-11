@@ -6,6 +6,10 @@
 # Xbindkeys
 xbindkeys -f "$XDG_CONFIG_HOME"/X11/xbindkeysrc
 
+# XKB
+setxkbmap -print | xkbcomp -I$HOME/.config/xkb - $DISPLAY
+
+
 #export XAUTHORITY="$XDG_RUNTIME_DIR/.Xauthority" # This line will break some DMs.
 export USERXSESSION="$XDG_CACHE_HOME/X11/xsession"
 export USERXSESSIONRC="$XDG_CACHE_HOME/X11/xsessionrc"
