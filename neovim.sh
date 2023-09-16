@@ -311,11 +311,25 @@ check_dependencies
 # Check for privilege escalation tools
 check_privilege_tools
 
-# Check if Neovim is already installed
+# Check if Neovim is already installed and ask the user if want to install it
 if check_neovim_installed; then
     printf "${GREEN}Neovim is already installed!${NC}\n"
 else
-    choose_version
+    printf "${RED}Neovim is not installed.${NC}\n"
+    read -p "Install Neovim? (y/n): " install_choice
+
+    case $install_choice in
+        [Yy] )
+            choose_version
+            ;;
+        [Nn] )
+            echo "Exiting..."
+            exit
+            ;;
+        * )
+            handle_error "Invalid choice. Please enter 'y' for yes or 'n' for no."
+            ;;
+    esac
 fi
 
 # Function to check for updates and display breaking changes
