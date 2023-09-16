@@ -2,7 +2,7 @@
 
 # Created By: srdusr
 # Created On: Sat 12 Aug 2023 13:11:39 CAT
-# Project: Install/update/downgrade/change version/uninstall Neovim script, primarily for Linux but may work in other platforms
+# Project: Install/update/uninstall/change version Neovim script, primarily for Linux but may work in other platforms
 
 # Color definitions
 RED='\033[0;31m'
@@ -66,7 +66,7 @@ nightly_version() {
     local url="https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage"
     install_neovim "$url"
     local version_output=$(nvim --version)
-    version_id="Nightly $(echo "$version_output" | grep -oP 'v\d+\.\d+\.\d+')"
+    version_id="Nightly $(echo "$version_output" | grep -oP 'NVIM \d+\.\d+')"
 }
 
 # Stable version
@@ -74,8 +74,7 @@ stable_version() {
     local url="https://github.com/neovim/neovim/releases/download/stable/nvim.appimage"
     install_neovim "$url"
     local version_output=$(nvim --version)
-    version_id="Stable $(echo "$version_output" | grep -oP 'v\d+\.\d+\.\d+')"
-
+    version_id="Stable $(echo "$version_output" | grep -oP 'NVIM \d+\.\d+')"
 }
 
 # Specific version
@@ -90,7 +89,7 @@ specific_version() {
     local url="https://github.com/neovim/neovim/releases/download/$version/nvim.appimage"
     install_neovim "$url"
     local version_output=$(nvim --version)
-    version_id="Stable $(echo "$version_output" | grep -oP 'v\d+\.\d+\.\d+')"
+    version_id="Version $version $(echo "$version_output" | grep -oP 'NVIM \d+\.\d+')"
 }
 
 # Function to download a file using wget or curl
@@ -128,16 +127,63 @@ version_exists() {
     fi
 }
 
+# Update Neovim to the latest version (nightly/stable)
+update_version() {
+    valid_choice=false
+    while [ "$valid_choice" = false ]; do
+        # Determine which version to update to (nightly/stable)
+        printf "Select version to update to:\n"
+        printf "  1. Nightly\n"
+        printf "  2. Stable\n"
+        printf "  3. Choose specific version by tag\n"
+        printf "Enter the number corresponding to your choice (1/2/3): "
+        read update_choice
+
+        case $update_choice in
+        1)
+            version="Nightly"
+            nightly_version
+            valid_choice=true
+            ;;
+        2)
+            version="Stable"
+            stable_version
+            valid_choice=true
+            ;;
+        3)
+            # Ask user for specific version
+            read -p "Enter the specific version (e.g., v0.1.0): " version
+            # Normalize version
+            if [[ $version != v* ]]; then
+                version="v$version"
+            fi
+            # Check if the specific version exists on GitHub releases
+            if version_exists "$version"; then
+                # Install specific version
+                specific_version "$version" # Pass the normalized version to the function
+                valid_choice=true
+            else
+                printf "${RED}The specified version $version does not exist.${NC}\n"
+            fi
+            ;;
+
+        *)
+            handle_error "Invalid choice. Please enter a valid option (1, 2 or 3)."
+            ;;
+        esac
+    done
+
+}
+
 # Install Neovim
 install_neovim() {
     local url="$1"
-    local install_type="$2" # Pass the install type as an argument
     local install_action="$3"
 
     if [ "$install_action" = "installed" ]; then
-        printf "Downloading and installing $install_type Neovim $version_id...\n"
+        printf "Downloading and installing Neovim $version...\n"
     else
-        printf "${GREEN}Updating $install_type Neovim to the latest version...${NC}\n"
+        printf "${GREEN}Updating Neovim to the latest version ($version)...${NC}\n"
     fi
 
     # Determine the platform-specific installation steps
@@ -190,58 +236,10 @@ install_neovim() {
         ;;
     esac
     if [ "$install_action" = "installed" ]; then
-        printf "${GREEN}$install_type Neovim $version_id has been installed successfully!${NC}\n"
+        printf "${GREEN}Neovim $version has been installed successfully!${NC}\n"
     else
-        printf "${GREEN}$install_type Neovim has been updated successfully to $version_id!${NC}\n"
+        printf "${GREEN}Neovim has been updated successfully to $version!${NC}\n"
     fi
-}
-
-# Update Neovim to the latest version (nightly/stable)
-update_version() {
-    valid_choice=false
-    while [ "$valid_choice" = false ]; do
-        # Determine which version to update to (nightly/stable)
-        printf "Select version to update to:\n"
-        printf "  1. Nightly\n"
-        printf "  2. Stable\n"
-        printf "  3. Choose specific version by tag\n"
-        printf "Enter the number corresponding to your choice (1/2/3): "
-        read update_choice
-
-        case $update_choice in
-        1)
-            action="updated"
-            nightly_version
-            valid_choice=true
-            ;;
-        2)
-            action="updated"
-            stable_version
-            valid_choice=true
-            ;;
-        3)
-            # Ask user for specific version
-            read -p "Enter the specific version (e.g., v0.1.0): " version
-            # Normalize version
-            if [[ $version != v* ]]; then
-                version="v$version"
-            fi
-            # Check if the specific version exists on GitHub releases
-            if version_exists "$version"; then
-                # Install specific version
-                specific_version "$version" # Pass the normalized version to the function
-                valid_choice=true
-            else
-                printf "${RED}The specified version $version does not exist.${NC}\n"
-            fi
-            ;;
-
-        *)
-            handle_error "Invalid choice. Please enter a valid option (1, 2 or 3)."
-            ;;
-        esac
-    done
-
 }
 
 # Uninstall Neovim
