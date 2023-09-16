@@ -132,7 +132,7 @@ update_version() {
     valid_choice=false
     while [ "$valid_choice" = false ]; do
         # Determine which version to update to (nightly/stable)
-        printf "Select version to update to:\n"
+        printf "Select version to install/update to:\n"
         printf "  1. Nightly\n"
         printf "  2. Stable\n"
         printf "  3. Choose specific version by tag\n"
@@ -319,16 +319,16 @@ else
     read -p "Install Neovim? (y/n): " install_choice
 
     case $install_choice in
-        [Yy] )
-            choose_version
-            ;;
-        [Nn] )
-            echo "Exiting..."
-            exit
-            ;;
-        * )
-            handle_error "Invalid choice. Please enter 'y' for yes or 'n' for no."
-            ;;
+    [Yy])
+        choose_version
+        ;;
+    [Nn])
+        echo "Exiting..."
+        exit
+        ;;
+    *)
+        handle_error "Invalid choice. Please enter 'y' for yes or 'n' for no."
+        ;;
     esac
 fi
 
@@ -376,7 +376,7 @@ display_breaking_changes() {
 # Main loop
 while [ "$SHOW_PROMPT" -gt 0 ]; do
     printf "Select an option:\n"
-    printf "  1. Update Neovim\n"
+    printf "  1. Install/update Neovim\n"
     printf "  2. Check for updates\n"
     printf "  3. Uninstall Neovim\n"
     printf "  4. Run Neovim\n"
