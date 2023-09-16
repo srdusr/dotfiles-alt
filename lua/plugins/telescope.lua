@@ -450,26 +450,49 @@ function M.find_notes()
 end
 
 function M.find_books()
-  require('telescope.builtin').find_files({
-    hidden = true,
-    no_ignore = false,
-    prompt_title = ' Find Books',
-    path_display = { 'smart' },
-    search_dirs = {
-      '~/documents/books',
-      '~/books',
-    },
-    layout_strategy = 'horizontal',
-    layout_config = { preview_width = 0.65, width = 0.75 },
-  })
-end
+  local search_dir = '~/documents/books'
 
-function M.file_explorer()
-  require('telescope.builtin').file_browser({
-    prompt_title = 'File Browser',
-    cwd = '~',
-    layout_strategy = 'horizontal',
-  })
+  pickers
+      .new({}, {
+        prompt_title = 'Find Books',
+        finder = finders.new_oneshot_job({
+          'find',
+          vim.fn.expand(search_dir),
+          '-type',
+          'd',
+          '-o',
+          '-type',
+          'f',
+          '-maxdepth',
+          '1',
+        }),
+        previewer = require('telescope.previewers').vim_buffer_cat.new({}),
+        sorter = config.generic_sorter({}),
+        attach_mappings = function(prompt_bufnr, map)
+          actions_set.select:replace(function()
+            local entry = actions_state.get_selected_entry()
+            if entry ~= nil then
+              local path = entry.value
+              actions.close(prompt_bufnr, false)
+
+              -- Determine whether it's a directory or a file
+              local is_directory = vim.fn.isdirectory(path)
+
+              if is_directory then
+                -- It's a directory, navigate to it
+                vim.fn.chdir(path)
+                vim.cmd('e .')
+                print('Selected directory: ' .. path)
+              else
+                -- It's a file, do something with it (open it, for example)
+                print('Selected file: ' .. path)
+              end
+            end
+          end)
+          return true
+        end,
+      })
+      :find()
 end
 
 function M.grep_current_dir()
