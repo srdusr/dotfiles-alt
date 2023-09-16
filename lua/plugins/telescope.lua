@@ -391,7 +391,7 @@ function M.find_projects()
   local search_dir = '~/projects'
   pickers
       .new({}, {
-        prompt_title = 'Change Directory',
+        prompt_title = 'Find Projects',
         finder = finders.new_oneshot_job({
           'find',
           vim.fn.expand(search_dir),
