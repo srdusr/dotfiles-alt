@@ -191,6 +191,7 @@ vim.api.nvim_command('highlight MsgSeparator guibg=NONE')
 vim.api.nvim_command('highlight PmenuSel guibg=NONE')
 vim.api.nvim_command('highlight winblend guibg=NONE')
 vim.api.nvim_command('highlight EndOfBuffer guibg=NONE guifg=Normal')
+vim.api.nvim_command('highlight Comment guibg=NONE ctermbg=NONE')
 
 -- Set different window separator colorscheme
 vim.cmd([[
