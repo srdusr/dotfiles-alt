@@ -186,6 +186,9 @@ super + comma
 super + period
     ${HOME}/.config/bspwm/bspcmd unhide
 
+# Toggle the hidden state of the focused node
+super + q
+    ~/.local/bin/scripts/bspwm-toggle-visibility.sh
 
 #---------------------------------------------------------------
 #
