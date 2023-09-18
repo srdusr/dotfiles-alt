@@ -142,10 +142,18 @@ augroup END
     on_attach(client)
   end
 
+  local cmp_nvim_lsp = require('cmp_nvim_lsp')
   local servers = {
     asm_lsp = {},
     bashls = {},
-    clangd = {},
+    clangd = {
+      on_attach = on_attach,
+      capabilities = cmp_nvim_lsp.default_capabilities(),
+      cmd = {
+        'clangd',
+        '--offset-encoding=utf-16',
+      },
+    },
     cssls = { filetypes = { 'css', 'scss', 'less', 'sass' }, root_dir = lspconfig.util.root_pattern('package.json', '.git') }, -- ghcide = {},
     html = {},
     jsonls = { prefer_null_ls = true, cmd = { '--stdio' } },
