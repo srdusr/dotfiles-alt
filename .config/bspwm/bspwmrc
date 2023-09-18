@@ -58,7 +58,8 @@ bspc rule -a firefox:Toolkit focus=on state=floating sticky=on layer=above recta
 #320x190+1030+480
 #522x316-10+280
 bspc rule -a "https://www.youtube.com - Enhancer for YouTube™ — Mozilla Firefox" state=floating sticky=on layer=above
-bspc rule -a wezterm state=floating
+bspc rule -a Wezterm state=floating
+bspc rule -a Zathura state=tiled
 
 #eww daemon &
 
