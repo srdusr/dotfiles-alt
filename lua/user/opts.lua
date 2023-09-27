@@ -18,30 +18,30 @@ vim.opt.clipboard:append({ 'unnamedplus' }) -- Install xclip or this will slowdo
 
 -- Behaviour
 vim.opt.backspace = { 'start', 'eol', 'indent' } -- Make backspace work as you would expect.
-vim.opt.hidden = true                            -- Switch between buffers without having to save first.
-vim.opt.splitbelow = true                        -- make split put the new buffer below the current buffer
-vim.opt.splitright = true                        -- make vsplit put the new buffer on the right of the current buffer
-vim.opt.scrolloff = 8                            --
-vim.opt.sidescrolloff = 8                        -- how many lines to scroll when using the scrollbar
-vim.opt.autoread = true                          -- reload files if changed externally
-vim.opt.display = 'lastline'                     -- Show as much as possible of the last line.
-vim.opt.inccommand = 'split'                     --
-vim.opt.ttyfast = true                           -- Faster redrawing.
-vim.opt.lazyredraw = false                       -- Only redraw when necessary
-vim.opt.keywordprg = ':help'                     -- :help options
-vim.opt.ruler = true                             --
-vim.opt.errorbells = false                       --
-vim.opt.list = true                              -- Show non-printable characters.
-vim.opt.showmatch = true                         --
-vim.opt.matchtime = 3                            --
-vim.opt.showbreak = '↪ '                       --
-vim.opt.linebreak = true                         --
-vim.opt.exrc = true                              --
+vim.opt.hidden = true -- Switch between buffers without having to save first.
+vim.opt.splitbelow = true -- make split put the new buffer below the current buffer
+vim.opt.splitright = true -- make vsplit put the new buffer on the right of the current buffer
+vim.opt.scrolloff = 8 --
+vim.opt.sidescrolloff = 8 -- how many lines to scroll when using the scrollbar
+vim.opt.autoread = true -- reload files if changed externally
+vim.opt.display = 'lastline' -- Show as much as possible of the last line.
+vim.opt.inccommand = 'split' --
+vim.opt.ttyfast = true -- Faster redrawing.
+vim.opt.lazyredraw = false -- Only redraw when necessary
+vim.opt.keywordprg = ':help' -- :help options
+vim.opt.ruler = true --
+vim.opt.errorbells = false --
+vim.opt.list = true -- Show non-printable characters.
+vim.opt.showmatch = true --
+vim.opt.matchtime = 3 --
+vim.opt.showbreak = '↪ ' --
+vim.opt.linebreak = true --
+vim.opt.exrc = true --
 --vim.opt.autochdir = true                          -- or use this to use <:e> to create a file in current directory
-vim.opt.autoread = true                          -- if a file is changed outside of vim, automatically reload it without asking
+vim.opt.autoread = true -- if a file is changed outside of vim, automatically reload it without asking
 --vim.opt.notimeout = true                          -- Timeout on keycodes and not mappings
-vim.opt.ttimeout = true                          -- Makes terminal vim work sanely
-vim.opt.ttimeoutlen = 10                         --
+vim.opt.ttimeout = true -- Makes terminal vim work sanely
+vim.opt.ttimeoutlen = 10 --
 --vim.opt.timeoutlen = 100 -- time to wait for a mapped sequence to complete (in milliseconds)
 --vim.cmd([[set diffopt = vertical = true]])        -- diffs are shown side-by-side not above/below
 
@@ -179,8 +179,8 @@ vim.opt.fillchars = {
 }
 vim.opt.listchars = { tab = '▸ ', trail = '·' } --
 --vim.opt.fillchars:append({ eob = " " }) -- remove the ~ from end of buffer
-vim.opt.modeline = true                         --
-vim.opt.modelines = 3                           -- modelines (comments that set vim options on a per-file basis)
+vim.opt.modeline = true --
+vim.opt.modelines = 3 -- modelines (comments that set vim options on a per-file basis)
 --vim.opt.modelineexpr = true
 --vim.opt.nofoldenable = true                       -- turn folding off
 --vim.opt.foldenable = false -- turn folding off
@@ -300,4 +300,22 @@ vim.cmd([[                                        " Return to the same line when
           \     execute 'normal! g`"zvzz' |
           \ endif
   augroup END
+]])
+
+-- Enable mouse scrollback
+vim.cmd([[
+    set mouse=a
+    tnoremap <Esc> <C-\><C-n>
+    tnoremap <c-b> <c-\><c-n>
+    function! ClearTerminal()
+        set scrollback=1
+        let &g:scrollback=1
+        echo &scrollback
+        call feedkeys("\i")
+        call feedkeys("clear\<CR>")
+        call feedkeys("\<C-\>\<C-n>")
+        call feedkeys("\i")
+        sleep 100m
+        let &scrollback=s:scroll_value
+    endfunction
 ]])
