@@ -597,10 +597,12 @@ function M.toggleCodi()
     -- Close Codi
     vim.cmd('Codi!')
     is_codi_open = false
+    print('Codi off')
   else
     -- Open Codi
     vim.cmd('Codi')
     is_codi_open = true
+    print('Codi on')
   end
 end
 
