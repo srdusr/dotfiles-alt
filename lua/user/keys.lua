@@ -138,6 +138,9 @@ map('n', '<leader>vt', '<Cmd>call utils#VerboseToggle()<CR>')
 -- Jump List
 map('n', '<leader>j', '<Cmd>call utils#GotoJump()<CR>')
 
+-- Rename file
+map('n', '<leader>rf', '<Cmd>call utils#RenameFile()<CR>')
+
 -- Map delete to Ctrl+l
 map('i', '<C-l>', '<Del>')
 
