@@ -223,7 +223,7 @@ endfunction
 "-------------------------------------------------
 
 " :Rename {newname}
-function! RenameFile()
+function! utils#RenameFile()
     let old_name = expand('%')
     let new_name = input('New file name: ', expand('%'), 'file')
     if new_name != '' && new_name != old_name
