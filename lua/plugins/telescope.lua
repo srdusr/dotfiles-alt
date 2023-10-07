@@ -340,6 +340,7 @@ function M.find_configs()
       '~/.prettierrc.yml',
       '~/.ssh',
       '~/README.md',
+      '~/.config/inputrc',
     },
     file_ignore_patterns = {
       '/nvim/startup.log',
