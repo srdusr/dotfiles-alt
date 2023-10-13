@@ -95,6 +95,7 @@ local modules = {
   'plugins.dashboard',
   'plugins.which-key',
   'plugins.harpoon',
+  'plugins.leetcode',
   --"plugins.modify-blend",
 }
 
