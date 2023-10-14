@@ -20,9 +20,9 @@ map <leader>d :bd<cr>
 " Set alt + j/k to switch lines of texts or simply move them
 :nnoremap <silent><A-k> :let save_a=@a<Cr><Up>"add"ap<Up>:let @a=save_a<Cr>
 :nnoremap <silent><A-j> :let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>
-" Swap two pieces of text, use x to cut in visual mode, then use Ctrl-x in 
+" Swap two pieces of text, use x to cut in visual mode, then use Ctrl-x in
 " visual mode to select text to swap with
-:vnoremap <C-X> <Esc>`.``gvP``P 
+:vnoremap <C-X> <Esc>`.``gvP``P
 " To resize in different steps, you can create maps that will adjust the window
 " size differently. For example to increase the window size by a factor of 1.5
 " and decrease the window size by 0.67, you can map this:
@@ -425,4 +425,41 @@ map <leader>r :call RenameFile()<cr>
           \     execute 'normal! g`"zvzz' |
           \ endif
   augroup END
+"-------------------------------------------------------------------------------
+
+" Update Tmux Status Vi-mode
+"---------------------------------------
+function! UpdateTmuxStatus()
+  let mode = mode()
+  " Determine the mode name based on the mode value
+  let mode_name = ''
+  if mode ==# 'n'
+    let mode_name = '-- NORMAL --'
+  elseif mode ==# 'i' || mode ==# 'ic'
+    let mode_name = '-- INSERT --'
+  else
+    let mode_name = '-- NORMAL --' " -- COMMAND --"
+  endif
+
+  " Write the mode name to the file
+  let file = $HOME . '/.vi-mode'
+  call writefile([mode_name], file)
+
+  if exists('g:nvim_running')
+    " Neovim is running, update the mode file and refresh tmux
+    let VI_MODE = '' " Clear VI_MODE to show Neovim mode
+    silent !tmux refresh-client -S
+  endif
+  " Force tmux to update the status
+  silent !tmux refresh-client -S
+endfunction
+
+augroup TmuxStatus
+  autocmd!
+  autocmd InsertLeave,InsertEnter * call UpdateTmuxStatus()
+  autocmd VimEnter * call UpdateTmuxStatus()
+  autocmd BufEnter * call UpdateTmuxStatus()
+  autocmd ModeChanged * call UpdateTmuxStatus()
+  autocmd WinEnter,WinLeave * call UpdateTmuxStatus()
+augroup END
 "-------------------------------------------------------------------------------
