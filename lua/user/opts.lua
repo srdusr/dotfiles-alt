@@ -320,7 +320,7 @@ vim.cmd([[
     endfunction
 ]])
 
--- Yank to clipboard in termux
+-- Yank to clipboard in Termux
 if vim.fn.has('termux') == 1 then
   local Job = require('plenary.job')
   vim.api.nvim_create_autocmd('TextYankPost', {
