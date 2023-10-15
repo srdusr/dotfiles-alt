@@ -435,3 +435,6 @@ map('n', '<leader>co', '<CMD>lua require("user.mods").toggleCodi()<CR>')
 map('n', '<leader>ss', '<CMD>lua require("user.mods").Scratch("float")<CR>')
 map('n', '<leader>sh', '<CMD>lua require("user.mods").Scratch("horizontal")<CR>')
 map('n', '<leader>sv', '<CMD>lua require("user.mods").Scratch("vertical")<CR>')
+
+-- Hardtime
+map('n', '<leader>H', ':Hardtime toggle<CR>')
