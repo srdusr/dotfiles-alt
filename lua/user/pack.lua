@@ -237,6 +237,12 @@ return packer.startup(function(use)
     },
   })
   use('kawre/leetcode.nvim')
+  use({
+    'm4xshen/hardtime.nvim',
+    config = function()
+      require('hardtime').setup()
+    end,
+  })
 
   -- Colorschemes
   use('bluz71/vim-nightfly-guicolors')
