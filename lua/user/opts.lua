@@ -319,3 +319,33 @@ vim.cmd([[
         let &scrollback=s:scroll_value
     endfunction
 ]])
+
+-- Yank to clipboard in termux
+if vim.fn.has('termux') == 1 then
+  local Job = require('plenary.job')
+  vim.api.nvim_create_autocmd('TextYankPost', {
+    pattern = '*',
+    callback = function()
+      Job:new({
+        command = 'termux-clipboard-set',
+        writer = vim.fn.getreg('@'),
+      }):start()
+    end,
+  })
+end
+
+function GetTermuxClipboard()
+  if vim.fn.has('termux') == 1 then
+    local sysclip = vim.fn.system('termux-clipboard-get')
+    if sysclip ~= '@' then
+      vim.fn.setreg('@', sysclip)
+    end
+  end
+  return ''
+end
+
+if vim.fn.has('termux') == 1 then
+  vim.cmd('autocmd TextYankPost * call GetTermuxClipboard()')
+  vim.cmd('noremap <expr> p Paste("p")')
+  vim.cmd('noremap <expr> P Paste("P")')
+end
