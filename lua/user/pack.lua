@@ -243,6 +243,12 @@ return packer.startup(function(use)
       require('hardtime').setup()
     end,
   })
+  use({
+    'luckasRanarison/nvim-devdocs',
+    config = function()
+      require('nvim-devdocs').setup()
+    end,
+  })
 
   -- Colorschemes
   use('bluz71/vim-nightfly-guicolors')
