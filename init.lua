@@ -96,6 +96,7 @@ local modules = {
   'plugins.which-key',
   'plugins.harpoon',
   'plugins.leetcode',
+  --'plugins.notify',
   --"plugins.modify-blend",
 }
 
@@ -175,31 +176,50 @@ end
 
 vim.api.nvim_command('syntax on')
 vim.api.nvim_command('highlight Normal guibg=NONE ctermbg=NONE')
-vim.api.nvim_command('highlight NonText guibg=NONE ctermbg=NONE')
 vim.api.nvim_command('highlight NormalNC guibg=NONE')
+vim.api.nvim_command('highlight NormalFloat guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight Float guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NonText guibg=NONE ctermbg=NONE')
 vim.api.nvim_command('highlight SignColumn guibg=NONE')
 vim.api.nvim_command('highlight FoldColumn guibg=NONE')
 vim.api.nvim_command('highlight CursorLineSign guibg=NONE ctermbg=NONE')
-vim.api.nvim_command('highlight TabLine guibg=#333842 gui=bold')
 vim.api.nvim_command('highlight Title guibg=NONE gui=bold')
+vim.api.nvim_command('highlight TabLine guibg=#333842 gui=bold')
 vim.api.nvim_command('highlight TabLineSel guibg=#333842 gui=bold')
 vim.api.nvim_command('highlight TabLineFill guibg=NONE gui=bold')
-vim.api.nvim_command('highlight WinBar guibg=NONE gui=bold')
-vim.api.nvim_command('highlight NormalFloat guibg=NONE')
-vim.api.nvim_command('highlight LineNr guibg=NONE')
-vim.api.nvim_command('highlight WinSeparator guibg=NONE gui=bold')
-vim.api.nvim_command('highlight MsgSeparator guibg=NONE')
-vim.api.nvim_command('highlight PmenuSel guibg=NONE')
-vim.api.nvim_command('highlight winblend guibg=NONE')
+vim.api.nvim_command('highlight WinBar guibg=NONE ctermbg=NONE gui=bold')
+vim.api.nvim_command('highlight WinBarNC guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight LineNr guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight WinSeparator guibg=NONE gui=bold ctermbg=NONE')
+vim.api.nvim_command('highlight MsgSeparator guibg=NONE ctermbg=NONE')
 vim.api.nvim_command('highlight EndOfBuffer guibg=NONE guifg=Normal')
 vim.api.nvim_command('highlight Comment guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight Winblend guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NormalFloat guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight Notify guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight Pumblend guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight WildMenu guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight WarningMsg guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight Pmenu guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight PmenuSel guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight PmenuThumb guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight PmenuSbar guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight PmenuExtra guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight PmenuExtraSel guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight MoreMsg guibg=NONE ctermbg=NONE')
+vim.api.nvim_command('highlight NotifyBackground guibg=NONE ctermbg=NONE')
+
+vim.api.nvim_command('hi default link NotifyBackground Normal')
+vim.api.nvim_command('hi default link NotifyERRORBody Normal')
+vim.api.nvim_command('hi default link NotifyWARNBody Normal')
+vim.api.nvim_command('hi default link NotifyINFOBody Normal')
+vim.api.nvim_command('hi default link NotifyDEBUGBody Normal')
+vim.api.nvim_command('hi default link NotifyTRACEBody Normal')
+vim.api.nvim_command('hi default link NotifyLogTime Comment')
+vim.api.nvim_command('hi default link NotifyLogTitle Special')
 
 -- Set different window separator colorscheme
 vim.cmd([[
 au WinEnter * setl winhl=WinSeparator:WinSeparatorA
 au WinLeave * setl winhl=WinSeparator:WinSeparator
 ]])
-
-require('notify').setup({
-  background_colour = '#000000',
-})
