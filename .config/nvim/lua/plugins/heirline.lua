@@ -95,6 +95,7 @@ local ViMode = {
   end,
   update = {
     'ModeChanged',
+    'VimEnter',
     pattern = '*:*',
     callback = vim.schedule_wrap(function()
       vim.cmd('redrawstatus')

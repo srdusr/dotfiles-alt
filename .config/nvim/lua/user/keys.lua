@@ -138,6 +138,9 @@ map('n', '<leader>vt', '<Cmd>call utils#VerboseToggle()<CR>')
 -- Jump List
 map('n', '<leader>j', '<Cmd>call utils#GotoJump()<CR>')
 
+-- Rename file
+map('n', '<leader>rf', '<Cmd>call utils#RenameFile()<CR>')
+
 -- Map delete to Ctrl+l
 map('i', '<C-l>', '<Del>')
 
@@ -432,3 +435,6 @@ map('n', '<leader>co', '<CMD>lua require("user.mods").toggleCodi()<CR>')
 map('n', '<leader>ss', '<CMD>lua require("user.mods").Scratch("float")<CR>')
 map('n', '<leader>sh', '<CMD>lua require("user.mods").Scratch("horizontal")<CR>')
 map('n', '<leader>sv', '<CMD>lua require("user.mods").Scratch("vertical")<CR>')
+
+-- Hardtime
+map('n', '<leader>H', ':Hardtime toggle<CR>')

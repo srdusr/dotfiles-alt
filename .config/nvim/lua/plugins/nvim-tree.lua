@@ -101,7 +101,6 @@ local float = {
 
 local view = {
   cursorline = true,
-  hide_root_folder = false,
   float = float,
   --signcolumn = 'no',
   width = function()

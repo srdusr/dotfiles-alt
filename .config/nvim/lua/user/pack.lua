@@ -236,6 +236,19 @@ return packer.startup(function(use)
       },
     },
   })
+  use('kawre/leetcode.nvim')
+  use({
+    'm4xshen/hardtime.nvim',
+    config = function()
+      require('hardtime').setup()
+    end,
+  })
+  use({
+    'luckasRanarison/nvim-devdocs',
+    config = function()
+      require('nvim-devdocs').setup()
+    end,
+  })
 
   -- Colorschemes
   use('bluz71/vim-nightfly-guicolors')
@@ -298,6 +311,7 @@ return packer.startup(function(use)
       })
     end,
   })
+  use('MunifTanjim/nui.nvim')
   use({
     'j-hui/fidget.nvim',
     tag = 'legacy',
@@ -354,7 +368,7 @@ return packer.startup(function(use)
     run = function()
       vim.fn['mkdp#util#install']()
     end,
-        vim.cmd("let g:mkdp_auto_close = 0"),
+    vim.cmd('let g:mkdp_auto_close = 0'),
   })
   use({
     'ellisonleao/glow.nvim', -- Markdown Preview
