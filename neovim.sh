@@ -332,7 +332,7 @@ else
 
     case $install_choice in
         [Yy])
-            choose_version
+            update_version
             ;;
         [Nn])
             echo "Exiting..."
