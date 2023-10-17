@@ -15,6 +15,11 @@ else
     export KEYTIMEOUT=15
 fi
 
+# Tmux default session
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
+    tmux a -t tmux || exec tmux new -s tmux && exit;
+fi
+
 # Enable various options
 setopt interactive_comments beep extendedglob nomatch notify completeinword prompt_subst
 
