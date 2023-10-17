@@ -2,6 +2,9 @@
 export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.local/bin/scripts:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
+# Skip the not really helping Ubuntu global compinit
+skip_global_compinit=1
+
 ## Conditionally set WM(window manager)
 available_wms=("bspwm" "mutter" "i3")
 for wm in "${available_wms[@]}"; do
