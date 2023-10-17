@@ -15,6 +15,9 @@ else
     export KEYTIMEOUT=15
 fi
 
+# Enable various options
+setopt interactive_comments beep extendedglob nomatch notify completeinword prompt_subst
+
 ##########    Vi mode    ##########
 bindkey -v
 bindkey -M viins '^?' backward-delete-char
@@ -47,8 +50,12 @@ zle -N exit_zsh
 bindkey '^D' exit_zsh
 
 # Auto-completion
-#autoload -U promptinit && promptinit
-autoload -Uz compinit && compinit
+autoload -Uz compinit
+if [[ -n ${ZDOTDIR}/.zcompdump(#qN.mh+24) ]]; then
+    compinit;
+else
+    compinit -C;
+fi;
 
 # Accept completion with <tab> or Ctrl+i and go to next/previous suggestions with Vi like keys: Ctrl+n/p
 zmodload -i zsh/complist
@@ -69,9 +76,6 @@ stty lnext '^-'        # free Ctrl+V for paste use ^- instead
 stty stop undef		# Disable ctrl-s to freeze terminal.
 stty start undef
 #unsetopt BEEP
-
-# Enable various options
-setopt interactive_comments beep extendedglob nomatch notify completeinword prompt_subst
 
 ##########    Prompt(s)    ##########
 
