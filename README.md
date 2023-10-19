@@ -209,7 +209,7 @@ $ cargo run --release --bin wezterm -- start
 
 ### Gnome Custom Settings
 
-- Run gnome custom settings script, located at `~/.local/bin/scripts`:
+- Run gnome custom settings script, located at `~/.scripts`:
 ```bash
 $ gsettings.sh
 ```
