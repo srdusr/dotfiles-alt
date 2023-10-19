@@ -1,5 +1,5 @@
 # Load local/system wide binaries and scripts
-export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.local/bin/scripts:/usr/local/bin:/sbin:/usr/sbin:$PATH
+export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.scripts:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
 # Skip the not really helping Ubuntu global compinit
