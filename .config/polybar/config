@@ -93,14 +93,14 @@ padding-right = 0
 module-margin-left = 0
 module-margin-right = 0
 ; Font for date
-font-0 = "SF Pro Mono:style=Display Bold:size=10;2" 
+font-0 = "SF Pro Mono:style=Display Bold:size=10;2"
 ; Font for crypto, dunst
 font-1 = "Material Design Icons:style=Bold:size=11.5;2"
 ; Font for menu
 font-2 = "Material Design Icons:style=Bold:size=13.5;2"
 ; Font for controlCenter
 font-3 = "SF Pro:style=Medium:size=10.5;2"
-; Font for search 
+; Font for search
 font-4 = "SF Pro:style=Medium:size=9.5;2"
 ; Font for bspwm/workspaces
 font-5 = "UbuntuMono Nerd font:size=11;2"
@@ -142,7 +142,7 @@ click-right = ~/.config/polybar/scripts/menu_full.sh
 [module/bspwm]
 type = internal/bspwm
 format = <label-state>
-;format = <label-state> <label-mode> 
+;format = <label-state> <label-mode>
 format-padding = 0
 ;format-padding-right = 2
 format-foreground = ${colors.foreground}
@@ -196,7 +196,7 @@ click-right = bspc desktop -l next
 type = custom/ipc
 hook-0 = echo 
 hook-1 = echo 
-click-left = ~/.local/bin/scripts/blurtoggle.sh
+click-left = ~/.scripts/blurtoggle.sh
 initial = 1
 format-foreground = ${colors.foreground}
 
@@ -333,7 +333,7 @@ click-right = ~/.config/polybar/scripts/sysmenu.sh
 ;[module/bspwm]
 ;type = internal/bspwm
 ;format = <label-state>
-;;format = <label-state> <label-mode> 
+;;format = <label-state> <label-mode>
 ;format-padding = 1
 ;format-foreground = ${colors.foreground}
 ;index-sort = true
@@ -381,7 +381,7 @@ type = custom/script
 exec = echo 󰅸
 format = <label>
 format-padding = 1
-label-padding = 
+label-padding =
 content-background =
 format-foreground = ${colors.foreground}
 interval = 60
@@ -721,7 +721,7 @@ click-left = ~/.config/polybar/scripts/polybar_wrapper options
 ;module-margin-left = 0
 ;module-margin-right = 0
 ;; Font for date
-;font-0 = "SF Pro Mono:style=Display Bold:size=10;2" 
+;font-0 = "SF Pro Mono:style=Display Bold:size=10;2"
 ;; Font for bspwm/workspaces
 ;font-1 = "UbuntuMono Nerd font:size=10.5;2"
 ;; Font for crypto, dunst
@@ -781,7 +781,7 @@ click-left = ~/.config/polybar/scripts/polybar_wrapper options
 ;module-margin-left = 0
 ;module-margin-right = 0
 ;; Font for date
-;font-0 = "SF Pro Mono:style=Display Bold:size=10;2" 
+;font-0 = "SF Pro Mono:style=Display Bold:size=10;2"
 ;; Font for bspwm/workspaces
 ;font-1 = "UbuntuMono Nerd font:size=11.5;2"
 ;; Font for crypto, dunst
