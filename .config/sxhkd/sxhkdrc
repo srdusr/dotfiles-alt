@@ -62,7 +62,7 @@ super + w
 # Show clipmenu
 #alt + x
 #    parcellite
-    #~/.local/bin/scripts/clip.sh
+    #~/.scripts/clip.sh
 
 # Screenshots tool (selection)
 ctrl + Print
@@ -188,7 +188,7 @@ super + period
 
 # Toggle the hidden state of the focused node
 super + q
-    ~/.local/bin/scripts/bspwm-toggle-visibility.sh
+    ~/.scripts/bspwm-toggle-visibility.sh
 
 #---------------------------------------------------------------
 #
@@ -358,14 +358,14 @@ alt + ctrl + Right
 
 # Scratchpd
 super + semicolon
-	~/.local/bin/scripts/scratchpad
+	~/.scripts/scratchpad
 
 super + x
-	~/.local/bin/scripts/scratchpad
+	~/.scripts/scratchpad
 
 # Heads-Up-Display scratchpad terminal
 super + e
-	~/.local/bin/scripts/Heads-Up-Display
+	~/.scripts/Heads-Up-Display
 
 # File manager nnn
 super + shift + n
