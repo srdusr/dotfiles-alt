@@ -82,6 +82,11 @@ stty stop undef		# Disable ctrl-s to freeze terminal.
 stty start undef
 #unsetopt BEEP
 
+# More history for cd and use "cd -TAB"
+setopt AUTO_PUSHD                  # pushes the old directory onto the stack
+zstyle ':completion:*:directory-stack' list-colors '=(#b) #([0-9]#)*( *)==95=38;5;12'
+
+
 ##########    Prompt(s)    ##########
 
 # Enable colors
@@ -276,100 +281,29 @@ RPROMPT='%(?..[%F{196}%?%f] )'
 
 ##########    Useful Commands/Alias    ##########
 
-alias s="systemctl"
-alias j="journalctl xe"
-
-# Enter directory and list contents
-cd() {
-    if [ -n "$1" ]; then
-        builtin cd "$@" && ls -pvA --color=auto --group-directories-first
-    else
-        builtin cd ~ && ls -pvA --color=auto --group-directories-first
-    fi
-}
-
-# cd into $XDG_CONFIG_HOME/$1 directory
-c() {
-    local root=${XDG_CONFIG_HOME:-~/.config}
-    local dname="$root/$1"
-    if [[ ! -d "$dname" ]]; then
-        return
-    fi
-    cd "$dname"
-}
-
-# Make and cd into directory and any parent directories
-mkcd () {
-    if [[ -z "$1" ]]; then
-        echo "Usage: mkcd <dir>" 1>&2
-        return 1
-    fi
-    mkdir -p "$1"
-    cd "$1"
-}
-
-# Back up a file. Usage "backupthis <filename>"
-backupthis() {
-    cp -riv $1 ${1}-$(date +%Y%m%d%H%M).backup;
-}
-
-# Let FZF use ripgrep by default
-if type rg &> /dev/null; then
-    export FZF_DEFAULT_COMMAND='rg --files'
-    export FZF_DEFAULT_OPTS='-m --height 50% --border'
+# Define alias for nvim/vim (fallback to vim)
+if command -v nvim > /dev/null; then
+    alias vi='nvim'
+else
+    alias vi='vim'
 fi
 
-# wget does not support environment variables
-alias wget=wget --hsts-file="$XDG_CACHE_HOME/wget-hsts"
+# Confirmation #
+alias mv='mv -i'
+alias cp='cp -i'
+alias ln='ln -i'
+alias rm='rm -i'
 
-# Spawn a clone of current terminal
-putstate () {
-    declare +x >~/environment.tmp
-    declare -x >>~/environment.tmp
-    echo cd "$PWD" >>~/environment.tmp
-}
-
-getstate () {
-    . ~/environment.tmp
-}
-
-# use ctrl-z to toggle in and out of bg
-function toggle_fg_bg() {
-    if [[ $#BUFFER -eq 0 ]]; then
-        BUFFER="fg"
-        zle accept-line
-    else
-        BUFFER=""
-        zle clear-screen
-    fi
-}
-zle -N toggle_fg_bg
-bindkey '^Z' toggle_fg_bg
-
-# cd using "up n" as a command up as many directories, example "up 3"
-up() {
-    # default parameter to 1 if non provided
-    declare -i d=${@:-1}
-    # ensure given parameter is non-negative. Print error and return if it is
-    (( $d < 0 )) && (>&2 echo "up: Error: negative value provided") && return 1;
-    # remove last d directories from pwd, append "/" in case result is empty
-    cd "$(pwd | sed -E 's;(/[^/]*){0,'$d'}$;;')/";
-}
-
-# Tmux layout
-openSession () {
-    tmux split-window -h -t
-    tmux split-window -v -t
-    tmux resize-pane -U 5
-}
-
-# More history for cd and use "cd -TAB"
-setopt AUTO_PUSHD                  # pushes the old directory onto the stack
-zstyle ':completion:*:directory-stack' list-colors '=(#b) #([0-9]#)*( *)==95=38;5;12'
+alias ls='ls --color=auto --group-directories-first'
+alias lsd="lsd --group-directories-first"
+alias grep='grep --colour=auto'
+alias egrep='egrep --colour=auto'
+alias fgrep='fgrep --colour=auto'
 
 # List upto last 10 visited directories using "d" and quickly cd into any specific one
-# using just a number from "0" to "9"
 alias d="dirs -v | head -10"
+
+# Using just a number from "0" to "9"
 alias 0="cd +0"
 alias 1="cd +1"
 alias 2="cd +2"
@@ -381,35 +315,20 @@ alias 7="cd +7"
 alias 8="cd +8"
 alias 9="cd +9"
 
-# Allow nnn filemanager to cd on quit
-nnn() {
-    declare -x +g NNN_TMPFILE=$(mktemp --tmpdir $0.XXXX)
-    trap "rm -f $NNN_TMPFILE" EXIT
-    =nnn $@
-    [ -s $NNN_TMPFILE ] && source $NNN_TMPFILE
-}
+alias sc="systemctl"
+alias jc="journalctl xe"
+alias suspend='systemctl suspend && betterlockscreen --lock dimblur' # Suspend(sleep) and lock screen if using systemctl
+alias hibernate='systemctl hibernate' # Hibernate
+alias lock='DISPLAY=:0 xautolock -locknow' # Lock my workstation screen from my phone
+alias oports="sudo lsof -i -P -n | grep -i 'listen'" # List open ports
+alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
+alias keyname="xev | sed -n 's/[ ]*state.* \([^ ]*\)).*/\1/p'"
+alias wget=wget --hsts-file="$XDG_CACHE_HOME/wget-hsts" # wget does not support environment variables
 
-# Extract with one command
-extract () {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xjf $1        ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1       ;;
-            *.rar)       rar x $1     ;;
-            *.gz)        gunzip $1     ;;
-            *.tar)       tar xf $1        ;;
-            *.tbz2)      tar xjf $1      ;;
-            *.tgz)       tar xzf $1       ;;
-            *.zip)       unzip $1     ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1    ;;
-            *)           echo "'$1' cannot be extracted via extract()" ;;
-        esac
-    else
-        echo "'$1' is not a valid file"
-    fi
-}
+alias pp='getlast 2>&1 |&tee -a output.txt'
+alias -g cap='2>&1 | tee -a output.txt' # Print output of a command NOTE: Must be used in conjunction but no need for "|" symbol
+#alias stashrebase='git stash save && git fetch && git rebase origin main && git stash apply'
+#alias cfg-stash='config stash save && config fetch && config rebase origin main && config stash apply'
 
 # Time aliases
 alias ber='TZ=Europe/Berlin date'
@@ -489,38 +408,121 @@ function gsp
     done
 }
 
-# Define alias for nvim/vim (fallback to vim)
-if command -v nvim > /dev/null; then
-    alias vi='nvim'
-else
-    alias vi='vim'
-fi
-
-alias nv='nvim'
-alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
-alias ec='$EDITOR $HOME/.config/zsh/.zshrc'
-alias sc="source $HOME/.config/zsh/.zshrc"
-alias keyname="xev | sed -n 's/[ ]*state.* \([^ ]*\)).*/\1/p'"
-
 # Print previous command into a file
 getlast () {
     fc -nl $((HISTCMD - 1))
 }
 
-alias pp='getlast 2>&1 |&tee -a output.txt'
+# Enter directory and list contents
+cd() {
+    if [ -n "$1" ]; then
+        builtin cd "$@" && ls -pvA --color=auto --group-directories-first
+    else
+        builtin cd ~ && ls -pvA --color=auto --group-directories-first
+    fi
+}
 
-# Print output of a command NOTE: Must be used in conjunction but no need for "|" symbol
-alias -g cap='2>&1 | tee -a output.txt'
+# cd using "up n" as a command up as many directories, example "up 3"
+up() {
+    # default parameter to 1 if non provided
+    declare -i d=${@:-1}
+    # ensure given parameter is non-negative. Print error and return if it is
+    (( $d < 0 )) && (>&2 echo "up: Error: negative value provided") && return 1;
+    # remove last d directories from pwd, append "/" in case result is empty
+    cd "$(pwd | sed -E 's;(/[^/]*){0,'$d'}$;;')/";
+}
 
-# confirmation #
-alias mv='mv -i'
-alias cp='cp -i'
-alias ln='ln -i'
-alias rm='rm -i'
+# cd into $XDG_CONFIG_HOME/$1 directory
+c() {
+    local root=${XDG_CONFIG_HOME:-~/.config}
+    local dname="$root/$1"
+    if [[ ! -d "$dname" ]]; then
+        return
+    fi
+    cd "$dname"
+}
 
-# Suspend(sleep)/hibernate and lock screen if using systemctl
-alias suspend='systemctl suspend && betterlockscreen --lock dimblur'
-alias hibernate='systemctl hibernate'
+# Make and cd into directory and any parent directories
+mkcd () {
+    if [[ -z "$1" ]]; then
+        echo "Usage: mkcd <dir>" 1>&2
+        return 1
+    fi
+    mkdir -p "$1"
+    cd "$1"
+}
+
+# Back up a file. Usage "backupthis <filename>"
+backupthis() {
+    cp -riv $1 ${1}-$(date +%Y%m%d%H%M).backup;
+}
+
+# Let FZF use ripgrep by default
+if type rg &> /dev/null; then
+    export FZF_DEFAULT_COMMAND='rg --files'
+    export FZF_DEFAULT_OPTS='-m --height 50% --border'
+fi
+
+# Spawn a clone of current terminal
+putstate () {
+    declare +x >~/environment.tmp
+    declare -x >>~/environment.tmp
+    echo cd "$PWD" >>~/environment.tmp
+}
+
+getstate () {
+    . ~/environment.tmp
+}
+
+# use ctrl-z to toggle in and out of bg
+function toggle_fg_bg() {
+    if [[ $#BUFFER -eq 0 ]]; then
+        BUFFER="fg"
+        zle accept-line
+    else
+        BUFFER=""
+        zle clear-screen
+    fi
+}
+zle -N toggle_fg_bg
+bindkey '^Z' toggle_fg_bg
+
+# Tmux layout
+openSession () {
+    tmux split-window -h -t
+    tmux split-window -v -t
+    tmux resize-pane -U 5
+}
+
+# Allow nnn filemanager to cd on quit
+nnn() {
+    declare -x +g NNN_TMPFILE=$(mktemp --tmpdir $0.XXXX)
+    trap "rm -f $NNN_TMPFILE" EXIT
+    =nnn $@
+    [ -s $NNN_TMPFILE ] && source $NNN_TMPFILE
+}
+
+# Extract with one command
+extract () {
+    if [ -f $1 ] ; then
+        case $1 in
+            *.tar.bz2)   tar xjf $1        ;;
+            *.tar.gz)    tar xzf $1     ;;
+            *.bz2)       bunzip2 $1       ;;
+            *.rar)       rar x $1     ;;
+            *.gz)        gunzip $1     ;;
+            *.tar)       tar xf $1        ;;
+            *.tbz2)      tar xjf $1      ;;
+            *.tgz)       tar xzf $1       ;;
+            *.zip)       unzip $1     ;;
+            *.Z)         uncompress $1  ;;
+            *.7z)        7z x $1    ;;
+            *)           echo "'$1' cannot be extracted via extract()" ;;
+        esac
+    else
+        echo "'$1' is not a valid file"
+    fi
+}
 
 # Kubernetes
 # kubernetes aliases
@@ -552,7 +554,6 @@ alias android-studio='/opt/android-studio/bin/studio.sh'
 #    reset_color=$(tput sgr0)
 #    echo -e "${green_color}nvm${reset_color} $@"
 #}
-
 if [ -s "$NVM_DIR/nvm.sh" ]; then
     nvm_cmds=(nvm node npm yarn)
     for cmd in "${nvm_cmds[@]}"; do
