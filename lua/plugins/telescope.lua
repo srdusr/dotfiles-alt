@@ -367,7 +367,7 @@ function M.find_scripts()
     prompt_title = ' Find Scripts',
     path_display = { 'smart' },
     search_dirs = {
-      '~/.local/bin/scripts',
+      '~/.scripts',
     },
     layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
@@ -579,18 +579,17 @@ function M.find_dirs()
   -- Use vim.fn.expand() to get an absolute path
   local root_path = vim.fn.expand(root_dir)
 
-  local subdirs = vim.fn.readdir(root_path)
-  if subdirs then
-    for _, subdir in ipairs(subdirs) do
-      if vim.fn.isdirectory(root_path .. '/' .. subdir) == 1 then
-        table.insert(entries, subdir)
-      end
+  local subentries = vim.fn.readdir(root_path)
+  if subentries then
+    for _, subentry in ipairs(subentries) do
+      local absolute_path = root_path .. '/' .. subentry
+      table.insert(entries, subentry)
     end
   end
 
   pickers
       .new({}, {
-        prompt_title = 'Change Directory',
+        prompt_title = 'Change Directory or Open File',
         finder = finders.new_table({
           results = entries,
         }),
@@ -600,13 +599,16 @@ function M.find_dirs()
           actions_set.select:replace(function()
             local entry = actions_state.get_selected_entry()
             if entry ~= nil then
-              local selected_subdir = entry.value
+              local selected_entry = entry.value
               actions.close(prompt_bufnr, false)
-              local selected_path = root_path .. '/' .. selected_subdir
-              vim.fn.chdir(selected_path)
-              vim.cmd('e .')
-              vim.cmd("echon ''")
-              print('cwd: ' .. vim.fn.getcwd())
+              local selected_path = root_path .. '/' .. selected_entry
+              if vim.fn.isdirectory(selected_path) == 1 then
+                vim.fn.chdir(selected_path)
+                vim.cmd('e .')
+                print('cwd: ' .. vim.fn.getcwd())
+              else
+                vim.cmd('e ' .. selected_path)
+              end
             end
           end)
           return true
