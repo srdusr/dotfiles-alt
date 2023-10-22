@@ -609,11 +609,21 @@ end
 --------------------------------------------------
 
 ---- Function to create or toggle a scratch buffer
-local scratch_buf = nil -- Store the scratch buffer globally
-local scratch_win = nil -- Store the scratch window globally
+-- Define global variables to store the scratch buffer and window
+local scratch_buf = nil
+local scratch_win = nil
+
+-- Other global variables
 local scratch_date = os.date('%Y-%m-%d')
 local scratch_dir = vim.fn.expand('~/notes/private')
 local scratch_file = 'scratch-' .. scratch_date .. '.md'
+
+-- Function to close and delete a buffer
+function CloseAndDeleteBuffer(bufnr)
+  if bufnr and vim.api.nvim_buf_is_valid(bufnr) then
+    vim.api.nvim_command('silent! bwipe ' .. bufnr)
+  end
+end
 
 function M.Scratch(Split_direction)
   -- Check if the directory exists, and create it if it doesn't
@@ -638,10 +648,12 @@ function M.Scratch(Split_direction)
     WriteScratchBufferToFile(scratch_buf, file_path)
     vim.cmd(':w!')
     vim.api.nvim_win_close(scratch_win, true)
+    CloseAndDeleteBuffer(scratch_buf)
     scratch_win = nil
+    scratch_buf = nil
   else
     if scratch_buf and vim.api.nvim_buf_is_valid(scratch_buf) then
-      -- Buffer exists, reuse it
+      -- Buffer exists, reuse it and open a new window
       OpenScratchWindow(scratch_buf, current_window_type)
     else
       -- Buffer doesn't exist, create it and load the file if it exists
@@ -651,19 +663,23 @@ function M.Scratch(Split_direction)
   end
 end
 
+-- Function to write buffer contents to a file
 function WriteScratchBufferToFile(buf, file_path)
-  local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
-  local content = table.concat(lines, '\n')
-  local escaped_file_path = vim.fn.fnameescape(file_path)
+  if buf and vim.api.nvim_buf_is_valid(buf) then
+    local lines = vim.api.nvim_buf_get_lines(buf, 0, -1, false)
+    local content = table.concat(lines, '\n')
+    local escaped_file_path = vim.fn.fnameescape(file_path)
 
-  -- Write the buffer content to the file
-  local file = io.open(escaped_file_path, 'w')
-  if file then
-    file:write(content)
-    file:close()
+    -- Write the buffer content to the file
+    local file = io.open(escaped_file_path, 'w')
+    if file then
+      file:write(content)
+      file:close()
+    end
   end
 end
 
+-- Function to create or open the scratch buffer
 function OpenScratchBuffer(file_path)
   local buf = vim.api.nvim_create_buf(true, false)
 
@@ -690,27 +706,30 @@ function OpenScratchBuffer(file_path)
   return buf
 end
 
+-- Function to open the scratch buffer in a window
 function OpenScratchWindow(buf, current_window_type)
-  if current_window_type == 'float' then
-    local opts = {
-      relative = 'win',
-      width = 120,
-      height = 10,
-      border = 'single',
-      row = 20,
-      col = 20,
-    }
-    scratch_win = vim.api.nvim_open_win(buf, true, opts)
-    -- Go to the last line of the buffer
-    vim.api.nvim_win_set_cursor(0, { vim.api.nvim_buf_line_count(buf), 1 })
-  elseif current_window_type == 'vertical' then
-    vim.cmd('vsplit')
-    vim.api.nvim_win_set_buf(0, buf)
-    scratch_win = 0
-  elseif current_window_type == 'horizontal' then
-    vim.cmd('split')
-    vim.api.nvim_win_set_buf(0, buf)
-    scratch_win = 0
+  if buf and vim.api.nvim_buf_is_valid(buf) then
+    if current_window_type == 'float' then
+      local opts = {
+        relative = 'win',
+        width = 120,
+        height = 10,
+        border = 'single',
+        row = 20,
+        col = 20,
+      }
+      scratch_win = vim.api.nvim_open_win(buf, true, opts)
+      -- Go to the last line of the buffer
+      vim.api.nvim_win_set_cursor(scratch_win, { vim.api.nvim_buf_line_count(buf), 1 })
+    elseif current_window_type == 'vertical' then
+      vim.cmd('vsplit')
+      vim.api.nvim_win_set_buf(0, buf)
+      scratch_win = 0
+    elseif current_window_type == 'horizontal' then
+      vim.cmd('split')
+      vim.api.nvim_win_set_buf(0, buf)
+      scratch_win = 0
+    end
   end
 end
 
@@ -808,6 +827,20 @@ vim.api.nvim_create_autocmd({ 'BufNew' }, {
       if type(callback) == 'function' then
         callback(bufnr, path, filename)
       end
+    end
+  end,
+})
+
+--------------------------------------------------
+
+-- Delete [No Name] buffers
+vim.api.nvim_create_autocmd('BufHidden', {
+  desc = 'Delete [No Name] buffers',
+  callback = function(event)
+    if event.file == '' and vim.bo[event.buf].buftype == '' and not vim.bo[event.buf].modified then
+      vim.schedule(function()
+        pcall(vim.api.nvim_buf_delete, event.buf, {})
+      end)
     end
   end,
 })
