@@ -21,8 +21,8 @@ zcompdump
 # Ignore node_modules directory
 node_modules/
 
-# Ignore .png files
-*.png
+## Ignore .png files
+#*.png
 
 # Ignore .zip files
 *.zip
