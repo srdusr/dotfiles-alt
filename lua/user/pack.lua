@@ -252,15 +252,8 @@ return packer.startup(function(use)
   use('NTBBloodbath/doom-one.nvim')
   use('nyngwang/nvimgelion')
   use('projekt0n/github-nvim-theme')
-  use({
-    'folke/tokyonight.nvim',
-    config = function()
-      require('tokyonight').setup({
-        transparent = true,
-        dim_inactive = false,
-      })
-    end,
-  })
+  use('folke/tokyonight.nvim')
+  use('ribru17/bamboo.nvim')
 
   -- UI
   use('kyazdani42/nvim-web-devicons')                                       --
