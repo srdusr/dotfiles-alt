@@ -133,7 +133,7 @@ map('n', '<A-j>', ':let save_a=@a<Cr>"add"ap:let @a=save_a<Cr>')
 map('n', '<leader>df', '<Cmd>call utils#ToggleDiff()<CR>')
 
 -- Toggle Verbose
-map('n', '<leader>vt', '<Cmd>call utils#VerboseToggle()<CR>')
+map('n', '<leader>uvt', '<Cmd>call utils#VerboseToggle()<CR>')
 
 -- Jump List
 map('n', '<leader>j', '<Cmd>call utils#GotoJump()<CR>')
@@ -222,7 +222,7 @@ map('n', '<leader>z', ':call utils#ZoomToggle()<CR>')
 map('n', '<C-w>z', '<C-w>|<C-w>_')
 
 -- Toggle statusline
-map('n', '<S-h>', ':call utils#ToggleHiddenAll()<CR>')
+map('n', '<leader>sl', ':call utils#ToggleHiddenAll()<CR>')
 
 -- Open last closed buffer
 map('n', '<C-t>', ':call OpenLastClosed()<CR>')
@@ -437,4 +437,4 @@ map('n', '<leader>sh', '<CMD>lua require("user.mods").Scratch("horizontal")<CR>'
 map('n', '<leader>sv', '<CMD>lua require("user.mods").Scratch("vertical")<CR>')
 
 -- Hardtime
-map('n', '<leader>H', ':Hardtime toggle<CR>')
+map('n', '<leader>H', '<CMD>lua require("plugins.hardtime").ToggleHardtime()<CR>')
