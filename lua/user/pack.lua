@@ -237,12 +237,7 @@ return packer.startup(function(use)
     },
   })
   use('kawre/leetcode.nvim')
-  use({
-    'm4xshen/hardtime.nvim',
-    config = function()
-      require('hardtime').setup()
-    end,
-  })
+  use('m4xshen/hardtime.nvim')
   use({
     'luckasRanarison/nvim-devdocs',
     config = function()
