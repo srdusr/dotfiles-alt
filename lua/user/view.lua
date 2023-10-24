@@ -4,12 +4,13 @@
 vim.opt.termguicolors = true
 
 -- Available colorschemes:
--- [[ nightfly ayu onedark doom-one nvimgelion github_dark tokyonight ]]
+-- [[ nightfly ayu onedark doom-one nvimgelion github_dark tokyonight bamboo ]]
 
 require('tokyonight').setup({
   style = 'night',
   transparent = true,
   transparent_sidebar = true,
+  dim_inactive = false,
   styles = {
     sidebars = 'transparent',
     floats = 'transparent',
@@ -17,7 +18,7 @@ require('tokyonight').setup({
 })
 
 -- Define default color scheme
-local default_colorscheme = 'tokyonight'
+local default_colorscheme = 'bamboo'
 local fallback_colorscheme = 'desert'
 
 -- Attempt to set the default color scheme
