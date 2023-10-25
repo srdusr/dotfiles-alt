@@ -1,5 +1,11 @@
 #!/bin/bash
 
+# Created By: srdusr
+# Created On: Wed 25 Oct 2023 13:45:52 CAT
+# Project: Simple script to track most recent books opened, mainly for neovim usage.
+
+# Dependencies: inotify-tools
+
 books_directory="$HOME/documents/books"
 recent_books_file="$HOME/.config/nvim/tmp/recent_books.txt"
 
