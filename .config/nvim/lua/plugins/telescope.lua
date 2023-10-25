@@ -374,20 +374,6 @@ function M.find_scripts()
   })
 end
 
---function M.find_projects() -- aka Workspaces
---  require('telescope.builtin').find_files({
---    hidden = true,
---    no_ignore = true,
---    prompt_title = ' Find Projects',
---    path_display = { 'smart' },
---    search_dirs = {
---      '~/projects',
---    },
---    layout_strategy = 'horizontal',
---    layout_config = { preview_width = 0.65, width = 0.75 },
---  })
---end
-
 function M.find_projects()
   local search_dir = '~/projects'
   pickers
@@ -452,20 +438,35 @@ end
 
 function M.find_books()
   local search_dir = '~/documents/books'
+  vim.fn.jobstart('$HOME/.scripts/track-books.sh')
+  local recent_books_directory = vim.fn.stdpath('config') .. '/tmp/'
+  local recent_books_file = recent_books_directory .. 'recent_books.txt'
+  local search_cmd = 'find ' .. vim.fn.expand(search_dir) .. ' -type d -o -type f -maxdepth 1'
+
+  local recent_books = vim.fn.systemlist('cat ' .. recent_books_file)
+  local search_results = vim.fn.systemlist(search_cmd)
+
+  local results = {}
+  local recent_books_section = {} -- To store recent books separately
+
+  for _, recent_book in ipairs(recent_books) do
+    table.insert(recent_books_section, 'Recent Books: ' .. recent_book)
+  end
+
+  for _, search_result in ipairs(search_results) do
+    table.insert(results, search_result)
+  end
+
+  -- Add the recent books section to the results
+  for _, recent_entry in ipairs(recent_books_section) do
+    table.insert(results, recent_entry)
+  end
 
   pickers
       .new({}, {
         prompt_title = 'Find Books',
-        finder = finders.new_oneshot_job({
-          'find',
-          vim.fn.expand(search_dir),
-          '-type',
-          'd',
-          '-o',
-          '-type',
-          'f',
-          '-maxdepth',
-          '1',
+        finder = finders.new_table({
+          results = results,
         }),
         previewer = require('telescope.previewers').vim_buffer_cat.new({}),
         sorter = config.generic_sorter({}),
@@ -474,15 +475,24 @@ function M.find_books()
             local entry = actions_state.get_selected_entry()
             if entry ~= nil then
               local path = entry.value
+
+              -- Handle selecting a recent book entry separately
+              if vim.fn.matchstr(path, '^Recent Books: ') ~= '' then
+                -- Extract the path of the selected recent book
+                path = vim.fn.matchstr(path, '^Recent Books: (.*)$')
+              end
+
               actions.close(prompt_bufnr, false)
+
+              -- Debugging statement to print the selected path
+              print('Selected Entry: ' .. path)
 
               -- Determine whether it's a directory or a file
               local is_directory = vim.fn.isdirectory(path)
 
               if is_directory then
-                -- It's a directory, navigate to it
-                vim.fn.chdir(path)
-                vim.cmd('e .')
+                -- It's a directory, navigate to it in the current buffer
+                vim.cmd('e ' .. path)
                 print('Selected directory: ' .. path)
               else
                 -- It's a file, do something with it (open it, for example)

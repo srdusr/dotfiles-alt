@@ -95,6 +95,7 @@ local modules = {
   'plugins.which-key',
   'plugins.harpoon',
   'plugins.leetcode',
+  'plugins.hardtime',
   --'plugins.notify',
   --"plugins.modify-blend",
 }
