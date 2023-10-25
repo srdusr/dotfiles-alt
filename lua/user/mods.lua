@@ -800,6 +800,9 @@ vim.api.nvim_create_autocmd({ 'BufNew' }, {
       ['pdf'] = function(buf, fpath, fname)
         open_in_prog(buf, fpath, fname, 'zathura')
       end,
+      ['epub'] = function(buf, fpath, fname)
+        open_in_prog(buf, fpath, fname, 'zathura')
+      end,
       ['png'] = function(buf, fpath, fname)
         open_in_prog(buf, fpath, fname, 'feh')
       end,
