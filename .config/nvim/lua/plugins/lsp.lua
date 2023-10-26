@@ -85,7 +85,7 @@ if not vim.g.lsp_setup_done then
     map('n', 'gt', "<cmd>lua require('goto-preview').goto_preview_type_definition()<CR>")
     map('n', 'gn', '<Cmd>lua vim.lsp.buf.rename()<CR>')
     map('n', 'ga', '<Cmd>lua vim.lsp.buf.code_action()<CR>')
-    map('n', 'gf', '<Cmd>lua vim.lsp.buf.formatting()<CR>')
+    map('n', 'gf', '<Cmd>lua vim.lsp.buf.format()<CR>')
     map('n', 'go', '<Cmd>lua vim.diagnostic.open_float()<CR>')
     map('n', '<leader>go', ":call utils#ToggleDiagnosticsOpenFloat()<CR> | :echom ('Toggle Diagnostics Float open/close...')<CR> | :sl! | echo ('')<CR>")
     map('n', 'gq', '<Cmd>lua vim.diagnostic.setloclist()<CR>')
@@ -122,19 +122,19 @@ if not vim.g.lsp_setup_done then
 
   -- Open float for diagnostics automatically
   vim.cmd([[
-augroup OpenFloat
+  augroup OpenFloat
         " autocmd CursorHold,CursorHoldI * lua vim.diagnostic.open_float(nil, {focusable = false,})
         autocmd CursorHold * lua vim.diagnostic.open_float(nil, {focusable = false,})
 
-augroup END
-]])
+  augroup END
+  ]])
 
   -- Suppress error messages from lang servers
   vim.lsp.set_log_level('debug')
   local capabilities = vim.lsp.protocol.make_client_capabilities()
   capabilities = require('cmp_nvim_lsp').default_capabilities()
   capabilities.textDocument.completion.completionItem.snippetSupport = true
-  capabilities.offsetEncoding = { 'utf-16' }
+  capabilities.offsetEncoding = { 'utf-8', 'utf-16' }
 
   local function prefer_null_ls_fmt(client)
     client.server_capabilities.documentHighlightProvider = true
@@ -142,16 +142,24 @@ augroup END
     on_attach(client)
   end
 
-  local cmp_nvim_lsp = require('cmp_nvim_lsp')
+  --local cmp_nvim_lsp = require('cmp_nvim_lsp')
   local servers = {
     asm_lsp = {},
     bashls = {},
     clangd = {
       on_attach = on_attach,
-      capabilities = cmp_nvim_lsp.default_capabilities(),
-      cmd = {
-        'clangd',
-        '--offset-encoding=utf-16',
+      capabilites = capabilities,
+      cmd = { 'clangd', '--offset-encoding=utf-16', '--cross-file-rename', '--header-insertion=never', '--suggest-missing-includes' },
+      init_options = {
+        clangdFileStatus = true,
+      },
+      root_files = {
+        '.clangd',
+        '.clang-tidy',
+        '.clang-format',
+        'compile_commands.json',
+        'compile_flags.txt',
+        'configure.ac', -- AutoTools
       },
     },
     cssls = { filetypes = { 'css', 'scss', 'less', 'sass' }, root_dir = lspconfig.util.root_pattern('package.json', '.git') }, -- ghcide = {},
@@ -316,7 +324,13 @@ augroup END
     builtins.formatting.shellharden,
     builtins.formatting.trim_whitespace.with({ filetypes = { 'tmux', 'teal', 'zsh' } }), -- builtins.formatting.beautysh,
     builtins.formatting.beautysh.with({ filetypes = 'zsh' }),
-    builtins.formatting.clang_format,
+    builtins.formatting.clang_format.with({
+      filetypes = { 'c', 'cpp', 'cs', 'java', 'cuda', 'proto' },
+      extra_args = {
+        '--style',
+        '{BasedOnStyle: Google, IndentWidth: 4, BreakBeforeBinaryOperators: NonAssignment, AllowShortFunctionsOnASingleLine: None}',
+      },
+    }),
     builtins.formatting.rustfmt,
     builtins.formatting.sql_formatter,
     -- null_ls.builtins.formatting.cmake_format,
