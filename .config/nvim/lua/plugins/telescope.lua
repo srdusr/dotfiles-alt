@@ -443,7 +443,7 @@ function M.find_books()
   local recent_books_file = recent_books_directory .. 'recent_books.txt'
   local search_cmd = 'find ' .. vim.fn.expand(search_dir) .. ' -type d -o -type f -maxdepth 1'
 
-  local recent_books = vim.fn.systemlist('cat ' .. recent_books_file)
+  local recent_books = vim.fn.readfile(recent_books_file)
   local search_results = vim.fn.systemlist(search_cmd)
 
   local results = {}
@@ -476,27 +476,16 @@ function M.find_books()
             if entry ~= nil then
               local path = entry.value
 
-              -- Handle selecting a recent book entry separately
-              if vim.fn.matchstr(path, '^Recent Books: ') ~= '' then
-                -- Extract the path of the selected recent book
-                path = vim.fn.matchstr(path, '^Recent Books: (.*)$')
-              end
-
               actions.close(prompt_bufnr, false)
-
-              -- Debugging statement to print the selected path
-              print('Selected Entry: ' .. path)
-
               -- Determine whether it's a directory or a file
               local is_directory = vim.fn.isdirectory(path)
 
               if is_directory then
                 -- It's a directory, navigate to it in the current buffer
                 vim.cmd('e ' .. path)
-                print('Selected directory: ' .. path)
               else
-                -- It's a file, do something with it (open it, for example)
-                print('Selected file: ' .. path)
+                -- It's a file, open it
+                vim.cmd('edit ' .. path)
               end
             end
           end)
