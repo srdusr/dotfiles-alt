@@ -91,7 +91,7 @@ local ViMode = {
     return ' %2(' .. self.mode_names[self.mode] .. '%) '
   end,
   hl = function(self)
-    return { fg = 'darkgray', bg = self.mode_color, bold = true }
+    return { fg = 'colors.black', bg = self.mode_color, bold = true }
   end,
   update = {
     'ModeChanged',
@@ -778,7 +778,7 @@ FileInfoBlock = utils.surround({ '', '' }, function(self)
   return self:mode_color()
 end, { FileInfoBlock, Space, hl = { bg = colors.gray, force = true } })
 
-Ruler = utils.surround({ '', '' }, colors.gray, { Ruler, hl = { fg = colors.gray, force = true } })
+Ruler = utils.surround({ '', '' }, colors.black, { Ruler, hl = { fg = colors.black, force = true } })
 
 local left = {
   { RightSpace,    hl = { bg = colors.nobg, force = true } },
