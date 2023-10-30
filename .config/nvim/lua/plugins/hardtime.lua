@@ -12,6 +12,7 @@ end
 
 hardtime.setup({
   -- hardtime config here
+  disabled_filetypes = { 'qf', 'netrw', 'NvimTree', 'lazy', 'mason', 'oil', 'dashboard' },
 })
 
 return {
