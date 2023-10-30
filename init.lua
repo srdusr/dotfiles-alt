@@ -96,7 +96,7 @@ local modules = {
   'plugins.harpoon',
   'plugins.leetcode',
   'plugins.hardtime',
-  --'plugins.notify',
+  'plugins.notify',
   --"plugins.modify-blend",
 }
 
