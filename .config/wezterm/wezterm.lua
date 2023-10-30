@@ -139,22 +139,16 @@ return {
       action = wezterm.action_callback(function(window, pane)
         local has_selection = window:get_selection_text_for_pane(pane) ~= ""
         if has_selection then
-          window:perform_action(
-            wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }),
-            pane
-          )
+          window:perform_action(wezterm.action({ CopyTo = "ClipboardAndPrimarySelection" }), pane)
           window:perform_action("ClearSelection", pane)
         else
-          window:perform_action(
-            wezterm.action({ SendKey = { key = "c", mods = "CTRL" } }),
-            pane
-          )
+          window:perform_action(wezterm.action({ SendKey = { key = "c", mods = "CTRL" } }), pane)
         end
       end),
     },
   },
   -- Aesthetic Night Colorscheme
-  --bold_brightens_ansi_colors = true,
+  bold_brightens_ansi_colors = true,
   -- Padding
   window_padding = {
     left = 5,
