@@ -776,13 +776,19 @@ end, { Space, LSPActive, hl = { bg = colors.darkgray, force = true } })
 
 FileInfoBlock = utils.surround({ '', '' }, function(self)
   return self:mode_color()
-end, { FileInfoBlock, Space, hl = { bg = colors.gray, force = true } })
+end, { FileInfoBlock, Space, hl = { bg = colors.black, force = true } })
 
-Ruler = utils.surround({ '', '' }, colors.black, { Ruler, hl = { fg = colors.black, force = true } })
+ViMode = utils.surround({ '', '' }, function(self)
+  return self:mode_color()
+end, { ViMode, hl = { fg = colors.black, force = true } })
+
+Ruler = utils.surround({ '', '' }, function(self)
+  return self:mode_color()
+end, { Ruler, hl = { fg = colors.black, force = true } })
 
 local left = {
   { RightSpace,    hl = { bg = colors.nobg, force = true } },
-  { ViMode,        hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { ViMode,        hl = { bg = utils.get_highlight('statusline').bg, bold = false } },
   { LeftSpace,     hl = { bg = colors.nobg, force = true } },
   { Space,         hl = { bg = colors.nobg, force = true } },
   { FileNameBlock, hl = { bg = colors.nobg, force = true } },
@@ -805,7 +811,7 @@ local right = {
   { Space,         hl = { bg = colors.nobg, force = true } },
   { FileInfoBlock, hl = { bg = colors.nobg, force = true } },
   { RightSpace,    hl = { bg = colors.nobg, force = true } },
-  { Ruler,         hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { Ruler,         hl = { fg = utils.get_highlight('statusline').bg, bold = false } },
   { LeftSpace,     hl = { bg = colors.nobg, force = true } },
 }
 
@@ -814,7 +820,7 @@ local DefaultStatusline = { sections }
 
 local specialleft = {
   { RightSpace, hl = { bg = colors.nobg, force = true } },
-  { ViMode,     hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { ViMode,     hl = { bg = utils.get_highlight('statusline').bg, bold = false } },
   { LeftSpace,  hl = { bg = colors.nobg, force = true } },
 }
 
@@ -826,7 +832,7 @@ local specialmiddle = {
 
 local specialright = {
   { RightSpace, hl = { bg = colors.nobg, force = true } },
-  { Ruler,      hl = { fg = utils.get_highlight('statusline').bg, force = true } },
+  { Ruler,      hl = { fg = utils.get_highlight('statusline').bg, bold = false } },
   { LeftSpace,  hl = { bg = colors.nobg, force = true } },
 }
 
