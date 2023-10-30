@@ -18,7 +18,7 @@ require('tokyonight').setup({
 })
 
 -- Define default color scheme
-local default_colorscheme = 'bamboo'
+local default_colorscheme = 'tokyonight-night'
 local fallback_colorscheme = 'desert'
 
 -- Attempt to set the default color scheme
