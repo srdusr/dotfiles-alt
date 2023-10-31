@@ -97,6 +97,7 @@ local modules = {
   'plugins.leetcode',
   'plugins.hardtime',
   'plugins.notify',
+  'plugins.overseer',
   --"plugins.modify-blend",
 }
 
