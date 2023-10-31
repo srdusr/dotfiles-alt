@@ -212,6 +212,7 @@ return packer.startup(function(use)
     --vim.cmd("let g:rooter_change_directory_for_non_project_files = 'current'")
   })
   use({ 'michaelb/sniprun', run = 'bash ./install.sh' })
+  use({ 'stevearc/overseer.nvim' })
   --use("vim-test/vim-test") --
   --use({
   --  "rcarriga/vim-ultest", --
