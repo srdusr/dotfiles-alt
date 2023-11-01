@@ -311,50 +311,24 @@ require('telescope').load_extension('recent_files')
 --end
 
 function M.find_configs()
+  -- Track dotfiles (bare git repository)
+  -- Inside shell config file:
+  --  alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
+  --  cfg_files=$(config ls-tree --name-only -r HEAD)
+  --  export CFG_FILES="$cfg_files"
+  local tracked_files = {}
+
+  for file in string.gmatch(os.getenv('CFG_FILES'), '[^\n]+') do
+    table.insert(tracked_files, os.getenv('HOME') .. '/' .. file)
+  end
+
   require('telescope.builtin').find_files({
     hidden = true,
     no_ignore = false,
     prompt_title = ' Find Configs',
     results_title = 'Config Files',
     path_display = { 'smart' },
-    search_dirs = {
-      '~/.vim',
-      '~/.config/nvim',
-      '~/.config/zsh',
-      '~/.config/tmux',
-      '~/.config/X11',
-      '~/.config/alacritty',
-      '~/.config/kitty',
-      '~/.config/wezterm',
-      '~/.config/bspwm',
-      '~/.config/sxhkd',
-      '~/.config/picom',
-      '~/.config/polybar',
-      '~/.bashrc',
-      '~/.profile',
-      '~/.zprofile',
-      '~/.gitconfig',
-      '~/.gitsubtrees',
-      '~/.gitignore',
-      '~/.editorconfig',
-      '~/.prettierrc.yml',
-      '~/.ssh',
-      '~/README.md',
-      '~/.config/inputrc',
-    },
-    file_ignore_patterns = {
-      '/nvim/startup.log',
-      'zsh/plugins',
-      'packer_compiled.lua',
-      'resurrect',
-      'tmux/plugins',
-      --"^~/.config/tmux/plugins",
-      '%.txt',
-      '.git/',
-      'autoload/plugged',
-      'plug.vim',
-      'zcompdump',
-    },
+    search_dirs = tracked_files,
     layout_strategy = 'horizontal',
     layout_config = { preview_width = 0.65, width = 0.75 },
   })
