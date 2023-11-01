@@ -338,6 +338,8 @@ alias utc='TZ=Etc/UTC date'
 
 ### Dotfiles
 alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
+cfg_files=$(config ls-tree --name-only -r HEAD)
+export CFG_FILES="$cfg_files"
 
 # Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {
