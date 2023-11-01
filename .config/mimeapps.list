@@ -1,0 +1,11 @@
+[Default Applications]
+application/pdf=zathura.desktop;
+image/png=vimiv.desktop
+image/jpeg=vimiv.desktop;
+video/mp4=vlc.desktop;
+
+[Added Associations]
+image/png=vimiv.desktop;
+
+[Removed Associations]
+
