@@ -891,7 +891,6 @@ function M.RunCode()
   end
   local file_extension = vim.fn.expand('%:e')
   local selected_cmd = ''
-  local term_cmd = 'bot 10 new | term '
   local supported_filetypes = {
     html = {
       default = '%',
@@ -947,23 +946,48 @@ function M.RunCode()
     },
   }
 
-  if supported_filetypes[file_extension] then
-    local choices = vim.tbl_keys(supported_filetypes[file_extension])
+  local term_cmd = 'bot 10 new | term '
+  local choices = {}
 
-    if #choices == 0 then
-      vim.notify("It doesn't contain any command", vim.log.levels.WARN, { title = 'Code Runner' })
-    elseif #choices == 1 then
-      selected_cmd = supported_filetypes[file_extension][choices[1]]
-      vim.cmd(term_cmd .. substitute(selected_cmd))
-    else
-      vim.ui.select(choices, { prompt = 'Choose a command: ' }, function(choice)
-        selected_cmd = supported_filetypes[file_extension][choice]
-        if selected_cmd then
-          vim.cmd(term_cmd .. substitute(selected_cmd))
-        end
-      end)
+  -- Add 'default' as the first option if available
+  if supported_filetypes[file_extension]['default'] then
+    table.insert(choices, 'default')
+  end
+
+  -- Add 'debug' as the second option if available
+  if supported_filetypes[file_extension]['debug'] then
+    table.insert(choices, 'debug')
+  end
+
+  -- Add other available options
+  for key, _ in pairs(supported_filetypes[file_extension]) do
+    if key ~= 'default' and key ~= 'debug' then
+      table.insert(choices, key)
     end
+  end
+  if #choices == 0 then
+    vim.notify("It doesn't contain any command", vim.log.levels.WARN, { title = 'Code Runner' })
+  elseif #choices == 1 then
+    selected_cmd = supported_filetypes[file_extension][choices[1]]
+    vim.cmd(term_cmd .. substitute(selected_cmd))
   else
+    vim.ui.select(choices, {
+      prompt = 'Choose a command: ',
+      layout_config = {
+        height = 10,
+        width = 40,
+        prompt_position = 'top',
+        -- other options as required
+      },
+    }, function(choice)
+      selected_cmd = supported_filetypes[file_extension][choice]
+      if selected_cmd then
+        vim.cmd(term_cmd .. substitute(selected_cmd))
+      end
+    end)
+  end
+
+  if not supported_filetypes[file_extension] then
     vim.notify("The filetype isn't included in the list", vim.log.levels.WARN, { title = 'Code Runner' })
   end
 end
