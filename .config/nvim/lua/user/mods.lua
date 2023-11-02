@@ -803,12 +803,13 @@ vim.api.nvim_create_autocmd({ 'BufNew' }, {
       ['epub'] = function(buf, fpath, fname)
         open_in_prog(buf, fpath, fname, 'zathura')
       end,
+      ['mobi'] = 'pdf',
       ['png'] = function(buf, fpath, fname)
-        open_in_prog(buf, fpath, fname, 'feh')
+        open_in_prog(buf, fpath, fname, 'vimiv')
       end,
       ['jpg'] = 'png',
       ['mp4'] = function(buf, fpath, fname)
-        open_in_prog(buf, fpath, fname, 'mpv')
+        open_in_prog(buf, fpath, fname, 'vlc')
       end,
       ['gif'] = 'mp4',
     }
