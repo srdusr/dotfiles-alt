@@ -440,4 +440,4 @@ map('n', '<leader>sv', '<CMD>lua require("user.mods").Scratch("vertical")<CR>')
 map('n', '<leader>H', '<CMD>lua require("plugins.hardtime").ToggleHardtime()<CR>')
 
 -- Code Run
-map('n', '<leader>rr', '<CMD>lua require("user.mods").RunCode()<CR>')
+map('n', '<leader>rr', '<CMD>lua require("user.mods").toggleCodeRunner()<CR>')
