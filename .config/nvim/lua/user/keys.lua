@@ -441,3 +441,6 @@ map('n', '<leader>H', '<CMD>lua require("plugins.hardtime").ToggleHardtime()<CR>
 
 -- Code Run
 map('n', '<leader>rr', '<CMD>lua require("user.mods").toggleCodeRunner()<CR>')
+
+-- Run executable file
+map('n', '<leader>rc', ":lua require('user.mods').RunCurrentFile()<CR>:echom 'Running executable file...'<CR>:sl!<CR>:echo ''<CR>")
