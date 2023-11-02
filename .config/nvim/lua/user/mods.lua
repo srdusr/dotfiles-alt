@@ -970,5 +970,53 @@ end
 
 --------------------------------------------------
 
+-- Run executable file
+local interpreters = {
+  python = 'python',
+  lua = 'lua',
+  bash = 'bash',
+  zsh = 'zsh',
+  perl = 'perl',
+  ruby = 'ruby',
+  node = 'node',
+  rust = 'rust',
+  php = 'php',
+}
+
+function M.RunCurrentFile()
+  local file_path = vim.fn.expand('%:p')
+  local file = io.open(file_path, 'r')
+
+  if not file then
+    print('Error: Unable to open the file')
+    return
+  end
+
+  local shebang = file:read()
+  file:close()
+
+  local interpreter = shebang:match('#!%s*(.-)$')
+  if not interpreter then
+    print('Error: No shebang line found in the file')
+    return
+  end
+
+  -- Remove leading spaces and any arguments, extracting the interpreter name
+  interpreter = interpreter:gsub('^%s*([^%s]+).*', '%1')
+
+  local cmd = interpreters[interpreter]
+
+  if not cmd then
+    cmd = interpreter -- Set the command to the interpreter directly
+  end
+
+  -- Run the file using the determined interpreter
+  vim.fn.jobstart(cmd .. ' ' .. file_path, {
+    cwd = vim.fn.expand('%:p:h'),
+  })
+end
+
+--------------------------------------------------
+
 -- ...
 return M
