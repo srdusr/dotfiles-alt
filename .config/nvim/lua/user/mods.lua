@@ -851,6 +851,27 @@ vim.api.nvim_create_autocmd('BufHidden', {
 
 --------------------------------------------------
 
+local codeRunnerEnabled = false
+
+function M.toggleCodeRunner()
+  codeRunnerEnabled = not codeRunnerEnabled
+  if codeRunnerEnabled then
+    print('Code Runner enabled')
+    M.RunCode() -- Execute when enabled
+  else
+    print('Code Runner disabled')
+    -- Close the terminal window when disabled
+    local buffers = vim.fn.getbufinfo()
+
+    for _, buf in ipairs(buffers) do
+      local type = vim.api.nvim_buf_get_option(buf.bufnr, 'buftype')
+      if type == 'terminal' then
+        vim.api.nvim_command('silent! bdelete ' .. buf.bufnr)
+      end
+    end
+  end
+end
+
 local function substitute(cmd)
   cmd = cmd:gsub('%%', vim.fn.expand('%'))
   cmd = cmd:gsub('$fileBase', vim.fn.expand('%:r'))
@@ -864,6 +885,10 @@ local function substitute(cmd)
 end
 
 function M.RunCode()
+  if not codeRunnerEnabled then
+    print('Code Runner is currently disabled. Toggle it on to execute code.')
+    return
+  end
   local file_extension = vim.fn.expand('%:e')
   local selected_cmd = ''
   local term_cmd = 'bot 10 new | term '
@@ -895,6 +920,9 @@ function M.RunCode()
     js = {
       default = 'node %',
       debug = 'node --inspect %',
+    },
+    lua = {
+      default = 'lua %',
     },
     ts = {
       default = 'tsc % && node $fileBase',
