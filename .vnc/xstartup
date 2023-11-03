@@ -1,0 +1,16 @@
+#!/data/data/com.termux/files/usr/bin/sh
+
+## file is executed during VNC server
+## startup.
+
+# Launch terminal emulator Aterm.
+# Requires package 'aterm'.
+
+unset SESSION_MANAGER
+unset DBUS_SESSION_BUS_ADDRESS
+
+export PULSE_SERVER=127.0.0.1 && pulseaudio --start --disable-shm=1 --exit-idle-time=-1
+
+# Launch Window Manager/Desktop Environment
+bspwm &
+
