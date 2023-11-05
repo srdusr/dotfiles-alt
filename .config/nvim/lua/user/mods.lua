@@ -483,7 +483,7 @@ vim.api.nvim_create_autocmd({ 'VimLeave' }, {
 local modifiedBufs = function(bufs) -- nvim-tree is also there in modified buffers so this function filter it out
   local t = 0
   for k, v in pairs(bufs) do
-    if v.name:match('NvimTree_') == nil then
+    if v.name:match('NvimTree_', 'NvimTree1') == nil then
       t = t + 1
     end
   end
@@ -1039,6 +1039,19 @@ function M.RunCurrentFile()
     cwd = vim.fn.expand('%:p:h'),
   })
 end
+
+--------------------------------------------------
+
+-- Close all floating windows
+vim.api.nvim_create_user_command('CloseFloatingWindows', function(opts)
+  for _, window_id in ipairs(vim.api.nvim_list_wins()) do
+    -- If window is floating
+    if vim.api.nvim_win_get_config(window_id).relative ~= '' then
+      -- Force close if called with !
+      vim.api.nvim_win_close(window_id, opts.bang)
+    end
+  end
+end, { bang = true, nargs = 0 })
 
 --------------------------------------------------
 
