@@ -63,18 +63,18 @@ local modules = {
   'user.keys', -- Keymaps
   'user.mods', -- Modules/functions
   'user.view', -- Colorscheme/UI
+  'plugins.web-devicons',
   'plugins.treesitter',
   'plugins.neodev',
   'plugins.telescope',
   'plugins.nvim-tree',
-  'plugins.web-devicons',
+  'plugins.lsp',
   'plugins.cmp',
   'plugins.quickfix',
   --"plugins.snippets",
   --"plugins.colorizer",
   --"plugins.prettier",
   --"plugins.git",
-  'plugins.lsp',
   --"plugins.fugitive",
   'plugins.gitsigns',
   'plugins.sniprun',
