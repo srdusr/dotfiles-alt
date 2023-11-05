@@ -59,8 +59,8 @@ map('n', '<Leader>m', ':marks<CR>')
 -- Messages
 map('n', '<Leader>M', ':messages<CR>')
 
--- Clear messages or just refresh/redraw the screen
-map('n', '<leader>u', ":echo '' | redraw<CR>")
+--- Clear messages or just refresh/redraw the screen
+map('n', '<leader>i', "<cmd>lua require('notify').dismiss()<CR>")
 
 -- Unsets the 'last search pattern' register by hitting return
 --map("n", "<CR>", "!silent :noh<CR><CR>")
@@ -443,4 +443,7 @@ map('n', '<leader>H', '<CMD>lua require("plugins.hardtime").ToggleHardtime()<CR>
 map('n', '<leader>rr', '<CMD>lua require("user.mods").toggleCodeRunner()<CR>')
 
 -- Run executable file
-map('n', '<leader>rc', ":lua require('user.mods').RunCurrentFile()<CR>:echom 'Running executable file...'<CR>:sl!<CR>:echo ''<CR>")
+map('n', '<leader>rx', ":lua require('user.mods').RunCurrentFile()<CR>:echom 'Running executable file...'<CR>:sl!<CR>:echo ''<CR>")
+
+-- Close all floating windows
+map('n', '<leader>cw', '<CMD>CloseFloatingWindows<CR>')
