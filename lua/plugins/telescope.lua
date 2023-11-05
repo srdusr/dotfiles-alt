@@ -421,52 +421,77 @@ function M.find_books()
   local search_results = vim.fn.systemlist(search_cmd)
 
   local results = {}
-  local recent_books_section = {} -- To store recent books separately
 
-  for _, recent_book in ipairs(recent_books) do
-    table.insert(recent_books_section, 'Recent Books: ' .. recent_book)
+  -- Section for Recent Books
+  table.insert(results, ' Recent Books')
+  for _, recent_book_path in ipairs(recent_books) do
+    local formatted_path = vim.fn.fnameescape(recent_book_path)
+    table.insert(results, formatted_path)
   end
+
+  -- Section for All Books
+  table.insert(results, ' All Books')
+  local directories = {}
+  local files = {}
 
   for _, search_result in ipairs(search_results) do
-    table.insert(results, search_result)
+    if vim.fn.isdirectory(search_result) == 1 then
+      table.insert(directories, search_result)
+    else
+      table.insert(files, search_result)
+    end
   end
 
-  -- Add the recent books section to the results
-  for _, recent_entry in ipairs(recent_books_section) do
-    table.insert(results, recent_entry)
+  table.sort(directories)
+  table.sort(files)
+
+  for _, dir in ipairs(directories) do
+    table.insert(results, dir)
   end
 
-  pickers
-      .new({}, {
-        prompt_title = 'Find Books',
-        finder = finders.new_table({
-          results = results,
-        }),
-        previewer = require('telescope.previewers').vim_buffer_cat.new({}),
-        sorter = config.generic_sorter({}),
-        attach_mappings = function(prompt_bufnr, map)
-          actions_set.select:replace(function()
-            local entry = actions_state.get_selected_entry()
-            if entry ~= nil then
-              local path = entry.value
+  for _, file in ipairs(files) do
+    table.insert(results, file)
+  end
 
-              actions.close(prompt_bufnr, false)
-              -- Determine whether it's a directory or a file
-              local is_directory = vim.fn.isdirectory(path)
+  local picker = pickers.new({}, {
+    prompt_title = 'Find Books',
+    finder = finders.new_table({
+      results = results,
+    }),
+    file_ignore_patterns = {
+      '%.git',
+    },
+    previewer = require('telescope.previewers').vim_buffer_cat.new({}),
+    sorter = config.generic_sorter({}),
+    attach_mappings = function(prompt_bufnr, map)
+      actions_set.select:replace(function()
+        local entry = actions_state.get_selected_entry()
+        if entry ~= nil then
+          local path = entry.value
 
-              if is_directory then
-                -- It's a directory, navigate to it in the current buffer
-                vim.cmd('e ' .. path)
-              else
-                -- It's a file, open it
-                vim.cmd('edit ' .. path)
-              end
+          actions.close(prompt_bufnr, false)
+
+          -- Check if it's under "Recent Books"
+          if path == ' Recent Books' or path == ' All Books' then
+            vim.notify("Cannot select 'All Books'/'Recent Books', please select a book or directory.", vim.log.levels.WARN, { title = 'Find Books' })
+          else
+            -- Determine whether it's a directory or a file
+            local is_directory = vim.fn.isdirectory(path)
+            if is_directory then
+              -- It's a directory, navigate to it in the current buffer
+              vim.cmd('e ' .. path)
+            else
+              -- It's a file, open it
+              vim.cmd('e ' .. path)
             end
-          end)
-          return true
-        end,
-      })
-      :find()
+          end
+        end
+      end)
+      return true
+    end,
+  })
+
+  picker:find()
 end
 
 function M.grep_current_dir()
