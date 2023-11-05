@@ -3,6 +3,8 @@
 	email = trevorgray@srdusr.com
 [init]
 	defaultBranch = main
+[color]
+	ui = true
 [alias]
     graph = log --oneline --graph --decorate
 	ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
@@ -18,3 +20,9 @@
     dotfiles = "!f() { git --git-dir=$HOME/.cfg --work-tree=$HOME stashrebase; }; f"
 
 
+[credential "https://github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
+[credential "https://gist.github.com"]
+	helper = 
+	helper = !/usr/bin/gh auth git-credential
