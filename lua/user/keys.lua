@@ -6,6 +6,7 @@ local map = function(mode, l, r, opts)
   keymap.set(mode, l, r, opts)
 end
 local term_opts = { noremap = true, silent = false }
+local mods = require('user.mods')
 local bufnr = vim.api.nvim_get_current_buf()
 
 -- Semi-colon as leader key
@@ -307,7 +308,6 @@ map('n', '<leader>fz', "<cmd>lua require('fzf-lua').files()<CR>")
 
 -- Nvim-tree
 map('n', '<leader>f', '<cmd>Rooter<CR>:NvimTreeToggle<CR>', {})
-map('n', '<leader>F', ':NvimTreeFindFileToggle<CR>', { noremap = false, silent = true })
 
 -- Undotree
 map('n', '<leader>u', vim.cmd.UndotreeToggle)
@@ -446,4 +446,4 @@ map('n', '<leader>rr', '<CMD>lua require("user.mods").toggleCodeRunner()<CR>')
 map('n', '<leader>rx', ":lua require('user.mods').RunCurrentFile()<CR>:echom 'Running executable file...'<CR>:sl!<CR>:echo ''<CR>")
 
 -- Close all floating windows
-map('n', '<leader>cw', '<CMD>CloseFloatingWindows<CR>')
+map({ 'n', 't', 'c' }, '<leader>w', '<CMD>CloseFloatingWindows<CR>')
