@@ -107,7 +107,8 @@ font-5 = "UbuntuMono Nerd font:size=11;2"
 
 modules-left = sep menu sep close sep minimize sep maximize sep
 modules-center = bspwm
-modules-right = spotify spotify-prev spotify-play-pause spotify-next long-sep dunst search control date sep
+modules-right =  long-sep dunst search control date sep
+;modules-right = spotify spotify-prev spotify-play-pause spotify-next long-sep dunst search control date sep
 
 ;modules-left = sep menu
 ;modules-center = date
