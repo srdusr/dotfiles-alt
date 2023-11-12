@@ -376,8 +376,8 @@ function chpwd() {
 # Call the function to set Git environment variables when the shell starts up
 set_git_env_vars
 
-function gsp
-{
+
+function gsp() {
     # Config file for subtrees
     #
     # Format:
@@ -385,14 +385,19 @@ function gsp
     # # Lines starting with '#' will be ignored
     GIT_SUBTREE_FILE="$PWD/.gitsubtrees"
 
-    if [ ! -f $GIT_SUBTREE_FILE ]; then
-        echo "Nothing to do - file <`basename $GIT_SUBTREE_FILE`> does not exist."
+    if [ ! -f "$GIT_SUBTREE_FILE" ]; then
+        echo "Nothing to do - file <$GIT_SUBTREE_FILE> does not exist."
+        return
+    fi
+
+    if ! command -v config &> /dev/null; then
+        echo "Error: 'config' command not found. Make sure it's available in your PATH."
         return
     fi
 
     OLD_IFS=$IFS
     IFS=$'\n'
-    for LINE in $(cat $GIT_SUBTREE_FILE); do
+    for LINE in $(cat "$GIT_SUBTREE_FILE"); do
 
         # Skip lines starting with '#'.
         if [[ $LINE = \#* ]]; then
@@ -400,14 +405,20 @@ function gsp
         fi
 
         # Parse the current line.
-        PREFIX=`echo $LINE | cut -d';' -f 1`
-        REMOTE=`echo $LINE | cut -d';' -f 2`
-        BRANCH=`echo $LINE | cut -d';' -f 3`
+        PREFIX=$(echo "$LINE" | cut -d';' -f 1)
+        REMOTE=$(echo "$LINE" | cut -d';' -f 2)
+        BRANCH=$(echo "$LINE" | cut -d';' -f 3)
 
-        # Push to the remote.
-        echo "config subtree pull --prefix=$PREFIX $REMOTE $BRANCH"
-        config subtree pull --prefix=$PREFIX $REMOTE $BRANCH
+        # Pull from the remote.
+        echo "Executing: git subtree pull --prefix=$PREFIX $REMOTE $BRANCH"
+        if git subtree pull --prefix="$PREFIX" "$REMOTE" "$BRANCH"; then
+            echo "Subtree pull successful for $PREFIX."
+        else
+            echo "Error: Subtree pull failed for $PREFIX."
+        fi
     done
+
+    IFS=$OLD_IFS
 }
 
 # Print previous command into a file
