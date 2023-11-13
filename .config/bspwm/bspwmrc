@@ -61,7 +61,7 @@ bspc rule -a "https://www.youtube.com - Enhancer for YouTube™ — Mozilla Fire
 bspc rule -a Wezterm state=floating
 bspc rule -a Zathura state=tiled
 
-#eww daemon &
+eww daemon &
 
 # SCRATCHPAD
 bspc rule -a scratchpad sticky=on state=floating
