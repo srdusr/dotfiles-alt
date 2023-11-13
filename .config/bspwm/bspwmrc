@@ -50,6 +50,7 @@ fi
 xfce4-panel --disable-wm-check &
 "$HOME"/.config/polybar/launch.sh &
 
+feh --bg-fill "$HOME"/pictures/wallpapers/national-park.jpg
 dunst &     # notification daemon
 unclutter & # Remove mouse when idle
 nitrogen --force-setter=xinerama --restore &
