@@ -53,7 +53,7 @@ xfce4-panel --disable-wm-check &
 feh --bg-fill "$HOME"/pictures/wallpapers/national-park.jpg
 dunst &     # notification daemon
 unclutter & # Remove mouse when idle
-nitrogen --force-setter=xinerama --restore &
+#nitrogen --force-setter=xinerama --restore &
 #bspc rule -a \* rectangle=680x700+340+40
 bspc rule -a '*:*:Picture-in-Picture' state=floating sticky=on layer=above
 bspc rule -a '*:*:Picture in picture' state=floating sticky=on layer=above
