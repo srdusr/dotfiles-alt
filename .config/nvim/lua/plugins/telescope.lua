@@ -75,6 +75,7 @@ require('telescope').setup({
         ['<C-x>'] = actions.select_horizontal,
         ['<C-y>'] = actions.select_vertical,
         ['<C-t>'] = actions.select_tab,
+        ['<C-c>'] = actions.delete_buffer,
 
         ['<C-u>'] = actions.preview_scrolling_up,
         ['<C-d>'] = actions.preview_scrolling_down,
@@ -110,6 +111,7 @@ require('telescope').setup({
         ['<C-x>'] = actions.select_horizontal,
         ['<C-y>'] = actions.select_vertical,
         ['<C-t>'] = actions.select_tab,
+        ['<C-c>'] = actions.delete_buffer,
 
         ['<Tab>'] = actions.toggle_selection + actions.move_selection_worse,
         ['<S-Tab>'] = actions.toggle_selection + actions.move_selection_better,
