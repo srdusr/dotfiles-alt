@@ -1,5 +1,5 @@
 (defvar appIcons "/usr/share/icons/Papirus-Dark/48x48/apps/")
-(defvar barIcons "/home/srdusr/.local/share/icons/feather-icons/")
+(defvar barIcons "/usr/share/icons/feather-icons/")
 
 (defvar disableBorders false)
 (defvar externalMonitor false)
