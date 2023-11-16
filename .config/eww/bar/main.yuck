@@ -3,7 +3,7 @@
   :geometry (geometry :x -28 :y 0 :anchor "center right")
 (bar))
 
-(defwidget bar []       
+(defwidget bar []
   (box
     :class "bar"
     :orientation "v"
