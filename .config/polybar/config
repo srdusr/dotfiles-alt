@@ -68,7 +68,8 @@ tray-background = ${colors.background}
 ;tray-offset-x = -208
 ;tray-offset-x = -178
 ;tray-offset-x = -183
-tray-offset-x = -188
+;tray-offset-x = -188
+tray-offset-x = -70
 ;tray-offset-x = -210
 tray-offset-y = -0.9
 tray-detached = true
@@ -105,9 +106,9 @@ font-4 = "SF Pro:style=Medium:size=9.5;2"
 ; Font for bspwm/workspaces
 font-5 = "UbuntuMono Nerd font:size=11;2"
 
-modules-left = sep menu sep close sep minimize sep maximize sep
-modules-center = bspwm
-modules-right =  long-sep dunst search control date sep
+modules-left = sep menu sep bspwm
+modules-center = calendar date
+modules-right = sep dunst search control sep
 ;modules-right = spotify spotify-prev spotify-play-pause spotify-next long-sep dunst search control date sep
 
 ;modules-left = sep menu
@@ -130,6 +131,33 @@ override-redirect = true
 
 cursor-click = pointer
 cursor-scroll = ns-resize
+
+;[module/date]
+;type = internal/date
+;interval = 30
+;label =  %time%
+;label-padding = 2
+;label-background =
+;time =  %H:%M
+;time-alt =  %Y-%m-%d
+
+[module/date]
+type = internal/date
+interval = 1
+label = %date%, %time%
+label-padding = 2.5
+label-background =
+date = %a %d %b
+time = %H:%M
+
+[module/calendar]
+type = custom/text
+content = 󰸗
+;content-font = 1
+content-padding = 1
+content-foreground = ${colors.primary}
+enable-click = true
+click-left = ~/.config/eww/scripts/popup calendar &
 
 [module/menu]
 type = custom/text
@@ -280,23 +308,6 @@ tail = true
 format-padding = 1
 
 
-;[module/date]
-;type = internal/date
-;interval = 30
-;label =  %time%
-;label-padding = 2
-;label-background =
-;time =  %H:%M
-;time-alt =  %Y-%m-%d
-
-[module/date]
-type = internal/date
-interval = 1
-label = %date%, %time%
-label-padding = 2.5
-label-background =
-date = %a %d %b
-time = %H:%M
 
 ;[module/powermenu]
 ;type = custom/text
