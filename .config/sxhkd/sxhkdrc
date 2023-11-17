@@ -47,9 +47,13 @@ super + shift + p
 #picom-trans -c -10
 #picom-trans -c +10
 
-# Launch eww
-#super + ctrl + a
-#	~/.config/eww/launch_widgets.sh
+# jgmenu
+super + F2
+  launch-jgmenu
+super + F3
+  launch-jgmenu --checkout=restart
+super + F4
+  launch-jgmenu --checkout=scripts
 
 # Terminal emulator
 #super + Return
