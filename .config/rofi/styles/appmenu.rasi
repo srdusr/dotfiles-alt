@@ -1,83 +1,186 @@
-@import "../colors/simple.rasi"
-
-window {
-    transparency:                   "real";
-    background-color:               @bg;
-    text-color:                     @fg;
-    border:			    0px;
-    border-color:		    @ac;
-    border-radius:                  5px;
-    width:			    40%;
-    height:                         40%;
-    location:                       center;
-    x-offset:                       0;
-    y-offset:                       -100;
-}
-
-prompt {
-    enabled: 			    false;
-}
-
-entry {
-    background-color:               @al;
-    text-color:                     @fg;
-    placeholder-color:              @pg;
-    expand:                         true;
-    horizontal-align:               0;
-    placeholder:                    "Search";
-    padding:                        0.10% 0% 0% 0%;
-    blink:                          false;
-}
-
-inputbar {
-    background-color:               @ac;
-}
-
-listview {
-    background-color:               @al;
-    padding:                        5px;
+configuration {
+    bw:                             0;
     columns:                        1;
-    lines:                          10;
-    spacing:                        0%;
-    cycle:                          true;
-    dynamic:                        true;
-    layout:                         vertical;
+    location: 						0;
+    lines:                          15;
+    padding: 						0;
+    fixed-num-lines: 				true;
+    show-icons: 					true;
+    sidebar-mode: 					false;
+    separator-style: 				"beam";
+    hide-scrollbar: 				false;
+    scroll-method: 					0;
+    click-to-exit: 					true;
+    show-match: 					true;
+    combi-hide-mode-prefix: 		false;
+    display-combi: 					"Combi";
+    display-drun: 					"Start";
+    display-window: 				"Window";
+    display-windowcd: 				"Windowcd";
+    display-run: 					"Commands";
+    display-ssh: 					"Ssh";
+    modi:                           "drun,window,run,ssh,";
+    opacity:                        "0";
+    fake-transparency:              false;
+    kb-row-up:                      "Up,Control+k,Shift+Tab,Shift+ISO_Left_Tab";
+    kb-row-down:                    "Down,Control+j";
+    kb-accept-entry:                "Control+m,Return,KP_Enter";
+    me-select-entry:                "";
+    me-accept-entry:                "MousePrimary";
+    terminal:                       "kitty";
+    kb-remove-to-eol:               "Control+Shift+e";
+    kb-mode-next:                   "Shift+Right,Control+Tab,Control+l";
+    kb-mode-previous:               "Shift+Left,Control+Shift+Tab,Control+h";
+    kb-remove-char-back:            "BackSpace";
+    kb-mode-complete:               "Control+c";
 }
 
-mainbox {
-    background-color:               @al;
-    border:			    0% 0% 0% 0%;
-    border-radius:                  0% 0% 0% 0%;
-    border-color:		    @ac;
-    children:                       [ inputbar, listview ];
-    spacing:                        0%;
-    padding:                        0%;
+* {
+  padding: 0;
+  hide-scrollbar: true;
+  border: 0;
+  width: 15%;
+  columns: 1;
+  background-color: @background;
+  font: "Source Code Pro Semibold 9";
+  spacing: 2;
 }
 
-element {
-    background-color:               @al;
-    text-color:                     @fg;
-    orientation:                    horizontal;
-    border-radius:                  0%;
-    padding:                        1% 0.5% 1% 0.5%;
+#window {
+  background-color: @background;
+  border: 3;
+  border-color: @cyber;
+  padding: 0.5ch;
+  location: northwest;
+  margin: 28px 0 0 8px;
 }
 
-element-icon {
-    size:                           40px;
-    border:                         0px;
+#mainbox {
+  border: 0;
+  border-color: @ac;
+  padding: 0;
 }
 
-element-text {
-    expand:                         true;
-    horizontal-align:               0;
-    vertical-align:                 0.5;
-    margin:                         0% 0.25% 0% 0.25%;
+#message {
+  border: 0px 0px 0px;
+  border-color: @ac;
+  padding: 1px;
 }
 
-element selected {
-    background-color:               @ac;
-    text-color:                     @fg;
-    border:			    0% 0% 0% 0%;
-    border-radius:                  5px;
-    border-color:                   @bg;
+#textbox {
+  text-color: @foreground;
 }
+
+#inputbar {
+  children: [ prompt, textbox-prompt-colon, entry, case-indicator ];
+}
+
+#textbox-prompt-colon {
+  expand: false;
+  str: ":";
+  margin: 0px 0.3em 0em 0em;
+  text-color: inherit;
+}
+
+#listview {
+  fixed-height: 0;
+  border: 0px 0px 0px;
+  border-color: @ac;
+  spacing: 2px;
+  scrollbar: true;
+  padding: 2px 0px 0px;
+}
+
+#element {
+  border: 0;
+  padding: 1px;
+}
+
+#element.normal.normal {
+  background-color: @background;
+  text-color: @foreground;
+}
+
+#element.normal.urgent {
+  background-color: @background;
+  text-color: @red;
+}
+
+#element.normal.active {
+  background-color: @foreground;
+  text-color: @background;
+}
+
+#element.selected.normal {
+  background-color: @foreground;
+  text-color: @black;
+}
+
+#element.selected.urgent {
+  background-color: @foreground;
+  text-color: @black;
+}
+
+#element.selected.active {
+  background-color: @foreground;
+  text-color: @black;
+}
+
+#element.alternate.normal {
+  background-color: @background;
+  text-color: @foreground;
+}
+
+#element.alternate.urgent {
+  background-color: @background;
+  text-color: @foreground;
+}
+
+#element.alternate.active {
+  background-color: @background;
+  text-color: @foreground;
+}
+
+#scrollbar {
+  width: 0px;
+  border: 0;
+  handle-width: 0px;
+  padding: 0;
+}
+
+#sidebar {
+  border: 2px 0px 0px;
+  border-color: @ac;
+}
+
+#button {
+  text-color: @background;
+}
+
+#button.selected {
+  background-color: @ac;
+  text-color: @foreground;
+}
+
+#inputbar {
+  spacing: 0;
+  text-color: @foreground;
+  padding: 1px;
+}
+
+#case-indicator {
+  spacing: 0;
+  text-color: @foreground;
+}
+
+#entry {
+  spacing: 0;
+  text-color: @foreground;
+}
+
+#prompt {
+  spacing: 0;
+  text-color: @foreground;
+}
+
+@import "~/.config/rofi/themes/colors.rasi"
