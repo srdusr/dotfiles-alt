@@ -84,6 +84,7 @@ export HIST_SAVE_NO_DUPS         # Don't write duplicate entries in the history 
 export HIST_REDUCE_BLANKS        # Remove superfluous blanks before recording entry.
 export HIST_VERIFY               # Don't execute immediately upon history expansion.
 export HIST_BEEP                 # Beep when accessing nonexistent history.
+export INC_APPEND_HISTORY
 
 # Customize `ls` colours
 export LSCOLORS=ExGxBxDxCxEgEdxbxgxcxd
