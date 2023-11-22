@@ -49,12 +49,12 @@ if [[ $(xrandr -q | grep 'HDMI-1 connected') ]]; then
 fi
 #xfce4-panel --disable-wm-check &
 "$HOME"/.config/polybar/launch.sh &
-PANEL_HEIGHT=20
-bspc config top_padding "$PANEL_HEIGHT"
-feh --bg-fill "$HOME"/pictures/wallpapers/national-park.jpg
+#PANEL_HEIGHT=20
+#bspc config top_padding "$PANEL_HEIGHT"
+#feh --bg-fill "$HOME"/pictures/wallpapers/national-park.jpg
 dunst &     # notification daemon
 unclutter & # Remove mouse when idle
-#nitrogen --force-setter=xinerama --restore &
+nitrogen --force-setter=xinerama --restore &
 #bspc rule -a \* rectangle=680x700+340+40
 bspc rule -a '*:*:Picture-in-Picture' state=floating sticky=on layer=above
 bspc rule -a '*:*:Picture in picture' state=floating sticky=on layer=above
@@ -84,8 +84,6 @@ pkill mictray
 sleep 2 && nice -n 2 mictray &
 pkill parcellite
 sleep 2 && nice -n 2 parcellite &
-pkill udiskie
-sleep 2 && nice -n 2 udiskie &
 
 # Eww
 pkill eww
@@ -105,4 +103,4 @@ bspc subscribe node_state | while read -r _ _ _ _ state flag; do
     fi
 done &
 
-bspc config external_rules_command ~/.config/bspwm/scripts/external_rules.sh
+#bspc config external_rules_command ~/.config/bspwm/scripts/external_rules.sh
