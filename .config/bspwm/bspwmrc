@@ -4,9 +4,9 @@
 #░█▀▄░▀▀█░█▀▀░█▄█░█░█
 #░▀▀░░▀▀▀░▀░░░▀░▀░▀░▀
 
-#bspc monitor -d 1 2 3 4 5 6 # 7 8 9 10
-bspc monitor LVDS-1 -d 1 2 3 4 5
-bspc monitor HDMI-1 -d 6 7 8 9 0
+bspc monitor -d 1 2 3 4 5 # 7 8 9 10
+#bspc monitor LVDS-1 -d 1 2 3 4 5
+#bspc monitor HDMI-1 -d 6 7 8 9 0
 
 ###---Global Settings---###
 bspc config automatic_scheme alternate
