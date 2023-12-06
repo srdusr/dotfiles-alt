@@ -7,8 +7,7 @@
 xbindkeys -f "$XDG_CONFIG_HOME"/X11/xbindkeysrc
 
 # XKB
-setxkbmap -print | xkbcomp -I$HOME/.config/xkb - $DISPLAY
-
+setxkbmap -print | xkbcomp -I"$HOME"/.config/xkb - "$DISPLAY"
 
 #export XAUTHORITY="$XDG_RUNTIME_DIR/.Xauthority" # This line will break some DMs.
 export USERXSESSION="$XDG_CACHE_HOME/X11/xsession"
@@ -16,8 +15,6 @@ export USERXSESSIONRC="$XDG_CACHE_HOME/X11/xsessionrc"
 export ALTUSERXSESSION="$XDG_CACHE_HOME/X11/Xsession"
 export ERRFILE="$XDG_CACHE_HOME/X11/xsession-errors"
 
-
 if [[ "$(tty)" = "/dev/tty1" ]]; then
-	pgrep bspwm || startx "$XDG_CONFIG_HOME/X11/.xinitrc"
-#	pgrep startxfce4 || startx "$XDG_CONFIG_HOME/X11/.xinitrc"
+    pgrep bspwm || startx "$XDG_CONFIG_HOME/X11/.xinitrc"
 fi
