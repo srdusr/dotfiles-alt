@@ -25,8 +25,7 @@ fi
 [[ -f /etc/profile ]] && source /etc/profile
 
 if [ -f "${XDG_CONFIG_HOME:-$HOME/.config}/X11/.xprofile" ]; then
-	. "${XDG_CONFIG_HOME:-$HOME/.config}/X11/.xprofile"
+    . "${XDG_CONFIG_HOME:-$HOME/.config}/X11/.xprofile"
 else
-	. "$HOME/.xprofile"
+    . "$HOME/.xprofile"
 fi
-
