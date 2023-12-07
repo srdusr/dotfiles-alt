@@ -71,6 +71,9 @@ bspc rule -a scratchpad sticky=on state=floating
 # Heads Up Display (scratchpad)
 bspc rule -a Heads-Up-Display sticky=on state=floating rectangle=360x160+990+40
 
+# Virtual keyboard
+bspc rule -a Onboard sticky=on state=floating rectangle=700x205+480-89
+
 [ "$1" = 0 ] && {
     nm-applet &
     plank &
