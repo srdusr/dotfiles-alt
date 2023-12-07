@@ -96,7 +96,7 @@
   (bar-item
     :icon "power"
     :color "red"
-    :lclick "shut-down"
+    :lclick "~/.config/polybar/scripts/sysmenu.sh"
   )
 )
 
