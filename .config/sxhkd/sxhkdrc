@@ -63,6 +63,10 @@ super + F4
 super + w
 	$BROWSER
 
+# Keyboard
+super + o
+	onboard
+
 # Show clipmenu
 #alt + x
 #    parcellite
