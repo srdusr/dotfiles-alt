@@ -1,13 +1,18 @@
+(defvar eww "$(which eww) -c $HOME/.config/eww")
+
 (defwindow bar
   :monitor 0
-  :geometry (geometry :x -28 :y 0 :anchor "center right")
-(bar))
+  :geometry (geometry :x -10 :y 30 :anchor "top right")
+  :focusable false
+  :stacking "fg"
+  (bar))
 
 (defwidget bar []
   (box
     :class "bar"
     :orientation "v"
     :space-evenly false
+    :width 20
     (bar-group
       ;(bar-item-center-window)
       ;(bar-item-resize-ratio)
