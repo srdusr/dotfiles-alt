@@ -25,7 +25,7 @@ chosen="$(echo -e "$options" | rofi -no-lazy-grab -sep -config "$config_file" -d
 
 case $chosen in
     $shutdown)
-        systemctl poweroff
+        shutdown now
         ;;
     $reboot)
         systemctl reboot
