@@ -56,6 +56,7 @@ $ config checkout
 - tmux
 - tree-sitter
 - vim
+- xqp
 - zsh
 
 ---
