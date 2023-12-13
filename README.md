@@ -56,6 +56,8 @@ $ config checkout
 - tmux
 - tree-sitter
 - vim
+- eww
+- jgmenu
 - xqp
 - zsh
 
