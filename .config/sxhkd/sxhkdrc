@@ -47,13 +47,9 @@ super + shift + p
 #picom-trans -c -10
 #picom-trans -c +10
 
-# jgmenu
-super + F2
-  launch-jgmenu
-super + F3
-  launch-jgmenu --checkout=restart
-super + F4
-  launch-jgmenu --checkout=scripts
+# Right click menu
+~button3
+  xqp 0 $(xdo id -N Bspwm -n root) && jgmenu_run
 
 # Terminal emulator
 #super + Return
