@@ -135,6 +135,11 @@ export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo
 #export PATH="${CARGO_HOME}/bin:${RUSTUP_HOME}/bin:$PATH"
 
 
+# Dotnet
+# Disable telemetry for dotnet apps
+export DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+
 # Java
 #export JAVA_HOME=/usr/lib/jvm/default-java
 #export JAVA_HOME='/usr/lib/jvm/java-8-openjdk'
@@ -151,8 +156,10 @@ export _JAVA_OPTIONS=-Djava.util.prefs.userRoot="$XDG_CONFIG_HOME"/java
 #Windows:
 #set JAVA_OPTS=-XX:+IgnoreUnrecognizedVMOptions --add-modules java.se.ee
 
+
 # Dart/Flutter
 export PATH="/opt/flutter/bin:/usr/lib/dart/bin:$PATH"
+
 
 # Go
 export GO_PATH=${XDG_DATA_HOME}/go
