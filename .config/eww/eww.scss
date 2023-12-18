@@ -177,7 +177,8 @@ calendar:indeterminate {
     color: $fgColor;
 }
 
-@import 'bar/style.scss';
-@import 'dock/style.scss';
-@import 'panel/style.scss';
-@import 'status/style.scss';
+@import 'bar/bar.scss';
+@import 'control/control.scss';
+@import 'dock/dock.scss';
+@import 'panel/panel.scss';
+@import 'status/status.scss';
