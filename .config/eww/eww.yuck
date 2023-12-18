@@ -1,10 +1,10 @@
 (defvar eww "$(which eww) -c $HOME/.config/eww")
 (defvar appIcons "/usr/share/icons/Papirus-Dark/48x48/apps/")
-(defvar barIcons "/home/srdusr/.local/share/icons/feather-icons")
+(defvar controlIcons "/home/srdusr/.local/share/icons/feather-icons")
 
 (defvar disableBorders false)
 (defvar externalMonitor false)
-(defvar focusIsFloaty false)
+(defvar focusIsFloaty true)
 (defvar monocleMode false)
 (defvar ultrawide false)
 (defvar brightness 10)
@@ -17,7 +17,7 @@
 (defwidget icon [name ?color ?size]
   (image
     :image-width {size?:20}
-    :path "${barIcons}/${name}.svg"
+    :path "${controlIcons}/${name}.svg"
     ;:fallback-color "white" ; Add a fallback color here
   )
 )
@@ -49,7 +49,8 @@
   :exclusive false
    (cal))
 
-(include "bar/main.yuck")
-(include "dock/main.yuck")
-(include "panel/main.yuck")
-(include "status/main.yuck")
+(include "bar/bar.yuck")
+(include "control/control.yuck")
+(include "dock/dock.yuck")
+(include "panel/panel.yuck")
+(include "status/status.yuck")
