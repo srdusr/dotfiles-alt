@@ -69,6 +69,8 @@ bspc rule -a '*:*:Picture in picture' state=floating sticky=on layer=above
 bspc rule -a "https://www.youtube.com - Enhancer for YouTube™ — Mozilla Firefox" state=floating sticky=on layer=above
 bspc rule -a Wezterm state=floating
 bspc rule -a Zathura state=tiled
+bspc rule -a Pavucontrol state=floating rectangle=490x260+862+37
+#490x260-9+37
 
 # SCRATCHPAD
 bspc rule -a scratchpad sticky=on state=floating
