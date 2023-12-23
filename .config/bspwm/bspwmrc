@@ -98,6 +98,7 @@ sleep 2 && nice -n 2 parcellite &
 # Eww
 pkill eww
 eww daemon
+pkill hotspots
 hotspots &
 #"$(which eww)" -c "$HOME"/.config/eww --restart open bar &
 
