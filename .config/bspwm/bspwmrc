@@ -63,7 +63,7 @@ nitrogen --force-setter=xinerama --restore &
 #bspc rule -a \* rectangle=680x700+340+40
 bspc rule -a '*:*:Picture-in-Picture' state=floating sticky=on layer=above
 bspc rule -a '*:*:Picture in picture' state=floating sticky=on layer=above
-#bspc rule -a firefox:Toolkit focus=on state=floating sticky=on layer=above rectangle=522x320+830+280
+bspc rule -a firefox:Toolkit focus=on state=floating sticky=on layer=above rectangle=522x320+830+280
 #320x190+1030+480
 #522x316-10+280
 bspc rule -a "https://www.youtube.com - Enhancer for YouTube™ — Mozilla Firefox" state=floating sticky=on layer=above
@@ -100,6 +100,16 @@ pkill eww
 eww daemon
 pkill hotspots
 hotspots &
+pkill logs.sh
+logs.sh
+
+# Kill any existing instances of click_resize.py
+pid=$(pgrep -f "python3 click_resize.py")
+[ "$pid" != "" ] && kill "$pid"
+
+# Run click_resize.py in the background
+nohup env/bin/python3 "$HOME"/.scripts/click_resize.py >/tmp/click_resize.log 2>&1 &
+
 #"$(which eww)" -c "$HOME"/.config/eww --restart open bar &
 
 # Fullscreen
