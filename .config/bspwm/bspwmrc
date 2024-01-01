@@ -44,7 +44,7 @@ bspc config presel_feedback_color "#BF616A"
 # remove all rules first
 bspc rule -r *:*
 
-bspc rule -a Plank layer=above border=off
+#bspc rule -a Plank layer=above border=off
 
 ###---Autostart---####
 pgrep -x sxhkd >/dev/null || sxhkd &
@@ -70,30 +70,40 @@ bspc rule -a "https://www.youtube.com - Enhancer for YouTube™ — Mozilla Fire
 bspc rule -a Wezterm state=floating
 bspc rule -a Zathura state=tiled
 bspc rule -a Pavucontrol state=floating rectangle=490x260+862+37
+bspc rule -a Blueman-manager state=floating rectangle=536x420+818+37
 #490x260-9+37
 
 # SCRATCHPAD
 bspc rule -a scratchpad sticky=on state=floating
 
 # Heads Up Display (scratchpad)
-bspc rule -a Heads-Up-Display sticky=on state=floating rectangle=360x160+990+40
+bspc rule -a heads-up-display sticky=on state=floating rectangle=360x160+990+40
 
 # Virtual keyboard
 bspc rule -a Onboard sticky=on state=floating rectangle=700x205+480-89
 
-[ "$1" = 0 ] && {
-    nm-applet &
-    plank &
-}
+#[ "$1" = 0 ] && {
+#    nm-applet &
+#    #plank &
+#}
 
-pkill xfce4-power-manager
-sleep 1 && nice -n 1 xfce4-power-manager &
-pkill volumeicon
-sleep 2 && nice -n 2 volumeicon &
-pkill mictray
-sleep 2 && nice -n 2 mictray &
-pkill parcellite
-sleep 2 && nice -n 2 parcellite &
+#pkill xfce4-power-manager
+#sleep 1 && nice -n 1 xfce4-power-manager &
+#pkill volumeicon
+#sleep 2 && nice -n 2 volumeicon &
+#pkill mictray
+#sleep 2 && nice -n 2 mictray &
+#pkill parcellite
+#sleep 2 && nice -n 2 parcellite &
+#pkill blueman-manager
+#sleep 2 && nice -n 2 blueman-manager &
+
+if [[ ! $(pidof stalonetray) ]]; then
+    stalonetray &
+    sleep 0.5
+    xdo hide -N stalonetray
+    touch "/tmp/syshide.lock"
+fi
 
 # Eww
 pkill eww
@@ -113,16 +123,16 @@ nohup env/bin/python3 "$HOME"/.scripts/click_resize.py >/tmp/click_resize.log 2>
 #"$(which eww)" -c "$HOME"/.config/eww --restart open bar &
 
 # Fullscreen
-bspc subscribe node_state | while read -r _ _ _ _ state flag; do
-    if [[ "$state" != fullscreen ]]; then continue; fi
-    if [[ "$flag" == on ]]; then
-        xdo lower -N Plank
-        #"$(which eww)" -c "$HOME"/.config/eww close-all
-    else
-        xdo raise -N Plank
-        #"$(which eww)" -c "$HOME"/.config/eww open bar
-    fi
-done &
+#bspc subscribe node_state | while read -r _ _ _ _ state flag; do
+#    if [[ "$state" != fullscreen ]]; then continue; fi
+#    if [[ "$flag" == on ]]; then
+#        xdo lower -N Plank
+#        #"$(which eww)" -c "$HOME"/.config/eww close-all
+#    else
+#        xdo raise -N Plank
+#        #"$(which eww)" -c "$HOME"/.config/eww open bar
+#    fi
+#done &
 
 # Check if title-bar is already running
 if ! pgrep -x "title-bar" >/dev/null; then
