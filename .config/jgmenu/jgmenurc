@@ -1,7 +1,7 @@
 stay_alive           = 1
 tint2_look           = 0
 position_mode        = pointer
-terminal_exec        = xfce4-terminal
+terminal_exec        = wezterm
 terminal_args        = -x
 sub_spacing          = 5
 menu_width           = 200
