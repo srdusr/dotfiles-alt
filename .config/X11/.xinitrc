@@ -13,6 +13,9 @@ if [ -d /etc/X11/xinit/xinitrc.d ]; then
     unset f
 fi
 
+# Keyboard layout
+setxkbmap -model pc105 -layout us -variant qwerty
+
 # xinitrc runs automatically when you run startx.
 
 # There are some small but important commands that need to be run when we start
