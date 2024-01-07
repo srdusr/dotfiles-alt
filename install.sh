@@ -199,6 +199,7 @@ if prompt_user "Do you want to use the directories specified in user-dirs.dirs?"
 
         # Run the function to change directory names
         change_dir_names
+        #xdg-user-dirs-update
     fi
 fi
 
