@@ -4,9 +4,15 @@
 #░█▀▄░▀▀█░█▀▀░█▄█░█░█
 #░▀▀░░▀▀▀░▀░░░▀░▀░▀░▀
 
-#bspc monitor -d 1 2 3 4 5 # 7 8 9 10
-bspc monitor LVDS-1 -d 1 2 3 4 5
-bspc monitor HDMI-1 -d 6 7 8 9 0
+#bspc monitor -d 1 2 3 4 5 # 6 7 8 9 10
+#bspc monitor -d 1 2 3 4 5 6 7 8 9 10
+#bspc monitor LVDS-1 -d 1 2 3 4 5
+#bspc monitor HDMI-1 -d 6 7 8 9 0
+#bspc monitor LVDS-1 -d 󰲡 󰲣 󰲥 󰲧 󰲩
+#bspc monitor HDMI-1 -d 󰲫 󰲭 󰲯 󰲱 󰿭
+bspc monitor -d 󰲡 󰲣 󰲥 󰲧 󰲩 󰲫 󰲭 󰲯 󰲱 󰿭
+#bspc monitor -d ① ② ③ ④ ⑤
+#󰽾
 
 ###---Global Settings---###
 #bspc rule -a '*' --one-shot state=below private=border_width:10
@@ -121,8 +127,8 @@ xdotool search --sync --class Onboard windowunmap --sync %@
 # Eww
 pkill eww
 eww daemon
-pkill hotspots
-hotspots &
+#pkill hotspots
+#hotspots &
 pkill logs.sh
 logs.sh
 
