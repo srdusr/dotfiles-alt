@@ -11,6 +11,7 @@ Critical,^checkout(critical),gtk-dialog-warning
 ^sep()
 
 Terminal,scratchpad,utilities-terminal
+Web-browser,firefox,web-browser
 Neovim,kitty -e nvim,nvim
 Ranger,wezterm -e ranger,stock_folder
 ^sep()
@@ -32,6 +33,11 @@ Desktop 2,bspc node $(slop -f %i) -d 2 --follow &
 Desktop 3,bspc node $(slop -f %i) -d 3 --follow &
 Desktop 4,bspc node $(slop -f %i) -d 4 --follow &
 Desktop 5,bspc node $(slop -f %i) -d 5 --follow &
+Desktop 6,bspc node $(slop -f %i) -d 6 --follow &
+Desktop 7,bspc node $(slop -f %i) -d 7 --follow &
+Desktop 8,bspc node $(slop -f %i) -d 8 --follow &
+Desktop 9,bspc node $(slop -f %i) -d 9 --follow &
+Desktop 10,bspc node $(slop -f %i) -d 10 --follow &
 
 ^tag(exit)
 Suspend,systemctl suspend,system-suspend
@@ -49,4 +55,3 @@ Close eww taskbar,control_box -ewwclose
 Restart BSPWM,control_box -bspres
 Restart SXHKD,control_box -kbres,input-keyboard
 Restart Pipewire,control_box -soundres,audio-speakers
-
