@@ -3,6 +3,7 @@ application/pdf=zathura.desktop;
 image/png=vimiv.desktop
 image/jpeg=vimiv.desktop;
 video/mp4=vlc.desktop;
+video/mkv=vlc.desktop;
 inode/directory=pcmanfm.desktop
 
 [Added Associations]
