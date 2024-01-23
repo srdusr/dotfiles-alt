@@ -16,7 +16,7 @@ Neovim,kitty -e nvim,nvim
 Ranger,wezterm -e ranger,stock_folder
 ^sep()
 
-Lock,betterlockscreen --lock blur,system-lock-screen
+Lock,betterlockscreen --lock,system-lock-screen
 Logout,pkill -KILL -u "$USER" &,system-log-out
 
 Exit,^checkout(exit),exit
