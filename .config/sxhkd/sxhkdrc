@@ -26,7 +26,7 @@ super + a
 
 # lockscreen
 super + Escape
-	betterlockscreen --lock blur
+    betterlockscreen -l
 
 # Program launcher
 super + @space
@@ -70,16 +70,23 @@ super + o
 
 # Screenshots tool (selection)
 ctrl + Print
-	flameshot gui -p ~/pictures/screenshots
+    screenshot crop
 
 # Screenshots tool (screen)
 shift + Print
-	flameshot full -p ~/pictures/screenshots
+    screenshot full
 
 # make sxhkd reload its configuration files:
 super + ctrl + x
 	pkill -USR1 -x sxhkd; dunstify "Sxhkd configuration reloaded"
 
+# Kill window
+ctrl + alt + Escape
+    xkill
+
+# Un/mount drives
+ctrl + alt + {m,u}
+	{_,u}mnt
 
 
 #---------------------------------------------------------------
@@ -293,7 +300,7 @@ XF86MonBrightness{Up,Down}
 	brightnessctl s 5%{+,-}
 
 # Use arrow keys as brightness keys
-alt + {Up,Down}
+alt + {Right,Left}
 	brightnessctl s 5%{+,-}
 
 # Volume control
@@ -301,7 +308,7 @@ XF86Audio{Raise,Lower}Volume
 	pulsemixer --change-volume {+,-}5
 
 # Use arrow keys as volume keys
-alt + {Right,Left}
+alt + {Up,Down}
 	pulsemixer --change-volume {+,-}5
 
 
@@ -369,7 +376,7 @@ super + x
 
 # Heads-Up-Display scratchpad terminal
 super + e
-	~/.scripts/Heads-Up-Display
+	~/.scripts/heads-up-display
 
 # File manager nnn
 super + shift + n
