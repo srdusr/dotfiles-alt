@@ -382,12 +382,14 @@ function ip() {
     network=`current_networkservice`
     networksetup -getinfo $network | grep '^IP address' | awk -F: '{print $2}' | sed 's/ //g'
 }
+
 ssh-create() {
     if [ ! -z "$1" ]; then
         ssh-keygen -f $HOME/.ssh/$1 -t rsa -N '' -C "$1"
         chmod 700 $HOME/.ssh/$1*
     fi
 }
+
 historystat() {
     history 0 | awk '{print $2}' | sort | uniq -c | sort -n -r | head
 }
@@ -395,9 +397,68 @@ historystat() {
 promptspeed() {
     for i in $(seq 1 10); do /usr/bin/time zsh -i -c exit; done
 }
-matrix () {
+
+#matrix () {
+#    local lines=$(tput lines)
+#    cols=$(tput cols)
+#
+#    awkscript='
+#    {
+#        letters="abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789@#$%^&*()"
+#        lines=$1
+#        random_col=$3
+#        c=$4
+#        letter=substr(letters,c,1)
+#        cols[random_col]=0;
+#        for (col in cols) {
+#            line=cols[col];
+#            cols[col]=cols[col]+1;
+#            printf "\033[%s;%sH\033[2;32m%s", line, col, letter;
+#            printf "\033[%s;%sH\033[1;37m%s\033[0;0H", cols[col], col, letter;
+#            if (cols[col] >= lines) {
+#                cols[col]=0;
+#            }
+#        }
+#    }
+#    '
+#
+#    echo -e "\e[1;40m"
+#    clear
+#
+#    while :; do
+#        echo $lines $cols $(( $RANDOM % $cols)) $(( $RANDOM % 72 ))
+#        sleep 0.05
+#    done | awk "$awkscript"
+#}
+
+matrix() {
     local lines=$(tput lines)
     cols=$(tput cols)
+
+    # Check if tmux is available
+    if command -v tmux > /dev/null; then
+        # Save the current status setting
+        local status_setting=$(tmux show -g -w -v status)
+
+        # Turn off tmux status
+        tmux set -g status off
+    else
+        echo "tmux is not available. Exiting."
+        return 1
+    fi
+
+    # Function to restore terminal state
+    restore_terminal() {
+        # Clear the screen
+        clear
+
+        # Bring back tmux status to its original setting
+        if command -v tmux > /dev/null; then
+            tmux set -g status "$status_setting"
+        fi
+    }
+
+    trap 'restore_terminal' INT
 
     awkscript='
     {
@@ -415,17 +476,20 @@ matrix () {
             if (cols[col] >= lines) {
                 cols[col]=0;
             }
+        }
     }
-}
-'
+    '
 
-echo -e "\e[1;40m"
-clear
+    echo -e "\e[1;40m"
+    clear
 
-while :; do
-    echo $lines $cols $(( $RANDOM % $cols)) $(( $RANDOM % 72 ))
-    sleep 0.05
-done | awk "$awkscript"
+    while :; do
+        echo $lines $cols $(( $RANDOM % $cols)) $(( $RANDOM % 72 ))
+        sleep 0.05
+    done | awk "$awkscript"
+
+    # Restore terminal state
+    restore_terminal
 }
 # Follow this page to avoid enter password
 # http://apple.stackexchange.com/questions/236806/prevent-networksetup-from-asking-for-password
@@ -605,5 +669,7 @@ extract () {
 }
 
 ports() {
-    sudo netstat -tulpn | grep LISTEN | fzf;
+    local result
+    result=$(sudo netstat -tulpn | grep LISTEN)
+    echo "$result" | fzf
 }
