@@ -1,5 +1,5 @@
 # Load local/system wide binaries and scripts
-export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.scripts:/usr/local/bin:/sbin:/usr/sbin:$PATH
+export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.scripts:$HOME/.scripts/test:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
 # Skip the not really helpful global compinit
@@ -57,6 +57,9 @@ export READER="zathura"
 export BROWSER="firefox"
 export OPENER="xdg-open"
 #export MANPAGER="echo \$EDITOR +Man!"
+export MANPAGER="$EDITOR +Man!"
+#export MANPAGER="less -R --use-color -Dd+r -Du+b"
+#export MANPAGER='nvim +Man!'
 export SUDO_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
 export PAGER="less"
 export FAQ_STYLE='github'
@@ -128,15 +131,21 @@ export PATH=$ANDROID_SDK_ROOT:$PATH
 # Rust
 export RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup
 export CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo
+export PATH="${CARGO_HOME}/bin:${RUSTUP_HOME}/bin:$PATH"
+#export PATH="$PATH:$CARGO_HOME/bin"
 #[[ -d $CARGO_HOME/bin ]] && path=($CARGO_HOME/bin $path)
 #if which rustc > /dev/null; then export RUST_BACKTRACE=1; fi
 #export PATH="$HOME/.cargo/bin:$PATH"
 #export CARGO_HOME=${XDG_DATA_HOME}/cargo
 #export RUSTUP_HOME=${XDG_DATA_HOME}/rustup
-#export PATH="${CARGO_HOME}/bin:${RUSTUP_HOME}/bin:$PATH"
 
 
 # Dotnet
+# # Currently dotnet does not support XDG ( https://github.com/dotnet/sdk/issues/10390 )
+#export DOTNET_TOOLS_DIR="$HOME/.dotnet/tools"
+export DOTNET_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/dotnet
+export PATH="$PATH":"$DOTNET_HOME"/tools
+export DOTNET_ROOT=/opt/dotnet
 # Disable telemetry for dotnet apps
 export DOTNET_CLI_TELEMETRY_OPTOUT=1
 
@@ -164,6 +173,7 @@ export PATH="/opt/flutter/bin:/usr/lib/dart/bin:$PATH"
 
 # Go
 export GO_PATH=${XDG_DATA_HOME}/go
+export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
 
 
 # Javascript
@@ -207,10 +217,15 @@ export GEM_HOME="$XDG_DATA_HOME/ruby/gems"
 #    pyenv $@
 #  }
 #fi
-export WORKON_HOME="$XDG_DATA_HOME/virtualenvs"
+#export WORKON_HOME="$XDG_DATA_HOME/virtualenvs"
+export WORKON_HOME=$HOME/.virtualenvs
+export VIRTUALENVWRAPPER_PYTHON=`which python3`
+export VIRTUALENVWRAPPER_VIRTUALENV=`which virtualenv`
+#source /usr/local/bin/virtualenvwrapper.sh
+source $(which virtualenvwrapper.sh)
+export VIRTUAL_ENV_DISABLE_PROMPT=false
 export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
 export IPYTHONDIR="$XDG_CONFIG_HOME/jupyter"
-export VIRTUAL_ENV_DISABLE_PROMPT=true
 
 # PHP
 PATH="$HOME/.config/composer/vendor/bin:$PATH"
@@ -235,6 +250,8 @@ export PATH=$PATH:/usr/local/luarocks/bin
 
 # Program settings
 #export MOZ_USE_XINPUT2="1"		# Mozilla smooth scrolling/touchpads.
+# Pixel-perfect Firefox touchpad scrolling
+export MOZ_USE_XINPUT2=1
 
 
 # Scaling
