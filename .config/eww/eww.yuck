@@ -1,56 +1,23 @@
-(defvar eww "$(which eww) -c $HOME/.config/eww")
-(defvar appIcons "/usr/share/icons/Papirus-Dark/48x48/apps/")
-(defvar controlIcons "/home/srdusr/.local/share/icons/feather-icons")
+(include "./src/yuck/_variables.yuck")
+(include "./src/yuck/_modules.yuck")
 
-(defvar disableBorders false)
-(defvar externalMonitor false)
-(defvar focusIsFloaty true)
-(defvar monocleMode false)
-(defvar ultrawide false)
-(defvar brightness 10)
-(defvar nightlight 0)
-(defvar volume 10)
+(include "./src/yuck/bar/_widgets.yuck")
+(include "./src/yuck/bar/_windows.yuck")
 
-(defpoll date :interval "1m" "date '+%B %d'")
-(defpoll time :interval "2s" "date '+%H:%M'")
+(include "./src/yuck/control-center/_widgets.yuck")
+(include "./src/yuck/control-center/_windows.yuck")
 
-(defwidget icon [name ?color ?size]
-  (image
-    :image-width {size?:20}
-    :path "${controlIcons}/${name}.svg"
-    ;:fallback-color "white" ; Add a fallback color here
-  )
-)
+(include "./src/yuck/exitscreen/_widgets.yuck")
+(include "./src/yuck/exitscreen/_windows.yuck")
 
-;; Calendar Widgets ;;
-(defwidget cal []
-  (eventbox
-   :onhoverlost "${eww} close calendar"
-	(box :class "cal-box"
-		 :orientation "v"
-	(box :class "cal-inner-box"
-	(calendar :class "cal"
-			  :day calendar_day
-			  :month calendar_month
-			  :year calendar_year)))))
-(defpoll calendar_day :interval "10h"
-    "date '+%d'")
-(defpoll calendar_month :interval "10h" "~/.config/eww/scripts/calendar")
-(defpoll calendar_year :interval "10h" "date '+%Y'")
+(include "./src/yuck/info-center/_widgets.yuck")
+(include "./src/yuck/info-center/_windows.yuck")
 
-(defwindow calendar
-  :monitor 0
-  :geometry (geometry :x "0"
-                      :y "30px"
-                      :width "13%"
-                      :height "30px"
-                      :anchor "top center")
-  :stacking "fg"
-  :exclusive false
-   (cal))
+(include "./src/yuck/lockscreen/_widgets.yuck")
+(include "./src/yuck/lockscreen/_windows.yuck")
 
-(include "bar/bar.yuck")
-(include "control/control.yuck")
-(include "dock/dock.yuck")
-(include "panel/panel.yuck")
-(include "status/status.yuck")
+(include "./src/yuck/notification-center/_widgets.yuck")
+(include "./src/yuck/notification-center/_windows.yuck")
+
+(include "./src/yuck/notification-popup/_widgets.yuck")
+(include "./src/yuck/notification-popup/_windows.yuck")
