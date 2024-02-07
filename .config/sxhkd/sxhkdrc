@@ -128,7 +128,7 @@ super + g
 
 # Floating into monocle layout
 super + shift + m
-	bspc node -t pseudo_tiled; bspc node -t floating && wtp 10 40 1342 716 "$(pfw)"
+    bspc node -t pseudo_tiled; bspc node -t floating && wtp 5 40 $(($(bspc query -T -m | jq '.rectangle.width') * 98.9 / 100)) $(($(($(bspc query -T -m | jq '.rectangle.height') - $(bspc config top_padding))) * 97 / 100)) "$(pfw)"
 
 # Set the window state
 super + {t,shift + t,s}
