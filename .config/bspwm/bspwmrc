@@ -80,7 +80,7 @@ rule '*' --one-shot state=floating rectangle=50x50+0+50
 #rule \* rectangle=680x700+340+40
 rule '*:*:Picture-in-Picture' state=floating sticky=on layer=above
 rule '*:*:Picture in picture' state=floating sticky=on layer=above
-rule firefox:Toolkit focus=on state=floating sticky=on layer=above rectangle=522x320+830+280 #320x190+1030+480 #522x316-10+280
+rule firefox:Toolkit focus=on state=floating sticky=on layer=above rectangle=400x280+955+475 #320x190+1030+480 #522x316-10+280
 rule "https://www.youtube.com - Enhancer for YouTube™ — Mozilla Firefox" state=floating sticky=on layer=above
 rule Wezterm state=floating
 rule Zathura state=tiled
@@ -90,8 +90,13 @@ rule scratchpad sticky=on state=floating # SCRATCHPAD
 rule heads-up-display sticky=on state=floating rectangle=360x160+990+40 # Heads Up Display (scratchpad)
 rule Onboard sticky=on state=floating rectangle=700x205+480-89 # Virtual keyboard
 rule Plank layer=above border=off
+rule Protonvpn state=floating
 rule firefox desktop='^1'
-rule Spotify desktop='^5'
+#rule Spotify desktop='^5'
+#rule "Spotify (ad-block)" desktop='^5'
+#bspc rule -a Spotify:spotify desktop='^󰲥' state=tiled
+#bspc rule -a '*:spotify' desktop='^3' state=tiled
+
 
 # ##############################################################################
 # #                                AUTOSTART APPS                              #
@@ -103,7 +108,7 @@ picom -b --experimental-backends &
 #xfce4-panel --disable-wm-check &
 "$HOME"/.config/polybar/launch.sh &
 dunst &     # notification daemon
-unclutter & # Remove mouse when idle
+run_once unclutter & # Remove mouse when idle
 nitrogen --force-setter=xinerama --restore &
 "$HOME"/.scripts/lockscreen-wallpaper &
 xss-lock -- betterlockscreen -l &
@@ -135,8 +140,7 @@ deactivate
 
 #wmname LG3D # Fixes Java applications
 #export QT_QPA_PLATFORMTHEME="qt5ct" # Use qt5ct to set Qt theme
-pkill low-bat-notifier
-low-bat-notifier &
+run_once low-bat-notifier &
 pkill plank.sh
 plank.sh &
 #run_once signal-desktop --start-in-tray & #--use-tray-icon
@@ -236,4 +240,4 @@ if ! pgrep -x "title-bar" >/dev/null; then
     fi
 fi
 
-#config external_rules_command ~/.config/bspwm/scripts/external_rules.sh
+config external_rules_command ~/.config/bspwm/scripts/external_rules.sh
