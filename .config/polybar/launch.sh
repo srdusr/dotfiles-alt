@@ -8,16 +8,16 @@ while pgrep -u "$UID" -x polybar >/dev/null; do sleep 1; done
 
 
 # Launch bar
-polybar main-0 &
-#polybar main-1 &
-#polybar main-2 &
-#polybar main-3 &
-#polybar main-4 &
-#polybar main-5 &
+#polybar main-0 &
+polybar main-1 &
+polybar main-2 &
+polybar main-3 &
+polybar main-4 &
+polybar main-5 &
 
 # Define bars per monitors
-declare -A ARRANGEMENTS=(["$mainmonitor"]="main-0" ["$secondmonitor"]="main-0")
-#declare -A ARRANGEMENTS=(["$mainmonitor"]="main-1,main-2,main-3,main-4,main-5" ["$secondmonitor"]="main-1,main-2,main-3,main-4,main-5")
+#declare -A ARRANGEMENTS=(["$mainmonitor"]="main-0" ["$secondmonitor"]="main-0")
+declare -A ARRANGEMENTS=(["$mainmonitor"]="main-1,main-2,main-3,main-4,main-5" ["$secondmonitor"]="main-1,main-2,main-3,main-4,main-5")
 
 # Each key
 for MONITOR in "${!ARRANGEMENTS[@]}"; do
