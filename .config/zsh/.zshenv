@@ -100,6 +100,7 @@ export VSCODE_PORTABLE="$XDG_DATA_HOME/vscode"
 export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
 export PATH="/usr/bin/cmake:$PATH"
 export PATH=$PATH:/opt/google/chrome
+export DISCORD_USER_DATA_DIR="$XDG_DATA_HOME"
 
 # Manage Arch linux build sources
 export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
@@ -144,6 +145,8 @@ export PATH="${CARGO_HOME}/bin:${RUSTUP_HOME}/bin:$PATH"
 # # Currently dotnet does not support XDG ( https://github.com/dotnet/sdk/issues/10390 )
 #export DOTNET_TOOLS_DIR="$HOME/.dotnet/tools"
 export DOTNET_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/dotnet
+export DOTNET_CLI_HOME="$XDG_CONFIG_HOME/dotnet"
+#mkdir -p "$DOTNET_CLI_HOME";
 export PATH="$PATH":"$DOTNET_HOME"/tools
 export DOTNET_ROOT=/opt/dotnet
 # Disable telemetry for dotnet apps
