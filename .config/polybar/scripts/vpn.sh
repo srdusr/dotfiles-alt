@@ -1,13 +1,21 @@
 #!/bin/sh
 
-country=$(protonvpn s | grep Country)
-connection=$(pgrep -a openvpn$ | head -n 1 | awk '{print $NF }' | cut -d '.' -f 1)
+# Set a default message
+default_message=" vpn"
 
-if [ "$connection" != "" ]; then
+# Check if Protonvpn service is running
+if pgrep -x "openvpn" >/dev/null; then
+    # If Protonvpn service is running, get the country
+    country=$(protonvpn s | grep Country)
+    # Extract the connection ID
+    connection=$(pgrep -a openvpn$ | head -n 1 | awk '{print $NF }' | cut -d '.' -f 1)
+    # Output vpn status with the country if connected
     echo " vpn" #"$country"
 else
-    echo " vpn"
+    # If Protonvpn service is not running, output default message
+    echo "$default_message"
 fi
+
 #
 #proton_status=$(protonvpn s)
 #current_status=$(protonvpn s | wc -l)
