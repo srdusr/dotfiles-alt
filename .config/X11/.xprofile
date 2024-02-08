@@ -3,6 +3,10 @@
 # Xresources
 [[ -f ~/.config/X11/.Xresources ]] && xrdb -merge ~/.config/X11/.Xresources
 
+#Xset
+xset r rate 150 50
+#xset r rate 290 70
+
 # Xbindkeys
 xbindkeys -f "$XDG_CONFIG_HOME"/X11/xbindkeysrc
 
