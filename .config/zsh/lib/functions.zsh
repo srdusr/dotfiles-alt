@@ -673,3 +673,84 @@ ports() {
     result=$(sudo netstat -tulpn | grep LISTEN)
     echo "$result" | fzf
 }
+
+trash() {
+    case "$1" in
+        --list)
+            ls -A1 ~/.local/share/Trash/files/
+            ;;
+        --empty)
+            ls -A1 ~/.local/share/Trash/files/ && \rm -rfv ~/.local/share/Trash/files/*
+            ;;
+        --restore)
+            gio trash --restore "$(gio trash --list | fzf | cut -f 1)"
+            ;;
+        --delete)
+            trash_files=$(ls -A ~/.local/share/Trash/files/ | fzf --multi); echo $trash_files | xargs -I {} rm -rf ~/.local/share/Trash/files/{}
+            ;;
+        *)
+            gio trash "$@"
+            ;;
+    esac
+}
+
+# Git
+# No arguments: `git status`
+# With arguments: acts like `git`
+g() {
+    if [ $# -gt 0 ]; then
+        git "$@"           # If arguments are provided, pass them to git
+    else
+        git status        # Otherwise, show git status
+    fi
+}
+
+# Complete g like git
+compdef g=git
+
+# Define functions for common Git commands
+ga() { g add "$@"; }                   # ga: Add files to the staging area
+gaw() { g add -A && g diff --cached -w | g apply --cached -R; }   # gaw: Add all changes to the staging area and unstage whitespace changes
+gb() { g branch "$@"; }                # gb: List branches
+gbl() { g branch -l "$@"; }            # gbl: List local branches
+gbD() { g branch -D "$@"; }            # gbD: Delete a branch
+gbu() { g branch -u "$@"; }            # gbu: Set upstream branch
+gc() { g commit "$@"; }                # gc: Commit changes
+gca() { g commit -a "$@"; }            # gca: Commit all changes
+gcaa() { g commit -a --amend "$@"; }   # gcaa: Amend the last commit
+gcam() { g commit -a -m "$@"; }        # gcam: Commit all changes with a message
+gce() { g commit -e "$@"; }            # gce: Commit with message and allow editing
+gcfu() { g commit --fixup "$@"; }      # gcfu: Commit fixes in the context of the previous commit
+gcm() { g commit -m "$@"; }            # gcm: Commit with a message
+gco() { g checkout "$@"; }             # gco: Checkout a branch or file
+gcob() { g checkout -b "$@"; }         # gcob: Checkout a new branch
+gcoB() { g checkout -B "$@"; }         # gcoB: Checkout a new branch, even if it exists
+gcp() { g cherry-pick "$@"; }          # gcp: Cherry-pick a commit
+gcpc() { g cherry-pick --continue "$@"; }  # gcpc: Continue cherry-picking after resolving conflicts
+gd() { g diff "$@"; }                  # gd: Show changes
+gd^() { g diff HEAD^ HEAD "$@"; }      # gd^: Show changes between HEAD^ and HEAD
+gds() { g diff --staged "$@"; }        # gds: Show staged changes
+gl() { g lg "$@"; }                    # gl: Show a customized log
+glg() { g log --graph --decorate --all "$@"; }   # glg: Show a customized log with graph
+gdc() { g diff --cached "$@"; }        # gdc: Show changes between the working directory and the index
+gpom() { g push origin master "$@"; }  # gpom: Push changes to origin master
+gr() { g remote "$@"; }                # gr: Show remote
+gra() { g rebase --abort "$@"; }       # gra: Abort a rebase
+grb() { g rebase --committer-date-is-author-date "$@"; }   # grb: Rebase with the author date preserved
+grbom() { grb --onto master "$@"; }    # grbom: Rebase onto master
+grbasi() { g rebase --autosquash --interactive "$@"; }    # grbasi: Interactive rebase with autosquash
+grc() { g rebase --continue "$@"; }    # grc: Continue a rebase
+grs() { g restore --staged "$@"; }     # grs: Restore changes staged for the next commit
+grv() { g remote -v "$@"; }            # grv: Show remote URLs after each name
+grh() { g reset --hard "$@"; }         # grh: Reset the repository and the working directory
+grH() { g reset HEAD "$@"; }           # grH: Reset the index but not the working directory
+grH^() { g reset HEAD^ "$@"; }         # grH^: Reset the index and working directory to the state of the HEAD's first parent
+gs() { g status -sb "$@"; }            # gs: Show the status of the working directory and the index
+gsd() { g stash drop "$@"; }           # gsd: Drop a stash
+gsl() { g stash list --date=relative "$@"; }   # gsl: List all stashes
+gsp() { g stash pop "$@"; }            # gsp: Apply and remove a single stash
+gss() { g stash show "$@"; }           # gss: Show changes recorded in the stash as a diff
+gst() { g status "$@"; }               # gst: Show the status of the working directory and the index
+gsu() { g standup "$@"; }              # gsu: Customized standup command
+gforgotrecursive() { g submodule update --init --recursive --remote "$@"; }   # gforgotrecursive: Update submodules recursively
+gfp() { g commit --amend --no-edit && g push --force-with-lease "$@"; }      # gfp: Amending the last commit and force-pushing
