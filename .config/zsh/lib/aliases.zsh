@@ -17,7 +17,10 @@ fi
 alias mv='mv -i'
 alias cp='cp -i'
 alias ln='ln -i'
-alias rm='rm -i'
+
+# Disable 'rm'
+alias rm='function _rm() { echo -e "\033[0;31mrm\033[0m is disabled, use \033[0;32mtrash\033[0m or \033[0;32mdel \033[0m\033[0;33m$1\033[0m"; }; _rm'
+alias del='command rm'
 
 alias ls='ls --color=auto --group-directories-first'
 alias lsd="lsd --group-directories-first"
@@ -47,7 +50,6 @@ alias suspend='systemctl suspend' # Suspend(sleep) and lock screen if using syst
 alias hibernate='systemctl hibernate' # Hibernate
 alias lock='DISPLAY=:0 xautolock -locknow' # Lock my workstation screen from my phone
 alias oports="sudo lsof -i -P -n | grep -i 'listen'" # List open ports
-alias trash_restore='gio trash --restore "$(gio trash --list | fzf | cut -f 1)"'
 alias keyname="xev | sed -n 's/[ ]*state.* \([^ ]*\)).*/\1/p'"
 alias wget=wget --hsts-file="$XDG_CACHE_HOME/wget-hsts" # wget does not support environment variables
 alias pp='getlast 2>&1 |&tee -a output.txt'
@@ -57,8 +59,15 @@ alias py='python'
 alias py3='python3'
 alias sha256='shasum -a 256'
 alias rgf='rg -F'
+alias weather='curl wttr.in/durban'
+alias wifi='nmcli dev wifi show-password'
+alias ddg='w3m lite.duckduckgo.com'
+alias rss='newsboat'
+alias vpn='protonvpn'
+alias yt-dl="yt-dlp -f 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/mp4' --restrict-filename"
 
 # Time aliases
+alias utc='TZ=Africa/Johannesburg date'
 alias ber='TZ=Europe/Berlin date'
 alias nyc='TZ=America/New_York date'
 alias sfo='TZ=America/Los_Angeles date'
