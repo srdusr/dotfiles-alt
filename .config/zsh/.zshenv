@@ -50,18 +50,32 @@ done
 
 # Default Programs:
 export EDITOR=$(command -v nvim || echo "vim")
+#if command -v nvim &> /dev/null; then
+#  export EDITOR=nvim
+#else
+#  export EDITOR=vim
+#fi
 export VISUAL=$EDITOR
 export COLORTERM="truecolor"
 export TERM="xterm-256color"
 export READER="zathura"
 export BROWSER="firefox"
 export OPENER="xdg-open"
-#export MANPAGER="echo \$EDITOR +Man!"
-export MANPAGER="$EDITOR +Man!"
-#export MANPAGER="less -R --use-color -Dd+r -Du+b"
-#export MANPAGER='nvim +Man!'
-export SUDO_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
+#export MANPAGER="$EDITOR +Man!"
+#if [ "$EDITOR" = "nvim" ]; then
+if command -v nvim &> /dev/null; then
+    #export MANPAGER="sh -c 'col -b | nvim -c \"set ft=man ts=8 nomod nolist nonu noma\" -c \"autocmd VimEnter * call feedkeys(\\\"q\\\")\" -'"
+    export MANPAGER="sh -c 'col -b | nvim -c \"set ft=man ts=8 nomod nolist nonu noma\" -c \"autocmd VimEnter * call feedkeys(\\\"\\<CR>q\\\")\" -'"
+    #export MANPAGER="$nvim --clean -n -i NONE -u NORC -c 'colorscheme desert' -c 'highlight Normal ctermbg=NONE guibg=NONE' +Man\!"
+else
+    export MANPAGER="bat"
+    #export MANPAGER="less -R --use-color -Dd+r -Du+b"
+    #export MANPAGER="sh -c 'col -bx | bat -l man -p --pager \"less -R\"'"
+fi
+export MANROFFOPT="-c"
 export PAGER="less"
+export GIT_EDITOR="$EDITOR"
+export SUDO_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
 export FAQ_STYLE='github'
 export VIDEO="vlc"
 export IMAGE="sxiv"
@@ -101,6 +115,7 @@ export GTK2_RC_FILES="$XDG_CONFIG_HOME/gtk-2.0/gtkrc"
 export PATH="/usr/bin/cmake:$PATH"
 export PATH=$PATH:/opt/google/chrome
 export DISCORD_USER_DATA_DIR="$XDG_DATA_HOME"
+export LYNX_CFG="$XDG_CONFIG_HOME/.lynxrc"
 
 # Manage Arch linux build sources
 export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
