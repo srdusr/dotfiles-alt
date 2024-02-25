@@ -45,7 +45,8 @@ alias 9="cd +9"
 
 alias sudo='sudo ' # zsh: elligible for alias expansion/fix syntax highlight
 alias sedit='sudoedit'
-alias se ='sudoedit'
+alias se='sudoedit'
+
 alias sc="systemctl"
 alias jc="journalctl xe"
 #alias suspend='systemctl suspend && betterlockscreen -l' # Suspend(sleep) and lock screen if using systemctl
