@@ -144,6 +144,18 @@ reposize() {
 -echo() {
     "$@" &> /dev/null & disown
 }
+
+# Reload shell
+function reload() {
+    local compdump_files="$ZDOTDIR/.zcompdump*"
+
+    if ls $compdump_files &> /dev/null; then
+        rm -f $compdump_files
+    fi
+
+    exec $SHELL -l
+}
+
 #pom() {
 #    local -r HOURS=${1:?}
 #    local -r MINUTES=${2:-0}
@@ -347,24 +359,6 @@ fpdf() {
 fepub() {
     result=$(find -type f -name '*.epub' | fzf --bind "ctrl-r:reload(find -type f -name '*.epub')")
     [ -n "$result" ] && nohup zathura "$result" &> /dev/null & disown
-}
-
-# Open freemind mindmap
-fmind() {
-    local folders=("$CLOUD/knowledge_base" "$WORKSPACE/alexandria")
-
-    files=""
-    for root in ${folders[@]}; do
-        files="$files $(find $root -name '*.mm')"
-    done
-    result=$(echo "$files" | fzf -m --height 60% --border sharp | tr -s "\n" " ")
-    [ -n "$result" ] && nohup freemind $(echo $result) &> /dev/null & disown
-}
-
-# List tracking spreadsheets (productivity, money ...)
-ftrack() {
-    file=$(ls $CLOUD/tracking/**/*.{ods,csv} | fzf) || return
-    [ -n "$file" ] && libreoffice "$file" &> /dev/null &
 }
 
 # Search and find directories in the dir stack
@@ -695,6 +689,26 @@ trash() {
 }
 
 # Git
+## Use gh instead of git (fast GitHub command line client).
+#if type gh >/dev/null; then
+#  alias git=gh
+#  if type compdef >/dev/null 2>/dev/null; then
+#     compdef gh=git
+#  fi
+#fi
+#check_gh_installed() {
+#    if command -v gh &> /dev/null; then
+#        return 0  # gh is installed
+#    else
+#        return 1  # gh is not installed
+#    fi
+#}
+#
+## Set alias for git to gh if gh is installed
+#if check_gh_installed; then
+#    alias git=gh
+#fi
+
 # No arguments: `git status`
 # With arguments: acts like `git`
 g() {
@@ -715,13 +729,14 @@ gb() { g branch "$@"; }                # gb: List branches
 gbl() { g branch -l "$@"; }            # gbl: List local branches
 gbD() { g branch -D "$@"; }            # gbD: Delete a branch
 gbu() { g branch -u "$@"; }            # gbu: Set upstream branch
+ge() { g clone "$@"; }
 gc() { g commit "$@"; }                # gc: Commit changes
+gcm() { g commit -m "$@"; }            # gcm: Commit with a message
 gca() { g commit -a "$@"; }            # gca: Commit all changes
 gcaa() { g commit -a --amend "$@"; }   # gcaa: Amend the last commit
 gcam() { g commit -a -m "$@"; }        # gcam: Commit all changes with a message
 gce() { g commit -e "$@"; }            # gce: Commit with message and allow editing
 gcfu() { g commit --fixup "$@"; }      # gcfu: Commit fixes in the context of the previous commit
-gcm() { g commit -m "$@"; }            # gcm: Commit with a message
 gco() { g checkout "$@"; }             # gco: Checkout a branch or file
 gcob() { g checkout -b "$@"; }         # gcob: Checkout a new branch
 gcoB() { g checkout -B "$@"; }         # gcoB: Checkout a new branch, even if it exists
@@ -732,8 +747,15 @@ gd^() { g diff HEAD^ HEAD "$@"; }      # gd^: Show changes between HEAD^ and HEA
 gds() { g diff --staged "$@"; }        # gds: Show staged changes
 gl() { g lg "$@"; }                    # gl: Show a customized log
 glg() { g log --graph --decorate --all "$@"; }   # glg: Show a customized log with graph
+gls() {                                # Query `glog` with regex query.
+  query="$1"
+  shift
+  glog --pickaxe-regex "-S$query" "$@"
+}
 gdc() { g diff --cached "$@"; }        # gdc: Show changes between the working directory and the index
-gpom() { g push origin master "$@"; }  # gpom: Push changes to origin master
+gu() { g pull "$@"}                    # gu: Pull
+gp() { g push "$@"}                    # gp: Push
+gpom() { g push origin main "$@"; }  # gpom: Push changes to origin main
 gr() { g remote "$@"; }                # gr: Show remote
 gra() { g rebase --abort "$@"; }       # gra: Abort a rebase
 grb() { g rebase --committer-date-is-author-date "$@"; }   # grb: Rebase with the author date preserved
