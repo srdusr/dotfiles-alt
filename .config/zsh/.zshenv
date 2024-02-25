@@ -121,8 +121,8 @@ export LYNX_CFG="$XDG_CONFIG_HOME/.lynxrc"
 export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
 
 # GnuPG
-export GPG_TTY=$(tty)
-export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
+#export GPG_TTY=$(tty)
+#export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
 
 # Fzf
 export PATH="$PATH:/usr/local/bin/fzf/bin"
