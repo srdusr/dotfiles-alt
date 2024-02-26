@@ -20,8 +20,10 @@ else
 fi
 
 # Tmux default session
-if command -v tmux &> /dev/null && [ -n "$PS1" ] && [[ ! "$TERM" =~ screen ]] && [[ ! "$TERM" =~ tmux ]] && [ -z "$TMUX" ]; then
-    tmux a -t tmux || exec tmux new -s tmux && exit;
+if command -v tmux &> /dev/null && [ -n "$PS1" ] && [ -z "$DISPLAY" ] && [ -z "$TMUX" ]; then
+    if ! tmux list-sessions | grep -q '^tmux:'; then
+        tmux new -s tmux
+    fi
 fi
 
 # Enable various options
