@@ -202,4 +202,5 @@ return {
   --},
   window_close_confirmation = "NeverPrompt",
   --color_scheme = 'transparent',
+  use_resize_increments = true,
 }
