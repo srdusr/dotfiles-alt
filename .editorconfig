@@ -34,7 +34,7 @@ indent_size = 2
 indent_size = 2
 tab_width = 2
 # [none/single/double]
-quote_style = single
+quote_style = double
 # [line break]
 break_all_list_when_line_exceed = false
 auto_collapse_lines = false
