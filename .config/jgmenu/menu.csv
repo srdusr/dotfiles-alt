@@ -1,7 +1,7 @@
-Windows,^checkout(window),window_list
-^sep()
-
-Move,^checkout(move),object-move
+Terminal,scratchpad,utilities-terminal
+Web-browser,firefox,web-browser
+Neovim,kitty -e nvim,nvim
+Ranger,wezterm -e ranger,stock_folder
 ^sep()
 
 Extras,^checkout(extras),add
@@ -10,34 +10,10 @@ Extras,^checkout(extras),add
 Critical,^checkout(critical),gtk-dialog-warning
 ^sep()
 
-Terminal,scratchpad,utilities-terminal
-Web-browser,firefox,web-browser
-Neovim,kitty -e nvim,nvim
-Ranger,wezterm -e ranger,stock_folder
-^sep()
-
 Lock,betterlockscreen --lock,system-lock-screen
 Logout,pkill -KILL -u "$USER" &,system-log-out
 
 Exit,^checkout(exit),exit
-
-^tag(window)
-Close,bspc node $(slop -f %i) -c,window-close
-Floating, bspc node $(slop -f %i) -t floating,window-pop-out
-Tiling, bspc node $(slop -f %i) -t tiled,open-menu
-Fullscreen, bspc node $(slop -f %i) -t fullscreen,new-window
-
-^tag(move)
-Desktop 1,bspc node $(slop -f %i) -d 1 --follow &
-Desktop 2,bspc node $(slop -f %i) -d 2 --follow &
-Desktop 3,bspc node $(slop -f %i) -d 3 --follow &
-Desktop 4,bspc node $(slop -f %i) -d 4 --follow &
-Desktop 5,bspc node $(slop -f %i) -d 5 --follow &
-Desktop 6,bspc node $(slop -f %i) -d 6 --follow &
-Desktop 7,bspc node $(slop -f %i) -d 7 --follow &
-Desktop 8,bspc node $(slop -f %i) -d 8 --follow &
-Desktop 9,bspc node $(slop -f %i) -d 9 --follow &
-Desktop 10,bspc node $(slop -f %i) -d 10 --follow &
 
 ^tag(exit)
 Suspend,systemctl suspend,system-suspend
@@ -46,10 +22,9 @@ Poweroff,poweroff,system-shutdown
 
 ^tag(extras)
 Change wallpaper,nitrogen,nitrogen
-Randomize Wallpaper,control_box -wallres,phototonic
-Restart eww taskbar,control_box -ewwreload
-Open eww taskbar,control_box -ewwopen
-Close eww taskbar,control_box -ewwclose
+Randomize Wallpaper,random-wall
+Control-center,~/.config/eww/scripts/openControlCenter.sh
+Reload eww,pkill -f eww && eww daemon
 
 ^tag(critical)
 Restart BSPWM,control_box -bspres
