@@ -13,7 +13,7 @@
 #
 
 # Help
-super + F1
+super + slash
   ~/.config/sxhkd/show_help.sh -m -3
 
 # Application menu
@@ -47,9 +47,50 @@ super + shift + p
 #picom-trans -c -10
 #picom-trans -c +10
 
+# Close all active notifications.
+# ~button1
+#	bspc query -D -d .focused.!occupied && $HOME/.local/bin/eww update noti=false; sleep 0.270; $HOME/.local/bin/eww close notification-popup; pkill openEwwPopup.sh
+
+# Toggle control center using middle click.
+~button2
+    xqp 0 $(xdo id -N Bspwm -n root) && sh $HOME/.config/jgmenu/scripts/windows.sh
+#bspc query -D -d .focused.!occupied && sh $HOME/.config/eww/scripts/openControlCenter.sh
+
 # Right click menu
 ~button3
-  xqp 0 $(xdo id -N Bspwm -n root) && jgmenu_run
+  xqp 0 $(xdo id -N Bspwm -n root) && sh $HOME/.config/jgmenu/scripts/jgmenu.sh
+
+# Toggle control center.
+super + shift + c
+	sh $HOME/.config/eww/scripts/openControlCenter.sh
+
+# Toggle notification center.
+super + shift + n
+	sh $HOME/.config/eww/scripts/openNotificationCenter.sh
+
+## Toggle info center.
+#super + shift + i
+#	sh $HOME/.config/eww/scripts/openInfoCenter.sh
+#
+## Toggle color picker.
+#super + shift + x
+#	sh $HOME/.local/bin/xcolor-pick
+#
+## Toggle bar.
+#super + shift + b
+#	sh $HOME/.local/bin/tglbar
+#
+## Toggle exit screen.
+#super + Escape
+#    sh $HOME/.config/eww/scripts/openExitScreen.sh
+#
+## Close exit screen when it's enabled.
+#~Escape
+#    [[ -f "$HOME/.cache/eww-escreen.lock" ]] && sh $HOME/.config/eww/scripts/openExitScreen.sh
+
+## Open web browser, and file manager.
+#super + shift + {w,f}
+#	{firefox-developer-edition,thunar}
 
 # Terminal emulator
 #super + Return
@@ -128,7 +169,15 @@ super + g
 
 # Floating into monocle layout
 super + shift + m
-    bspc node -t pseudo_tiled; bspc node -t floating && wtp 5 40 $(($(bspc query -T -m | jq '.rectangle.width') * 98.9 / 100)) $(($(($(bspc query -T -m | jq '.rectangle.height') - $(bspc config top_padding))) * 97 / 100)) "$(pfw)"
+    bspc node -t pseudo_tiled; bspc node -t floating && wtp 10 36 $(($(bspc query -T -m | jq '.rectangle.width') * 98 / 100)) $(($(($(bspc query -T -m | jq '.rectangle.height') - $(bspc config top_padding))) * 96 / 100)) "$(pfw)"
+
+# Floating window pane left
+super + shift + h
+    bspc node -t pseudo_tiled; bspc node -t floating && wtp 10 36 $(($(($(bspc query -T -m | jq '.rectangle.width') / 2)) - 5)) $(($(($(bspc query -T -m | jq '.rectangle.height') - $(bspc config top_padding))) * 96 / 100)) "$(pfw)"
+
+# Floating window pane right
+super + shift + l
+    bspc node -t pseudo_tiled && bspc node -t floating && wtp $(($(bspc query -T -m | jq '.rectangle.width') - $(($(bspc query -T -m | jq '.rectangle.width') / 2)))) 36 $(($(($(bspc query -T -m | jq '.rectangle.width') / 2)) - 15)) $(($(($(bspc query -T -m | jq '.rectangle.height') - $(bspc config top_padding))) * 96 / 100)) "$(pfw)"
 
 # Set the window state
 super + {t,shift + t,s}
@@ -195,7 +244,7 @@ super + comma
 
 # Unhide window (script)
 super + period
-    ${HOME}/.config/bspwm/bspcmd unhide
+    ${HOME}/.config/bspwm/scripts/hide-window unhide
 
 # Toggle the hidden state of the focused node
 super + q
@@ -245,6 +294,16 @@ super + alt + i
 # Move/resize
 #
 
+## Drag tiling window to floating
+alt + button1
+	bspdragtofloat
+alt + @button1
+	bspdragtofloat stop
+@button1
+	bspdragtofloat stop
+~button1
+	:
+
 # Move a floating window or swap with any other adjacent tiled/pseudo_tiled window
 ctrl + alt + {h,j,k,l}
     { dir=west  dx=-20 dy=0 \
@@ -254,10 +313,6 @@ ctrl + alt + {h,j,k,l}
     }; \
     bspc node --move "$dx" "$dy" || bspc node --swap $dir
 
-# Move a tiled window to any direction
-super + shift + {h,j,k,l}
-	/path/to/bspwm_smart_move {west,south,north,east}
-
 # Rotate windows to different nodes
 super + ctrl + r
   bspc node @parent -R 90
@@ -265,6 +320,15 @@ super + ctrl + r
 # Resize tiled/floating windows (script)
 shift + alt + {h,j,k,l}
 	bspwm_resize.sh {west,south,north,east}
+#shift + alt + {h,j,k,l}
+#    {bspc node @parent/second -z left -20 0; \
+#    bspc node @parent/first -z right -20 0, \
+#    bspc node @parent/second -z top 0 +20; \
+#    bspc node @parent/first -z bottom 0 +20, \
+#    bspc node @parent/first -z bottom 0 -20; \
+#    bspc node @parent/second -z top 0 -20, \
+#    bspc node @parent/first -z right +20 0; \
+#    bspc node @parent/second -z left +20 0}
 
 # Resize window into predefined pseudo_tiled window
 super + shift + s
@@ -274,14 +338,17 @@ super + shift + s
 super + ctrl + s
 	bspc rule -a '*' -o state=floating rectangle=720x480+320+200
 
-# Spawn next window/program into predefined smaller Heads-Up-Display like floating window
-#ctrl + alt + 2
-#	bspc rule -a '*' -o state=floating rectangle=320x140+1030+32
-
 # Spawn next window/program into another desktop
 super + alt + {1-9,0}
   bspc rule -a '*' -o desktop=^{1-9,10}
 
+# Focused desktop window gaps scroll
+shift + alt + {1,2}
+	bspc config -d focused window_gap $((`bspc config -d focused window_gap` {-,+} 5 ))
+
+# Global window gaps scroll
+ctrl + alt + {1,2}
+	bspc config window_gap $(( $(bspc config window_gap) {-,+} 5 ))
 
 #---------------------------------------------------------------
 #
@@ -378,9 +445,9 @@ super + x
 super + e
 	~/.scripts/heads-up-display
 
-# File manager nnn
-super + shift + n
-	$TERMINAL -e nnn
+## File manager nnn
+#super + shift + n
+#	$TERMINAL -e nnn
 
 # File manager pcmanfm (GUI)
 super + shift + f
