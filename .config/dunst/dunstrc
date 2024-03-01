@@ -17,24 +17,33 @@
     #
     # If this option is set to mouse or keyboard, the monitor option
     # will be ignored.
-    follow = mouse
+    follow = none
 
-    # The geometry of the window:
-    #[{width}]x{height}[+/-{x}+/-{y}]
-    # The geometry of the message window.
-    # The height is measured in number of notifications everything else
-    # in pixels.  If the width is omitted but the height is given
-    # ("-geometry x2"), the message window expands over the whole screen
-    # (dmenu-like).  If width is 0, the window expands to the longest
-    # message displayed.  A positive x is measured from the left, a
-    # negative from the right side of the screen.  Y is measured from
-    # the top and down respectively.
-    # The width can be negative.  In this case the actual width is the
-    # screen width minus the width defined in within the geometry option.
-    geometry = "300x5-7+30"
+    ### Geometry ###
+
+    # dynamic width from 0 to 300
+    width = (200, 300)
+    # constant width of 300
+    # width = 300
+
+    # The maximum height of a single notification, excluding the frame.
+    height = 300
+
+    # Position the notification in the top right corner
+    origin = bottom-right
+
+    # Offset from the origin
+    offset = 6x30
+    # offset = 10x35 # i3 gaps = 20x20
+    # (H_Right_Gap/2) x (25+V_Bottom_Gap/2)
 
     # Scale factor. It is auto-detected if value is 0.
     scale = 0
+
+    # Maximum number of notification (0 means no limit)
+    notification_limit = 0
+
+    ### Progress bar ###
 
     # Turn on the progess bar. It appears when a progress hint is passed with
     # for example dunstify -h int:value:12
@@ -53,23 +62,14 @@
     # Set the maximum width for the progress bar
     progress_bar_max_width = 300
 
-
-    # Show how many messages are currently hidden (because of geometry).
+    # Show how many messages are currently hidden (because of
+    # notification_limit).
     indicate_hidden = yes
-
-    # Shrink window if it's smaller than the width.  Will be ignored if
-    # width is 0.
-    shrink = no
 
     # The transparency of the window.  Range: [0; 100].
     # This option will only work if a compositing window manager is
     # present (e.g. xcompmgr, compiz, etc.). (X11 only)
     transparency = 0
-
-    # The height of the entire notification.  If the height is smaller
-    # than the font height and padding combined, it will be raised
-    # to the font height and padding.
-    notification_height = 45
 
     # Draw a line of "separator_height" pixel height between two
     # notifications.
@@ -77,21 +77,17 @@
     separator_height = 2
 
     # Padding between text and separator.
-    padding = 8
+    padding = 11
 
     # Horizontal padding.
-    horizontal_padding = 15
+    horizontal_padding = 11
 
     # Padding between text and icon.
-    text_icon_padding = 12
+    text_icon_padding = 0
 
     # Defines width in pixels of frame around the notification window.
     # Set to 0 to disable.
-    frame_width = 3
-
-    # Defines color of the frame around the notification window.
-    frame_color = "#f0f2f5"
-    #frame_color = "#2E3440"
+    frame_width = 2
 
     # Define a color for the separator.
     # possible values are:
@@ -99,7 +95,7 @@
     #  * foreground: use the same color as the foreground;
     #  * frame: use the same color as the frame;
     #  * anything else will be interpreted as a X color.
-    separator_color = frame
+    separator_color = "#1a1b26"
 
     # Sort messages by urgency.
     sort = yes
@@ -109,15 +105,15 @@
     # Set to 0 to disable.
     # A client can set the 'transient' hint to bypass this. See the rules
     # section for how to disable this if necessary
-    # idle_threshold = 120
+    idle_threshold = 120
 
     ### Text ###
 
-    font = UbuntuMono Nerd Font 9
+    font = JetBrainsMono Nerd Font Medium 9
 
     # The spacing between lines.  If the height is smaller than the
     # font height, it will get raised to the font height.
-    line_height = 0
+    line_height = 5
 
     # Possible values are:
     # full: Allow a small subset of html markup in notifications:
@@ -127,7 +123,7 @@
     #        <u>underline</u>
     #
     #        For a complete reference see
-    #        <https://developer.gnome.org/pango/stable/pango-Markup.html>.
+    #        <https://docs.gtk.org/Pango/pango_markup.html>.
     #
     # strip: This setting is provided for compatibility with some broken
     #        clients that send markup even though it's not enabled on the
@@ -141,9 +137,7 @@
     #
     # It's important to note that markup inside the format option will be parsed
     # regardless of what this is set to.
-    markup = strip
-    show_indicators = false
-
+    markup = full
 
     # The format of the message.  Possible variables are:
     #   %a  appname
@@ -159,22 +153,18 @@
 
     # Alignment of message text.
     # Possible values are "left", "center" and "right".
-    alignment = left
+    alignment = center
 
     # Vertical alignment of message text and icon.
     # Possible values are "top", "center" and "bottom".
-    vertical_alignment = top
+    vertical_alignment = center
 
     # Show age of message if message is older than show_age_threshold
     # seconds.
     # Set to -1 to disable.
     show_age_threshold = 60
 
-    # Split notifications into multiple lines if they don't fit into
-    # geometry.
-    word_wrap = yes
-
-    # When word_wrap is set to no, specify where to make an ellipsis in long lines.
+    # Specify where to make an ellipsis in long lines.
     # Possible values are "start", "middle" and "end".
     ellipsize = middle
 
@@ -185,10 +175,10 @@
     stack_duplicates = true
 
     # Hide the count of stacked notifications with the same content
-    hide_duplicate_count = false
+    hide_duplicate_count = true
 
     # Display indicators for URLs (U) and actions (A).
-    show_indicators = false
+    show_indicators = yes
 
     ### Icons ###
 
@@ -204,6 +194,8 @@
     max_icon_size = 32
 
     # Paths to default icons.
+    #icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
+    #icon_path = /usr/share/icons/Qogir/16/status:/usr/share/icons/Qogir/16/devices/:/usr/share/icons/Qogir/16/apps/:/usr/share/pixmaps/
     icon_path = /usr/share/icons/gnome/16x16/status/:/usr/share/icons/gnome/16x16/devices/
 
     ### History ###
@@ -212,8 +204,10 @@
     # as if it would normally do.
     sticky_history = yes
 
+    #history_file = ~/.cache/dunst/history
+
     # Maximum amount of notifications kept in history
-    history_length = 20
+    rhistory_length = 100
 
     ### Misc/Advanced ###
 
@@ -221,7 +215,7 @@
     dmenu = /usr/bin/dmenu -p dunst:
 
     # Browser for opening urls in context menu.
-    browser = /usr/bin/brave -new-tab
+    browser = /usr/bin/brave
 
     # Always run rule-defined scripts, even if the notification is suppressed
     always_run_script = true
@@ -232,26 +226,12 @@
     # Define the class of the windows spawned by dunst
     class = Dunst
 
-    # Print a notification on startup.
-    # This is mainly for error detection, since dbus (re-)starts dunst
-    # automatically after a crash.
-    startup_notification = false
-
-    # Manage dunst's desire for talking
-    # Can be one of the following values:
-    #  crit: Critical features. Dunst aborts
-    #  warn: Only non-fatal warnings
-    #  mesg: Important Messages
-    #  info: all unimportant stuff
-    # debug: all less than unimportant stuff
-    verbosity = mesg
-
     # Define the corner radius of the notification window
     # in pixel size. If the radius is 0, you have no rounded
     # corners.
     # The radius will be automatically lowered if it exceeds half of the
     # notification height to avoid clipping text and/or icons.
-    corner_radius = 0
+    corner_radius = 10
 
     # Ignore the dbus closeNotification message.
     # Useful to enforce the timeout set by dunst configuration. Without this
@@ -297,8 +277,8 @@
     # These values can be strung together for each mouse event, and
     # will be executed in sequence.
     mouse_left_click = close_current
-    mouse_middle_click = close_all
-    mouse_right_click = do_action
+    mouse_middle_click = do_action, close_current
+    mouse_right_click = close_all
 
 # Experimental features that may or may not work correctly. Do not expect them
 # to have a consistent behaviour across releases.
@@ -309,37 +289,6 @@
     # using the resolution and physical size. This might be useful in setups
     # where there are multiple screens with very different dpi values.
     per_monitor_dpi = false
-
-
-[urgency_low]
-    # IMPORTANT: colors have to be defined in quotation marks.
-    # Otherwise the "#" and following would be interpreted as a comment.
-    background = "#00101212"
-    #background = "#fafafa"
-    foreground = "#CECCC9"
-    #foreground = "#2e2e2e"
-    timeout = 5
-    # Icon for notifications with low urgency, uncomment to enable
-    #icon = /path/to/icon
-
-[urgency_normal]
-    background = "#00101212"
-    #background = "#fafafa"
-    foreground = "#CECCC9"
-    #foreground = "#2e2e2e"
-    timeout = 10
-    # Icon for notifications with normal urgency, uncomment to enable
-    #icon = /path/to/icon
-
-[urgency_critical]
-    background = "#00101212"
-    background = "#fafafa"
-    foreground = "#CECCC9"
-    #foreground = "#2e2e2e"
-    frame_color = #a1dde7
-    timeout = 30
-    # Icon for notifications with critical urgency, uncomment to enable
-    #icon = /path/to/icon
 
 # Every section that isn't one of the above is interpreted as a rules to
 # override settings for certain messages.
@@ -364,9 +313,15 @@
 #    new_icon
 #    set_stack_tag
 #    set_transient
+#    set_category
 #    timeout
 #    urgency
+#    skip_display
+#    history_ignore
 #    action_name
+#    word_wrap
+#    ellipsize
+#    alignment
 #
 # Shell-like globbing will get expanded.
 #
@@ -381,8 +336,6 @@
 #   script appname summary body icon urgency
 # where urgency can be "LOW", "NORMAL" or "CRITICAL".
 #
-# NOTE: if you don't want a notification to be displayed, set the format
-# to "".
 # NOTE: It might be helpful to run dunst -print in a terminal in order
 # to find fitting options for rules.
 
@@ -406,9 +359,13 @@
 #           withdrawn from screen again and will get delayed like a new notification
 #[fullscreen_delay_everything]
 #    fullscreen = delay
-#[fullscreen_show_critical]
-#    msg_urgency = critical
-#    fullscreen = show
+[fullscreen_show_critical]
+   msg_urgency = critical
+   fullscreen = show
+[fullscreen_show_normal]
+   msg_urgency = normal
+   fullscreen = show
+
 
 #[espeak]
 #    summary = "*"
@@ -421,7 +378,7 @@
 #[ignore]
 #    # This notification will not be displayed
 #    summary = "foobar"
-#    format = ""
+#    skip_display = true
 
 #[history-ignore]
 #    # This notification will not be saved in history
@@ -452,49 +409,48 @@
 #    appname = Pidgin
 #    summary = *twitter.com*
 #    urgency = normal
-[spotify]
-       appname = Spotify
-       Summary = *Song*
-       urgency = critical
-       background = "#00101212"
-       #background = "#fafafa"
-       foreground = "#CECCC9"
-       #foreground = "#2e2e2e"
-
-[Telegram]
-    appname = Telegram
-    summary = *New msg*
-    urgency = critical
-    background = "#00101212"
-    #background = "#fafafa"
-    foreground = "#CECCC9"
-    #foreground = "#2e2e2e"
-
-[Discord]
-        appname = Discord
-        Summary = *Ping*
-        urgency = critical
-        background = "#00101212"
-        #background = "#fafafa"
-        foreground = "#CECCC9"
-        #foreground = "#2e2e2e"
-
-
-
-[Brave]
-        appname = Brave
-        Summary = *Notification*
-        urgency = critical
-        background = "#00101212"
-        #background = "#fafafa"
-        foreground = "#CECCC9"
-        #foreground = "#2e2e2e"
-
-
 #
-#[stack-volumes]
-#    appname = "some_volume_notifiers"
-#    set_stack_tag = "volume"
 
-#
-# vim: ft=cfg
+[openEwwPopup]
+	script = ~/.config/dunst/scripts/openEwwPopup.sh
+
+[songArtLogger]
+	script = ~/.config/dunst/scripts/songArtLogger.sh
+
+[stack-volumes]
+    appname = "some_volume_notifiers"
+    set_stack_tag = "volume"
+
+[flameshot-urgency]
+    appname = flameshot
+    urgency = low
+
+[whatsapp-alignment]
+    appname = whatsapp-nativefier-d40211
+    alignment = left
+
+[discord-alignment]
+    appname = discord
+    alignment = left
+
+[signal-alignment]
+    appname = Signal
+    alignment = left
+
+[urgency_low]
+    background = "#16161e"
+    foreground = "#c0caf5"
+    frame_color = "#1f2335"
+    timeout = 3
+
+[urgency_normal]
+    background = "#16161e"
+    foreground = "#c0caf5"
+    frame_color = "#3d59a1"
+    timeout = 15
+
+[urgency_critical]
+    background = "#191D24"
+    foreground = "#c0caf5"
+    frame_color = "#db4b4b"
+    timeout = 60
