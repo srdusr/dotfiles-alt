@@ -16,7 +16,7 @@ done
 if [[ -n "$SSH_CLIENT" ]]; then
     export KEYTIMEOUT=1
 else
-    export KEYTIMEOUT=10
+    export KEYTIMEOUT=15
 fi
 
 # Tmux default session
