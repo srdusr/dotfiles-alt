@@ -1,15 +1,24 @@
+#!/bin/zsh
+
 ##########    Prompt(s)    ##########
 
-# Enable colors
+terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
+
+autoload -Uz vcs_info
+autoload -Uz add-zsh-hook
 autoload -U colors && colors
 
-# Prompt with Vi insert-mode/normal-mode and blinking '$', note blinking '$' only works on some terminals.
-terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
+precmd_vcs_info() { vcs_info }
+
+precmd_functions+=( precmd_vcs_info )
+
+setopt prompt_subst
+
 git_branch_test_color() {
     local ref=$(git symbolic-ref --short HEAD 2> /dev/null)
     if [ -n "${ref}" ]; then
         if [ -n "$(git status --porcelain)" ]; then
-            local gitstatuscolor='%F{196}'
+            local gitstatuscolor='%F{green}'
         else
             local gitstatuscolor='%F{82}'
         fi
@@ -19,77 +28,115 @@ git_branch_test_color() {
     fi
 }
 
-# Job indicator
-jobs_status_indicator() {
-    local jobs_output
-    declare -p jobs_output >/dev/null 2>&1
-    if [[ $? -eq 0 ]]; then
-        unset jobs_output
-    fi
-    jobs_output=$(jobs -s)
-    if [[ -n "$jobs_output" ]]; then
-        local jobs_count=$(echo "$jobs_output" | wc -l)
-        echo "jobs: ${jobs_count}"
-    fi
-}
-
-remote_indicator() {
-    if [[ -n "$SSH_CONNECTION" || -n "$SSH_CLIENT" || -n "$SSH_TTY" ]]; then
-        echo 'ssh '
-    else
-        echo ''
-    fi
-}
-
-# Version control (git)
-autoload -Uz add-zsh-hook vcs_info
+zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' stagedstr ' +%F{15}staged%f'
 zstyle ':vcs_info:*' unstagedstr ' -%F{15}unstaged%f'
-zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:*' actionformats '%F{5}%F{2}%b%F{3}|%F{1}%a%F{5}%f '
 zstyle ':vcs_info:*' formats '%F{208} '$'\uE0A0'' %f$(git_branch_test_color)%f%F{76}%c%F{3}%u%f '
 zstyle ':vcs_info:git*+set-message:*' hooks git-untracked
 zstyle ':vcs_info:*' enable git
+
 +vi-git-untracked() {
     if [[ $(git rev-parse --is-inside-work-tree 2> /dev/null) == 'true' ]] && \
-        [[ $(git ls-files --other --directory --exclude-standard | sed q | wc -l | tr -d ' ') == 1 ]] ; then
+        git status --porcelain | grep '??' &> /dev/null ; then
         hook_com[unstaged]+='%F{196} !%f%F{15}untracked%f'
     fi
 }
 
-# Prompt
-function insert-mode() {
-    echo "-- INSERT --"
+ssh_name() {
+    if [[ -n $SSH_CONNECTION ]]; then
+        local ssh_info
+        ssh_info="ssh:%F{green}%n$nc%f"
+        if [[ -n $SSH_CONNECTION ]]; then
+            local ip_address
+            ip_address=$(echo $SSH_CONNECTION | awk '{print $3}')
+            ssh_info="$ssh_info@%F{green}$ip_address%f"
+        fi
+        echo " ${ssh_info}"
+    fi
 }
 
-function normal-mode() {
-    echo "-- NORMAL --"
+function job_name() {
+    job_name=""
+    job_length=0
+    if [ "${COLUMNS}" -gt 69 ]; then
+        job_length=$((${COLUMNS}-70))
+        [ "${job_length}" -lt "0" ] && job_length=0
+    fi
+
+    if [ "${job_length}" -gt 0 ]; then
+        local job_count=$(jobs | wc -l)
+        if [ "${job_count}" -gt 0 ]; then
+            local title_jobs="jobs:"
+            job_name="${title_jobs}"
+            job_name+="%F{green}$(jobs | grep + | tr -s " " | cut -d " " -f 4- | cut -b 1-${job_length} | sed "s/\(.*\)/\1/")%f"
+        fi
+    fi
+
+    echo "${job_name}"
 }
 
-function my_precmd () {
-    vcs_info
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(remote_indicator)\$(jobs_status_indicator)
-    %{%{$terminfo_down_sc$(insert-mode)$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
+function job_count() {
+    local job_count
+    job_count=$(jobs -s | grep -c "suspended")
+    if [ "${job_count}" -gt 0 ]; then
+        echo "(${job_count})"
+    fi
 }
 
-add-zsh-hook precmd my_precmd
+current_jobs=' $(job_name)$(job_count)'
+user="%n"
+at="%F{15}at%{$reset_color%}"
+machine="%F{4}%m%{$reset_color%}"
+relative_home="%F{4}%~%{$reset_color%}"
+carriage_return=""$'\n'""
+empty_line_bottom="%r"
+chevron_right=""
+color_reset="%{$(tput sgr0)%}"
+color_yellow="%{$(tput setaf 226)%}"
+color_blink="%{$(tput blink)%}"
+prompt_symbol="$"
+dollar_sign="${color_yellow}${color_blink}${prompt_symbol}${color_reset}"
+dollar="%(?:%F{2}${dollar_sign}:%F{1}${dollar_sign})"
+space=" "
+cmd_prompt="%(?:%F{2}${chevron_right} :%F{1}${chevron_right} )"
+git_info="\$vcs_info_msg_0_"
+v1="%{┌─[%}"
+v2="%{]%}"
+v3="└─["
+v4="]"
 
-function set-prompt() {
+function insert-mode () { echo "-- INSERT --" }
+function normal-mode () { echo "-- NORMAL --" }
+
+vi-mode-indicator () {
     if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
         echo -ne '\e[1 q'
-        VI_MODE=$(normal-mode)
+        vi_mode=$(normal-mode)
     elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
         echo -ne '\e[5 q'
-        VI_MODE=$(insert-mode)
+        vi_mode=$(insert-mode)
     fi
-    PS1="%{┌─[%F{145}%n%f] %F{39}%0~%f%} ${vcs_info_msg_0_} \$(remote_indicator)\$(jobs_status_indicator)
-    %{%{$terminfo_down_sc$VI_MODE$terminfo[rc]%}%{└─%{["%{$(tput setaf 226)%}""%{$(tput blink)%}"%{$%}"%{$(tput sgr0)%}"%{%G]%}%}%}%}"
+}
+
+function set-prompt () {
+    vi-mode-indicator
+    mode="%F{145}%{$terminfo_down_sc$vi_mode$terminfo[rc]%f%}"
+    #PS1="${relative_home}${vcs_info_msg_0_}${current_jobs} ${carriage_return}${mode}${dollar}${space}"
+    PS1="${v1}${user}${v2}${space}${relative_home}${vcs_info_msg_0_}${current_jobs}$(ssh_name) ${carriage_return}${mode}${v3}${dollar}${v4}${empty_line_bottom}"
+    #RPROMPT="$(ssh_name)"
+}
+
+precmd () {
+    print -rP
+    vcs_info
+    set-prompt
 }
 
 function update-mode-file() {
     set-prompt
     local current_mode=$(cat ~/.vi-mode)
-    local new_mode="$VI_MODE"
+    local new_mode="$vi_mode"
     if [[ "$new_mode" != "$current_mode" ]]; then
         echo "$new_mode" >| ~/.vi-mode
     fi
@@ -100,16 +147,16 @@ function update-mode-file() {
 
 function check-nvim-running() {
     if pgrep -x "nvim" > /dev/null; then
-        VI_MODE=""
+        vi_mode=""
         update-mode-file
         if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
             tmux refresh-client -S
         fi
     else
         if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
-            VI_MODE=$(normal-mode)
+            vi_mode=$(normal-mode)
         elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
-            VI_MODE=$(insert-mode)
+            vi_mode=$(insert-mode)
         fi
         update-mode-file
         if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
@@ -148,43 +195,8 @@ preexec () { print -rn -- $terminfo[el]; echo -ne '\e[5 q' ; }
 zle -N zle-line-init
 zle -N zle-keymap-select
 
-TRAPWINCH() { # Trap the WINCH signal to update the mode file on window size changes
+TRAPWINCH() {
     update-mode-file
 }
 
-#function nvim-listener() {
-#  local prev_nvim_status="inactive"
-#  local nvim_pid=""
-#  while true; do
-#    local current_nvim_pid=$(pgrep -x "nvim")
-#    if [[ -n "$current_nvim_pid" && "$current_nvim_pid" != "$nvim_pid" ]]; then
-#      # Neovim started
-#      prev_nvim_status="active"
-#      nvim_pid="$current_nvim_pid"
-#      VI_MODE="" # Clear VI_MODE to show Neovim mode
-#      update-mode-file
-#      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
-#        tmux refresh-client -S
-#      fi
-#    elif [[ -z "$current_nvim_pid" && "$prev_nvim_status" == "active" ]]; then
-#      # Neovim stopped
-#      prev_nvim_status="inactive"
-#      nvim_pid=""
-#      if [[ ${KEYMAP} == vicmd || ${KEYMAP} == vi-cmd-mode ]]; then
-#        VI_MODE=$(normal-mode)
-#      elif [[ ${KEYMAP} == main || ${KEYMAP} == viins || ${KEYMAP} == '' ]]; then
-#        VI_MODE=$(insert-mode)
-#      fi
-#      update-mode-file
-#      if command -v tmux &>/dev/null && [[ -n "$TMUX" ]]; then
-#        tmux refresh-client -S
-#      fi
-#    fi
-#  done
-#}
-
-# Start Neovim listener in the background
-#nvim-listener &!
 set-prompt
-
-RPROMPT='%(?..[%F{196}%?%f] )'
