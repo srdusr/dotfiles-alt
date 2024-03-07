@@ -20,7 +20,7 @@ alias ln='ln -i'
 
 # Disable 'rm'
 alias rm='function _rm() { echo -e "\033[0;31mrm\033[0m is disabled, use \033[0;32mtrash\033[0m or \033[0;32mdel \033[0m\033[0;33m$1\033[0m"; }; _rm'
-alias del='command rm'
+alias del='/bin/rm'
 
 alias ls='ls --color=auto --group-directories-first'
 alias lsd="lsd --group-directories-first"
