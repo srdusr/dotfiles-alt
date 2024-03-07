@@ -226,23 +226,24 @@ duckduckgo() {
 wikipedia() {
     lynx -vikeys -accept_all_cookies "https://en.wikipedia.org/wiki?search=$@"
 }
-function filesize() {
-    # Check if 'du' supports the -b option, which provides sizes in bytes.
-    if du -b /dev/null > /dev/null 2>&1; then
-        local arg=-sbh;  # If supported, use -sbh options for 'du'.
-    else
-        local arg=-sh;   # If not supported, use -sh options for 'du'.
-    fi
-
-    # Check if no arguments are provided.
-    if [ "$#" -eq 0 ]; then
-        # Calculate and display sizes for all files and directories in cwd.
-        du $arg ./*
-    else
-        # Calculate and display sizes for the specified files and directories.
-        du $arg -- "$@"
-    fi
-}
+#function filesize() {
+#    # Check if 'du' supports the -b option, which provides sizes in bytes.
+#    if du -b /dev/null > /dev/null 2>&1; then
+#        local arg=-sbh;  # If supported, use -sbh options for 'du'.
+#    else
+#        local arg=-sh;   # If not supported, use -sh options for 'du'.
+#    fi
+#
+#    # Check if no arguments are provided.
+#    if [ "$#" -eq 0 ]; then
+#        # Calculate and display sizes for all files and directories in cwd.
+#        du $arg ./*
+#    else
+#        # Calculate and display sizes for the specified files and directories.
+#        du $arg -- "$@"
+#    fi
+#}
+#
 
 fgl() {
     git log --graph --color=always \
@@ -725,6 +726,7 @@ compdef g=git
 # Define functions for common Git commands
 ga() { g add "$@"; }                   # ga: Add files to the staging area
 gaw() { g add -A && g diff --cached -w | g apply --cached -R; }   # gaw: Add all changes to the staging area and unstage whitespace changes
+grm() { g rm "$@"; }
 gb() { g branch "$@"; }                # gb: List branches
 gbl() { g branch -l "$@"; }            # gbl: List local branches
 gbD() { g branch -D "$@"; }            # gbD: Delete a branch
@@ -743,7 +745,7 @@ gcoB() { g checkout -B "$@"; }         # gcoB: Checkout a new branch, even if it
 gcp() { g cherry-pick "$@"; }          # gcp: Cherry-pick a commit
 gcpc() { g cherry-pick --continue "$@"; }  # gcpc: Continue cherry-picking after resolving conflicts
 gd() { g diff "$@"; }                  # gd: Show changes
-gd^() { g diff HEAD^ HEAD "$@"; }      # gd^: Show changes between HEAD^ and HEAD
+#gd^() { g diff HEAD^ HEAD "$@"; }      # gd^: Show changes between HEAD^ and HEAD
 gds() { g diff --staged "$@"; }        # gds: Show staged changes
 gl() { g lg "$@"; }                    # gl: Show a customized log
 glg() { g log --graph --decorate --all "$@"; }   # glg: Show a customized log with graph
@@ -766,7 +768,7 @@ grs() { g restore --staged "$@"; }     # grs: Restore changes staged for the nex
 grv() { g remote -v "$@"; }            # grv: Show remote URLs after each name
 grh() { g reset --hard "$@"; }         # grh: Reset the repository and the working directory
 grH() { g reset HEAD "$@"; }           # grH: Reset the index but not the working directory
-grH^() { g reset HEAD^ "$@"; }         # grH^: Reset the index and working directory to the state of the HEAD's first parent
+#grH^() { g reset HEAD^ "$@"; }         # grH^: Reset the index and working directory to the state of the HEAD's first parent
 gs() { g status -sb "$@"; }            # gs: Show the status of the working directory and the index
 gsd() { g stash drop "$@"; }           # gsd: Drop a stash
 gsl() { g stash list --date=relative "$@"; }   # gsl: List all stashes
