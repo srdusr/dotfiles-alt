@@ -6,7 +6,7 @@
 #  ███████╗███████║██║  ██║██║  ██║╚██████╗
 #  ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝  ╚═╝ ╚═════╝
 
-for zsh_source in "$HOME"/.config/zsh/lib/*.zsh; do
+for zsh_source in "$HOME"/.config/zsh/user/*.zsh; do
     source $zsh_source
 done
 
@@ -14,7 +14,7 @@ done
 [[ $- != *i* ]] && return
 
 if [[ -n "$SSH_CLIENT" ]]; then
-    export KEYTIMEOUT=1
+    export KEYTIMEOUT=10
 else
     export KEYTIMEOUT=15
 fi
@@ -36,6 +36,7 @@ stty intr '^q' # free Ctrl+C for copy use Ctrl+q instead
 stty lnext '^-' # free Ctrl+V for paste use ^- instead
 stty stop undef # Disable ctrl-s to freeze terminal.
 stty start undef
+#COMPLETION_WAITING_DOTS="false"
 #unsetopt BEEP
 
 ##########    Source Plugins, should be last    ##########
