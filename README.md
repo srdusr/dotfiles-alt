@@ -11,7 +11,7 @@
 </pre>
 
 <h3 align="center">
-Welcome, and make yourself at $HOME
+Welcome, and make yourself at <b><i>$HOME</i></b>
 </h3>
 
 ![1](assets/desktop.jpg)  
@@ -27,10 +27,12 @@ Welcome, and make yourself at $HOME
 - **Compositor:** [picom](https://github.com/yshui/picom)
 - **Widgets:** [eww](https://github.com/elkowar/eww)
 - Bar: [polybar](https://github.com/polybar/polybar)
-- **Application Launcher:** [rofi](https://github.com/davatorium/rofi)
-- **Shell:** [zsh] (https://zsh.org)
+- **Shell:** [zsh](https://zsh.org)
 - **Terminal:** [wezterm](https://https://wezfurlong.org/wezterm)
-- **Editor:** [neovim](https://neovim.io) and **Config:** [nvim](https://github.com/srdusr/nvim)
+- **Multiplexer:** [tmux](https://github.com/tmux/tmux/wiki)
+- **Editor:** [neovim](https://neovim.io)
+  - **Config:** [nvim](https://github.com/srdusr/nvim)
+- **Application Launcher:** [rofi](https://github.com/davatorium/rofi)
 - **Fonts:**
   * **Icons:** Whitesur
   * **UI:** San Francisco
