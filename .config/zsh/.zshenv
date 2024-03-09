@@ -56,6 +56,7 @@ export EDITOR=$(command -v nvim || echo "vim")
 #  export EDITOR=vim
 #fi
 export VISUAL=$EDITOR
+export GIT_EDITOR="$EDITOR"
 export COLORTERM="truecolor"
 export TERM="xterm-256color"
 export READER="zathura"
@@ -74,11 +75,10 @@ else
 fi
 export MANROFFOPT="-c"
 export PAGER="less"
-export GIT_EDITOR="$EDITOR"
 export SUDO_ASKPASS=/usr/lib/ssh/x11-ssh-askpass
 export FAQ_STYLE='github'
-export VIDEO="vlc"
-export IMAGE="sxiv"
+export VIDEO="mpv"
+export IMAGE="phototonic"
 
 # XDG Paths:
 export XDG_CONFIG_HOME=${XDG_CONFIG_HOME:-$HOME/.config}
