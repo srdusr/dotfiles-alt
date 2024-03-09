@@ -1,18 +1,40 @@
 # Dotfiles
-<div style="text-align:center;">
-  <pre>
+<pre>
+<p align="center">
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
 ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
 ██║  ██║██║   ██║   ██║   █████╗  ██║██║     █████╗  ███████╗
 ██║  ██║██║   ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
 ██████╔╝╚██████╔╝   ██║   ██║     ██║███████╗███████╗███████║
 ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
-  </pre>
-</div>
+</p>
+</pre>
 
-### Welcome, and make yourself at ***$HOME***
+<h3 align="center">
+Welcome, and make yourself at $HOME
+</h3>
+
+![1](assets/desktop.jpg)  
+
 > NOTE: Primarily for Linux but currently under work to make this as agnostic/cross-platform as possible
 
+- - -
+
+## Details
+
+- **OS:** [Arch Linux](https://archlinux.org)
+- **WM:** [bspwm](https://github.com/baskerville/bspwm)
+- **Compositor:** [picom](https://github.com/yshui/picom)
+- **Widgets:** [eww](https://github.com/elkowar/eww)
+- Bar: [polybar](https://github.com/polybar/polybar)
+- **Application Launcher:** [rofi](https://github.com/davatorium/rofi)
+- **Shell:** [zsh] (https://zsh.org)
+- **Terminal:** [wezterm](https://https://wezfurlong.org/wezterm)
+- **Editor:** [neovim](https://neovim.io) and **Config:** [nvim](https://github.com/srdusr/nvim)
+- **Fonts:**
+  * **Icons:** Whitesur
+  * **UI:** San Francisco
+  * **Terminal:** JetBrains Mono
 - - -
 
 ### Installing onto a new system (bare git repository)
