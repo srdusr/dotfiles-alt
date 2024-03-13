@@ -2,11 +2,17 @@
 
 # Pulls CPU temps, averages them, and outputs them
 
-let count=0
+count=0
 sum=0.0
-for temp in $(sensors | grep "^Core" | grep -e '+.*C' | cut -f 2 -d '+' | cut -f 1 -d ' ' | sed 's/°C//'); do
-	sum=$(echo $sum+$temp | bc)
-	let count+=1
+
+# Iterate over each temperature reading
+for temp in "$(sensors | grep "^Core" | grep -e '+.*C' | cut -f 2 -d '+' | cut -f 1 -d ' ' | sed 's/°C//')"; do
+    sum=$(echo "$sum + $temp" | bc)
+    ((count++))
 done
-avg=$(qalc -t $sum/$count)
-echo "${avg}°C"
+
+# Calculate the average
+avg=$(echo "scale=0; $sum / $count" | bc)
+
+# Output the average temperature without decimal points
+echo " ${avg%.*}°C"
