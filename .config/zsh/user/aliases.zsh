@@ -81,5 +81,6 @@ alias src='source ~/.zshrc'
 alias p=proxy
 
 alias cheat='~/.scripts/cheat.sh ~/documents/notes/cheatsheets'
-# Alias for android-studio
-alias android-studio='/opt/android-studio/bin/studio.sh'
+
+alias android-studio='/opt/android-studio/bin/studio.sh' # android-studio
+alias nomachine='/usr/NX/bin/nxplayer' # nomachine
