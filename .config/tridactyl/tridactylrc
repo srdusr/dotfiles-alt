@@ -18,6 +18,9 @@
 "
 "sanitise tridactyllocal tridactylsync
 
+" Use this to see current config in the browser
+" :viewconfig --user
+
 " WARNING: THERE IS A BUG WHEREBY SOMETIMES SOME LINES IN THE CONFIG GET IGNORED :/
 " https://github.com/tridactyl/tridactyl/issues/1409
 
@@ -31,10 +34,10 @@
 " In addition to using %s for a single query param, you can use %1,
 " %2, etc, for multiple query params.
 
-set searchurls.hackage http://hackage.haskell.org/package/%s
-set searchurls.hayoo http://hayoo.fh-wedel.de/?query=%s
-set searchurls.h4 https://www.haskell.org/hoogle/?hoogle=%s
-set searchurls.h5 https://hoogle.haskell.org/?hoogle=%s&scope=set%3Astackage
+"set searchurls.hackage http://hackage.haskell.org/package/%s
+"set searchurls.hayoo http://hayoo.fh-wedel.de/?query=%s
+"set searchurls.h4 https://www.haskell.org/hoogle/?hoogle=%s
+"set searchurls.h5 https://hoogle.haskell.org/?hoogle=%s&scope=set%3Astackage
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
@@ -51,17 +54,17 @@ quickmark G https://mail.google.com/mail/u/1/#inbox
 " Disable on some sites
 "
 
+"blacklistadd youtube.com
 blacklistadd calendar.google.com
 blacklistadd docs.google.com
 blacklistadd drive.google.com
 blacklistadd keep.google.com
 blacklistadd mail.google.com
-blacklistadd youtube\.com
-blacklistadd monkeytype\.com
-blacklistadd typeracer\.com
-blacklistadd codepen\.io
-blacklistadd codesandbox\.io
-blacklistadd github\.dev
+blacklistadd monkeytype.com
+blacklistadd typeracer.com
+blacklistadd codepen.io
+blacklistadd codesandbox.io
+"blacklistadd github.dev
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
@@ -93,6 +96,9 @@ bind d composite tabclose | buffer #
 " Don't bind paste to ignore mode. Can use 'S-Esc' or 'C-A-Esc' instead.
 unbind <S-Insert>
 
+" Don't bind 'f' in youtube
+unbindurl youtube\.com/watch\?v=.* f
+
 " Bind <Insert> to toggle normal/ignore mode. I use <Insert> to toggle
 " Ctrl-lock in Emacs, so hopefully this will be memorable. We leave
 " insert mode, but don't enter it. The insert mode bind doesn't work,
@@ -113,15 +119,15 @@ bind --mode=ignore <C-o> nmode ignore 1 mode normal
 bind / fillcmdline find
 bind n findnext 1
 bind N findnext -1
-bind <Space>/ nohlsearch
+"bind <Space>/ nohlsearch
 set findcase smart
 
 " Workaround bug on web.whatsapp.com that prevents focus from leaving
 " message entry
-" box. https://github.com/tridactyl/tridactyl/issues/3070
-bindurl web.whatsapp.com  --mode=normal         <Escape> composite hint -f m2 ; fillcmdline ; ex.hide_and_clear
-bindurl web.whatsapp.com  --mode=insert         <Escape> composite hint -f m2 ; fillcmdline ; ex.hide_and_clear
-bindurl web.whatsapp.com  --mode=input          <Escape> composite hint -f m2 ; fillcmdline ; ex.hide_and_clear
+"" box. https://github.com/tridactyl/tridactyl/issues/3070
+"bindurl web.whatsapp.com  --mode=normal         <Escape> composite hint -f m2 ; fillcmdline ; ex.hide_and_clear
+"bindurl web.whatsapp.com  --mode=insert         <Escape> composite hint -f m2 ; fillcmdline ; ex.hide_and_clear
+"bindurl web.whatsapp.com  --mode=input          <Escape> composite hint -f m2 ; fillcmdline ; ex.hide_and_clear
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 "
