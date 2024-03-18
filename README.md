@@ -97,6 +97,9 @@ $ config checkout
 
 ---
 
+<details>
+  <summary><b>Notes</b> (If you have some time to read)</summary>
+
 ### Fzf
 
 - Install Fzf
@@ -666,3 +669,4 @@ $ sdkmanager --licenses
   git config --global user.name "Firstname Lastname"
   git config --global user.email "your_email@example.com"
   ```
+</details>
