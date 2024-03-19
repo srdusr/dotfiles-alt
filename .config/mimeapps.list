@@ -1,10 +1,10 @@
 [Default Applications]
 application/pdf=zathura.desktop;
 application/tex=zathura.desktop;
-image/png=vimiv.desktop
-image/jpeg=vimiv.desktop;
-video/mp4=vlc.desktop;
-video/mkv=vlc.desktop;
+image/png=phototonic.desktop
+image/jpeg=phototonic.desktop;
+video/mp4=mpv.desktop;
+video/mkv=mpv.desktop;
 inode/directory=pcmanfm.desktop
 
 [Added Associations]
