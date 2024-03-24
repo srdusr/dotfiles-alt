@@ -75,8 +75,8 @@ run_once() {
 ## Rules
 bspc rule -r *:* # remove all rules first
 rule '*' --one-shot state=below private=border_width:10
-rule '*:Tiled' --one-shot state=tiled rectangle=50x50+0+50
-rule '*' --one-shot state=floating rectangle=50x50+0+50
+#rule '*:Tiled' --one-shot state=tiled rectangle=50x50+0+50
+#rule '*' --one-shot state=floating rectangle=1028x374+0+50
 #rule \* rectangle=680x700+340+40
 rule '*:*:Picture-in-Picture' state=floating sticky=on layer=above
 rule '*:*:Picture in picture' state=floating sticky=on layer=above
@@ -87,119 +87,127 @@ rule Zathura state=tiled
 rule Pavucontrol state=floating rectangle=490x260+862+37
 rule Blueman-manager state=floating rectangle=536x420+818+37 #490x260-9+37
 rule scratchpad sticky=on state=floating # SCRATCHPAD
-rule heads-up-display sticky=on state=floating rectangle=360x160+990+40 # Heads Up Display (scratchpad)
+rule heads-up-display sticky=on state=floating rectangle=360x160+990+35 # Heads Up Display (scratchpad)
 rule Onboard sticky=on state=floating rectangle=700x205+480-89 # Virtual keyboard
 rule Plank layer=above border=off
 rule Protonvpn state=floating
-rule firefox desktop='^1'
-#rule Spotify desktop='^5'
-#rule "Spotify (ad-block)" desktop='^5'
+rule qBittorrent desktop='^2'
+rule discord desktop='^4'
+rule firefox -o desktop=^1
+rule stalonetray state=floating manage=off
 #bspc rule -a Spotify:spotify desktop='^󰲥' state=tiled
 #bspc rule -a '*:spotify' desktop='^3' state=tiled
-
 
 # ##############################################################################
 # #                                AUTOSTART APPS                              #
 # ##############################################################################
 
-#"$HOME"/.scripts/bspwm_setup_monitors &
-pgrep -x sxhkd >/dev/null || sxhkd &
-picom -b --experimental-backends &
-#xfce4-panel --disable-wm-check &
-"$HOME"/.config/polybar/launch.sh &
-dunst &     # notification daemon
-run_once unclutter & # Remove mouse when idle
-nitrogen --force-setter=xinerama --restore &
-"$HOME"/.scripts/lockscreen-wallpaper &
-xss-lock -- betterlockscreen -l &
-
-# Run polkit daemon if doesn't started.
-#[ "$(pidof xfce-polkit)" != "" ] || /usr/lib/xfce-polkit/xfce-polkit &
-/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
-
+# Clear cache
 #rm "$HOME"/.cache/dunst.log
-#rm -r "$HOME"/.cache/dunst/
+#rm "$HOME"/.cache/fake_battery_capacity
+#rm "$HOME"/.cache/eww-calendar.lock
+#rm "$HOME"/.cache/eww-escreen.lock
 #rm "$HOME"/.cache/eww-control-center.lock
-pkill eww
-eww daemon
-#eww open notification-popup
-#"$HOME"/.local/bin/eww open bar &
-#xdo lower -N eww-bar
-#"$(which eww)" -c "$HOME"/.config/eww --restart open bar &
-#pkill hotspots
-#hotspots &
-#pkill logs.sh
-#logs.sh &
+#rm -r "$HOME"/.cache/dunst/
+
+# Autostart applications
+#"$HOME"/.config/bspwm/scripts/bspwm_setup_monitors &
+pgrep -x sxhkd > /dev/null || sxhkd &
+pgrep -x plank > /dev/null || plank &
+pgrep -x jgmenu > /dev/null || bspc rule -a jgmenu desktop='^H' state=floating hidden=on && jgmenu --hide-on-startup &
+picom --config "$HOME"/.config/picom/picom.conf &
+rm "$HOME"/.jgmenu-lockfile
+"$HOME"/.config/polybar/launch.sh &
+run_once unclutter & # Remove mouse when idle
+run_once "$HOME"/.scripts/lockscreen-wallpaper &
+run_once xss-lock -- betterlockscreen -l &
+nitrogen --force-setter=xinerama --restore &
+run_once redshift &
+run_once low-bat-notifier &
+pkill persistentQuickUtilities.sh; "$HOME"/.config/bspwm/scripts/persistentQuickUtilities.sh &
+#xfce4-panel --disable-wm-check &
+
+# Start polkit agent
+#[ "$(pidof xfce-polkit)" != "" ] || /usr/lib/xfce-polkit/xfce-polkit &
+run_once /usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1 &
 
 # Volume and brightness indicator (xob)
-# Activate virtual environment
-source "$HOME"/.virtualenvs/bin/activate
+source "$HOME"/.virtualenvs/bin/activate # Activate virtual environment
 run_once "$HOME"/.config/xob/launch.sh &
-## Deactivate virtual environment
-deactivate
+deactivate # Deactivate virtual environment
+
+# Eww
+pkill eww
+eww daemon
+
+xset m 0 0 # Disable mouse drift
+
+pgrep -x plank.sh > /dev/null || plank.sh &
 
 #wmname LG3D # Fixes Java applications
+# Solve java apps issues (e.g. JetBrains IDEs like PyCharm, CLion, etc). #
+#export _JAVA_AWT_WM_NONREPARENTING=1
+
 #export QT_QPA_PLATFORMTHEME="qt5ct" # Use qt5ct to set Qt theme
-run_once low-bat-notifier &
-pkill plank.sh
-plank.sh &
+
+# Start MPD and mpDris2
+#exec mpd &
+#exec mpDris2 &
+
+# Systray
 #run_once signal-desktop --start-in-tray & #--use-tray-icon
 #run_once onboard --not-show-in=DESKTOPS &
+if ! pgrep -x "stalonetray" > /dev/null; then
+    stalonetray &
+fi
 
-declare -a restart=(plank flameshot clipit redshift blueman-applet)
+declare -a restart=(clipit blueman-applet caffeine)
 for i in "${restart[@]}"; do
     pgrep -x "$i" | xargs kill
     sleep 0.5
     eval "$i" &
 done
 
-if [[ ! $(pidof stalonetray) ]]; then
-    stalonetray &
-    sleep 0.5
-    xdo hide -N stalonetray
-    touch "/tmp/syshide.lock"
-fi
-
+while ! pgrep -x "clipit" > /dev/null || ! pgrep -x "blueman-applet" > /dev/null || ! pgrep -x "caffeine" > /dev/null; do
+    #sleep 0.5
+    systray &
+done
+xdo hide -N stalonetray
+touch "/tmp/syshide.lock"
 
 # ##############################################################################
 # #                            CONFIGURATION                                   #
 # ##############################################################################
 
 ## Config
-PANEL_HEIGHT=30
+PANEL_HEIGHT=24
 config top_padding "$PANEL_HEIGHT"
 config honor_size_hints true
 config automatic_scheme alternate
 config initial_polarity second_child
-config pointer_modifier mod1
-#config pointer_modifier mod2
+config pointer_modifier mod4
+config click_to_focus none
 config pointer_action1 move
 config pointer_action2 resize_side
 config pointer_action3 resize_corner
-config focus_follows_pointer false
+config focus_follows_pointer true
 config remove_disabled_monitors true
 config remove_unplugged_monitors true
 config merge_overlapping_monitors true
-config border_width 2
+config border_width 4
+config border_radius 10
 config window_gap 10
 config split_ratio 0.52
 config borderless_monocle true
 config gapless_monocle true
 config swallow_first_click false
-#config pointer_action1 resize_side
-#config pointer_action1 resize_corner
-#config pointer_action3 move
-config normal_border_color "#404040"
+config normal_border_color "#000000"
 config focused_border_color "#000000"
 config active_border_color "#000000"
 config presel_feedback_color "#BF616A"
-#config normal_border_color "#282828"
-#config active_border_color "#ebdbb2"
-#config focused_border_color "#fe8019"
-
 
 # ##############################################################################
-# #                                 MISCELLANEOUS                              #
+# #                            MISCELLANEOUS                                   #
 # ##############################################################################
 
 ## Fullscreen
@@ -215,7 +223,17 @@ bspc subscribe node_state | while read -r _ _ _ _ state flag; do
 done &
 
 ## Title-bar
-pkill -9 title-bar && pkill -9 lemonbar
+rm -rf /tmp/title-bar_debug.log
+rm -rf /tmp/title-bar.lock
+
+processes=("title-bar" "update-title" "lemonbar")
+
+for process in "${processes[@]}"; do
+    if pidof -q "$process"; then
+        pkill -x "$process" > /dev/null; sleep 0.1
+    fi
+done
+
 # Check if title-bar is already running
 if ! pgrep -x "title-bar" >/dev/null; then
     # Create a lock file
@@ -226,12 +244,17 @@ if ! pgrep -x "title-bar" >/dev/null; then
         # Create the lock file
         touch "$lockfile"
 
-        # Start bspc subscribe in the background
-        bspc subscribe | while read; do
-            if ! pgrep -x "title-bar" >/dev/null; then
-                bash "$HOME/.scripts/title-bar" &
-            fi
-        done &
+        # Function to handle BSPWM events
+        handle_bspwm_events() {
+            while read; do
+                if ! pgrep -x "title-bar" >/dev/null; then
+                    bash "$HOME/.scripts/title-bar" &
+                fi
+            done
+        }
+
+        # Start bspc subscribe in the background and pass events to the handler function
+        bspc subscribe | handle_bspwm_events &
 
         # Remove the lock file when the script exits
         trap 'rm -f "$lockfile"' EXIT
@@ -240,4 +263,13 @@ if ! pgrep -x "title-bar" >/dev/null; then
     fi
 fi
 
-config external_rules_command ~/.config/bspwm/scripts/external_rules.sh
+start_dunst() {
+    # stop dunst if it has been started by any application that called notify-send
+    killall -q dunst
+    # Wait until the processes have been shut down
+    while pgrep -u "$UID" -x dunst >/dev/null; do sleep .05; done
+    while ! pgrep -u "$UID" -x dunst >/dev/null; do sleep .05; done
+}
+start_dunst &
+
+config external_rules_command ~/.config/bspwm/scripts/external_rules.sh &
