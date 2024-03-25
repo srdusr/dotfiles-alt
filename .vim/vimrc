@@ -468,7 +468,8 @@ map <leader>r :call RenameFile()<cr>
   augroup END
 
 "-------------------------------------------------------------------------------
-
+"
+" Function to update tmux status
 function! UpdateTmuxStatus()
   if &filetype == "man"
     return
@@ -491,20 +492,16 @@ function! UpdateTmuxStatus()
     let VI_MODE = "" " Clear VI_MODE to show vim mode
     silent execute "!tmux refresh-client -S"
   endif
-
-  " Force tmux to update the status
-  silent execute "!tmux refresh-client -S"
+   silent execute "!tmux refresh-client -S"
 endfunction
 
-augroup TmuxStatus
-  autocmd!
-  autocmd InsertLeave,InsertEnter * call UpdateTmuxStatus()
-  autocmd VimEnter * call UpdateTmuxStatus()
-  autocmd BufEnter * call UpdateTmuxStatus()
-  autocmd ModeChanged * call UpdateTmuxStatus()
-  autocmd WinEnter,WinLeave * call UpdateTmuxStatus()
-augroup END
-
+" Set up autocommands for tmux status update
+if !empty($TMUX) && system('command -v tmux >/dev/null 2>&1') == 0
+  augroup TmuxStatus
+    autocmd!
+    autocmd InsertLeave,InsertEnter,VimEnter,BufEnter,ModeChanged,WinEnter,WinLeave * call UpdateTmuxStatus()
+  augroup END
+endif
 "-------------------------------------------------------------------------------
 
 
