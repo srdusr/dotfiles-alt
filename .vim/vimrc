@@ -15,7 +15,7 @@ nnoremap <C-H> <C-W><C-H>
 " Recent files (MRU)
 nnoremap <leader>m :browse old<cr>
 " Search files by name
-nnoremap <leader>p :find **/**<left>
+"nnoremap <leader>p :find **/**<left>
 " browse files from same dir as current file
 nnoremap <leader>e :e %:p:h<CR>
 
@@ -120,7 +120,7 @@ set smartindent
 " Also load indent files, to automatically do language-dependent indenting.
 filetype plugin indent on
 set exrc
-set number
+set relativenumber
 set hidden
 set noerrorbells
 set nowrap
@@ -413,7 +413,8 @@ endif
 " Try to use a colorscheme plugin
 " but fallback to a default one
 colorscheme desert
-highlight Normal guibg=NONE
+highlight Normal guibg=NONE ctermbg=NONE
+highlight EndOfBuffer ctermfg=NONE ctermbg=NONE
 "set background=dark
 "
 "-------------------------------------------------------------------------------
@@ -499,9 +500,14 @@ endfunction
 if !empty($TMUX) && system('command -v tmux >/dev/null 2>&1') == 0
   augroup TmuxStatus
     autocmd!
-    autocmd InsertLeave,InsertEnter,VimEnter,BufEnter,ModeChanged,WinEnter,WinLeave * call UpdateTmuxStatus()
+    autocmd InsertLeave,InsertEnter * call UpdateTmuxStatus()
+    autocmd VimEnter * call UpdateTmuxStatus()
+    autocmd BufEnter * call UpdateTmuxStatus()
+    autocmd ModeChanged * call UpdateTmuxStatus()
+    autocmd WinEnter,WinLeave * call UpdateTmuxStatus()
   augroup END
 endif
+
 "-------------------------------------------------------------------------------
 
 
