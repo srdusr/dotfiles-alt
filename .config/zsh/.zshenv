@@ -2,42 +2,43 @@
 export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.scripts:$HOME/.scripts/test:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
+export TERM=xterm-256color
 # Skip the not really helpful global compinit
 skip_global_compinit=1
 
-## Conditionally set WM(window manager)
-available_wms=("bspwm" "mutter" "i3")
-for wm in "${available_wms[@]}"; do
-    if command -v "$wm" &> /dev/null; then
-        export WM="$wm"
-        break
-    fi
-done
+### Conditionally set WM(window manager)
+#available_wms=("bspwm" "mutter" "i3")
+#for wm in "${available_wms[@]}"; do
+#    if command -v "$wm" &> /dev/null; then
+#        export WM="$wm"
+#        break
+#    fi
+#done
 
-# Set a flag to indicate if the display server type is found
-display_server_found=0
-
-# Conditionally set Display server
-available_displays=("wayland" "x11")
-for display in "${available_displays[@]}"; do
-    if [ "$WAYLAND_DISPLAY" = "$display" ]; then
-        export XDG_SESSION_TYPE="$display"
-        display_server_found=1
-        break
-    fi
-done
-
-# Check if XDG_SESSION_TYPE is "x11" and set X11-specific variables
-if [ "$display_server_found" -eq 1 ] && [ "$XDG_SESSION_TYPE" == "x11" ]; then
-    # X11-specific variables
-    export XINITRC="$HOME/.config/X11/.xinitrc"
-    export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
-    export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
-    export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
-    export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
-    export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
-    export ICEAUTHORITY="$XDG_CACHE_HOME/.ICEauthority"
-fi
+## Set a flag to indicate if the display server type is found
+#display_server_found=0
+#
+## Conditionally set Display server
+#available_displays=("wayland" "x11")
+#for display in "${available_displays[@]}"; do
+#    if [ "$WAYLAND_DISPLAY" = "$display" ]; then
+#        export XDG_SESSION_TYPE="$display"
+#        display_server_found=1
+#        break
+#    fi
+#done
+#
+## Check if XDG_SESSION_TYPE is "x11" and set X11-specific variables
+#if [ "$display_server_found" -eq 1 ] && [ "$XDG_SESSION_TYPE" == "x11" ]; then
+#    # X11-specific variables
+#    export XINITRC="$HOME/.config/X11/.xinitrc"
+#    export XSERVERRC="$XDG_CONFIG_HOME/X11/xserverrc"
+#    export USERXSESSION="$XDG_CONFIG_HOME/X11/xsession"
+#    export USERXSESSIONRC="$XDG_CONFIG_HOME/X11/xsessionrc"
+#    export ALTUSERXSESSION="$XDG_CONFIG_HOME/X11/Xsession"
+#    export ERRFILE="$XDG_CONFIG_HOME/X11/xsession-errors"
+#    export ICEAUTHORITY="$XDG_CACHE_HOME/.ICEauthority"
+#fi
 
 # Conditionally set default term
 available_terms=("wezterm" "alacritty" "xterm")
