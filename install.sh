@@ -125,16 +125,13 @@ install_zsh_plugins() {
 # Common Sources/Dependencies
 #======================================
 echo ".cfg" >>.gitignore
-
-function config() {
-    /usr/bin/git --git-dir="$HOME/.cfg/" --work-tree="$HOME" "$@" || handle_error "Git command failed: $*"
-}
+echo ".install.sh" >>.gitignore
 
 # Dotfiles
-git clone --bare "$dotfiles_url" "$HOME"/.dotfiles
+git clone --bare "$dotfiles_url" "$HOME"/.cfg
 
 function config {
-    git --git-dir="$HOME"/.dotfiles/ --work-tree="$HOME" "$@"
+    git --git-dir="$HOME"/.cfg/ --work-tree="$HOME" "$@"
 }
 
 std_err_output=$(config checkout 2>&1 >/dev/null) || true
@@ -144,12 +141,12 @@ if [[ $std_err_output == *"following untracked working tree files would be overw
     config checkout 2>&1 |
         egrep "\s+\." |
         awk {'print $1'} |
-        xargs -I% sh -c "mkdir -p '.dotfiles-backup/%';  mv % .dotfiles-backup/%"
+        xargs -I% sh -c "mkdir -p '.cfg-backup/%';  mv % .cfg-backup/%"
 fi
 
 config checkout
 if [ $? == 0 ]; then
-    echo "Successfully backed up conflicting dotfiles in .dotfiles-backup/. and imported dotfiles."
+    echo "Successfully backed up conflicting dotfiles in .cfg-backup/. and imported.cfg."
 else
     echo "Mission failed."
 fi
