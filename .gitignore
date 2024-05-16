@@ -1,5 +1,5 @@
 .cfg
-
+install.sh
 # Ignore Packer's compiled files
 packer_compiled.lua
 
