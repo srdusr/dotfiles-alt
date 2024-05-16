@@ -1,12 +1,26 @@
 # Function to temporarily unset GIT_WORK_TREE
 function git_without_work_tree() {
-    GIT_WORK_TREE_OLD="$GIT_WORK_TREE"
-    unset GIT_WORK_TREE
-    "$@"
-    export GIT_WORK_TREE="$GIT_WORK_TREE_OLD"
+    # Check if the current directory is a Git repository
+    if [ -d "$PWD/.git" ]; then
+        # Check if the current directory is inside the work tree
+        if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
+            # If it's a Git repository and inside the work tree, proceed with unsetting GIT_WORK_TREE
+            GIT_WORK_TREE_OLD="$GIT_WORK_TREE"
+            unset GIT_WORK_TREE
+            "$@"
+            export GIT_WORK_TREE="$GIT_WORK_TREE_OLD"
+        else
+            # If it's a Git repository but not inside the work tree, call git command directly
+            git "$@"
+        fi
+    else
+        # If it's not a Git repository, call git command directly
+        git "$@"
+    fi
 }
 
-alias git='git_without_work_tree git'
+# Set alias conditionally
+alias git='git_without_work_tree'
 
 # Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {

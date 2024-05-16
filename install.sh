@@ -72,6 +72,30 @@ prompt_user() {
     esac
 }
 
+# Function to temporarily unset GIT_WORK_TREE
+function git_without_work_tree() {
+    # Check if the current directory is a Git repository
+    if [ -d "$PWD/.git" ]; then
+        # Check if the current directory is inside the work tree
+        if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
+            # If it's a Git repository and inside the work tree, proceed with unsetting GIT_WORK_TREE
+            GIT_WORK_TREE_OLD="$GIT_WORK_TREE"
+            unset GIT_WORK_TREE
+            "$@"
+            export GIT_WORK_TREE="$GIT_WORK_TREE_OLD"
+        else
+            # If it's a Git repository but not inside the work tree, call git command directly
+            git "$@"
+        fi
+    else
+        # If it's not a Git repository, call git command directly
+        git "$@"
+    fi
+}
+
+# Set alias conditionally
+alias git='git_without_work_tree'
+
 # Check for privilege escalation tools
 #--------------------------------------
 check_privilege_tools() {
@@ -157,13 +181,16 @@ if [[ $std_err_output == *"following untracked working tree files would be overw
     xargs -I% sh -c "mkdir -p '.cfg-backup/%';  mv % .cfg-backup/%"
 fi
 
+config config status.showUntrackedFiles no
+git config --global include.path "~/.gitconfig.aliases"
+
 # Prompt the user if they want to overwrite existing files
 if prompt_user "Do you want to overwrite existing files and continue with the dotfiles setup?"; then
     # Fetch the latest changes from the remote repository
-    git fetch origin main:main
+    config fetch origin main:main
 
     # Reset the local branch to match the main branch in the remote repository
-    git reset --hard main
+    config reset --hard main
     # Proceed with the dotfiles setup
     config checkout -f
     if [ $? == 0 ]; then
@@ -175,9 +202,6 @@ else
     # User chose not to overwrite existing files
     handle_error "Aborted by user. Exiting..."
 fi
-
-config config status.showUntrackedFiles no
-git config --global include.path "~/.gitconfig.aliases"
 
 # Check if necessary dependencies are installed
 #--------------------------------------
@@ -303,7 +327,7 @@ _distro_detect() {
 #------------------------------------------------------------------------------
 
 # Define directories to create
-directories=".cache .config .scripts"
+directories=('.cache' '.config' '.scripts')
 
 # Prompt the user if they want to use user-dirs.dirs
 if prompt_user "Do you want to use the directories specified in user-dirs.dirs?"; then
@@ -633,11 +657,13 @@ install_node() {
 
     echo "Installing Node.js..."
     # Set up environment variables for Node.js installation
-    export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
-    export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
+    #export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
+    #export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
 
     # Install the latest stable version of Node.js using NVM
+    nvm
     nvm install node
+    nvm use node
     nvm install --lts
     nvm alias default lts/* # Set LTS version as default
 
@@ -664,17 +690,29 @@ install_yarn() {
 }
 
 setup_tmux_plugins() {
-    local tpm_dir="$DIR/.tmux/plugins/tpm"
-    if [ -d "$tpm_dir" ] && [ "$(ls -A "$tpm_dir")" ]; then
+    local tpm_dir="$HOME/.config/tmux/plugins/tpm"
+    local plugins_dir="$HOME/.config/tmux/plugins"
+
+    # Ensure the plugins directory exists
+    if [ ! -d "$plugins_dir" ]; then
+        mkdir -p "$plugins_dir"
+    fi
+
+    # Ensure the TPM directory exists
+    if [ ! -d "$tpm_dir" ]; then
+        mkdir -p "$tpm_dir"
+    fi
+
+    if [ "$(ls -A "$tpm_dir")" ]; then
         # TPM is already installed and directory is not empty, so we skip installation.
         echo "TPM has been installed...skipping"
     else
         # If TPM directory doesn't exist or is empty, we proceed with installation.
         if [ -d "$tpm_dir" ]; then
-            rmdir "$tpm_dir"
+            rm -rf "$tpm_dir" # Remove existing directory if it exists
         fi
         echo "Installing TPM..."
-        cd && git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
+        git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
     fi
 }
 
