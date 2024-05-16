@@ -230,7 +230,7 @@ export NVM_DIR="$HOME/.config/nvm"
 #if command -v yarn >/dev/null 2>&1; then
 #    export PATH="$PATH:`yarn global bin`"
 #fi
-export PATH="$(yarn global bin):$PATH"
+#export PATH="$(yarn global bin):$PATH"
 #YARN_PATH="$HOME/.yarn/bin"
 #YARN_BIN_EXPORT="$HOME/.config/yarn/global/node_modules/.bin"
 
