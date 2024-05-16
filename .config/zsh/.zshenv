@@ -140,8 +140,6 @@ export GPG_TTY=$(tty)
 export NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 # Fzf
-export PATH="$PATH:/usr/local/bin/fzf/bin"
-export FZF_BASE="/usr/local/bin/fzf"
 export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!{node_modules/*,.git/*}'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
@@ -230,7 +228,7 @@ export NVM_DIR="$HOME/.config/nvm"
 
 # Yarn
 if command -v yarn >/dev/null 2>&1; then
-  export PATH="$PATH:`yarn global bin`"
+    export PATH="$PATH:`yarn global bin`"
 fi
 
 # Ruby
