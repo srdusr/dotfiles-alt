@@ -43,8 +43,16 @@ stty start undef
 #source /usr/share/nvm/init-nvm.sh
 
 # Load fzf keybindings and completion
-source /usr/local/bin/fzf/shell/key-bindings.zsh
-source /usr/local/bin/fzf/shell/completion.zsh
+#source /usr/local/bin/fzf/shell/key-bindings.zsh
+#source /usr/local/bin/fzf/shell/completion.zsh
+
+if command -v fzf > /dev/null 2>&1; then
+    FZF_BASE=$(dirname $(dirname $(which fzf)))
+    source "${FZF_BASE}/shell/key-bindings.zsh"
+    source "${FZF_BASE}/shell/completion.zsh"
+else
+    echo "fzf not found, please install it to use fzf keybindings and completion."
+fi
 
 # Suggest aliases for commands
 source ~/.config/zsh/plugins/zsh-you-should-use/you-should-use.plugin.zsh
