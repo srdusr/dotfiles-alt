@@ -1,3 +1,12 @@
+# Function to temporarily unset GIT_WORK_TREE
+function git_without_work_tree() {
+    GIT_WORK_TREE_OLD="$GIT_WORK_TREE"
+    unset GIT_WORK_TREE
+    "$@"
+    export GIT_WORK_TREE="$GIT_WORK_TREE_OLD"
+}
+
+alias git='git_without_work_tree git'
 
 # Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {
@@ -122,11 +131,47 @@ mkcd () {
     mkdir -p "$1"
     cd "$1"
 }
+
+bak() {
+    if [[ -e "$1" ]]; then
+        echo "Found: $1"
+        mv "${1%.*}"{,.bak}
+    elif [[ -e "$1.bak" ]]; then
+        echo "Found: $1.bak"
+        mv "$1"{.bak,}
+    fi
+}
+
 back() {
     for file in "$@"; do
-        cp "$file" "$file".bak
+        cp -r "$file" "$file".bak
     done
 }
+
+# tre is a shorthand for tree
+tre() {
+    tree -aC -I \
+        '.git|.hg|.svn|.tmux|.backup|.vim-backup|.swap|.vim-swap|.undo|.vim-undo|*.bak|tags' \
+        --dirsfirst "$@" \
+        | less
+}
+
+# switch from/to project/package dir
+pkg() {
+    if [ "$#" -eq 2 ]; then
+        ln -s "$(readlink -f $1)" "$(readlink -f $2)"/._pkg
+        ln -s "$(readlink -f $2)" "$(readlink -f $1)"/._pkg
+    else
+        cd "$(readlink -f ./._pkg)"
+    fi
+}
+
+# Prepare C/C++ project for Language Server Protoco
+lsp-prep() {
+    (cd build && cmake .. -DCMAKE_EXPORT_COMPILE_COMMANDS=ON) \
+        && ln -sf build/compile_commands.json
+}
+
 reposize() {
     url=`echo $1 \
         | perl -pe 's#(?:https?://github.com/)([\w\d.-]+\/[\w\d.-]+).*#\1#g' \
@@ -372,10 +417,17 @@ fpop() {
     d | fzf --height="20%" | cut -f 1 | source /dev/stdin
 }
 
+ip() {
+  emulate -LR zsh
 
-function ip() {
-    network=`current_networkservice`
-    networksetup -getinfo $network | grep '^IP address' | awk -F: '{print $2}' | sed 's/ //g'
+  if [[ $1 == 'get' ]]; then
+    res=$(curl -s ipinfo.io/ip)
+    echo -n $res | xsel --clipboard
+    echo "copied $res to clipboard"
+  # only run ip if it exists
+  elif (( $+commands[ip] )); then
+    command ip $*
+  fi
 }
 
 ssh-create() {
@@ -486,99 +538,7 @@ matrix() {
     # Restore terminal state
     restore_terminal
 }
-# Follow this page to avoid enter password
-# http://apple.stackexchange.com/questions/236806/prevent-networksetup-from-asking-for-password
-function proxy() {
-    network=`current_networkservice`
-    if [ -z network ]; then
-        echo "Unrecognized network"
-        return 1
-    fi
 
-    case "$1" in
-    on)
-        networksetup -setwebproxystate $network on;
-        networksetup -setsecurewebproxystate $network on;
-        networksetup -setwebproxy $network 127.0.0.1 8888;
-        networksetup -setsecurewebproxy $network 127.0.0.1 8888;
-        networksetup -setautoproxystate $network off;
-        networksetup -setsocksfirewallproxystate $network off;
-        ;;
-    g)
-        networksetup -setwebproxystate $network off;
-        networksetup -setsecurewebproxystate  $network off;
-        networksetup -setautoproxystate $network off;
-        networksetup -setsocksfirewallproxy "$network" localhost 14179
-        ;;
-    off)
-        networksetup -setwebproxystate $network off;
-        networksetup -setsecurewebproxystate  $network off;
-        networksetup -setautoproxystate $network off;
-        networksetup -setsocksfirewallproxystate $network off;
-        ;;
-    s)
-        socks_status=$(networksetup -getsocksfirewallproxy $network | head -n 3;)
-        socks_enable=$(echo $socks_status | head -n 1 | awk '{print $2}')
-        socks_ip=$(echo $socks_status | head -n 2 | tail -n 1 | awk '{print $2}')
-        socks_port=$(echo $socks_status | tail -n 1 | awk '{print $2}')
-
-        if [ "$socks_enable" = "Yes" ]; then
-            echo -e "${green}Socks: ✔${NC}" $socks_ip ":" $socks_port
-        else
-            echo -e "${RED}Socks: ✘${NC}" $socks_ip ":" $socks_port
-        fi
-
-        http_status=$(networksetup -getwebproxy $network | head -n 3)
-        http_enable=$(echo $http_status | head -n 1 | awk '{print $2}')
-        http_ip=$(echo $http_status | head -n 2 | tail -n 1 | awk '{print $2}')
-        http_port=$(echo $http_status | tail -n 1 | awk '{print $2}')
-
-        if [ "$http_enable" = "Yes" ]; then
-            echo -e "${green}HTTP : ✔${NC}" $http_ip ":" $http_port
-        else
-            echo -e "${RED}HTTP : ✘${NC}" $http_ip ":" $http_port
-        fi
-
-        https_status=$(networksetup -getsecurewebproxy $network | head -n 3)
-        https_enable=$(echo $https_status | head -n 1 | awk '{print $2}')
-        https_ip=$(echo $https_status | head -n 2 | tail -n 1 | awk '{print $2}')
-        https_port=$(echo $https_status | tail -n 1 | awk '{print $2}')
-
-        if [ "$https_enable" = "Yes" ]; then
-            echo -e "${green}HTTPS: ✔${NC}" $https_ip ":" $https_port
-        else
-            echo -e "${RED}HTTPS: ✘${NC}" $https_ip ":" $https_port
-        fi
-        ;;
-    *)
-        echo "Usage: p {on|off|g|s}"
-        echo "p on : Set proxy to Charles(port 8888)"
-        echo "p off: Reset proxy to system default"
-        echo "p g  : Set proxy to GoAgentx(port 14179)"
-        echo "p s  : Show current network proxy status"
-        echo "p *  : Show usage"
-        ;;
-    esac
-}
-## Enable/Disable proxy
-function proxyon() {
-  # local host_port='127.0.0.1:8080'
-  export all_proxy="socks5://127.0.0.1:7891"
-  export http_proxy=$all_proxy
-  export https_proxy=$all_proxy
-  git config --global http.proxy $https_proxy
-  git config --global https.proxy $https_proxy
-  echo "proxy = \"$all_proxy\"" >! $HOME/.config/curl/config
-}
-
-function proxyoff() {
-  export all_proxy=''
-  export http_proxy=''
-  export https_proxy=''
-  git config --global http.proxy ''
-  git config --global https.proxy ''
-  echo '' >! $HOME/.config/curl/config
-}
 ## Reload shell
 function reload() {
   local compdump_files="$ZDOTDIR/.zcompdump*"
@@ -641,27 +601,84 @@ openSession () {
     tmux resize-pane -U 5
 }
 
-# Extract with one command
-extract () {
-    if [ -f $1 ] ; then
-        case $1 in
-            *.tar.bz2)   tar xjf $1        ;;
-            *.tar.gz)    tar xzf $1     ;;
-            *.bz2)       bunzip2 $1       ;;
-            *.rar)       rar x $1     ;;
-            *.gz)        gunzip $1     ;;
-            *.tar)       tar xf $1        ;;
-            *.tbz2)      tar xjf $1      ;;
-            *.tgz)       tar xzf $1       ;;
-            *.zip)       unzip $1     ;;
-            *.Z)         uncompress $1  ;;
-            *.7z)        7z x $1    ;;
-            *)           echo "'$1' cannot be extracted via extract()" ;;
+# archive compress
+compress() {
+    if [[ -n "$1" ]]; then
+        local file=$1
+        shift
+        case "$file" in
+            *.tar ) tar cf "$file" "$*" ;;
+            *.tar.bz2 ) tar cjf "$file" "$*" ;;
+            *.tar.gz ) tar czf "$file" "$*" ;;
+            *.tgz ) tar czf "$file" "$*" ;;
+            *.zip ) zip "$file" "$*" ;;
+            *.rar ) rar "$file" "$*" ;;
+            * ) tar zcvf "$file.tar.gz" "$*" ;;
+        esac
+    else
+        echo 'usage: compress <foo.tar.gz> ./foo ./bar'
+    fi
+}
+
+# archive extract
+extract() {
+    if [[ -f "$1" ]] ; then
+        local filename=$(basename "$1")
+        local foldername=${filename%%.*}
+        local fullpath=$(perl -e 'use Cwd "abs_path";print abs_path(shift)' "$1")
+        local didfolderexist=false
+        if [[ -d "$foldername" ]]; then
+            didfolderexist=true
+            read -p "$foldername already exists, do you want to overwrite it? (y/n) " -n 1
+            echo
+            if [[ "$REPLY" =~ ^[Nn]$ ]]; then
+                return
+            fi
+        fi
+        mkdir -p "$foldername" && cd "$foldername"
+        case "$1" in
+            *.tar.bz2) tar xjf "$fullpath" ;;
+            *.tar.gz) tar xzf "$fullpath" ;;
+            *.tar.xz) tar Jxvf "$fullpath" ;;
+            *.tar.Z) tar xzf "$fullpath" ;;
+            *.tar) tar xf "$fullpath" ;;
+            *.taz) tar xzf "$fullpath" ;;
+            *.tb2) tar xjf "$fullpath" ;;
+            *.tbz) tar xjf "$fullpath" ;;
+            *.tbz2) tar xjf "$fullpath" ;;
+            *.tgz) tar xzf "$fullpath" ;;
+            *.txz) tar Jxvf "$fullpath" ;;
+            *.zip) unzip "$fullpath" ;;
+            *) echo "'$1' cannot be extracted via extract()" \
+                && cd .. \
+                && ! "$didfolderexist" \
+                && rm -r "$foldername" ;;
         esac
     else
         echo "'$1' is not a valid file"
     fi
 }
+## Extract with one command
+#extract () {
+#    if [ -f $1 ] ; then
+#        case $1 in
+#            *.tar.bz2)   tar xjf $1        ;;
+#            *.tar.gz)    tar xzf $1     ;;
+#            *.bz2)       bunzip2 $1       ;;
+#            *.rar)       rar x $1     ;;
+#            *.gz)        gunzip $1     ;;
+#            *.tar)       tar xf $1        ;;
+#            *.tbz2)      tar xjf $1      ;;
+#            *.tgz)       tar xzf $1       ;;
+#            *.zip)       unzip $1     ;;
+#            *.Z)         uncompress $1  ;;
+#            *.7z)        7z x $1    ;;
+#            *)           echo "'$1' cannot be extracted via extract()" ;;
+#        esac
+#    else
+#        echo "'$1' is not a valid file"
+#    fi
+#}
 
 ports() {
     local result
