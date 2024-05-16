@@ -227,9 +227,11 @@ export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Yarn
-if command -v yarn >/dev/null 2>&1; then
-    export PATH="$PATH:`yarn global bin`"
-fi
+#if command -v yarn >/dev/null 2>&1; then
+#    export PATH="$PATH:`yarn global bin`"
+#fi
+YARN_PATH="$HOME/.yarn/bin"
+YARN_BIN_EXPORT="$HOME/.config/yarn/global/node_modules/.bin"
 
 # Ruby
 export GEM_PATH="$XDG_DATA_HOME/ruby/gems"
