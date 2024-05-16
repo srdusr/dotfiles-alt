@@ -417,18 +417,18 @@ fpop() {
     d | fzf --height="20%" | cut -f 1 | source /dev/stdin
 }
 
-ip() {
-  emulate -LR zsh
-
-  if [[ $1 == 'get' ]]; then
-    res=$(curl -s ipinfo.io/ip)
-    echo -n $res | xsel --clipboard
-    echo "copied $res to clipboard"
-  # only run ip if it exists
-  elif (( $+commands[ip] )); then
-    command ip $*
-  fi
-}
+#ip() {
+#  emulate -LR zsh
+#
+#  if [[ $1 == 'get' ]]; then
+#    res=$(curl -s ipinfo.io/ip)
+#    echo -n $res | xsel --clipboard
+#    echo "copied $res to clipboard"
+#  # only run ip if it exists
+#  elif (( $+commands[ip] )); then
+#    command ip $*
+#  fi
+#}
 
 ssh-create() {
     if [ ! -z "$1" ]; then
