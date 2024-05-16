@@ -451,6 +451,18 @@ linux_install_packages() {
     # Read the package manager type detected by _distro_detect()
     case "$_distro" in
     "PACMAN")
+        function install_yay {
+            if [[ -x $(command -v yay) ]]; then
+                return
+            fi
+            git clone https://aur.archlinux.org/yay.git
+            cd yay
+            makepkg -si
+            cd ..
+            rm -rf yay
+        }
+        install_yay
+
         # Installation using Pacman
         while IFS= read -r package; do
             if ! pacman -Q "$package" &>/dev/null; then
@@ -460,17 +472,20 @@ linux_install_packages() {
             fi
         done <packages.txt
 
-        # Use Yay for failed packages
-        if [ ${#failed_packages[@]} -gt 0 ] && command -v yay &>/dev/null; then
-            local new_failed_packages=()
+        if [ ${#failed_packages[@]} -gt 0 ]; then
+            echo "Failed to install the following packages:"
+            printf '%s\n' "${failed_packages[@]}"
+
+            # Install failed AUR packages using yay
             for package in "${failed_packages[@]}"; do
                 if ! yay -Q "$package" &>/dev/null; then
                     if ! yay --aur -S --noconfirm "$package"; then
-                        new_failed_packages+=("$package")
+                        echo "Failed to install $package using yay."
                     fi
                 fi
             done
-            failed_packages=("${new_failed_packages[@]}")
+        else
+            echo ""
         fi
         ;;
     "DPKG")
@@ -517,6 +532,7 @@ linux_install_packages() {
         echo "Package manager not supported."
         ;;
     esac
+
     # Print failed packages if any
     if [ ${#failed_packages[@]} -gt 0 ]; then
         echo "Failed to install the following packages:"
@@ -525,7 +541,6 @@ linux_install_packages() {
         echo "All packages installed successfully."
     fi
 }
-
 # Install Rust using rustup
 install_rust() {
     if command -v "rustup" &>/dev/null; then
@@ -599,12 +614,12 @@ install_yarn() {
     if command -v yarn &>/dev/null; then
         echo "Yarn is already installed."
         return
+    else
+        echo "Installing Yarn..."
+        # Install Yarn using npm
+        curl -o- -L https://yarnpkg.com/install.sh | bash
+        echo "Yarn installation completed successfully."
     fi
-
-    echo "Installing Yarn..."
-    # Install Yarn using npm
-    curl -o- -L https://yarnpkg.com/install.sh | bash
-    echo "Yarn installation completed successfully."
 }
 
 setup_tmux_plugins() {
