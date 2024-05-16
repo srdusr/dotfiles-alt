@@ -46,8 +46,9 @@ stty start undef
 #source /usr/local/bin/fzf/shell/key-bindings.zsh
 #source /usr/local/bin/fzf/shell/completion.zsh
 
+# Load fzf keybindings and completion if fzf is installed
 if command -v fzf > /dev/null 2>&1; then
-    FZF_BASE=$(dirname $(dirname $(which fzf)))
+    FZF_BASE="/usr/share/fzf"
     source "${FZF_BASE}/shell/key-bindings.zsh"
     source "${FZF_BASE}/shell/completion.zsh"
 else
