@@ -66,9 +66,9 @@ prompt_user() {
     echo
 
     case "${response^^}" in
-    Y) return 0 ;;
-    N) return 1 ;;
-    *) handle_error "Invalid choice. Exiting..." && exit ;;
+        Y) return 0 ;;
+        N) return 1 ;;
+        *) handle_error "Invalid choice. Exiting..." && exit ;;
     esac
 }
 
@@ -91,9 +91,9 @@ check_privilege_tools() {
         printf "\nAttempt to continue Installation (might fail without a privilege escalation tool)? [yes/no] "
         read continue_choice
         case $continue_choice in
-        [Yy] | [Yy][Ee][Ss]) ;;
-        [Nn] | [Nn][Oo]) exit ;;
-        *) handle_error "Invalid choice. Exiting..." && exit ;;
+            [Yy] | [Yy][Ee][Ss]) ;;
+            [Nn] | [Nn][Oo]) exit ;;
+            *) handle_error "Invalid choice. Exiting..." && exit ;;
         esac
     fi
 }
@@ -152,9 +152,9 @@ std_err_output=$(config checkout 2>&1 >/dev/null) || true
 if [[ $std_err_output == *"following untracked working tree files would be overwritten"* ]]; then
     echo "Backing up pre-existing dot files."
     config checkout 2>&1 |
-        egrep "\s+\." |
-        awk {'print $1'} |
-        xargs -I% sh -c "mkdir -p '.cfg-backup/%';  mv % .cfg-backup/%"
+    egrep "\s+\." |
+    awk {'print $1'} |
+    xargs -I% sh -c "mkdir -p '.cfg-backup/%';  mv % .cfg-backup/%"
 fi
 
 # Prompt the user if they want to overwrite existing files
@@ -236,34 +236,34 @@ _distro_detect() {
     if [ -f /etc/os-release ]; then
         source /etc/os-release
         case "$ID" in
-        "arch")
-            _distro="PACMAN"
-            return
-            ;;
-        "debian")
-            _distro="DPKG"
-            return
-            ;;
-        "ubuntu")
-            _distro="DPKG"
-            return
-            ;;
-        "centos")
-            _distro="YUM"
-            return
-            ;;
-        "fedora")
-            _distro="YUM"
-            return
-            ;;
-        "opensuse" | "suse")
-            _distro="ZYPPER"
-            return
-            ;;
-        "gentoo")
-            _distro="PORTAGE"
-            return
-            ;;
+            "arch")
+                _distro="PACMAN"
+                return
+                ;;
+            "debian")
+                _distro="DPKG"
+                return
+                ;;
+            "ubuntu")
+                _distro="DPKG"
+                return
+                ;;
+            "centos")
+                _distro="YUM"
+                return
+                ;;
+            "fedora")
+                _distro="YUM"
+                return
+                ;;
+            "opensuse" | "suse")
+                _distro="ZYPPER"
+                return
+                ;;
+            "gentoo")
+                _distro="PORTAGE"
+                return
+                ;;
         esac
     fi
 
@@ -421,126 +421,161 @@ done
 # Update system
 linux_update_system() {
     case "$_distro" in
-    "PACMAN")
-        "$PRIVILEGE_TOOL" pacman -Syyy && "$PRIVILEGE_TOOL" pacman -Syu --noconfirm
-        ;;
-    "DPKG")
-        "$PRIVILEGE_TOOL" apt-get update && "$PRIVILEGE_TOOL" apt-get upgrade -y
-        ;;
-    "YUM")
-        "$PRIVILEGE_TOOL" yum update -y
-        ;;
-    "ZYPPER")
-        "$PRIVILEGE_TOOL" zypper --non-interactive update
-        ;;
-    "PORTAGE")
-        "$PRIVILEGE_TOOL" emerge --sync && "$PRIVILEGE_TOOL" emerge --ask --update --deep --newuse @world
-        ;;
-    *)
-        echo "Package manager not supported."
-        ;;
+        "PACMAN")
+            "$PRIVILEGE_TOOL" pacman -Syyy && "$PRIVILEGE_TOOL" pacman -Syu --noconfirm
+            ;;
+        "DPKG")
+            "$PRIVILEGE_TOOL" apt-get update && "$PRIVILEGE_TOOL" apt-get upgrade -y
+            ;;
+        "YUM")
+            "$PRIVILEGE_TOOL" yum update -y
+            ;;
+        "ZYPPER")
+            "$PRIVILEGE_TOOL" zypper --non-interactive update
+            ;;
+        "PORTAGE")
+            "$PRIVILEGE_TOOL" emerge --sync && "$PRIVILEGE_TOOL" emerge --ask --update --deep --newuse @world
+            ;;
+        *)
+            echo "Package manager not supported."
+            ;;
     esac
 }
 
 #------------------------------------------------------------------------------
 
-# Install packages
 linux_install_packages() {
     local failed_packages=()
+    local any_failures=false # Flag to track if any packages failed to install
 
     # Read the package manager type detected by _distro_detect()
     case "$_distro" in
-    "PACMAN")
-        function install_yay {
-            if [[ -x $(command -v yay) ]]; then
-                return
-            fi
-            git clone https://aur.archlinux.org/yay.git
-            cd yay
-            makepkg -si
-            cd ..
-            rm -rf yay
-        }
-        install_yay
-
-        # Installation using Pacman
-        while IFS= read -r package; do
-            if ! pacman -Q "$package" &>/dev/null; then
-                if ! "$PRIVILEGE_TOOL" pacman -S --noconfirm "$package"; then
-                    failed_packages+=("$package")
+        "PACMAN")
+            function install_yay {
+                if [[ -x $(command -v yay) ]]; then
+                    return
                 fi
-            fi
-        done <packages.txt
+                git clone https://aur.archlinux.org/yay.git
+                cd yay || exit
+                makepkg -si
+                cd ..
+                rm -rf yay
+            }
+            install_yay
 
-        if [ ${#failed_packages[@]} -gt 0 ]; then
-            echo "Failed to install the following packages:"
-            printf '%s\n' "${failed_packages[@]}"
+            # Installation using Pacman
+            while IFS= read -r package; do
+                # Skip empty lines
+                if [[ -z "$package" ]]; then
+                    continue
+                fi
 
-            # Install failed AUR packages using yay
-            for package in "${failed_packages[@]}"; do
-                if ! yay -Q "$package" &>/dev/null; then
-                    if ! yay --aur -S --noconfirm "$package"; then
-                        echo "Failed to install $package using yay."
+                if ! pacman -Q "$package" &>/dev/null; then
+                    if ! "$PRIVILEGE_TOOL" pacman -S --noconfirm "$package"; then
+                        failed_packages+=("$package")
+                        any_failures=true # Set flag to true if any package fails to install
                     fi
                 fi
-            done
-        else
-            echo ""
-        fi
-        ;;
-    "DPKG")
-        # Try installing packages with dpkg
-        while IFS= read -r package; do
-            if ! dpkg-query -W "$package" &>/dev/null; then
-                if ! "$PRIVILEGE_TOOL" apt-get install -y "$package"; then
-                    failed_packages+=("$package")
-                fi
-            fi
-        done <packages.txt
-        ;;
-    "YUM")
-        # Try installing packages with yum
-        while IFS= read -r package; do
-            if ! rpm -q "$package" &>/dev/null; then
-                if ! "$PRIVILEGE_TOOL" yum install -y "$package"; then
-                    failed_packages+=("$package")
-                fi
-            fi
-        done <packages.txt
-        ;;
-    "ZYPPER")
-        # Try installing packages with zypper
-        while IFS= read -r package; do
-            if ! rpm -q "$package" &>/dev/null; then
-                if ! "$PRIVILEGE_TOOL" zypper --non-interactive install "$package"; then
-                    failed_packages+=("$package")
-                fi
-            fi
-        done <packages.txt
-        ;;
-    "PORTAGE")
-        # Try installing packages with emerge
-        while IFS= read -r package; do
-            if ! equery list "$package" &>/dev/null; then
-                if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
-                    failed_packages+=("$package")
-                fi
-            fi
-        done <packages.txt
-        ;;
-    *)
-        echo "Package manager not supported."
-        ;;
-    esac
+            done <packages.txt
 
-    # Print failed packages if any
-    if [ ${#failed_packages[@]} -gt 0 ]; then
-        echo "Failed to install the following packages:"
-        printf '%s\n' "${failed_packages[@]}"
-    else
-        echo "All packages installed successfully."
-    fi
+            if [[ "$any_failures" = "true" ]]; then
+                echo "Failed to install the following packages:"
+                for package in "${failed_packages[@]}"; do
+                    if ! pacman -Q "$package" &>/dev/null && ! yay -Q "$package" &>/dev/null; then
+                        if [[ -x "$(command -v yay)" ]]; then
+                            echo "Trying to install $package from AUR using yay..."
+                            if yay -S --noconfirm "$package"; then
+                                echo "Successfully installed $package from AUR."
+                            else
+                                echo "Failed to install $package from AUR."
+                            fi
+                        else
+                            echo "Failed to install $package using the default package manager."
+                        fi
+                    fi
+                done
+            else
+                echo "All packages installed successfully."
+            fi
+            ;;
+        "DPKG")
+            # Try installing packages with dpkg
+            while IFS= read -r package; do
+                if ! dpkg-query -W "$package" &>/dev/null; then
+                    if ! "$PRIVILEGE_TOOL" apt-get install -y "$package"; then
+                        failed_packages+=("$package")
+                        any_failures=true # Set flag to true if any package fails to install
+                    fi
+                fi
+            done <packages.txt
+
+            if "$any_failures"; then
+                echo "Failed to install the following packages:"
+                printf '%s\n' "${failed_packages[@]}"
+            else
+                echo "All packages installed successfully."
+            fi
+            ;;
+        "YUM")
+            # Try installing packages with yum
+            while IFS= read -r package; do
+                if ! rpm -q "$package" &>/dev/null; then
+                    if ! "$PRIVILEGE_TOOL" yum install -y "$package"; then
+                        failed_packages+=("$package")
+                        any_failures=true # Set flag to true if any package fails to install
+                    fi
+                fi
+            done <packages.txt
+
+            if "$any_failures"; then
+                echo "Failed to install the following packages:"
+                printf '%s\n' "${failed_packages[@]}"
+            else
+                echo "All packages installed successfully."
+            fi
+            ;;
+        "ZYPPER")
+            # Try installing packages with zypper
+            while IFS= read -r package; do
+                if ! rpm -q "$package" &>/dev/null; then
+                    if ! "$PRIVILEGE_TOOL" zypper --non-interactive install "$package"; then
+                        failed_packages+=("$package")
+                        any_failures=true # Set flag to true if any package fails to install
+                    fi
+                fi
+            done <packages.txt
+
+            if "$any_failures"; then
+                echo "Failed to install the following packages:"
+                printf '%s\n' "${failed_packages[@]}"
+            else
+                echo "All packages installed successfully."
+            fi
+            ;;
+        "PORTAGE")
+            # Try installing packages with emerge
+            while IFS= read -r package; do
+                if ! equery list "$package" &>/dev/null; then
+                    if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
+                        failed_packages+=("$package")
+                        any_failures=true # Set flag to true if any package fails to install
+                    fi
+                fi
+            done <packages.txt
+
+            if "$any_failures"; then
+                echo "Failed to install the following packages:"
+                printf '%s\n' "${failed_packages[@]}"
+            else
+                echo "All packages installed successfully."
+            fi
+            ;;
+        *)
+            echo "Package manager not supported."
+            ;;
+    esac
 }
+
 # Install Rust using rustup
 install_rust() {
     if command -v "rustup" &>/dev/null; then
@@ -560,21 +595,21 @@ install_nvm() {
     if [ ! -d "$NVM_DIR" ]; then
         mkdir -p "$NVM_DIR"
     fi
-    echo "Installing Node Version Manager (NVM)..."
-
-    # Download and install NVM script
-    if ! command -v nvm &>/dev/null; then
-        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.1/install.sh | bash
+    # Download and install or update NVM script
+    if command -v nvm &>/dev/null; then
+        echo "Updating Node Version Manager (NVM)..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
     else
-        echo "NVM is already installed."
+        echo "Installing Node Version Manager (NVM)..."
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/master/install.sh | bash
     fi
-
     # Source NVM script to enable it in the current shell
     if [ -s "$NVM_DIR/nvm.sh" ]; then
         echo "Sourcing NVM script..."
         . "$NVM_DIR/nvm.sh"
     else
         echo "NVM script not found. Make sure installation was successful."
+        return 1
     fi
 
     # Verify installation
@@ -585,28 +620,28 @@ install_nvm() {
         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
     else
         echo "NVM installation failed."
+        return 1
     fi
 }
 
 install_node() {
     # Check if Node.js is already installed
-    node -v &>/dev/null
-    if [ $? == "0" ]; then
+    if ! command -v node &>/dev/null; then
         echo "Node.js is already installed."
-    else
-        echo "Installing Node.js..."
-        # Set up environment variables for Node.js installation
-        export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
-        export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
-
-        # Install the latest stable version of Node.js using NVM
-        #nvm install stable
-        #nvm use stable
-        #nvm alias default stable
-        nvm install --lts
-        nvm install node
-        echo "Node.js installation completed successfully."
+        return
     fi
+
+    echo "Installing Node.js..."
+    # Set up environment variables for Node.js installation
+    export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
+    export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
+
+    # Install the latest stable version of Node.js using NVM
+    nvm install node
+    nvm install --lts
+    nvm alias default lts/* # Set LTS version as default
+
+    echo "Node.js installation completed successfully."
 }
 
 install_yarn() {
@@ -614,22 +649,32 @@ install_yarn() {
     if command -v yarn &>/dev/null; then
         echo "Yarn is already installed."
         return
-    else
-        echo "Installing Yarn..."
-        # Install Yarn using npm
-        curl -o- -L https://yarnpkg.com/install.sh | bash
-        echo "Yarn installation completed successfully."
     fi
+
+    # Check if the .yarn directory exists
+    if [ -d "$HOME/.yarn" ]; then
+        echo "Removing existing .yarn directory..."
+        rm -rf "$HOME/.yarn"
+    fi
+
+    echo "Installing Yarn..."
+    # Install Yarn using npm
+    curl -o- -L https://yarnpkg.com/install.sh | bash
+    echo "Yarn installation completed successfully."
 }
 
 setup_tmux_plugins() {
-    if [ "$(ls -A "$DIR")" ]; then
-        # if we have TPM already we skip it.
+    local tpm_dir="$DIR/.tmux/plugins/tpm"
+    if [ -d "$tpm_dir" ] && [ "$(ls -A "$tpm_dir")" ]; then
+        # TPM is already installed and directory is not empty, so we skip installation.
         echo "TPM has been installed...skipping"
     else
-        # if we don't have TPM we install it.
-        echo "TPM has been installed"
-        git clone https://github.com/tmux-plugins/tpm ~/.tmux/plugins/tpm
+        # If TPM directory doesn't exist or is empty, we proceed with installation.
+        if [ -d "$tpm_dir" ]; then
+            rmdir "$tpm_dir"
+        fi
+        echo "Installing TPM..."
+        cd && git clone https://github.com/tmux-plugins/tpm "$tpm_dir"
     fi
 }
 
@@ -703,18 +748,18 @@ main_installation() {
     echo "Starting main installation..."
 
     case "$OSTYPE" in
-    linux-gnu*)
-        linux_specific_steps
-        ;;
-    darwin*)
-        macos_specific_steps
-        ;;
-    msys* | cygwin*)
-        windows_specific_steps
-        ;;
-    *)
-        handle_error "Unsupported operating system."
-        ;;
+        linux-gnu*)
+            linux_specific_steps
+            ;;
+        darwin*)
+            macos_specific_steps
+            ;;
+        msys* | cygwin*)
+            windows_specific_steps
+            ;;
+        *)
+            handle_error "Unsupported operating system."
+            ;;
     esac
 
     sleep 1
