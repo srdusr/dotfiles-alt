@@ -14,6 +14,19 @@ dotfiles_url='https://github.com/srdusr/dotfiles.git'
 
 # Log file
 LOG_FILE="dotfiles.log"
+TRASH_DIR="$HOME/.local/share/Trash"
+
+# Ensure Trash directory exists
+if [ ! -d "$TRASH_DIR" ]; then
+    mkdir -p "$TRASH_DIR"
+    if [ $? -ne 0 ]; then
+        echo "Failed to create Trash directory. Exiting..."
+        exit 1
+    fi
+fi
+
+# Move log file to Trash directory
+mv -f "$LOG_FILE" "$TRASH_DIR/"
 
 # Redirect stderr to both stderr and log file
 exec 2> >(tee -a "$LOG_FILE")
@@ -144,15 +157,28 @@ if [[ $std_err_output == *"following untracked working tree files would be overw
         xargs -I% sh -c "mkdir -p '.cfg-backup/%';  mv % .cfg-backup/%"
 fi
 
-config checkout
-if [ $? == 0 ]; then
-    echo "Successfully backed up conflicting dotfiles in .cfg-backup/. and imported.cfg."
+# Prompt the user if they want to overwrite existing files
+if prompt_user "Do you want to overwrite existing files and continue with the dotfiles setup?"; then
+    # Fetch the latest changes from the remote repository
+    git fetch origin main:main
+
+    # Reset the local branch to match the main branch in the remote repository
+    git reset --hard main
+    # Proceed with the dotfiles setup
+    config checkout -f
+    if [ $? == 0 ]; then
+        echo "Successfully backed up conflicting dotfiles in .cfg-backup/. and imported.cfg.\n"
+    else
+        handle_error "Mission failed.\n"
+    fi
 else
-    echo "Mission failed."
+    # User chose not to overwrite existing files
+    handle_error "Aborted by user. Exiting..."
 fi
 
 config config status.showUntrackedFiles no
 git config --global include.path "~/.gitconfig.aliases"
+
 # Check if necessary dependencies are installed
 #--------------------------------------
 # Download dependencies (wget/curl)
@@ -284,7 +310,7 @@ if prompt_user "Do you want to use the directories specified in user-dirs.dirs?"
     # Check if ~/.config/user-dirs.dirs exists
     config_dirs_file="$HOME/.config/user-dirs.dirs"
     if [ -f "$config_dirs_file" ]; then
-        echo "Config file $config_dirs_file exists. Proceeding..."
+        echo "Config file $config_dirs_file exists. Proceeding...\n"
     else
         echo "Error: Config file $config_dirs_file not found. Please check your configuration."
         exit 1
@@ -422,6 +448,7 @@ linux_update_system() {
 linux_install_packages() {
     local failed_packages=()
 
+    # Read the package manager type detected by _distro_detect()
     case "$_distro" in
     "PACMAN")
         # Installation using Pacman
@@ -432,19 +459,6 @@ linux_install_packages() {
                 fi
             fi
         done <packages.txt
-
-        # Install Yay if needed
-        if ! command -v yay &>/dev/null; then
-            echo "yay command not found. Installing..."
-            tmp_dir=$(mktemp -d)
-            git clone https://aur.archlinux.org/yay.git "$tmp_dir/yay"
-            pushd "$tmp_dir/yay"
-            if ! makepkg -si --noconfirm; then
-                handle_error "Failed to build and install yay."
-            fi
-            popd
-            rm -rf "$tmp_dir"
-        fi
 
         # Use Yay for failed packages
         if [ ${#failed_packages[@]} -gt 0 ] && command -v yay &>/dev/null; then
@@ -459,7 +473,6 @@ linux_install_packages() {
             failed_packages=("${new_failed_packages[@]}")
         fi
         ;;
-        # Read the package manager type detected by _distro_detect()
     "DPKG")
         # Try installing packages with dpkg
         while IFS= read -r package; do
@@ -504,7 +517,7 @@ linux_install_packages() {
         echo "Package manager not supported."
         ;;
     esac
-    # Print failed packages
+    # Print failed packages if any
     if [ ${#failed_packages[@]} -gt 0 ]; then
         echo "Failed to install the following packages:"
         printf '%s\n' "${failed_packages[@]}"
@@ -555,7 +568,6 @@ install_nvm() {
         export NVM_DIR="$HOME/.config/nvm"
         [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"                   # This loads nvm
         [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion" # This loads nvm bash_completion
-        S
     else
         echo "NVM installation failed."
     fi
@@ -584,15 +596,15 @@ install_node() {
 
 install_yarn() {
     # Check if Yarn is already installed
-    yarn -v &>/dev/null
-    if [ $? == "0" ]; then
+    if command -v yarn &>/dev/null; then
         echo "Yarn is already installed."
-    else
-        echo "Installing Yarn..."
-        # Install Yarn using npm
-        curl -o- -L https://yarnpkg.com/install.sh | bash
-        echo "Yarn installation completed successfully."
+        return
     fi
+
+    echo "Installing Yarn..."
+    # Install Yarn using npm
+    curl -o- -L https://yarnpkg.com/install.sh | bash
+    echo "Yarn installation completed successfully."
 }
 
 setup_tmux_plugins() {
