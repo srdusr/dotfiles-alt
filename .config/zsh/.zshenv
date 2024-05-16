@@ -6,6 +6,10 @@ export TERM=xterm-256color
 # Skip the not really helpful global compinit
 skip_global_compinit=1
 
+#export WINEARCH=win64 #<or win32>
+#export WINEPREFIX=~/.wine
+#export PATH=$PATH:/usr/bin/wine
+#winetricks vcrun2019
 ### Conditionally set WM(window manager)
 #available_wms=("bspwm" "mutter" "i3")
 #for wm in "${available_wms[@]}"; do
@@ -121,13 +125,28 @@ export LYNX_CFG="$XDG_CONFIG_HOME/.lynxrc"
 # Manage Arch linux build sources
 export ASPROOT="${XDG_CACHE_HOME:-$HOME/.cache}/asp"
 
+# Homebrew
+#export PATH=/opt/homebrew/bin:$PATH
+export PATH="/opt/homebrew/sbin:$PATH"
+
+# Nix-profile
+export PATH=$HOME/.nix-profile/bin:$PATH
+
 # GnuPG
-#export GPG_TTY=$(tty)
+export GPG_TTY=$(tty)
 #export GNUPGHOME="$XDG_CONFIG_HOME/gnupg"
+
+# Nvim
+export NVIM_TUI_ENABLE_TRUE_COLOR=1
 
 # Fzf
 export PATH="$PATH:/usr/local/bin/fzf/bin"
 export FZF_BASE="/usr/local/bin/fzf"
+export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!{node_modules/*,.git/*}'"
+export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+
+# enable git scripts
+export DEVELOPMENT_DIRECTORY="$HOME/code"
 
 # Android Home
 export ANDROID_HOME=/opt/android-sdk
@@ -209,6 +228,10 @@ export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 export NVM_DIR="$HOME/.config/nvm"
 [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
+# Yarn
+if command -v yarn >/dev/null 2>&1; then
+  export PATH="$PATH:`yarn global bin`"
+fi
 
 # Ruby
 export GEM_PATH="$XDG_DATA_HOME/ruby/gems"
@@ -245,6 +268,13 @@ source $(which virtualenvwrapper.sh)
 export VIRTUAL_ENV_DISABLE_PROMPT=false
 export JUPYTER_CONFIG_DIR="$XDG_CONFIG_HOME/jupyter"
 export IPYTHONDIR="$XDG_CONFIG_HOME/jupyter"
+
+# Python
+[[ "$(uname)" == "Darwin" ]] && export PYTHON_CONFIGURE_OPTS="--enable-framework"
+[[ "$(uname)" == "Linux" ]] && export PYTHON_CONFIGURE_OPTS="--enable-shared"
+
+export PYENV_ROOT="$HOME/.pyenv"
+export PATH="$PYENV_ROOT/bin:$PATH"
 
 # PHP
 PATH="$HOME/.config/composer/vendor/bin:$PATH"
