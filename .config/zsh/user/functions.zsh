@@ -1,26 +1,27 @@
-# Function to temporarily unset GIT_WORK_TREE
+## Function to temporarily unset GIT_WORK_TREE
 function git_without_work_tree() {
-    # Check if the current directory is a Git repository
-    if [ -d "$PWD/.git" ]; then
-        # Check if the current directory is inside the work tree
-        if [ "$(git rev-parse --is-inside-work-tree 2>/dev/null)" = "true" ]; then
-            # If it's a Git repository and inside the work tree, proceed with unsetting GIT_WORK_TREE
+    # Only proceed if a git command is being run
+    if [ "$1" = "git" ]; then
+        shift
+        # Check if the current directory is inside a Git work tree
+        if git rev-parse --is-inside-work-tree &>/dev/null; then
+            # If inside a work tree, temporarily unset GIT_WORK_TREE
             GIT_WORK_TREE_OLD="$GIT_WORK_TREE"
             unset GIT_WORK_TREE
-            "$@"
+            git "$@"
             export GIT_WORK_TREE="$GIT_WORK_TREE_OLD"
         else
-            # If it's a Git repository but not inside the work tree, call git command directly
+            # If not inside a work tree, call git command directly
             git "$@"
         fi
     else
-        # If it's not a Git repository, call git command directly
-        git "$@"
+        # If it's not a git command, just execute it normally
+        command "$@"
     fi
 }
 
 # Set alias conditionally
-alias git='git_without_work_tree'
+alias git='git_without_work_tree git'
 
 # Set bare dotfiles repository git environment variables dynamically
 function set_git_env_vars() {
@@ -51,9 +52,9 @@ function set_git_env_vars() {
 }
 
 # Define an auto_cd hook to automatically update Git environment variables
-function chpwd() {
-    set_git_env_vars
-}
+#function chpwd() {
+#    set_git_env_vars
+#}
 # Call the function to set Git environment variables when the shell starts up
 set_git_env_vars
 
@@ -108,11 +109,12 @@ getlast () {
 }
 
 # Enter directory and list contents
+#cd() { builtin cd $@ && lsd }
 cd() {
     if [ -n "$1" ]; then
-        builtin cd "$@" && ls -pvA --color=auto --group-directories-first
+        builtin cd "$@" && ls
     else
-        builtin cd ~ && ls -pvA --color=auto --group-directories-first
+        builtin cd ~ && ls
     fi
 }
 
