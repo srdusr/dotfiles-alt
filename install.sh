@@ -11,6 +11,7 @@ GREEN='\033[00;32m'
 
 # Dotfiles
 dotfiles_url='https://github.com/srdusr/dotfiles.git'
+dotfiles_dir="$HOME/.cfg"
 
 # Log file
 LOG_FILE="dotfiles.log"
@@ -72,6 +73,76 @@ prompt_user() {
     esac
 }
 
+function _spinner() {
+    # $1 start/stop
+    #
+    # on start: $2 display message
+    # on stop : $2 process exit status
+    #           $3 spinner function pid (supplied from stop_spinner)
+    local on_success="✔"
+    local on_fail="✘"
+    local white="\e[1;37m"
+    local green="\e[1;32m"
+    local red="\e[1;31m"
+    local nc="\e[0m"
+
+    case $1 in
+        start)
+            # calculate the column where spinner and status msg will be displayed
+            let column="$(tput cols)-${#2}"-8
+            # display message and position the cursor in $column column
+            echo -ne "${2}"
+            printf "%${column}s"
+
+            # start spinner
+            i=1
+            sp="\\|/-"
+            delay=${SPINNER_DELAY:-0.15}
+
+            while :; do
+                i=$((i + 1))
+                printf "\b${sp:${i}%${#sp}:1}"
+                sleep "$delay"
+            done
+            ;;
+        stop)
+            if [[ -z ${3} ]]; then
+                echo "spinner is not running.."
+                exit 1
+            fi
+
+            kill "$3" >/dev/null 2>&1
+
+            # inform the user uppon success or failure
+            echo -en "\b["
+            if [[ $2 -eq 0 ]]; then
+                echo -en "${green}${on_success}${nc}"
+            else
+                echo -en "${red}${on_fail}${nc}"
+            fi
+            echo -e "]"
+            ;;
+        *)
+            echo "invalid argument, try {start/stop}"
+            exit 1
+            ;;
+    esac
+}
+
+function start_spinner {
+    # $1 : msg to display
+    _spinner "start" "${1}" &
+    # set global spinner pid
+    _sp_pid=$!
+    disown
+}
+
+function stop_spinner {
+    # $1 : command exit status
+    _spinner "stop" "$1" "$_sp_pid"
+    unset _sp_pid
+}
+
 # Function to temporarily unset GIT_WORK_TREE
 function git_without_work_tree() {
     # Check if the current directory is a Git repository
@@ -130,9 +201,18 @@ set_locale() {
     fi
 }
 
+# Initialize git submodules
+submodules() {
+    echo "Initializing submodule(s)"
+    git submodule update --init --recursive
+}
+
 # Install Zsh plugins
 install_zsh_plugins() {
     local zsh_plugins_dir="$HOME/.config/zsh/plugins"
+
+    mkdir -p "$HOME/.config/zsh"
+    mkdir -p "$zsh_plugins_dir"
 
     if [ ! -d "$zsh_plugins_dir/zsh-you-should-use" ]; then
         echo "Installing zsh-you-should-use..."
@@ -161,47 +241,58 @@ install_zsh_plugins() {
 #======================================
 # Common Sources/Dependencies
 #======================================
-echo ".cfg" >>.gitignore
-echo ".install.sh" >>.gitignore
+echo "$dotfiles_dir" >>.gitignore
+echo "install.sh" >>.gitignore
 
 # Dotfiles
-git clone --bare "$dotfiles_url" "$HOME"/.cfg
-
 function config {
-    git --git-dir="$HOME"/.cfg/ --work-tree="$HOME" "$@"
+    git --git-dir="$dotfiles_dir"/ --work-tree="$HOME" "$@"
 }
 
-std_err_output=$(config checkout 2>&1 >/dev/null) || true
-
-if [[ $std_err_output == *"following untracked working tree files would be overwritten"* ]]; then
-    echo "Backing up pre-existing dot files."
-    config checkout 2>&1 |
-    egrep "\s+\." |
-    awk {'print $1'} |
-    xargs -I% sh -c "mkdir -p '.cfg-backup/%';  mv % .cfg-backup/%"
-fi
-
-config config status.showUntrackedFiles no
-git config --global include.path "~/.gitconfig.aliases"
-
-# Prompt the user if they want to overwrite existing files
-if prompt_user "Do you want to overwrite existing files and continue with the dotfiles setup?"; then
-    # Fetch the latest changes from the remote repository
-    config fetch origin main:main
-
-    # Reset the local branch to match the main branch in the remote repository
-    config reset --hard main
-    # Proceed with the dotfiles setup
-    config checkout -f
-    if [ $? == 0 ]; then
-        echo "Successfully backed up conflicting dotfiles in .cfg-backup/. and imported.cfg.\n"
-    else
-        handle_error "Mission failed.\n"
-    fi
+# Check if the $dotfiles_dir directory exists
+if [ -d "$dotfiles_dir" ]; then
+    echo "$dotfiles_dir directory already exists. Updating repository..."
+    config pull
 else
-    # User chose not to overwrite existing files
-    handle_error "Aborted by user. Exiting..."
+    echo "Cloning dotfiles repository..."
+    git clone --bare "$dotfiles_url" "$dotfiles_dir"
 fi
+
+# Function to install dotfiles
+install_dotfiles() {
+    std_err_output=$(config checkout 2>&1 >/dev/null) || true
+
+    if [[ $std_err_output == *"following untracked working tree files would be overwritten"* ]]; then
+        echo "Backing up pre-existing dotfiles."
+        config checkout 2>&1 |
+        grep -E "\s+\." |
+        awk '{print $1}' |
+        xargs -I% sh -c "mkdir -p '$dotfiles_dir-backup/$(dirname %)' && mv % '$dotfiles_dir-backup/%'"
+    fi
+
+    config config status.showUntrackedFiles no
+    git config --global include.path "~/.gitconfig.aliases"
+
+    # Prompt the user if they want to overwrite existing files
+    if prompt_user "Do you want to overwrite existing files and continue with the dotfiles setup?"; then
+        echo "Fetching the latest changes from the remote repository..."
+        config fetch origin main:main
+
+        echo "Resetting the local branch to match the main branch in the remote repository..."
+        config reset --hard main
+
+        echo "Proceeding with the dotfiles setup..."
+        config checkout -f
+        if [ $? -eq 0 ]; then
+            echo "Successfully backed up conflicting dotfiles in $dotfiles_dir-backup/ and imported $dotfiles_dir."
+        else
+            handle_error "Mission failed."
+        fi
+    else
+        # User chose not to overwrite existing files
+        handle_error "Aborted by user. Exiting..."
+    fi
+}
 
 # Check if necessary dependencies are installed
 #--------------------------------------
@@ -604,8 +695,6 @@ linux_install_packages() {
 install_rust() {
     if command -v "rustup" &>/dev/null; then
         echo "Installing Rust using rustup..."
-        #curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh
-        #export XDG_DATA_HOME=${XDG_DATA_HOME:-$HOME/.local/share}
         CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup bash -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
     else
         echo "Rust is already installed."
@@ -657,8 +746,8 @@ install_node() {
 
     echo "Installing Node.js..."
     # Set up environment variables for Node.js installation
-    #export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
-    #export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
+    export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
+    export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
 
     # Install the latest stable version of Node.js using NVM
     nvm
@@ -728,9 +817,11 @@ setup_ssh() {
 }
 
 linux_specific_steps() {
+    install_dotfiles
     _distro_detect
     check_privilege_tools
     set_locale
+    submodules
     change_dir_names
     linux_update_system
     install_rust
@@ -808,9 +899,10 @@ main() {
     echo "Log File for Dotfiles Installation" >"$LOG_FILE"
     check_download_dependencies
     check_os
+    start_spinner
     main_installation
-
     handle_complete "Installation completed successfully."
+    stop_spinner
 }
 
 main "$@"
