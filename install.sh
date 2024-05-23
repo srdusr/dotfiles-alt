@@ -414,118 +414,118 @@ _distro_detect() {
 #------------------------------------------------------------------------------
 
 # Define directories to create
-directories=('.cache' '.config' '.scripts')
+user_dirs() {
+    directories=('.cache' '.config' '.scripts')
 
-# Prompt the user if they want to use user-dirs.dirs
-if prompt_user "Do you want to use the directories specified in user-dirs.dirs?"; then
-    # Check if ~/.config/user-dirs.dirs exists
-    config_dirs_file="$HOME/.config/user-dirs.dirs"
-    if [ -f "$config_dirs_file" ]; then
-        echo "Config file $config_dirs_file exists. Proceeding...\n"
-    else
-        echo "Error: Config file $config_dirs_file not found. Please check your configuration."
-        exit 1
-    fi
+    # Prompt the user if they want to use user-dirs.dirs
+    if prompt_user "Do you want to use the directories specified in user-dirs.dirs?"; then
+        # Check if ~/.config/user-dirs.dirs exists
+        config_dirs_file="$HOME/.config/user-dirs.dirs"
+        if [ -f "$config_dirs_file" ]; then
+            echo "Error: Config file $config_dirs_file not found. Please check your configuration."
+            exit 1
+        fi
 
-    # Prompt the user if they want to change directory names
-    if prompt_user "Do you want to change the directory names to lowercase?"; then
-        # Function to change directory names from uppercase to lowercase
-        change_dir_names() {
-            local config_file="$HOME/.config/user-dirs.dirs"
+        # Prompt the user if they want to change directory names
+        if prompt_user "Do you want to change the directory names to lowercase?\n"; then
+            # Function to change directory names from uppercase to lowercase
+            change_dir_names() {
+                local config_file="$HOME/.config/user-dirs.dirs"
 
-            # Check if the system is not macOS
-            if [[ ! "$OSTYPE" == "darwin"* ]]; then
-                # Check if the config file exists
-                if [ -f "$config_file" ]; then
-                    echo "Changing directory names from uppercase to lowercase..."
+                # Check if the system is not macOS
+                if [[ ! "$OSTYPE" == "darwin"* ]]; then
+                    # Check if the config file exists
+                    if [ -f "$config_file" ]; then
+                        echo "Changing directory names from uppercase to lowercase..."
 
-                    # Read the lines from the config file and process them
-                    while read -r line; do
-                        # Extract variable name and path from each line
-                        if [[ $line =~ ^[[:space:]]*([A-Z_]+)=\"(.+)\" ]]; then
-                            var_name="${BASH_REMATCH[1]}"
-                            var_path="${BASH_REMATCH[2]}"
+                        # Read the lines from the config file and process them
+                        while read -r line; do
+                            # Extract variable name and path from each line
+                            if [[ $line =~ ^[[:space:]]*([A-Z_]+)=\"(.+)\" ]]; then
+                                var_name="${BASH_REMATCH[1]}"
+                                var_path="${BASH_REMATCH[2]}"
 
-                            # Convert the variable name to lowercase
-                            var_name_lowercase="$(echo "$var_name" | tr '[:upper:]' '[:lower:]')"
+                                # Convert the variable name to lowercase
+                                var_name_lowercase="$(echo "$var_name" | tr '[:upper:]' '[:lower:]')"
 
-                            # Check if the directory exists
-                            if [ -d "$var_path" ]; then
-                                # Rename the directory to lowercase
-                                new_var_path="$HOME/${var_name_lowercase}"
-                                mv "$var_path" "$new_var_path"
-                                echo "Renamed $var_path to $new_var_path"
+                                # Check if the directory exists
+                                if [ -d "$var_path" ]; then
+                                    # Rename the directory to lowercase
+                                    new_var_path="$HOME/${var_name_lowercase}"
+                                    mv "$var_path" "$new_var_path"
+                                    echo "Renamed $var_path to $new_var_path"
+                                fi
                             fi
-                        fi
-                    done <"$config_file"
+                        done <"$config_file"
 
-                    echo "Directory names changed successfully."
+                        echo "Directory names changed successfully."
+                    else
+                        echo "The config file $config_file does not exist. Skipping directory name changes."
+                    fi
                 else
-                    echo "The config file $config_file does not exist. Skipping directory name changes."
+                    echo "macOS detected. Skipping directory name changes."
                 fi
-            else
-                echo "macOS detected. Skipping directory name changes."
-            fi
-        }
+            }
 
-        # Run the function to change directory names
-        change_dir_names
-    elif prompt_user "Do you want to change the directory names to uppercase?"; then
-        # Function to change directory names from lowercase to uppercase
-        change_dir_names() {
-            local config_file="$HOME/.config/user-dirs.dirs"
+            # Run the function to change directory names
+            change_dir_names
+        elif prompt_user "Do you want to change the directory names to uppercase?"; then
+            # Function to change directory names from lowercase to uppercase
+            change_dir_names() {
+                local config_file="$HOME/.config/user-dirs.dirs"
 
-            # Check if the system is not macOS
-            if [[ ! "$OSTYPE" == "darwin"* ]]; then
-                # Check if the config file exists
-                if [ -f "$config_file" ]; then
-                    echo "Changing directory names from lowercase to uppercase..."
+                # Check if the system is not macOS
+                if [[ ! "$OSTYPE" == "darwin"* ]]; then
+                    # Check if the config file exists
+                    if [ -f "$config_file" ]; then
+                        echo "Changing directory names from lowercase to uppercase..."
 
-                    # Read the lines from the config file and process them
-                    while read -r line; do
-                        # Extract variable name and path from each line
-                        if [[ $line =~ ^[[:space:]]*([A-Z_]+)=\"(.+)\" ]]; then
-                            var_name="${BASH_REMATCH[1]}"
-                            var_path="${BASH_REMATCH[2]}"
+                        # Read the lines from the config file and process them
+                        while read -r line; do
+                            # Extract variable name and path from each line
+                            if [[ $line =~ ^[[:space:]]*([A-Z_]+)=\"(.+)\" ]]; then
+                                var_name="${BASH_REMATCH[1]}"
+                                var_path="${BASH_REMATCH[2]}"
 
-                            # Convert the variable name to uppercase
-                            var_name_uppercase="$(echo "$var_name" | tr '[:lower:]' '[:upper:]')"
+                                # Convert the variable name to uppercase
+                                var_name_uppercase="$(echo "$var_name" | tr '[:lower:]' '[:upper:]')"
 
-                            # Check if the directory exists
-                            if [ -d "$var_path" ]; then
-                                # Rename the directory to uppercase
-                                new_var_path="$HOME/${var_name_uppercase}"
-                                mv "$var_path" "$new_var_path"
-                                echo "Renamed $var_path to $new_var_path"
+                                # Check if the directory exists
+                                if [ -d "$var_path" ]; then
+                                    # Rename the directory to uppercase
+                                    new_var_path="$HOME/${var_name_uppercase}"
+                                    mv "$var_path" "$new_var_path"
+                                    echo "Renamed $var_path to $new_var_path"
+                                fi
                             fi
-                        fi
-                    done <"$config_file"
+                        done <"$config_file"
 
-                    echo "Directory names changed successfully."
+                        echo "Directory names changed successfully."
+                    else
+                        echo "The config file $config_file does not exist. Skipping directory name changes."
+                    fi
                 else
-                    echo "The config file $config_file does not exist. Skipping directory name changes."
+                    echo "macOS detected. Skipping directory name changes."
                 fi
-            else
-                echo "macOS detected. Skipping directory name changes."
-            fi
-        }
+            }
 
-        # Run the function to change directory names
-        change_dir_names
-        #xdg-user-dirs-update
+            # Run the function to change directory names
+            change_dir_names
+            #xdg-user-dirs-update
+        fi
     fi
-fi
 
-# Create needed dirs and set proper permissions
-for d in "${directories[@]}"; do
-    full_path="$HOME/$d"
-    if [ ! -d "$full_path" ]; then
-        mkdir -p "$full_path"
-        # Assuming $USER is defined or replace it with the desired user
-        chown -R "$USER" "$full_path"
-        echo "Created $full_path"
-    fi
-done
+    # Create needed dirs and set proper permissions
+    for d in "${directories[@]}"; do
+        full_path="$HOME/$d"
+        if [ ! -d "$full_path" ]; then
+            mkdir -p "$full_path"
+            # Assuming $USER is defined or replace it with the desired user
+            chown -R "$USER" "$full_path"
+            echo "Created $full_path"
+        fi
+    done
+}
 
 #------------------------------------------------------------------------------
 
@@ -814,6 +814,7 @@ setup_ssh() {
 
 linux_specific_steps() {
     install_dotfiles
+    user_dirs
     _distro_detect
     check_privilege_tools
     set_locale
