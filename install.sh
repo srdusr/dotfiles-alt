@@ -248,19 +248,16 @@ function config {
     git --git-dir="$dotfiles_dir"/ --work-tree="$HOME" "$@"
 }
 
-# Check if the $dotfiles_dir directory exists
-if [ -d "$dotfiles_dir" ]; then
-    echo "$dotfiles_dir directory already exists. Updating repository..."
-    config pull
-    update=true
-else
-    echo "Cloning dotfiles repository..."
-    git clone --bare "$dotfiles_url" "$dotfiles_dir"
-    update=false
-fi
-
 # Function to install dotfiles
 install_dotfiles() {
+    # Check if the $dotfiles_dir directory exists
+    if [ -d "$dotfiles_dir" ]; then
+        config pull >/dev/null 2>&1
+        update=true
+    else
+        git clone --bare "$dotfiles_url" "$dotfiles_dir" >/dev/null 2>&1
+        update=false
+    fi
     std_err_output=$(config checkout 2>&1 >/dev/null) || true
 
     if [[ $std_err_output == *"following untracked working tree files would be overwritten"* ]]; then
@@ -898,10 +895,10 @@ main() {
     echo "Log File for Dotfiles Installation" >"$LOG_FILE"
     check_download_dependencies
     check_os
-    start_spinner
+    #start_spinner
     main_installation
     handle_complete "Installation completed successfully."
-    stop_spinner
+    #stop_spinner
 }
 
 main "$@"
