@@ -422,12 +422,14 @@ user_dirs() {
         # Check if ~/.config/user-dirs.dirs exists
         config_dirs_file="$HOME/.config/user-dirs.dirs"
         if [ -f "$config_dirs_file" ]; then
+            echo "Config file $config_dirs_file exists. Proceeding..."
+        else
             echo "Error: Config file $config_dirs_file not found. Please check your configuration."
             exit 1
         fi
 
         # Prompt the user if they want to change directory names
-        if prompt_user "Do you want to change the directory names to lowercase?\n"; then
+        if prompt_user "Do you want to change the directory names to lowercase?"; then
             # Function to change directory names from uppercase to lowercase
             change_dir_names() {
                 local config_file="$HOME/.config/user-dirs.dirs"
