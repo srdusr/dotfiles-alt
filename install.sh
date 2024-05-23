@@ -67,9 +67,9 @@ prompt_user() {
     echo
 
     case "${response^^}" in
-        Y) return 0 ;;
-        N) return 1 ;;
-        *) handle_error "Invalid choice. Exiting..." && exit ;;
+    Y) return 0 ;;
+    N) return 1 ;;
+    *) handle_error "Invalid choice. Exiting..." && exit ;;
     esac
 }
 
@@ -87,45 +87,45 @@ function _spinner() {
     local nc="\e[0m"
 
     case $1 in
-        start)
-            # calculate the column where spinner and status msg will be displayed
-            let column="$(tput cols)-${#2}"-8
-            # display message and position the cursor in $column column
-            echo -ne "${2}"
-            printf "%${column}s"
+    start)
+        # calculate the column where spinner and status msg will be displayed
+        let column="$(tput cols)-${#2}"-8
+        # display message and position the cursor in $column column
+        echo -ne "${2}"
+        printf "%${column}s"
 
-            # start spinner
-            i=1
-            sp="\\|/-"
-            delay=${SPINNER_DELAY:-0.15}
+        # start spinner
+        i=1
+        sp="\\|/-"
+        delay=${SPINNER_DELAY:-0.15}
 
-            while :; do
-                i=$((i + 1))
-                printf "\b${sp:${i}%${#sp}:1}"
-                sleep "$delay"
-            done
-            ;;
-        stop)
-            if [[ -z ${3} ]]; then
-                echo "spinner is not running.."
-                exit 1
-            fi
-
-            kill "$3" >/dev/null 2>&1
-
-            # inform the user uppon success or failure
-            echo -en "\b["
-            if [[ $2 -eq 0 ]]; then
-                echo -en "${green}${on_success}${nc}"
-            else
-                echo -en "${red}${on_fail}${nc}"
-            fi
-            echo -e "]"
-            ;;
-        *)
-            echo "invalid argument, try {start/stop}"
+        while :; do
+            i=$((i + 1))
+            printf "\b${sp:${i}%${#sp}:1}"
+            sleep "$delay"
+        done
+        ;;
+    stop)
+        if [[ -z ${3} ]]; then
+            echo "spinner is not running.."
             exit 1
-            ;;
+        fi
+
+        kill "$3" >/dev/null 2>&1
+
+        # inform the user uppon success or failure
+        echo -en "\b["
+        if [[ $2 -eq 0 ]]; then
+            echo -en "${green}${on_success}${nc}"
+        else
+            echo -en "${red}${on_fail}${nc}"
+        fi
+        echo -e "]"
+        ;;
+    *)
+        echo "invalid argument, try {start/stop}"
+        exit 1
+        ;;
     esac
 }
 
@@ -186,9 +186,9 @@ check_privilege_tools() {
         printf "\nAttempt to continue Installation (might fail without a privilege escalation tool)? [yes/no] "
         read continue_choice
         case $continue_choice in
-            [Yy] | [Yy][Ee][Ss]) ;;
-            [Nn] | [Nn][Oo]) exit ;;
-            *) handle_error "Invalid choice. Exiting..." && exit ;;
+        [Yy] | [Yy][Ee][Ss]) ;;
+        [Nn] | [Nn][Oo]) exit ;;
+        *) handle_error "Invalid choice. Exiting..." && exit ;;
         esac
     fi
 }
@@ -243,7 +243,6 @@ install_zsh_plugins() {
 #======================================
 echo "$dotfiles_dir" >>.gitignore
 echo "install.sh" >>.gitignore
-
 # Dotfiles
 function config {
     git --git-dir="$dotfiles_dir"/ --work-tree="$HOME" "$@"
@@ -253,9 +252,11 @@ function config {
 if [ -d "$dotfiles_dir" ]; then
     echo "$dotfiles_dir directory already exists. Updating repository..."
     config pull
+    update=true
 else
     echo "Cloning dotfiles repository..."
     git clone --bare "$dotfiles_url" "$dotfiles_dir"
+    update=false
 fi
 
 # Function to install dotfiles
@@ -263,15 +264,21 @@ install_dotfiles() {
     std_err_output=$(config checkout 2>&1 >/dev/null) || true
 
     if [[ $std_err_output == *"following untracked working tree files would be overwritten"* ]]; then
-        echo "Backing up pre-existing dotfiles."
-        config checkout 2>&1 |
-        grep -E "\s+\." |
-        awk '{print $1}' |
-        xargs -I% sh -c "mkdir -p '$dotfiles_dir-backup/$(dirname %)' && mv % '$dotfiles_dir-backup/%'"
+        echo "Backing up pre-existing dotfiles..."
+        mkdir -p "$dotfiles_dir-backup"
+        config status --porcelain | awk '{print $2}' | while read -r file; do
+            mkdir -p "$dotfiles_dir-backup/$(dirname "$file")"
+            mv "$file" "$dotfiles_dir-backup/$file"
+        done
+
+        if [ "$update" = false ]; then
+            config checkout 2>&1 >/dev/null
+        fi
     fi
 
     config config status.showUntrackedFiles no
-    git config --global include.path "~/.gitconfig.aliases"
+
+    git config --global include.path "$HOME.gitconfig.aliases"
 
     # Prompt the user if they want to overwrite existing files
     if prompt_user "Do you want to overwrite existing files and continue with the dotfiles setup?"; then
@@ -351,34 +358,34 @@ _distro_detect() {
     if [ -f /etc/os-release ]; then
         source /etc/os-release
         case "$ID" in
-            "arch")
-                _distro="PACMAN"
-                return
-                ;;
-            "debian")
-                _distro="DPKG"
-                return
-                ;;
-            "ubuntu")
-                _distro="DPKG"
-                return
-                ;;
-            "centos")
-                _distro="YUM"
-                return
-                ;;
-            "fedora")
-                _distro="YUM"
-                return
-                ;;
-            "opensuse" | "suse")
-                _distro="ZYPPER"
-                return
-                ;;
-            "gentoo")
-                _distro="PORTAGE"
-                return
-                ;;
+        "arch")
+            _distro="PACMAN"
+            return
+            ;;
+        "debian")
+            _distro="DPKG"
+            return
+            ;;
+        "ubuntu")
+            _distro="DPKG"
+            return
+            ;;
+        "centos")
+            _distro="YUM"
+            return
+            ;;
+        "fedora")
+            _distro="YUM"
+            return
+            ;;
+        "opensuse" | "suse")
+            _distro="ZYPPER"
+            return
+            ;;
+        "gentoo")
+            _distro="PORTAGE"
+            return
+            ;;
         esac
     fi
 
@@ -536,24 +543,24 @@ done
 # Update system
 linux_update_system() {
     case "$_distro" in
-        "PACMAN")
-            "$PRIVILEGE_TOOL" pacman -Syyy && "$PRIVILEGE_TOOL" pacman -Syu --noconfirm
-            ;;
-        "DPKG")
-            "$PRIVILEGE_TOOL" apt-get update && "$PRIVILEGE_TOOL" apt-get upgrade -y
-            ;;
-        "YUM")
-            "$PRIVILEGE_TOOL" yum update -y
-            ;;
-        "ZYPPER")
-            "$PRIVILEGE_TOOL" zypper --non-interactive update
-            ;;
-        "PORTAGE")
-            "$PRIVILEGE_TOOL" emerge --sync && "$PRIVILEGE_TOOL" emerge --ask --update --deep --newuse @world
-            ;;
-        *)
-            echo "Package manager not supported."
-            ;;
+    "PACMAN")
+        "$PRIVILEGE_TOOL" pacman -Syyy && "$PRIVILEGE_TOOL" pacman -Syu --noconfirm
+        ;;
+    "DPKG")
+        "$PRIVILEGE_TOOL" apt-get update && "$PRIVILEGE_TOOL" apt-get upgrade -y
+        ;;
+    "YUM")
+        "$PRIVILEGE_TOOL" yum update -y
+        ;;
+    "ZYPPER")
+        "$PRIVILEGE_TOOL" zypper --non-interactive update
+        ;;
+    "PORTAGE")
+        "$PRIVILEGE_TOOL" emerge --sync && "$PRIVILEGE_TOOL" emerge --ask --update --deep --newuse @world
+        ;;
+    *)
+        echo "Package manager not supported."
+        ;;
     esac
 }
 
@@ -565,129 +572,129 @@ linux_install_packages() {
 
     # Read the package manager type detected by _distro_detect()
     case "$_distro" in
-        "PACMAN")
-            function install_yay {
-                if [[ -x $(command -v yay) ]]; then
-                    return
-                fi
-                git clone https://aur.archlinux.org/yay.git
-                cd yay || exit
-                makepkg -si
-                cd ..
-                rm -rf yay
-            }
-            install_yay
+    "PACMAN")
+        function install_yay {
+            if [[ -x $(command -v yay) ]]; then
+                return
+            fi
+            git clone https://aur.archlinux.org/yay.git
+            cd yay || exit
+            makepkg -si
+            cd ..
+            rm -rf yay
+        }
+        install_yay
 
-            # Installation using Pacman
-            while IFS= read -r package; do
-                # Skip empty lines
-                if [[ -z "$package" ]]; then
-                    continue
-                fi
+        # Installation using Pacman
+        while IFS= read -r package; do
+            # Skip empty lines
+            if [[ -z "$package" ]]; then
+                continue
+            fi
 
-                if ! pacman -Q "$package" &>/dev/null; then
-                    if ! "$PRIVILEGE_TOOL" pacman -S --noconfirm "$package"; then
-                        failed_packages+=("$package")
-                        any_failures=true # Set flag to true if any package fails to install
-                    fi
+            if ! pacman -Q "$package" &>/dev/null; then
+                if ! "$PRIVILEGE_TOOL" pacman -S --noconfirm "$package"; then
+                    failed_packages+=("$package")
+                    any_failures=true # Set flag to true if any package fails to install
                 fi
-            done <packages.txt
+            fi
+        done <packages.txt
 
-            if [[ "$any_failures" = "true" ]]; then
-                echo "Failed to install the following packages:"
-                for package in "${failed_packages[@]}"; do
-                    if ! pacman -Q "$package" &>/dev/null && ! yay -Q "$package" &>/dev/null; then
-                        if [[ -x "$(command -v yay)" ]]; then
-                            echo "Trying to install $package from AUR using yay..."
-                            if yay -S --noconfirm "$package"; then
-                                echo "Successfully installed $package from AUR."
-                            else
-                                echo "Failed to install $package from AUR."
-                            fi
+        if [[ "$any_failures" = "true" ]]; then
+            echo "Failed to install the following packages:"
+            for package in "${failed_packages[@]}"; do
+                if ! pacman -Q "$package" &>/dev/null && ! yay -Q "$package" &>/dev/null; then
+                    if [[ -x "$(command -v yay)" ]]; then
+                        echo "Trying to install $package from AUR using yay..."
+                        if yay -S --noconfirm "$package"; then
+                            echo "Successfully installed $package from AUR."
                         else
-                            echo "Failed to install $package using the default package manager."
+                            echo "Failed to install $package from AUR."
                         fi
-                    fi
-                done
-            else
-                echo "All packages installed successfully."
-            fi
-            ;;
-        "DPKG")
-            # Try installing packages with dpkg
-            while IFS= read -r package; do
-                if ! dpkg-query -W "$package" &>/dev/null; then
-                    if ! "$PRIVILEGE_TOOL" apt-get install -y "$package"; then
-                        failed_packages+=("$package")
-                        any_failures=true # Set flag to true if any package fails to install
+                    else
+                        echo "Failed to install $package using the default package manager."
                     fi
                 fi
-            done <packages.txt
-
-            if "$any_failures"; then
-                echo "Failed to install the following packages:"
-                printf '%s\n' "${failed_packages[@]}"
-            else
-                echo "All packages installed successfully."
-            fi
-            ;;
-        "YUM")
-            # Try installing packages with yum
-            while IFS= read -r package; do
-                if ! rpm -q "$package" &>/dev/null; then
-                    if ! "$PRIVILEGE_TOOL" yum install -y "$package"; then
-                        failed_packages+=("$package")
-                        any_failures=true # Set flag to true if any package fails to install
-                    fi
+            done
+        else
+            echo "All packages installed successfully."
+        fi
+        ;;
+    "DPKG")
+        # Try installing packages with dpkg
+        while IFS= read -r package; do
+            if ! dpkg-query -W "$package" &>/dev/null; then
+                if ! "$PRIVILEGE_TOOL" apt-get install -y "$package"; then
+                    failed_packages+=("$package")
+                    any_failures=true # Set flag to true if any package fails to install
                 fi
-            done <packages.txt
-
-            if "$any_failures"; then
-                echo "Failed to install the following packages:"
-                printf '%s\n' "${failed_packages[@]}"
-            else
-                echo "All packages installed successfully."
             fi
-            ;;
-        "ZYPPER")
-            # Try installing packages with zypper
-            while IFS= read -r package; do
-                if ! rpm -q "$package" &>/dev/null; then
-                    if ! "$PRIVILEGE_TOOL" zypper --non-interactive install "$package"; then
-                        failed_packages+=("$package")
-                        any_failures=true # Set flag to true if any package fails to install
-                    fi
+        done <packages.txt
+
+        if "$any_failures"; then
+            echo "Failed to install the following packages:"
+            printf '%s\n' "${failed_packages[@]}"
+        else
+            echo "All packages installed successfully."
+        fi
+        ;;
+    "YUM")
+        # Try installing packages with yum
+        while IFS= read -r package; do
+            if ! rpm -q "$package" &>/dev/null; then
+                if ! "$PRIVILEGE_TOOL" yum install -y "$package"; then
+                    failed_packages+=("$package")
+                    any_failures=true # Set flag to true if any package fails to install
                 fi
-            done <packages.txt
-
-            if "$any_failures"; then
-                echo "Failed to install the following packages:"
-                printf '%s\n' "${failed_packages[@]}"
-            else
-                echo "All packages installed successfully."
             fi
-            ;;
-        "PORTAGE")
-            # Try installing packages with emerge
-            while IFS= read -r package; do
-                if ! equery list "$package" &>/dev/null; then
-                    if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
-                        failed_packages+=("$package")
-                        any_failures=true # Set flag to true if any package fails to install
-                    fi
+        done <packages.txt
+
+        if "$any_failures"; then
+            echo "Failed to install the following packages:"
+            printf '%s\n' "${failed_packages[@]}"
+        else
+            echo "All packages installed successfully."
+        fi
+        ;;
+    "ZYPPER")
+        # Try installing packages with zypper
+        while IFS= read -r package; do
+            if ! rpm -q "$package" &>/dev/null; then
+                if ! "$PRIVILEGE_TOOL" zypper --non-interactive install "$package"; then
+                    failed_packages+=("$package")
+                    any_failures=true # Set flag to true if any package fails to install
                 fi
-            done <packages.txt
-
-            if "$any_failures"; then
-                echo "Failed to install the following packages:"
-                printf '%s\n' "${failed_packages[@]}"
-            else
-                echo "All packages installed successfully."
             fi
-            ;;
-        *)
-            echo "Package manager not supported."
-            ;;
+        done <packages.txt
+
+        if "$any_failures"; then
+            echo "Failed to install the following packages:"
+            printf '%s\n' "${failed_packages[@]}"
+        else
+            echo "All packages installed successfully."
+        fi
+        ;;
+    "PORTAGE")
+        # Try installing packages with emerge
+        while IFS= read -r package; do
+            if ! equery list "$package" &>/dev/null; then
+                if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
+                    failed_packages+=("$package")
+                    any_failures=true # Set flag to true if any package fails to install
+                fi
+            fi
+        done <packages.txt
+
+        if "$any_failures"; then
+            echo "Failed to install the following packages:"
+            printf '%s\n' "${failed_packages[@]}"
+        else
+            echo "All packages installed successfully."
+        fi
+        ;;
+    *)
+        echo "Package manager not supported."
+        ;;
     esac
 }
 
@@ -877,18 +884,18 @@ main_installation() {
     echo "Starting main installation..."
 
     case "$OSTYPE" in
-        linux-gnu*)
-            linux_specific_steps
-            ;;
-        darwin*)
-            macos_specific_steps
-            ;;
-        msys* | cygwin*)
-            windows_specific_steps
-            ;;
-        *)
-            handle_error "Unsupported operating system."
-            ;;
+    linux-gnu*)
+        linux_specific_steps
+        ;;
+    darwin*)
+        macos_specific_steps
+        ;;
+    msys* | cygwin*)
+        windows_specific_steps
+        ;;
+    *)
+        handle_error "Unsupported operating system."
+        ;;
     esac
 
     sleep 1
