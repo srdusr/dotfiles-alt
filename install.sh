@@ -264,18 +264,10 @@ install_dotfiles() {
     std_err_output=$(config checkout 2>&1 >/dev/null) || true
 
     if [[ $std_err_output == *"following untracked working tree files would be overwritten"* ]]; then
-        echo "Backing up pre-existing dotfiles..."
-        mkdir -p "$dotfiles_dir-backup"
-        config status --porcelain | awk '{print $2}' | while read -r file; do
-            mkdir -p "$dotfiles_dir-backup/$(dirname "$file")"
-            mv "$file" "$dotfiles_dir-backup/$file"
-        done
-
         if [ "$update" = false ]; then
-            config checkout 2>&1 >/dev/null
+            config checkout -- /dev/null 2>&1
         fi
     fi
-
     config config status.showUntrackedFiles no
 
     git config --global include.path "$HOME.gitconfig.aliases"
