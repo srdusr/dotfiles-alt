@@ -64,12 +64,10 @@ prompt_user() {
     local response
 
     read -p "$prompt" -n 1 -r -e -i "$default_response" response
-    echo
-
     case "${response^^}" in
     Y) return 0 ;;
     N) return 1 ;;
-    *) handle_error "Invalid choice. Exiting..." && exit ;;
+    *) handle_error "Invalid choice. Exiting.." && exit ;;
     esac
 }
 
@@ -188,14 +186,14 @@ check_privilege_tools() {
         case $continue_choice in
         [Yy] | [Yy][Ee][Ss]) ;;
         [Nn] | [Nn][Oo]) exit ;;
-        *) handle_error "Invalid choice. Exiting..." && exit ;;
+        *) handle_error "Invalid choice. Exiting.." && exit ;;
         esac
     fi
 }
 
 # Function to set locale to en_US.UTF-8
 set_locale() {
-    echo "Setting locale to en_US.UTF-8..."
+    echo "Setting locale to en_US.UTF-8.."
     if ! "$PRIVILEGE_TOOL" localectl set-locale LANG=en_US.UTF-8; then
         handle_error "Failed to set locale to en_US.UTF-8"
     fi
@@ -215,21 +213,21 @@ install_zsh_plugins() {
     mkdir -p "$zsh_plugins_dir"
 
     if [ ! -d "$zsh_plugins_dir/zsh-you-should-use" ]; then
-        echo "Installing zsh-you-should-use..."
+        echo "Installing zsh-you-should-use.."
         git clone https://github.com/MichaelAquilina/zsh-you-should-use.git "$zsh_plugins_dir/zsh-you-should-use"
     else
         echo "zsh-you-should-use is already installed."
     fi
 
     if [ ! -d "$zsh_plugins_dir/zsh-syntax-highlighting" ]; then
-        echo "Installing zsh-syntax-highlighting..."
+        echo "Installing zsh-syntax-highlighting.."
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$zsh_plugins_dir/zsh-syntax-highlighting"
     else
         echo "zsh-syntax-highlighting is already installed."
     fi
 
     if [ ! -d "$zsh_plugins_dir/zsh-autosuggestions" ]; then
-        echo "Installing zsh-autosuggestions..."
+        echo "Installing zsh-autosuggestions.."
         git clone https://github.com/zsh-users/zsh-autosuggestions.git "$zsh_plugins_dir/zsh-autosuggestions"
     else
         echo "zsh-autosuggestions is already installed."
@@ -271,13 +269,12 @@ install_dotfiles() {
 
     # Prompt the user if they want to overwrite existing files
     if prompt_user "Do you want to overwrite existing files and continue with the dotfiles setup?"; then
-        echo "Fetching the latest changes from the remote repository..."
         config fetch origin main:main
 
-        echo "Resetting the local branch to match the main branch in the remote repository..."
+        echo "Resetting the local branch to match the main branch in the remote repository.."
         config reset --hard main
 
-        echo "Proceeding with the dotfiles setup..."
+        echo "Proceeding with the dotfiles setup.."
         config checkout -f
         if [ $? -eq 0 ]; then
             echo "Successfully backed up conflicting dotfiles in $dotfiles_dir-backup/ and imported $dotfiles_dir."
@@ -286,7 +283,7 @@ install_dotfiles() {
         fi
     else
         # User chose not to overwrite existing files
-        handle_error "Aborted by user. Exiting..."
+        handle_error "Aborted by user. Exiting.."
     fi
 }
 
@@ -406,7 +403,7 @@ _distro_detect() {
         _distro="$user_package_manager"
         return
     else
-        _error "Specified package manager '$user_package_manager' not found. Exiting..."
+        _error "Specified package manager '$user_package_manager' not found. Exiting.."
         exit 1
     fi
 }
@@ -422,7 +419,7 @@ user_dirs() {
         # Check if ~/.config/user-dirs.dirs exists
         config_dirs_file="$HOME/.config/user-dirs.dirs"
         if [ -f "$config_dirs_file" ]; then
-            echo "Config file $config_dirs_file exists. Proceeding..."
+            echo "Config file $config_dirs_file exists. Proceeding.."
         else
             echo "Error: Config file $config_dirs_file not found. Please check your configuration."
             exit 1
@@ -438,7 +435,7 @@ user_dirs() {
                 if [[ ! "$OSTYPE" == "darwin"* ]]; then
                     # Check if the config file exists
                     if [ -f "$config_file" ]; then
-                        echo "Changing directory names from uppercase to lowercase..."
+                        echo "Changing directory names from uppercase to lowercase.."
 
                         # Read the lines from the config file and process them
                         while read -r line; do
@@ -480,7 +477,7 @@ user_dirs() {
                 if [[ ! "$OSTYPE" == "darwin"* ]]; then
                     # Check if the config file exists
                     if [ -f "$config_file" ]; then
-                        echo "Changing directory names from lowercase to uppercase..."
+                        echo "Changing directory names from lowercase to uppercase.."
 
                         # Read the lines from the config file and process them
                         while read -r line; do
@@ -596,7 +593,7 @@ linux_install_packages() {
             for package in "${failed_packages[@]}"; do
                 if ! pacman -Q "$package" &>/dev/null && ! yay -Q "$package" &>/dev/null; then
                     if [[ -x "$(command -v yay)" ]]; then
-                        echo "Trying to install $package from AUR using yay..."
+                        echo "Trying to install $package from AUR using yay.."
                         if yay -S --noconfirm "$package"; then
                             echo "Successfully installed $package from AUR."
                         else
@@ -692,7 +689,7 @@ linux_install_packages() {
 # Install Rust using rustup
 install_rust() {
     if command -v "rustup" &>/dev/null; then
-        echo "Installing Rust using rustup..."
+        echo "Installing Rust using rustup.."
         CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup bash -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
     else
         echo "Rust is already installed."
@@ -716,7 +713,7 @@ install_nvm() {
     fi
     # Source NVM script to enable it in the current shell
     if [ -s "$NVM_DIR/nvm.sh" ]; then
-        echo "Sourcing NVM script..."
+        echo "Sourcing NVM script.."
         . "$NVM_DIR/nvm.sh"
     else
         echo "NVM script not found. Make sure installation was successful."
@@ -742,7 +739,7 @@ install_node() {
         return
     fi
 
-    echo "Installing Node.js..."
+    echo "Installing Node.js.."
     # Set up environment variables for Node.js installation
     export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
     export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
@@ -770,7 +767,7 @@ install_yarn() {
         rm -rf "$HOME/.yarn"
     fi
 
-    echo "Installing Yarn..."
+    echo "Installing Yarn.."
     # Install Yarn using npm
     curl -o- -L https://yarnpkg.com/install.sh | bash
     echo "Yarn installation completed successfully."
@@ -873,7 +870,7 @@ windows_specific_steps() {
 
 # Main Installation
 main_installation() {
-    echo "Starting main installation..."
+    echo "Starting main installation.."
 
     case "$OSTYPE" in
     linux-gnu*)
