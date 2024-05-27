@@ -52,6 +52,11 @@ Update-EnvironmentVariables
 
 Write-Host "Profile registry paths, environment variables, and user profile directory have been updated. Please reboot the system."
 
+# Function to check if NVM is installed
+function Test-NVMInstalled {
+    $nvmPath = "$env:USERPROFILE\AppData\Roaming\nvm\nvm.exe"
+    return Test-Path -Path $nvmPath
+}
 
 # Install NVM if not installed
 Write-Host "Configuring NVM"
