@@ -6,8 +6,9 @@ Import-Module posh-git
 # Set-PoshPrompt -Theme ~/.omp/themes/tokyonight.omp.yaml
 oh-my-posh init pwsh --config ~/.omp/themes/tokyonight.omp.yaml | Invoke-Expression
 
-function config {
-    git --git-dir=$HOME/.cfg --work-tree=$HOME $args
+# Dotfiles special git command
+function global:config {
+    git --git-dir=$env:USERPROFILE/.cfg --work-tree=$env:USERPROFILE $args
 }
 
 # Chocolatey profile
