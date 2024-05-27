@@ -4,11 +4,54 @@
 # Write-Host ----------------------------------------
 # Set-ExecutionPolicy Unrestricted
 
-# Function to check if NVM is installed
-function Test-NVMInstalled {
-    $nvmPath = "$env:USERPROFILE\AppData\Roaming\nvm\nvm.exe"
-    return Test-Path -Path $nvmPath
+$newUsername = "srdusr"
+$newUserProfilePath = "C:\Users\$newUsername"
+$oldUsername = $env:USERNAME
+
+# Function to update registry for user profile path
+function Update-ProfileRegistry {
+    $profileListKey = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
+    $subKeys = Get-ChildItem -Path $profileListKey
+    foreach ($subKey in $subKeys) {
+        $profileImagePath = (Get-ItemProperty -Path "$profileListKey\$($subKey.PSChildName)").ProfileImagePath
+        if ($profileImagePath -like "*$oldUsername*") {
+            $newProfileImagePath = $profileImagePath -replace $oldUsername, $newUsername
+            Set-ItemProperty -Path "$profileListKey\$($subKey.PSChildName)" -Name ProfileImagePath -Value $newProfileImagePath
+            Write-Host "Updated ProfileImagePath for $($subKey.PSChildName)"
+        }
+    }
 }
+
+# Function to update environment variables
+function Update-EnvironmentVariables {
+    $envVars = [System.Environment]::GetEnvironmentVariables("User")
+    foreach ($envVar in $envVars.Keys) {
+        if ($envVars[$envVar] -like "*$oldUsername*") {
+            $newEnvValue = $envVars[$envVar] -replace $oldUsername, $newUsername
+            [System.Environment]::SetEnvironmentVariable($envVar, $newEnvValue, "User")
+            Write-Host "Updated environment variable $envVar"
+        }
+    }
+}
+
+# Rename the user profile directory
+function Rename-UserProfileDirectory {
+    $oldUserProfilePath = "C:\Users\$oldUsername"
+    if (Test-Path -Path $oldUserProfilePath) {
+        Rename-Item -Path $oldUserProfilePath -NewName $newUsername
+        Write-Host "Renamed user profile directory from $oldUserProfilePath to $newUserProfilePath"
+    } else {
+        Write-Host "The old user profile directory $oldUserProfilePath does not exist."
+    }
+}
+
+# Perform the updates
+Rename-UserProfileDirectory
+Update-ProfileRegistry
+Update-EnvironmentVariables
+
+Write-Host "Profile registry paths, environment variables, and user profile directory have been updated. Please reboot the system."
+
 
 # Install NVM if not installed
 Write-Host "Configuring NVM"
@@ -74,8 +117,17 @@ New-Item -ItemType HardLink -Force `
 # Configure PowerShell
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
+$documentsPath = [Environment]::GetFolderPath('Personal') # Default Documents folder
+if ($documentsPath -like "*OneDrive*") {
+    $documentsPath = "$env:USERPROFILE\Documents"
+}
+$powerShellProfileDir = "$documentsPath\PowerShell"
+
+if (-not (Test-Path -Path $powerShellProfileDir)) {
+    New-Item -ItemType Directory -Path $powerShellProfileDir -Force
+}
 New-Item -ItemType HardLink -Force `
-    -Path "$home\Documents\PowerShell\Microsoft.PowerShell_profile.ps1" `
+    -Path "$powerShellProfileDir\Microsoft.PowerShell_profile.ps1" `
     -Target "$home\.config\powershell\Microsoft.PowerShell_profile.ps1"
 
 # Registry Tweaks
@@ -124,3 +176,16 @@ if (Test-IsAdmin) {
 } else {
     Write-Output "You need to run this script as Administrator to disable the Windows key."
 }
+
+
+# Check if the profile exists, otherwise create it
+if (!(Test-Path -Path $PROFILE)) {
+    New-Item -Type File -Path $PROFILE -Force
+}
+
+# Set the content of the profile to load your dotfiles and define 'config' alias
+"'$env:USERPROFILE\.cfg'" >> $PROFILE
+"function global:config { git --git-dir=$env:USERPROFILE/.cfg --work-tree=$env:USERPROFILE $args }" >> $PROFILE
+"config config --local status.showUntrackedFiles no" >> $PROFILE
+"config checkout" >> $PROFILE
+
