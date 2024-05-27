@@ -6,6 +6,10 @@ Import-Module posh-git
 # Set-PoshPrompt -Theme ~/.omp/themes/tokyonight.omp.yaml
 oh-my-posh init pwsh --config ~/.omp/themes/tokyonight.omp.yaml | Invoke-Expression
 
+function config {
+    git --git-dir=$HOME/.cfg --work-tree=$HOME $args
+}
+
 # Chocolatey profile
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
 if (Test-Path($ChocolateyProfile)) {
