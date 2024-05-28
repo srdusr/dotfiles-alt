@@ -1,56 +1,88 @@
 #Requires -RunAsAdministrator
 
-# Write-Host Set PowerShell Execution Policy
-# Write-Host ----------------------------------------
-# Set-ExecutionPolicy Unrestricted
-
+# Variables
 $newUsername = "srdusr"
-$newUserProfilePath = "C:\Users\$newUsername"
+$dotfiles_url = 'https://github.com/srdusr/dotfiles.git'
+$dotfiles_dir = "$HOME\.cfg"
 $oldUsername = $env:USERNAME
 
-# Function to update registry for user profile path
-function Update-ProfileRegistry {
-    $profileListKey = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList"
-    $subKeys = Get-ChildItem -Path $profileListKey
-    foreach ($subKey in $subKeys) {
-        $profileImagePath = (Get-ItemProperty -Path "$profileListKey\$($subKey.PSChildName)").ProfileImagePath
-        if ($profileImagePath -like "*$oldUsername*") {
-            $newProfileImagePath = $profileImagePath -replace $oldUsername, $newUsername
-            Set-ItemProperty -Path "$profileListKey\$($subKey.PSChildName)" -Name ProfileImagePath -Value $newProfileImagePath
-            Write-Host "Updated ProfileImagePath for $($subKey.PSChildName)"
-        }
-    }
-}
+# Change current username
+$userName = Get-WmiObject win32_userAccount -Filter "Name='$oldUsername'"
+$result = $userName.Rename($newUsername)
 
-# Function to update environment variables
-function Update-EnvironmentVariables {
-    $envVars = [System.Environment]::GetEnvironmentVariables("User")
-    foreach ($envVar in $envVars.Keys) {
-        if ($envVars[$envVar] -like "*$oldUsername*") {
-            $newEnvValue = $envVars[$envVar] -replace $oldUsername, $newUsername
-            [System.Environment]::SetEnvironmentVariable($envVar, $newEnvValue, "User")
-            Write-Host "Updated environment variable $envVar"
+# Set alias for git without work tree
+function git_without_work_tree {
+    if (Test-Path -Path ".git") {
+        $isInsideWorkTree = git rev-parse --is-inside-work-tree 2>$null
+        if ($isInsideWorkTree -eq "true") {
+            $GIT_WORK_TREE_OLD = $env:GIT_WORK_TREE
+            Remove-Item Env:\GIT_WORK_TREE
+            & git @args
+            $env:GIT_WORK_TREE = $GIT_WORK_TREE_OLD
+        } else {
+            & git @args
         }
-    }
-}
-
-# Rename the user profile directory
-function Rename-UserProfileDirectory {
-    $oldUserProfilePath = "C:\Users\$oldUsername"
-    if (Test-Path -Path $oldUserProfilePath) {
-        Rename-Item -Path $oldUserProfilePath -NewName $newUsername
-        Write-Host "Renamed user profile directory from $oldUserProfilePath to $newUserProfilePath"
     } else {
-        Write-Host "The old user profile directory $oldUserProfilePath does not exist."
+        & git @args
+    }
+}
+Set-Alias git git_without_work_tree
+
+# Add .gitignore entries
+Add-Content -Path "$HOME\.gitignore" -Value ".cfg"
+Add-Content -Path "$HOME\.gitignore" -Value "install.bat"
+Add-Content -Path "$HOME\.gitignore" -Value ".config/powershell/bootstray.ps1"
+
+# Check if the profile exists, otherwise create it
+if (!(Test-Path -Path $PROFILE)) {
+    New-Item -Type File -Path $PROFILE -Force
+}
+Add-Content -Path $PROFILE -Value "'$env:USERPROFILE\.cfg'"
+Add-Content -Path $PROFILE -Value "function global:config { git --git-dir=$env:USERPROFILE/.cfg --work-tree=$env:USERPROFILE @args }"
+
+# Function to handle errors
+function handle_error {
+    param ($message)
+    Write-Host $message
+    exit 1
+}
+
+# Function to install dotfiles
+function install_dotfiles {
+    if (Test-Path -Path $dotfiles_dir) {
+        config pull | Out-Null
+        $update = $true
+    } else {
+        git clone --bare $dotfiles_url $dotfiles_dir | Out-Null
+        $update = $false
+    }
+
+    $std_err_output = config checkout 2>&1 | Out-Null
+
+    if ($std_err_output -match "following untracked working tree files would be overwritten") {
+        if (-not $update) {
+            config checkout -- /dev/null | Out-Null
+        }
+    }
+    config config status.showUntrackedFiles no
+
+    git config --global include.path "$HOME\.gitconfig.aliases"
+
+    if ($update -or (Read-Host "Do you want to overwrite existing files and continue with the dotfiles setup? [Y/n]" -eq "Y")) {
+        config fetch origin main:main | Out-Null
+        config reset --hard main | Out-Null
+        config checkout -f
+        if ($?) {
+            Write-Host "Successfully imported $dotfiles_dir."
+        } else {
+            handle_error "Mission failed."
+        }
+    } else {
+        handle_error "Aborted by user. Exiting..."
     }
 }
 
-# Perform the updates
-Rename-UserProfileDirectory
-Update-ProfileRegistry
-Update-EnvironmentVariables
-
-Write-Host "Profile registry paths, environment variables, and user profile directory have been updated. Please reboot the system."
+install_dotfiles
 
 # Function to check if NVM is installed
 function Test-NVMInstalled {
@@ -66,23 +98,23 @@ if (-not (Test-NVMInstalled)) {
     $nvmUrl = "https://github.com/coreybutler/nvm-windows/releases/latest/download/nvm-setup.zip"
     $extractPath = "C:\Temp\nvm\"
     $downloadZipFile = $extractPath + (Split-Path -Path $nvmUrl -Leaf)
-    mkdir $extractPath -ErrorAction SilentlyContinue
+    New-Item -ItemType Directory -Path $extractPath -Force
     Invoke-WebRequest -Uri $nvmUrl -OutFile $downloadZipFile
     $extractShell = New-Object -ComObject Shell.Application
     $extractFiles = $extractShell.Namespace($downloadZipFile).Items()
     $extractShell.NameSpace($extractPath).CopyHere($extractFiles)
-    pushd $extractPath
+    Push-Location $extractPath
     Start-Process .\nvm-setup.exe -Wait
-    popd
+    Pop-Location
     Read-Host -Prompt "Setup done, now close the command window, and run this script again in a new elevated window. Press any key to continue"
     Exit
 } else {
     Write-Host "Detected that NVM is already installed. Now using it to install NodeJS LTS."
     $nvmPath = "$env:USERPROFILE\AppData\Roaming\nvm"
-    pushd $nvmPath
+    Push-Location $nvmPath
     .\nvm.exe install lts
     .\nvm.exe use lts
-    popd
+    Pop-Location
 }
 
 # WSL
@@ -94,7 +126,7 @@ Write-Host "Installing Chocolatey"
 Write-Host "----------------------------------------"
 Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-iex ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
 # Install Applications
 Write-Host "Installing Applications"
@@ -183,14 +215,4 @@ if (Test-IsAdmin) {
 }
 
 
-# Check if the profile exists, otherwise create it
-if (!(Test-Path -Path $PROFILE)) {
-    New-Item -Type File -Path $PROFILE -Force
-}
-
-# Set the content of the profile to load your dotfiles and define 'config' alias
-"'$env:USERPROFILE\.cfg'" >> $PROFILE
-"function global:config { git --git-dir=$env:USERPROFILE/.cfg --work-tree=$env:USERPROFILE $args }" >> $PROFILE
-"config config --local status.showUntrackedFiles no" >> $PROFILE
-"config checkout" >> $PROFILE
 
