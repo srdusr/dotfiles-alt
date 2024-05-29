@@ -103,7 +103,7 @@ Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://com
 # Install Applications
 Write-Host "Installing Applications"
 Write-Host "----------------------------------------"
-$apps = @("git", "firefox", "nomachine", "ripgrep", "fd", "sudo", "win32yank", "openssh")
+$apps = @("ripgrep", "fd", "sudo", "win32yank")
 foreach ($app in $apps) {
     choco install $app -y
 }
