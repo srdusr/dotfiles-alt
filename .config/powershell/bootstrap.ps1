@@ -25,6 +25,178 @@ if (-not (Test-IsAdmin)) {
     handle_error "This script must be run as an administrator."
 }
 
+$bloatware = @(
+    #"Anytime"
+    "BioEnrollment"
+    #"Browser"
+    "ContactSupport"
+    "Cortana"
+    #"Defender"
+    "Feedback"
+    "Flash"
+    #"Gaming"	# Breaks Xbox Live Account Login
+    #"Holo"
+    #"InternetExplorer"
+    "Maps"
+    #"MiracastView"
+    "OneDrive"
+    #"SecHealthUI"
+    "Wallet"
+    #"Xbox"     # Causes a bootloop since upgrade 1511?
+)
+
+# Helper functions ------------------------
+function force-mkdir($path) {
+    if (!(Test-Path $path)) {
+        #Write-Host "-- Creating full path to: " $path -ForegroundColor White -BackgroundColor DarkGreen
+        New-Item -ItemType Directory -Force -Path $path
+    }
+}
+
+function Takeown-Registry($key) {
+    # TODO does not work for all root keys yet
+    switch ($key.split('\')[0]) {
+        "HKEY_CLASSES_ROOT" {
+            $reg = [Microsoft.Win32.Registry]::ClassesRoot
+            $key = $key.substring(18)
+        }
+        "HKEY_CURRENT_USER" {
+            $reg = [Microsoft.Win32.Registry]::CurrentUser
+            $key = $key.substring(18)
+        }
+        "HKEY_LOCAL_MACHINE" {
+            $reg = [Microsoft.Win32.Registry]::LocalMachine
+            $key = $key.substring(19)
+        }
+    }
+
+    # get administraor group
+    $admins = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-544")
+    $admins = $admins.Translate([System.Security.Principal.NTAccount])
+
+    # set owner
+    $key = $reg.OpenSubKey($key, "ReadWriteSubTree", "TakeOwnership")
+    $acl = $key.GetAccessControl()
+    $acl.SetOwner($admins)
+    $key.SetAccessControl($acl)
+
+    # set FullControl
+    $acl = $key.GetAccessControl()
+    $rule = New-Object System.Security.AccessControl.RegistryAccessRule($admins, "FullControl", "Allow")
+    $acl.SetAccessRule($rule)
+    $key.SetAccessControl($acl)
+}
+
+function Takeown-File($path) {
+    takeown.exe /A /F $path
+    $acl = Get-Acl $path
+
+    # get administraor group
+    $admins = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-544")
+    $admins = $admins.Translate([System.Security.Principal.NTAccount])
+
+    # add NT Authority\SYSTEM
+    $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($admins, "FullControl", "None", "None", "Allow")
+    $acl.AddAccessRule($rule)
+
+    Set-Acl -Path $path -AclObject $acl
+}
+
+function Takeown-Folder($path) {
+    Takeown-File $path
+    foreach ($item in Get-ChildItem $path) {
+        if (Test-Path $item -PathType Container) {
+            Takeown-Folder $item.FullName
+        }
+        else {
+            Takeown-File $item.FullName
+        }
+    }
+}
+
+function Elevate-Privileges {
+    param($Privilege)
+    $Definition = @"
+    using System;
+    using System.Runtime.InteropServices;
+
+    public class AdjPriv {
+        [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
+            internal static extern bool AdjustTokenPrivileges(IntPtr htok, bool disall, ref TokPriv1Luid newst, int len, IntPtr prev, IntPtr rele);
+
+        [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
+            internal static extern bool OpenProcessToken(IntPtr h, int acc, ref IntPtr phtok);
+
+        [DllImport("advapi32.dll", SetLastError = true)]
+            internal static extern bool LookupPrivilegeValue(string host, string name, ref long pluid);
+
+        [StructLayout(LayoutKind.Sequential, Pack = 1)]
+            internal struct TokPriv1Luid {
+                public int Count;
+                public long Luid;
+                public int Attr;
+            }
+
+        internal const int SE_PRIVILEGE_ENABLED = 0x00000002;
+        internal const int TOKEN_QUERY = 0x00000008;
+        internal const int TOKEN_ADJUST_PRIVILEGES = 0x00000020;
+
+        public static bool EnablePrivilege(long processHandle, string privilege) {
+            bool retVal;
+            TokPriv1Luid tp;
+            IntPtr hproc = new IntPtr(processHandle);
+            IntPtr htok = IntPtr.Zero;
+            retVal = OpenProcessToken(hproc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, ref htok);
+            tp.Count = 1;
+            tp.Luid = 0;
+            tp.Attr = SE_PRIVILEGE_ENABLED;
+            retVal = LookupPrivilegeValue(null, privilege, ref tp.Luid);
+            retVal = AdjustTokenPrivileges(htok, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero);
+            return retVal;
+        }
+    }
+"@
+    $ProcessHandle = (Get-Process -id $pid).Handle
+    $type = Add-Type $definition -PassThru
+    $type[0]::EnablePrivilege($processHandle, $Privilege)
+}
+
+# Elevate so I can run everything ------------------------
+Write-Output "Elevating priviledges for this process"
+do { } until (Elevate-Privileges SeTakeOwnershipPrivilege)
+
+# Remove Features ------------------------
+foreach ($bloat in $bloatware) {
+   Write-Output "Removing packages containing $bloat"
+   $pkgs = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" |
+       Where-Object Name -Like "*$bloat*")
+
+   foreach ($pkg in $pkgs) {
+       $pkgname = $pkg.Name.split('\')[-1]
+       Takeown-Registry($pkg.Name)
+       Takeown-Registry($pkg.Name + "\Owners")
+       Set-ItemProperty -Path ("HKLM:" + $pkg.Name.Substring(18)) -Name Visibility -Value 1
+       New-ItemProperty -Path ("HKLM:" + $pkg.Name.Substring(18)) -Name DefVis -PropertyType DWord -Value 2
+       Remove-Item      -Path ("HKLM:" + $pkg.Name.Substring(18) + "\Owners")
+       dism.exe /Online /Remove-Package /PackageName:$pkgname /NoRestart
+   }
+}
+
+
+# Remove default apps and bloat ------------------------
+Write-Output "Uninstalling default apps"
+foreach ($app in $apps) {
+   Write-Output "Trying to remove $app"
+   Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
+   Get-AppXProvisionedPackage -Online |
+   Where-Object DisplayName -EQ $app |
+   Remove-AppxProvisionedPackage -Online
+}
+
+# Prevents "Suggested Applications" returning
+force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
+Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content" "DisableWindowsConsumerFeatures" 1
+
 # Kill OneDrive with fire ------------------------
 Write-Output "Kill OneDrive process"
 taskkill.exe /F /IM "OneDrive.exe"
