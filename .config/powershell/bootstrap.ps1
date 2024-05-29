@@ -197,69 +197,69 @@ function install_dotfiles {
 
 install_dotfiles
 
-## WSL
-#Write-Host "Configuring WSL"
-#wsl --install -d Ubuntu
-#
-## Function to install SSH
-#function install_ssh {
-#    Write-Host "Setting Up SSH"
-#    Start-Service ssh-agent
-#    Start-Service sshd
-#    Set-Service -Name ssh-agent -StartupType 'Automatic'
-#    Set-Service -Name sshd -StartupType 'Automatic'
-#
-#    # Generate SSH key if not exists
-#    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
-#        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
-#    }
-#
-#    # Start ssh-agent and add key
-#    eval $(ssh-agent -s)
-#    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
-#
-#    # Display the SSH key
-#    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
-#    Write-Host "Add the following SSH key to your GitHub account:"
-#    Write-Host $sshKey
-#}
-#
-#install_ssh
-#
-## Configure Neovim
-#Write-Host "Configuring Neovim"
-#Write-Host "----------------------------------------"
-#New-Item -ItemType Junction -Force `
-#    -Path "$home\AppData\Local\nvim" `
-#    -Target "$home\.config\nvim"
-#
-## Install Windows Terminal, and configure
-#Write-Host "Install Windows Terminal, and configure"
-#Write-Host "----------------------------------------"
-#Move-Item -Force "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.old"
-#New-Item -ItemType HardLink -Force `
-#    -Path "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
-#    -Target "$home\.config\terminal\settings.json"
-#
-## Registry Tweaks
-#Write-Host "Registry Tweaks"
-#Write-Host "----------------------------------------"
-#
-## Show hidden files
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
-#
-## Show file extensions for known file types
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
-#
-## Never Combine taskbar buttons when the taskbar is full
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
-#
-## Taskbar small icons
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
-#
-## Set Windows to use UTC time instead of local time for system clock
-#Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
-#
+# WSL
+Write-Host "Configuring WSL"
+wsl --install -d Ubuntu
+
+# Function to install SSH
+function install_ssh {
+    Write-Host "Setting Up SSH"
+    Start-Service ssh-agent
+    Start-Service sshd
+    Set-Service -Name ssh-agent -StartupType 'Automatic'
+    Set-Service -Name sshd -StartupType 'Automatic'
+
+    # Generate SSH key if not exists
+    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
+        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
+    }
+
+    # Start ssh-agent and add key
+    eval $(ssh-agent -s)
+    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
+
+    # Display the SSH key
+    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
+    Write-Host "Add the following SSH key to your GitHub account:"
+    Write-Host $sshKey
+}
+
+install_ssh
+
+# Configure Neovim
+Write-Host "Configuring Neovim"
+Write-Host "----------------------------------------"
+New-Item -ItemType Junction -Force `
+    -Path "$home\AppData\Local\nvim" `
+    -Target "$home\.config\nvim"
+
+# Install Windows Terminal, and configure
+Write-Host "Install Windows Terminal, and configure"
+Write-Host "----------------------------------------"
+Move-Item -Force "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.old"
+New-Item -ItemType HardLink -Force `
+    -Path "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
+    -Target "$home\.config\terminal\settings.json"
+
+# Registry Tweaks
+Write-Host "Registry Tweaks"
+Write-Host "----------------------------------------"
+
+# Show hidden files
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
+
+# Show file extensions for known file types
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
+
+# Never Combine taskbar buttons when the taskbar is full
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
+
+# Taskbar small icons
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
+
+# Set Windows to use UTC time instead of local time for system clock
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
+
 ## Function to disable the Windows key
 #function Disable-WindowsKey {
 #    $scancodeMap = @(
