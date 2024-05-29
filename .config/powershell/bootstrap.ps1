@@ -2,7 +2,7 @@
 
 # Variables
 $newUsername = "srdusr"
-$dotfiles_url = 'https://github.com/$newUsername/dotfiles.git'
+$dotfiles_url = 'https://github.com/srdusr/dotfiles.git'
 $dotfiles_dir = "$HOME\.cfg"
 $oldUsername = $env:USERNAME
 
@@ -29,14 +29,16 @@ foreach ($app in $apps) {
 }
 
 # Define the `config` alias in the current session
-function config {
-    git --git-dir=$env:USERPROFILE/.cfg/ --work-tree=$env:USERPROFILE @args
+function global:config {
+    git --git-dir="$env:USERPROFILE\.cfg" --work-tree="$env:USERPROFILE" $args
 }
 
 # Add .gitignore entries
 Add-Content -Path "$HOME\.gitignore" -Value ".cfg"
 Add-Content -Path "$HOME\.gitignore" -Value "install.bat"
 Add-Content -Path "$HOME\.gitignore" -Value ".config/powershell/bootstrap.ps1"
+
+Set-ExecutionPolicy RemoteSigned
 
 # Check if the profile exists, otherwise create it
 if (!(Test-Path -Path $PROFILE)) {
