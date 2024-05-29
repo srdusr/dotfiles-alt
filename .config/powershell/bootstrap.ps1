@@ -5,11 +5,93 @@ $newUsername = "srdusr"
 $dotfiles_url = 'https://github.com/srdusr/dotfiles.git'
 $dotfiles_dir = "$HOME\.cfg"
 $oldUsername = $env:USERNAME
+$newUserProfile = "C:\Users\$newUsername"
+$oldUserProfile = "C:\Users\$oldUsername"
+
+# Function to handle errors
+function handle_error {
+    param ($message)
+    Write-Host $message
+    exit 1
+}
 
 # Change current username
 $userName = Get-WmiObject win32_userAccount -Filter "Name='$oldUsername'"
-$result = $userName.Rename($newUsername)
+if ($userName) {
+    $result = $userName.Rename($newUsername)
+    if ($result -ne 0) {
+        handle_error "Failed to rename user."
+    }
+} else {
+    handle_error "User not found."
+}
 
+# Rename the user account
+try {
+    Rename-LocalUser -Name $oldUsername -NewName $newUsername
+    Write-Host "User account renamed successfully."
+} catch {
+    handle_error "Failed to rename user account: $_"
+}
+
+# Rename the user profile folder
+try {
+    Rename-Item -Path $oldUserProfile -NewName $newUserProfile
+    Write-Host "User profile folder renamed successfully."
+} catch {
+    handle_error "Failed to rename user profile folder: $_"
+}
+
+# Update registry entries
+try {
+    $sid = (Get-WmiObject Win32_UserAccount -Filter "Name='$newUsername'").SID
+    $regPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$sid"
+    Set-ItemProperty -Path $regPath -Name "ProfileImagePath" -Value $newUserProfile
+    Write-Host "Registry updated successfully."
+} catch {
+    handle_error "Failed to update registry: $_"
+}
+
+# Update scheduled tasks (if any)
+try {
+    Get-ScheduledTask | ForEach-Object {
+        $task = $_
+        $taskPrincipal = $task.Principal.UserId
+        if ($taskPrincipal -match $oldUsername) {
+            $task.Principal.UserId = $taskPrincipal -replace $oldUsername, $newUsername
+            $task | Set-ScheduledTask
+        }
+    }
+    Write-Host "Scheduled tasks updated successfully."
+} catch {
+    handle_error "Failed to update scheduled tasks: $_"
+}
+
+# Update environment variables
+try {
+    [Environment]::SetEnvironmentVariable("USERPROFILE", $newUserProfile, "Machine")
+    [Environment]::SetEnvironmentVariable("HOMEPATH", "\Users\$newUsername", "Machine")
+    Write-Host "Environment variables updated successfully."
+} catch {
+    handle_error "Failed to update environment variables: $_"
+}
+
+
+# Configure PowerShell
+Write-Host "Configuring PowerShell"
+Write-Host "----------------------------------------"
+$documentsPath = [Environment]::GetFolderPath('Personal') # Default Documents folder
+if ($documentsPath -like "*OneDrive*") {
+    $documentsPath = "$env:USERPROFILE\Documents"
+}
+$powerShellProfileDir = "$documentsPath\PowerShell"
+
+if (-not (Test-Path -Path $powerShellProfileDir)) {
+    New-Item -ItemType Directory -Path $powerShellProfileDir -Force
+}
+New-Item -ItemType HardLink -Force `
+    -Path "$powerShellProfileDir\Microsoft.PowerShell_profile.ps1" `
+    -Target "$home\.config\powershell\Microsoft.PowerShell_profile.ps1"
 
 # Install Chocolatey
 Write-Host "Installing Chocolatey"
@@ -21,14 +103,10 @@ Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://com
 # Install Applications
 Write-Host "Installing Applications"
 Write-Host "----------------------------------------"
-choco install git -y
-choco install firefox -y
-choco install nomachine -y
-choco install ripgrep -y
-choco install fd -y
-choco install sudo -y
-choco install win32yank -y
-choco install openssh -y
+$apps = @("git", "firefox", "nomachine", "ripgrep", "fd", "sudo", "win32yank", "openssh")
+foreach ($app in $apps) {
+    choco install $app -y
+}
 
 # Set alias for git without work tree
 function git_without_work_tree {
@@ -46,27 +124,23 @@ function git_without_work_tree {
         & git @args
     }
 }
-
 Set-Alias git git_without_work_tree
 
 # Add .gitignore entries
-Add-Content -Path "$HOME\.gitignore" -Value ".cfg"
-Add-Content -Path "$HOME\.gitignore" -Value "install.bat"
-Add-Content -Path "$HOME\.gitignore" -Value ".config/powershell/bootstray.ps1"
+$gitignoreEntries = @(".cfg", "install.bat", ".config/powershell/bootstray.ps1")
+foreach ($entry in $gitignoreEntries) {
+    Add-Content -Path "$HOME\.gitignore" -Value $entry
+}
 
 # Check if the profile exists, otherwise create it
 if (!(Test-Path -Path $PROFILE)) {
     New-Item -Type File -Path $PROFILE -Force
 }
-Add-Content -Path $PROFILE -Value "'$env:USERPROFILE\.cfg'"
-Add-Content -Path $PROFILE -Value "function global:config { git --git-dir=$env:USERPROFILE/.cfg --work-tree=$env:USERPROFILE @args }"
+Add-Content -Path $PROFILE -Value "`$env:USERPROFILE\.cfg"
+Add-Content -Path $PROFILE -Value "function global:config { git --git-dir=`$env:USERPROFILE/.cfg --work-tree=`$env:USERPROFILE @args }"
 
-# Function to handle errors
-function handle_error {
-    param ($message)
-    Write-Host $message
-    exit 1
-}
+# Source the profile to make the config function available
+. $PROFILE
 
 # Function to install dotfiles
 function install_dotfiles {
@@ -78,7 +152,7 @@ function install_dotfiles {
         $update = $false
     }
 
-    $std_err_output = config checkout 2>&1 | Out-Null
+    $std_err_output = config checkout 2>&1
 
     if ($std_err_output -match "following untracked working tree files would be overwritten") {
         if (-not $update) {
@@ -102,7 +176,6 @@ function install_dotfiles {
         handle_error "Aborted by user. Exiting..."
     }
 }
-
 install_dotfiles
 
 # Function to check if NVM is installed
@@ -164,7 +237,6 @@ function install_ssh {
     Write-Host "Add the following SSH key to your GitHub account:"
     Write-Host $sshKey
 }
-
 install_ssh
 
 # Configure Neovim
@@ -182,68 +254,27 @@ New-Item -ItemType HardLink -Force `
     -Path "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
     -Target "$home\.config\windows-terminal\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
 
-# Configure PowerShell
-Write-Host "Configuring PowerShell"
-Write-Host "----------------------------------------"
-$documentsPath = [Environment]::GetFolderPath('Personal') # Default Documents folder
-if ($documentsPath -like "*OneDrive*") {
-    $documentsPath = "$env:USERPROFILE\Documents"
-}
-$powerShellProfileDir = "$documentsPath\PowerShell"
-
-if (-not (Test-Path -Path $powerShellProfileDir)) {
-    New-Item -ItemType Directory -Path $powerShellProfileDir -Force
-}
-New-Item -ItemType HardLink -Force `
-    -Path "$powerShellProfileDir\Microsoft.PowerShell_profile.ps1" `
-    -Target "$home\.config\powershell\Microsoft.PowerShell_profile.ps1"
-
 # Registry Tweaks
 Write-Host "Registry Tweaks"
 Write-Host "----------------------------------------"
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Value 1
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value 0
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSuperHidden" -Value 1
+Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "AutoEndTasks" -Value 1
 
-# Show hidden files
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
-
-# Show file extensions for known file types
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
-
-# Never Combine taskbar buttons when the taskbar is full
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
-
-# Taskbar small icons
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
-
-# Set Windows to use UTC time instead of local time for system clock
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
-
-# Function to check if the current session is elevated
-function Test-IsAdmin {
-    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
-    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
-    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
-}
-
-# Function to disable the Windows key
+# Disable Windows Key
 function Disable-WindowsKey {
-    $scancodeMap = @(
-        0x00000000, 0x00000000, 0x00000003, 0xE05B0000, 0xE05C0000, 0x00000000
-    )
-
-    $binaryValue = New-Object byte[] ($scancodeMap.Length * 4)
-    [System.Buffer]::BlockCopy($scancodeMap, 0, $binaryValue, 0, $binaryValue.Length)
-
-    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Value $binaryValue
-
-    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
+    $key = "HKLM:\System\CurrentControlSet\Control\Keyboard Layout"
+    $name = "Scancode Map"
+    $value = [byte[]](0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0x5B,0xE0,0x00,0x00,0x5C,0xE0,0x00,0x00,0x00,0x00)
+    Set-ItemProperty -Path $key -Name $name -Value $value
+    Write-Host "Windows key disabled. Reboot to apply changes."
 }
 
-# Check if running as Administrator and call the function
-if (Test-IsAdmin) {
-    Disable-WindowsKey
-} else {
-    Write-Output "You need to run this script as Administrator to disable the Windows key."
-}
+# Optional: Disable Windows Key
+Disable-WindowsKey
 
-
+# Restart to apply changes
+Write-Host "Restarting system to apply changes..."
+Restart-Computer -Force
 
