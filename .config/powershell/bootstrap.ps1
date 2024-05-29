@@ -1,34 +1,29 @@
-#Requires -RunAsAdministrator
+# Requires -RunAsAdministrator
 
 # Variables
 $newUsername = "srdusr"
-$dotfiles_url = 'https://github.com/srdusr/dotfiles.git'
+$dotfiles_url = 'https://github.com/$newUsername/dotfiles.git'
 $dotfiles_dir = "$HOME\.cfg"
 $oldUsername = $env:USERNAME
-$newUserProfile = "C:\Users\$newUsername"
-$oldUserProfile = "C:\Users\$oldUsername"
 
 # Function to handle errors
 function handle_error {
     param ($message)
-    Write-Host $message
+    Write-Host $message -ForegroundColor Red
     exit 1
-}
-
-# Change current username
-$userName = Get-WmiObject win32_userAccount -Filter "Name='$oldUsername'"
-if ($userName) {
-    $result = $userName.Rename($newUsername)
-    if ($result -ne 0) {
-        handle_error "Failed to rename user."
-    }
-} else {
-    handle_error "User not found."
 }
 
 # Rename the user account
 try {
-    Rename-LocalUser -Name $oldUsername -NewName $newUsername
+    $userName = Get-WmiObject win32_userAccount -Filter "Name='$oldUsername'"
+    if ($userName) {
+        $result = $userName.Rename($newUsername)
+        if ($result -ne 0) {
+            handle_error "Failed to rename user."
+        }
+    } else {
+        handle_error "User not found."
+    }
     Write-Host "User account renamed successfully."
 } catch {
     handle_error "Failed to rename user account: $_"
@@ -36,7 +31,7 @@ try {
 
 # Rename the user profile folder
 try {
-    Rename-Item -Path $oldUserProfile -NewName $newUserProfile
+    Rename-Item -Path "C:\Users\$oldUsername" -NewName "C:\Users\$newUsername"
     Write-Host "User profile folder renamed successfully."
 } catch {
     handle_error "Failed to rename user profile folder: $_"
@@ -46,52 +41,11 @@ try {
 try {
     $sid = (Get-WmiObject Win32_UserAccount -Filter "Name='$newUsername'").SID
     $regPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$sid"
-    Set-ItemProperty -Path $regPath -Name "ProfileImagePath" -Value $newUserProfile
+    Set-ItemProperty -Path $regPath -Name "ProfileImagePath" -Value "C:\Users\$newUsername"
     Write-Host "Registry updated successfully."
 } catch {
     handle_error "Failed to update registry: $_"
 }
-
-# Update scheduled tasks (if any)
-try {
-    Get-ScheduledTask | ForEach-Object {
-        $task = $_
-        $taskPrincipal = $task.Principal.UserId
-        if ($taskPrincipal -match $oldUsername) {
-            $task.Principal.UserId = $taskPrincipal -replace $oldUsername, $newUsername
-            $task | Set-ScheduledTask
-        }
-    }
-    Write-Host "Scheduled tasks updated successfully."
-} catch {
-    handle_error "Failed to update scheduled tasks: $_"
-}
-
-# Update environment variables
-try {
-    [Environment]::SetEnvironmentVariable("USERPROFILE", $newUserProfile, "Machine")
-    [Environment]::SetEnvironmentVariable("HOMEPATH", "\Users\$newUsername", "Machine")
-    Write-Host "Environment variables updated successfully."
-} catch {
-    handle_error "Failed to update environment variables: $_"
-}
-
-
-# Configure PowerShell
-Write-Host "Configuring PowerShell"
-Write-Host "----------------------------------------"
-$documentsPath = [Environment]::GetFolderPath('Personal') # Default Documents folder
-if ($documentsPath -like "*OneDrive*") {
-    $documentsPath = "$env:USERPROFILE\Documents"
-}
-$powerShellProfileDir = "$documentsPath\PowerShell"
-
-if (-not (Test-Path -Path $powerShellProfileDir)) {
-    New-Item -ItemType Directory -Path $powerShellProfileDir -Force
-}
-New-Item -ItemType HardLink -Force `
-    -Path "$powerShellProfileDir\Microsoft.PowerShell_profile.ps1" `
-    -Target "$home\.config\powershell\Microsoft.PowerShell_profile.ps1"
 
 # Install Chocolatey
 Write-Host "Installing Chocolatey"
@@ -103,43 +57,29 @@ Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://com
 # Install Applications
 Write-Host "Installing Applications"
 Write-Host "----------------------------------------"
-$apps = @("ripgrep", "fd", "sudo", "win32yank")
+$apps = @("ripgrep", "fd", "sudo", "win32yank", "neovim")
 foreach ($app in $apps) {
     choco install $app -y
 }
 
-# Set alias for git without work tree
-function git_without_work_tree {
-    if (Test-Path -Path ".git") {
-        $isInsideWorkTree = git rev-parse --is-inside-work-tree 2>$null
-        if ($isInsideWorkTree -eq "true") {
-            $GIT_WORK_TREE_OLD = $env:GIT_WORK_TREE
-            Remove-Item Env:\GIT_WORK_TREE
-            & git @args
-            $env:GIT_WORK_TREE = $GIT_WORK_TREE_OLD
-        } else {
-            & git @args
-        }
-    } else {
-        & git @args
-    }
+# Define the `config` alias in the current session
+function config {
+    git --git-dir=$env:USERPROFILE/.cfg/ --work-tree=$env:USERPROFILE @args
 }
-Set-Alias git git_without_work_tree
 
 # Add .gitignore entries
-$gitignoreEntries = @(".cfg", "install.bat", ".config/powershell/bootstray.ps1")
-foreach ($entry in $gitignoreEntries) {
-    Add-Content -Path "$HOME\.gitignore" -Value $entry
-}
+Add-Content -Path "$HOME\.gitignore" -Value ".cfg"
+Add-Content -Path "$HOME\.gitignore" -Value "install.bat"
+Add-Content -Path "$HOME\.gitignore" -Value ".config/powershell/bootstrap.ps1"
 
 # Check if the profile exists, otherwise create it
 if (!(Test-Path -Path $PROFILE)) {
     New-Item -Type File -Path $PROFILE -Force
 }
-Add-Content -Path $PROFILE -Value "`$env:USERPROFILE\.cfg"
-Add-Content -Path $PROFILE -Value "function global:config { git --git-dir=`$env:USERPROFILE/.cfg --work-tree=`$env:USERPROFILE @args }"
+Add-Content -Path $PROFILE -Value "`nfunction config { git --git-dir=`$env:USERPROFILE/.cfg/ --work-tree=`$env:USERPROFILE @args }"
+Add-Content -Path $PROFILE -Value "`n. $PROFILE"
 
-# Source the profile to make the config function available
+# Source the profile immediately to make the alias available
 . $PROFILE
 
 # Function to install dotfiles
@@ -176,6 +116,7 @@ function install_dotfiles {
         handle_error "Aborted by user. Exiting..."
     }
 }
+
 install_dotfiles
 
 # Function to check if NVM is installed
@@ -237,6 +178,7 @@ function install_ssh {
     Write-Host "Add the following SSH key to your GitHub account:"
     Write-Host $sshKey
 }
+
 install_ssh
 
 # Configure Neovim
@@ -252,7 +194,7 @@ Write-Host "----------------------------------------"
 Move-Item -Force "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.old"
 New-Item -ItemType HardLink -Force `
     -Path "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
-    -Target "$home\.config\windows-terminal\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+    -Target "$home\.config\terminal\settings.json"
 
 # Registry Tweaks
 Write-Host "Registry Tweaks"
@@ -277,4 +219,3 @@ Disable-WindowsKey
 # Restart to apply changes
 Write-Host "Restarting system to apply changes..."
 Restart-Computer -Force
-

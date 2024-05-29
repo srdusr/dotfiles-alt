@@ -8,13 +8,13 @@ oh-my-posh init pwsh --config ~/.omp/themes/tokyonight.omp.yaml | Invoke-Express
 
 # Dotfiles special git command
 function global:config {
-    git --git-dir=$env:USERPROFILE/.cfg --work-tree=$env:USERPROFILE $args
+    git --git-dir="$env:USERPROFILE\.cfg" --work-tree="$env:USERPROFILE" $args
 }
 
 # Chocolatey profile
 $ChocolateyProfile = "$env:ChocolateyInstall\helpers\chocolateyProfile.psm1"
-if (Test-Path($ChocolateyProfile)) {
-  Import-Module "$ChocolateyProfile"
+if (Test-Path $ChocolateyProfile) {
+    Import-Module "$ChocolateyProfile"
 }
 
 # PSReadLine extension to provide VI keybindings
@@ -27,6 +27,7 @@ Remove-Alias -Force -Name gl
 Remove-Alias -Force -Name gp
 Remove-Alias -Force -Name gm
 
+# Custom git functions
 function gs { git status }
 function gf { git fetch }
 function gl { git pull }
@@ -37,9 +38,9 @@ function ga { git add }
 function gcam { git commit -am }
 function gd { git diff }
 function gw { git diff --word-diff }
-function glog { git logo }
-function gdog { git dog }
-function gadog { git adog }
+function glog { git log }
+function gdog { git log --graph --oneline --all }
+function gadog { git log --graph --decorate --all }
 function gb { git branch }
 function gba { git branch --all }
 function gco { git checkout }
@@ -50,4 +51,3 @@ Invoke-Expression (& {
     $hook = if ($PSVersionTable.PSVersion.Major -lt 6) { 'prompt' } else { 'pwd' }
     (zoxide init --hook $hook powershell | Out-String)
 })
-
