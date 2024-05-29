@@ -258,6 +258,21 @@ foreach ($item in (Get-ChildItem "$env:WinDir\WinSxS\*onedrive*")) {
 # As a last step, disable UAC ------------------------
 New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -PropertyType DWord -Value 0 -Force
 
+# Gets the "MyDocuments" path for the current user since it can be local or remote
+$UserMyDocumentsPath = [Environment]::GetFolderPath('MyDocuments')
+
+$PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
+#$PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
+$WindowsTerminalSettingsDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
+
+$PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+$PowerShellThemeTemplate = "$PSScriptRoot\windows_terminal\theme.omp.json"
+$WindowsTerminalSettingsTemplate = "$PSScriptRoot\windows_terminal\settings.json"
+
+# Remove OneDrive directory
+Write-Host "Removing OneDrive directory"
+Remove-Item "$env:USERPROFILE\OneDrive" -Recurse -Force
+
 # Configure PowerShell
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
@@ -373,30 +388,30 @@ install_dotfiles
 Write-Host "Configuring WSL"
 wsl --install -d Ubuntu
 
-# Function to install SSH
-function install_ssh {
-    Write-Host "Setting Up SSH"
-    Start-Service ssh-agent
-    Start-Service sshd
-    Set-Service -Name ssh-agent -StartupType 'Automatic'
-    Set-Service -Name sshd -StartupType 'Automatic'
-
-    # Generate SSH key if not exists
-    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
-        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
-    }
-
-    # Start ssh-agent and add key
-    eval $(ssh-agent -s)
-    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
-
-    # Display the SSH key
-    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
-    Write-Host "Add the following SSH key to your GitHub account:"
-    Write-Host $sshKey
-}
-
-install_ssh
+## Function to install SSH
+#function install_ssh {
+#    Write-Host "Setting Up SSH"
+#    Start-Service ssh-agent
+#    Start-Service sshd
+#    Set-Service -Name ssh-agent -StartupType 'Automatic'
+#    Set-Service -Name sshd -StartupType 'Automatic'
+#
+#    # Generate SSH key if not exists
+#    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
+#        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
+#    }
+#
+#    # Start ssh-agent and add key
+#    eval $(ssh-agent -s)
+#    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
+#
+#    # Display the SSH key
+#    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
+#    Write-Host "Add the following SSH key to your GitHub account:"
+#    Write-Host $sshKey
+#}
+#
+#install_ssh
 
 # Configure Neovim
 Write-Host "Configuring Neovim"
@@ -411,26 +426,26 @@ Write-Host "----------------------------------------"
 Move-Item -Force "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.old"
 New-Item -ItemType HardLink -Force `
     -Path "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
-    -Target "$home\.config\terminal\settings.json"
+    -Target "$home\.config\windows-terminal\settings.json"
 
 # Registry Tweaks
 Write-Host "Registry Tweaks"
 Write-Host "----------------------------------------"
 
-# Show hidden files
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
-
-# Show file extensions for known file types
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
-
-# Never Combine taskbar buttons when the taskbar is full
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
-
-# Taskbar small icons
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
-
-# Set Windows to use UTC time instead of local time for system clock
-Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
+## Show hidden files
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
+#
+## Show file extensions for known file types
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
+#
+## Never Combine taskbar buttons when the taskbar is full
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
+#
+## Taskbar small icons
+#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
+#
+## Set Windows to use UTC time instead of local time for system clock
+#Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
 
 ## Function to disable the Windows key
 #function Disable-WindowsKey {
