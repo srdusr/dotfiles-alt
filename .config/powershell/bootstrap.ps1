@@ -10,41 +10,7 @@ $oldUsername = $env:USERNAME
 function handle_error {
     param ($message)
     Write-Host $message -ForegroundColor Red
-    exit 1
-}
-
-# Rename the user account
-try {
-    $userName = Get-WmiObject win32_userAccount -Filter "Name='$oldUsername'"
-    if ($userName) {
-        $result = $userName.Rename($newUsername)
-        if ($result -ne 0) {
-            handle_error "Failed to rename user."
-        }
-    } else {
-        handle_error "User not found."
-    }
-    Write-Host "User account renamed successfully."
-} catch {
-    handle_error "Failed to rename user account: $_"
-}
-
-# Rename the user profile folder
-try {
-    Rename-Item -Path "C:\Users\$oldUsername" -NewName "C:\Users\$newUsername"
-    Write-Host "User profile folder renamed successfully."
-} catch {
-    handle_error "Failed to rename user profile folder: $_"
-}
-
-# Update registry entries
-try {
-    $sid = (Get-WmiObject Win32_UserAccount -Filter "Name='$newUsername'").SID
-    $regPath = "HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\ProfileList\$sid"
-    Set-ItemProperty -Path $regPath -Name "ProfileImagePath" -Value "C:\Users\$newUsername"
-    Write-Host "Registry updated successfully."
-} catch {
-    handle_error "Failed to update registry: $_"
+    #exit 1
 }
 
 # Install Chocolatey
@@ -218,4 +184,4 @@ Disable-WindowsKey
 
 # Restart to apply changes
 Write-Host "Restarting system to apply changes..."
-Restart-Computer -Force
+#Restart-Computer -Force
