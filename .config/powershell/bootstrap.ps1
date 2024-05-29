@@ -1,7 +1,7 @@
 # Requires -RunAsAdministrator
 
 # Variables
-$newUsername = "srdusr"
+#$newUsername = "srdusr"
 $dotfiles_url = 'https://github.com/srdusr/dotfiles.git'
 $dotfiles_dir = "$HOME\.cfg"
 $oldUsername = $env:USERNAME
@@ -10,7 +10,48 @@ $oldUsername = $env:USERNAME
 function handle_error {
     param ($message)
     Write-Host $message -ForegroundColor Red
-    #exit 1
+    exit 1
+}
+
+# Function to check if the current session is elevated
+function Test-IsAdmin {
+    $currentUser = [Security.Principal.WindowsIdentity]::GetCurrent()
+    $principal = New-Object Security.Principal.WindowsPrincipal($currentUser)
+    return $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)
+}
+
+# Ensure the script is run as administrator
+if (-not (Test-IsAdmin)) {
+    handle_error "This script must be run as an administrator."
+}
+
+# Configure PowerShell
+Write-Host "Configuring PowerShell"
+Write-Host "----------------------------------------"
+
+$documentsPath = [Environment]::GetFolderPath('Personal') # Default Documents folder
+if ($documentsPath -like "*OneDrive*") {
+    $documentsPath = "$env:USERPROFILE\Documents"
+}
+$powerShellProfileDir = "$documentsPath\PowerShell"
+
+if (-not (Test-Path -Path $powerShellProfileDir)) {
+    New-Item -ItemType Directory -Path $powerShellProfileDir -Force
+}
+
+New-Item -ItemType HardLink -Force `
+    -Path "$powerShellProfileDir\Microsoft.PowerShell_profile.ps1" `
+    -Target "$home\.config\powershell\Microsoft.PowerShell_profile.ps1"
+
+# Set environment variable
+[System.Environment]::SetEnvironmentVariable('PowerShellProfileDir', $powerShellProfileDir, [System.EnvironmentVariableTarget]::User)
+
+Write-Host "PowerShell profile directory set to: $powerShellProfileDir"
+Write-Host "Environment variable 'PowerShellProfileDir' set to: $powerShellProfileDir"
+
+# Verify profile sourcing
+if (!(Test-Path -Path "$home\.config\powershell\Microsoft.PowerShell_profile.ps1")) {
+    handle_error "PowerShell profile does not exist. Please create it at $home\.config\powershell\Microsoft.PowerShell_profile.ps1"
 }
 
 # Install Chocolatey
@@ -20,12 +61,20 @@ Set-ExecutionPolicy Bypass -Scope Process -Force
 [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
 Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
 
+# Check if Chocolatey installed successfully
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    handle_error "Chocolatey installation failed."
+}
+
 # Install Applications
 Write-Host "Installing Applications"
 Write-Host "----------------------------------------"
-$apps = @("ripgrep", "fd", "sudo", "win32yank", "neovim")
+$apps = @("ripgrep", "fd", "sudo", "win32yank", "neovim", "microsoft-windows-terminal")
 foreach ($app in $apps) {
     choco install $app -y
+    if ($LASTEXITCODE -ne 0) {
+        handle_error "Installation of $app failed."
+    }
 }
 
 # Define the `config` alias in the current session
@@ -49,6 +98,8 @@ Add-Content -Path $PROFILE -Value "`n. $PROFILE"
 
 # Source the profile immediately to make the alias available
 . $PROFILE
+
+echo '. "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"' >> $PROFILE
 
 # Function to install dotfiles
 function install_dotfiles {
@@ -87,39 +138,6 @@ function install_dotfiles {
 
 install_dotfiles
 
-# Function to check if NVM is installed
-function Test-NVMInstalled {
-    $nvmPath = "$env:USERPROFILE\AppData\Roaming\nvm\nvm.exe"
-    return Test-Path -Path $nvmPath
-}
-
-# Install NVM if not installed
-Write-Host "Configuring NVM"
-Write-Host "----------------------------------------"
-if (-not (Test-NVMInstalled)) {
-    Write-Host "NVM is not installed. Proceeding with installation."
-    $nvmUrl = "https://github.com/coreybutler/nvm-windows/releases/latest/download/nvm-setup.zip"
-    $extractPath = "C:\Temp\nvm\"
-    $downloadZipFile = $extractPath + (Split-Path -Path $nvmUrl -Leaf)
-    New-Item -ItemType Directory -Path $extractPath -Force
-    Invoke-WebRequest -Uri $nvmUrl -OutFile $downloadZipFile
-    $extractShell = New-Object -ComObject Shell.Application
-    $extractFiles = $extractShell.Namespace($downloadZipFile).Items()
-    $extractShell.NameSpace($extractPath).CopyHere($extractFiles)
-    Push-Location $extractPath
-    Start-Process .\nvm-setup.exe -Wait
-    Pop-Location
-    Read-Host -Prompt "Setup done, now close the command window, and run this script again in a new elevated window. Press any key to continue"
-    Exit
-} else {
-    Write-Host "Detected that NVM is already installed. Now using it to install NodeJS LTS."
-    $nvmPath = "$env:USERPROFILE\AppData\Roaming\nvm"
-    Push-Location $nvmPath
-    .\nvm.exe install lts
-    .\nvm.exe use lts
-    Pop-Location
-}
-
 # WSL
 Write-Host "Configuring WSL"
 wsl --install -d Ubuntu
@@ -132,9 +150,9 @@ function install_ssh {
     Set-Service -Name ssh-agent -StartupType 'Automatic'
     Set-Service -Name sshd -StartupType 'Automatic'
 
-    #Generate SSH key if not exists
+    # Generate SSH key if not exists
     if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
-        ssh-keygen -t rsa -b 4096 -C "$newUsername@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
+        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
     }
 
     # Start ssh-agent and add key
@@ -167,23 +185,42 @@ New-Item -ItemType HardLink -Force `
 # Registry Tweaks
 Write-Host "Registry Tweaks"
 Write-Host "----------------------------------------"
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "Hidden" -Value 1
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "HideFileExt" -Value 0
-Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name "ShowSuperHidden" -Value 1
-Set-ItemProperty -Path "HKCU:\Control Panel\Desktop" -Name "AutoEndTasks" -Value 1
 
-# Disable Windows Key
+# Show hidden files
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
+
+# Show file extensions for known file types
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
+
+# Never Combine taskbar buttons when the taskbar is full
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
+
+# Taskbar small icons
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
+
+# Set Windows to use UTC time instead of local time for system clock
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
+
+# Function to disable the Windows key
 function Disable-WindowsKey {
-    $key = "HKLM:\System\CurrentControlSet\Control\Keyboard Layout"
-    $name = "Scancode Map"
-    $value = [byte[]](0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x00,0x03,0x00,0x00,0x00,0x00,0x00,0x5B,0xE0,0x00,0x00,0x5C,0xE0,0x00,0x00,0x00,0x00)
-    Set-ItemProperty -Path $key -Name $name -Value $value
-    Write-Host "Windows key disabled. Reboot to apply changes."
+    $scancodeMap = @(
+        0x00000000, 0x00000000, 0x00000003, 0xE05B0000, 0xE05C0000, 0x00000000
+    )
+
+    $binaryValue = New-Object byte[] ($scancodeMap.Length * 4)
+    [System.Buffer]::BlockCopy($scancodeMap, 0, $binaryValue, 0, $binaryValue.Length)
+
+    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Value $binaryValue
+
+    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
 }
 
-# Optional: Disable Windows Key
-Disable-WindowsKey
-
+# Check if running as Administrator and call the function
+if (Test-IsAdmin) {
+    Disable-WindowsKey
+} else {
+    Write-Output "You need to run this script as Administrator to disable the Windows key."
+}
 # Restart to apply changes
 Write-Host "Restarting system to apply changes..."
-#Restart-Computer -Force
+Restart-Computer -Force
