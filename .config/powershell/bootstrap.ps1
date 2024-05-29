@@ -10,6 +10,26 @@ $oldUsername = $env:USERNAME
 $userName = Get-WmiObject win32_userAccount -Filter "Name='$oldUsername'"
 $result = $userName.Rename($newUsername)
 
+
+# Install Chocolatey
+Write-Host "Installing Chocolatey"
+Write-Host "----------------------------------------"
+Set-ExecutionPolicy Bypass -Scope Process -Force
+[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+# Install Applications
+Write-Host "Installing Applications"
+Write-Host "----------------------------------------"
+choco install git -y
+choco install firefox -y
+choco install nomachine -y
+choco install ripgrep -y
+choco install fd -y
+choco install sudo -y
+choco install win32yank -y
+choco install openssh -y
+
 # Set alias for git without work tree
 function git_without_work_tree {
     if (Test-Path -Path ".git") {
@@ -26,6 +46,7 @@ function git_without_work_tree {
         & git @args
     }
 }
+
 Set-Alias git git_without_work_tree
 
 # Add .gitignore entries
@@ -121,20 +142,30 @@ if (-not (Test-NVMInstalled)) {
 Write-Host "Configuring WSL"
 wsl --install -d Ubuntu
 
-# Install Chocolatey
-Write-Host "Installing Chocolatey"
-Write-Host "----------------------------------------"
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+# Function to install SSH
+function install_ssh {
+    Write-Host "Setting Up SSH"
+    Start-Service ssh-agent
+    Start-Service sshd
+    Set-Service -Name ssh-agent -StartupType 'Automatic'
+    Set-Service -Name sshd -StartupType 'Automatic'
 
-# Install Applications
-Write-Host "Installing Applications"
-Write-Host "----------------------------------------"
-choco install ripgrep -y
-choco install fd -y
-choco install sudo -y
-choco install win32yank -y
+    #Generate SSH key if not exists
+    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
+        ssh-keygen -t rsa -b 4096 -C "$newUsername@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
+    }
+
+    # Start ssh-agent and add key
+    eval $(ssh-agent -s)
+    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
+
+    # Display the SSH key
+    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
+    Write-Host "Add the following SSH key to your GitHub account:"
+    Write-Host $sshKey
+}
+
+install_ssh
 
 # Configure Neovim
 Write-Host "Configuring Neovim"
