@@ -409,34 +409,35 @@ foreach ($app in $apps) {
 #Write-Host "Configuring WSL"
 #wsl --install -d Ubuntu
 
-## Function to install SSH
-#function install_ssh {
-#    Write-Host "Setting Up SSH"
-#    Start-Service ssh-agent
-#    Start-Service sshd
-#    Set-Service -Name ssh-agent -StartupType 'Automatic'
-#    Set-Service -Name sshd -StartupType 'Automatic'
-#
-#    # Generate SSH key if not exists
-#    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
-#        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
-#    }
-#
-#    # Start ssh-agent and add key
-#    eval $(ssh-agent -s)
-#    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
-#
-#    # Display the SSH key
-#    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
-#    Write-Host "Add the following SSH key to your GitHub account:"
-#    Write-Host $sshKey
-#}
-#
-#install_ssh
+# Function to install SSH
+function install_ssh {
+    Write-Host "Setting Up SSH"
+    Start-Service ssh-agent
+    Start-Service sshd
+    Set-Service -Name ssh-agent -StartupType 'Automatic'
+    Set-Service -Name sshd -StartupType 'Automatic'
+
+    # Generate SSH key if not exists
+    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
+        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
+    }
+
+    # Start ssh-agent and add key
+    eval $(ssh-agent -s)
+    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
+
+    # Display the SSH key
+    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
+    Write-Host "Add the following SSH key to your GitHub account:"
+    Write-Host $sshKey
+}
+
+install_ssh
 
 # Configure Neovim
 Write-Host "Configuring Neovim"
 Write-Host "----------------------------------------"
+check if AppData\Local\nvim exists first
 New-Item -ItemType Junction -Force `
     -Path "$home\AppData\Local\nvim" `
     -Target "$home\.config\nvim"
@@ -444,50 +445,84 @@ New-Item -ItemType Junction -Force `
 # Install Windows Terminal, and configure
 Write-Host "Install Windows Terminal, and configure"
 Write-Host "----------------------------------------"
+check if AppData\...\settings.json exists first
 Move-Item -Force "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.old"
 New-Item -ItemType HardLink -Force `
     -Path "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
     -Target "$home\.config\windows-terminal\settings.json"
 
+# Configure Neovim
+Write-Host "Configuring Neovim"
+Write-Host "----------------------------------------"
+
+$neovimLocalPath = "$home\AppData\Local\nvim"
+$neovimConfigPath = "$home\.config\nvim"
+
+# Check if nvim directory already exists in AppData\Local
+if (-not (Test-Path -Path $neovimLocalPath)) {
+    New-Item -ItemType Junction -Force -Path $neovimLocalPath -Target $neovimConfigPath
+} else {
+    Write-Host "Neovim directory ($neovimLocalPath) already exists."
+}
+
+# Install Windows Terminal, and configure
+Write-Host "Install Windows Terminal, and configure"
+Write-Host "----------------------------------------"
+
+$windowsTerminalSettingsPath = "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json"
+$windowsTerminalConfigPath = "$home\.config\windows-terminal\settings.json"
+
+# Check if Windows Terminal settings.json already exists
+if (Test-Path -Path $windowsTerminalSettingsPath) {
+    # Backup existing settings.json
+    Move-Item -Force $windowsTerminalSettingsPath "$windowsTerminalSettingsPath.old"
+} else {
+    Write-Host "Windows Terminal settings.json not found."
+}
+
+# Create a hard link to the settings.json file in .config\windows-terminal
+New-Item -ItemType HardLink -Force -Path $windowsTerminalSettingsPath -Target $windowsTerminalConfigPath
+
+
 # Registry Tweaks
 Write-Host "Registry Tweaks"
 Write-Host "----------------------------------------"
 
-## Show hidden files
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
-#
-## Show file extensions for known file types
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
-#
-## Never Combine taskbar buttons when the taskbar is full
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
-#
-## Taskbar small icons
-#Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
-#
-## Set Windows to use UTC time instead of local time for system clock
-#Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
+# Show hidden files
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name Hidden -Value 1
 
-## Function to disable the Windows key
-#function Disable-WindowsKey {
-#    $scancodeMap = @(
-#        0x00000000, 0x00000000, 0x00000003, 0xE05B0000, 0xE05C0000, 0x00000000
-#    )
-#
-#    $binaryValue = New-Object byte[] ($scancodeMap.Length * 4)
-#    [System.Buffer]::BlockCopy($scancodeMap, 0, $binaryValue, 0, $binaryValue.Length)
-#
-#    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Value $binaryValue
-#
-#    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
-#}
-#
-## Check if running as Administrator and call the function
-#if (Test-IsAdmin) {
-#    Disable-WindowsKey
-#} else {
-#    Write-Output "You need to run this script as Administrator to disable the Windows key."
-#}
-## Restart to apply changes
+# Show file extensions for known file types
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name HideFileExt -Value 0
+
+# Never Combine taskbar buttons when the taskbar is full
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarGlomLevel -Value 2
+
+# Taskbar small icons
+Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced" -Name TaskbarSmallIcons -Value 1
+
+# Set Windows to use UTC time instead of local time for system clock
+Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
+
+# Function to disable the Windows key
+function Disable-WindowsKey {
+    $scancodeMap = @(
+        0x00000000, 0x00000000, 0x00000003, 0xE05B0000, 0xE05C0000, 0x00000000
+    )
+
+    $binaryValue = New-Object byte[] ($scancodeMap.Length * 4)
+    [System.Buffer]::BlockCopy($scancodeMap, 0, $binaryValue, 0, $binaryValue.Length)
+
+    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Value $binaryValue
+
+    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
+}
+
+# Check if running as Administrator and call the function
+if (Test-IsAdmin) {
+    Disable-WindowsKey
+} else {
+    Write-Output "You need to run this script as Administrator to disable the Windows key."
+}
+# Restart to apply changes
 #Write-Host "Restarting system to apply changes..."
 #Restart-Computer -Force
