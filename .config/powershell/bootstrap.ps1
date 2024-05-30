@@ -272,7 +272,8 @@ $PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Micro
 # Remove OneDrive directory
 Write-Host "Removing OneDrive directory"
 #Remove-Item "$env:USERPROFILE\OneDrive" -Recurse -Force
-cd $HOME && rm OneDrive -r -force
+cd $HOME
+rm OneDrive -r -force
 
 # Configure PowerShell
 Write-Host "Configuring PowerShell"
