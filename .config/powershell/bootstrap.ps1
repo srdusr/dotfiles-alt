@@ -318,11 +318,10 @@ Add-Content -Path "$HOME\.gitignore" -Value ".config/powershell/bootstrap.ps1"
 #if (!(Test-Path -Path $PROFILE)) {
 #    New-Item -Type File -Path $PROFILE -Force
 #}
-Add-Content -Path $PROFILE -Value "`nfunction config { git --git-dir=`$env:USERPROFILE/.cfg/ --work-tree=`$env:USERPROFILE @args }"
-Add-Content -Path $PROFILE -Value "`n. $PROFILE"
+#Add-Content -Path $PROFILE -Value "`nfunction config { git --git-dir=`$env:USERPROFILE/.cfg/ --work-tree=`$env:USERPROFILE @args }"
+#Add-Content -Path $PROFILE -Value "`n. $PROFILE"
 
 # Source the profile immediately to make the alias available
-#. $PROFILE
 
 #echo '. "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"' >> $PROFILE
 
