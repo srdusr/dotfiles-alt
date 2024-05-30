@@ -263,11 +263,11 @@ $UserMyDocumentsPath = [Environment]::GetFolderPath('MyDocuments')
 
 $PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
 $PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
-$WindowsTerminalSettingsDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
+#$WindowsTerminalSettingsDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 
 $PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
-$PowerShellThemeTemplate = "$PSScriptRoot\windows_terminal\theme.omp.json"
-$WindowsTerminalSettingsTemplate = "$PSScriptRoot\windows_terminal\settings.json"
+#$PowerShellThemeTemplate = "$PSScriptRoot\windows_terminal\theme.omp.json"
+#$WindowsTerminalSettingsTemplate = "$PSScriptRoot\windows_terminal\settings.json"
 
 # Remove OneDrive directory
 Write-Host "Removing OneDrive directory"
@@ -291,11 +291,11 @@ New-Item -ItemType HardLink -Force `
     -Path "$powerShellProfileDir\Microsoft.PowerShell_profile.ps1" `
     -Target "$home\.config\powershell\Microsoft.PowerShell_profile.ps1"
 
-# Set environment variable
-[System.Environment]::SetEnvironmentVariable('PowerShellProfileDir', $powerShellProfileDir, [System.EnvironmentVariableTarget]::User)
-
-Write-Host "PowerShell profile directory set to: $powerShellProfileDir"
-Write-Host "Environment variable 'PowerShellProfileDir' set to: $powerShellProfileDir"
+## Set environment variable
+#[System.Environment]::SetEnvironmentVariable('PowerShellProfileDir', $powerShellProfileDir, [System.EnvironmentVariableTarget]::User)
+#
+#Write-Host "PowerShell profile directory set to: $powerShellProfileDir"
+#Write-Host "Environment variable 'PowerShellProfileDir' set to: $powerShellProfileDir"
 
 # Verify profile sourcing
 if (!(Test-Path -Path "$home\.config\powershell\Microsoft.PowerShell_profile.ps1")) {
