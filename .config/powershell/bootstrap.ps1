@@ -271,17 +271,19 @@ $PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Micro
 
 # Remove OneDrive directory
 Write-Host "Removing OneDrive directory"
-Remove-Item "$env:USERPROFILE\OneDrive" -Recurse -Force
+#Remove-Item "$env:USERPROFILE\OneDrive" -Recurse -Force
+cd $HOME && rm OneDrive -r -force
 
 # Configure PowerShell
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
 
-$documentsPath = [Environment]::GetFolderPath('Personal') # Default Documents folder
-if ($documentsPath -like "*OneDrive*") {
-    $documentsPath = "$env:USERPROFILE\Documents"
-}
+# Set documents path to user's local Documents folder
+$documentsPath = "$env:USERPROFILE\Documents"
 $powerShellProfileDir = "$documentsPath\PowerShell"
+
+# Output the chosen PowerShell profile directory
+Write-Host "PowerShell profile directory set to: $powerShellProfileDir"
 
 if (-not (Test-Path -Path $powerShellProfileDir)) {
     New-Item -ItemType Directory -Path $powerShellProfileDir -Force
@@ -297,10 +299,10 @@ New-Item -ItemType HardLink -Force `
 #Write-Host "PowerShell profile directory set to: $powerShellProfileDir"
 #Write-Host "Environment variable 'PowerShellProfileDir' set to: $powerShellProfileDir"
 
-# Verify profile sourcing
-if (!(Test-Path -Path "$home\.config\powershell\Microsoft.PowerShell_profile.ps1")) {
-    handle_error "PowerShell profile does not exist. Please create it at $home\.config\powershell\Microsoft.PowerShell_profile.ps1"
-}
+## Verify profile sourcing
+#if (!(Test-Path -Path "$home\.config\powershell\Microsoft.PowerShell_profile.ps1")) {
+#    handle_error "PowerShell profile does not exist. Please create it at $home\.config\powershell\Microsoft.PowerShell_profile.ps1"
+#}
 
 # Define the `config` alias in the current session
 function global:config {
@@ -312,17 +314,17 @@ Add-Content -Path "$HOME\.gitignore" -Value ".cfg"
 Add-Content -Path "$HOME\.gitignore" -Value "install.bat"
 Add-Content -Path "$HOME\.gitignore" -Value ".config/powershell/bootstrap.ps1"
 
-# Check if the profile exists, otherwise create it
-if (!(Test-Path -Path $PROFILE)) {
-    New-Item -Type File -Path $PROFILE -Force
-}
+## Check if the profile exists, otherwise create it
+#if (!(Test-Path -Path $PROFILE)) {
+#    New-Item -Type File -Path $PROFILE -Force
+#}
 Add-Content -Path $PROFILE -Value "`nfunction config { git --git-dir=`$env:USERPROFILE/.cfg/ --work-tree=`$env:USERPROFILE @args }"
 Add-Content -Path $PROFILE -Value "`n. $PROFILE"
 
 # Source the profile immediately to make the alias available
 . $PROFILE
 
-echo '. "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"' >> $PROFILE
+#echo '. "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"' >> $PROFILE
 
 # Function to install dotfiles
 function install_dotfiles {
