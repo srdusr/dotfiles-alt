@@ -406,9 +406,10 @@ foreach ($app in $apps) {
         Write-Host "$app is already installed."
     }
 }
-# WSL
-Write-Host "Configuring WSL"
-wsl --install -d Ubuntu
+
+## WSL
+#Write-Host "Configuring WSL"
+#wsl --install -d Ubuntu
 
 ## Function to install SSH
 #function install_ssh {
