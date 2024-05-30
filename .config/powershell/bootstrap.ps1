@@ -262,7 +262,7 @@ New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\s
 $UserMyDocumentsPath = [Environment]::GetFolderPath('MyDocuments')
 
 $PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
-#$PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
+$PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
 $WindowsTerminalSettingsDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
 
 $PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
