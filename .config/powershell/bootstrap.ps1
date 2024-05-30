@@ -409,47 +409,30 @@ foreach ($app in $apps) {
 #Write-Host "Configuring WSL"
 #wsl --install -d Ubuntu
 
-# Function to install SSH
-function install_ssh {
-    Write-Host "Setting Up SSH"
-    Start-Service ssh-agent
-    Start-Service sshd
-    Set-Service -Name ssh-agent -StartupType 'Automatic'
-    Set-Service -Name sshd -StartupType 'Automatic'
-
-    # Generate SSH key if not exists
-    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
-        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
-    }
-
-    # Start ssh-agent and add key
-    eval $(ssh-agent -s)
-    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
-
-    # Display the SSH key
-    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
-    Write-Host "Add the following SSH key to your GitHub account:"
-    Write-Host $sshKey
-}
-
-install_ssh
-
-# Configure Neovim
-Write-Host "Configuring Neovim"
-Write-Host "----------------------------------------"
-check if AppData\Local\nvim exists first
-New-Item -ItemType Junction -Force `
-    -Path "$home\AppData\Local\nvim" `
-    -Target "$home\.config\nvim"
-
-# Install Windows Terminal, and configure
-Write-Host "Install Windows Terminal, and configure"
-Write-Host "----------------------------------------"
-check if AppData\...\settings.json exists first
-Move-Item -Force "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json.old"
-New-Item -ItemType HardLink -Force `
-    -Path "$home\AppData\Local\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json" `
-    -Target "$home\.config\windows-terminal\settings.json"
+## Function to install SSH
+#function install_ssh {
+#    Write-Host "Setting Up SSH"
+#    Start-Service ssh-agent
+#    Start-Service sshd
+#    Set-Service -Name ssh-agent -StartupType 'Automatic'
+#    Set-Service -Name sshd -StartupType 'Automatic'
+#
+#    # Generate SSH key if not exists
+#    if (-not (Test-Path -Path "$env:USERPROFILE\.ssh\id_rsa.pub")) {
+#        ssh-keygen -t rsa -b 4096 -C "$env:USERNAME@$(hostname)" -f "$env:USERPROFILE\.ssh\id_rsa" -N ""
+#    }
+#
+#    # Start ssh-agent and add key
+#    eval $(ssh-agent -s)
+#    ssh-add "$env:USERPROFILE\.ssh\id_rsa"
+#
+#    # Display the SSH key
+#    $sshKey = Get-Content "$env:USERPROFILE\.ssh\id_rsa.pub"
+#    Write-Host "Add the following SSH key to your GitHub account:"
+#    Write-Host $sshKey
+#}
+#
+#install_ssh
 
 # Configure Neovim
 Write-Host "Configuring Neovim"
@@ -503,26 +486,26 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer
 # Set Windows to use UTC time instead of local time for system clock
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
 
-# Function to disable the Windows key
-function Disable-WindowsKey {
-    $scancodeMap = @(
-        0x00000000, 0x00000000, 0x00000003, 0xE05B0000, 0xE05C0000, 0x00000000
-    )
-
-    $binaryValue = New-Object byte[] ($scancodeMap.Length * 4)
-    [System.Buffer]::BlockCopy($scancodeMap, 0, $binaryValue, 0, $binaryValue.Length)
-
-    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Value $binaryValue
-
-    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
-}
-
-# Check if running as Administrator and call the function
-if (Test-IsAdmin) {
-    Disable-WindowsKey
-} else {
-    Write-Output "You need to run this script as Administrator to disable the Windows key."
-}
+## Function to disable the Windows key
+#function Disable-WindowsKey {
+#    $scancodeMap = @(
+#        0x00000000, 0x00000000, 0x00000003, 0xE05B0000, 0xE05C0000, 0x00000000
+#    )
+#
+#    $binaryValue = New-Object byte[] ($scancodeMap.Length * 4)
+#    [System.Buffer]::BlockCopy($scancodeMap, 0, $binaryValue, 0, $binaryValue.Length)
+#
+#    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Value $binaryValue
+#
+#    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
+#}
+#
+## Check if running as Administrator and call the function
+#if (Test-IsAdmin) {
+#    Disable-WindowsKey
+#} else {
+#    Write-Output "You need to run this script as Administrator to disable the Windows key."
+#}
 # Restart to apply changes
 #Write-Host "Restarting system to apply changes..."
 #Restart-Computer -Force
