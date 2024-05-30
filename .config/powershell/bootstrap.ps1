@@ -302,29 +302,6 @@ if (!(Test-Path -Path "$home\.config\powershell\Microsoft.PowerShell_profile.ps1
     handle_error "PowerShell profile does not exist. Please create it at $home\.config\powershell\Microsoft.PowerShell_profile.ps1"
 }
 
-# Install Chocolatey
-Write-Host "Installing Chocolatey"
-Write-Host "----------------------------------------"
-Set-ExecutionPolicy Bypass -Scope Process -Force
-[System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-# Check if Chocolatey installed successfully
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
-    handle_error "Chocolatey installation failed."
-}
-
-# Install Applications
-Write-Host "Installing Applications"
-Write-Host "----------------------------------------"
-$apps = @("ripgrep", "fd", "sudo", "win32yank", "neovim", "microsoft-windows-terminal")
-foreach ($app in $apps) {
-    choco install $app -y
-    if ($LASTEXITCODE -ne 0) {
-        handle_error "Installation of $app failed."
-    }
-}
-
 # Define the `config` alias in the current session
 function global:config {
     git --git-dir="$env:USERPROFILE\.cfg" --work-tree="$env:USERPROFILE" $args
@@ -384,6 +361,48 @@ function install_dotfiles {
 
 install_dotfiles
 
+. $PROFILE
+
+# Install Chocolatey if not installed
+Write-Host "Installing Chocolatey"
+Write-Host "----------------------------------------"
+
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+    # Check if Chocolatey installed successfully
+    if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+        handle_error "Chocolatey installation failed."
+    }
+} else {
+    Write-Host "Chocolatey is already installed."
+}
+
+# Install Applications
+Write-Host "Installing Applications"
+Write-Host "----------------------------------------"
+
+# Define the list of applications to install
+$apps = @("ripgrep", "fd", "sudo", "win32yank", "neovim", "microsoft-windows-terminal")
+
+foreach ($app in $apps) {
+    # Check if the application is already installed
+    if (-not (choco list --local-only | Select-String -Pattern "^$app\s")) {
+        Write-Host "Installing $app"
+        choco install $app -y
+
+        if ($LASTEXITCODE -ne 0) {
+            handle_error "Installation of $app failed."
+        } else {
+            Write-Host "$app installed successfully."
+        }
+    } else {
+        Write-Host "$app is already installed."
+    }
+}
 # WSL
 Write-Host "Configuring WSL"
 wsl --install -d Ubuntu
