@@ -256,28 +256,24 @@ foreach ($item in (Get-ChildItem "$env:WinDir\WinSxS\*onedrive*")) {
 }
 
 # As a last step, disable UAC ------------------------
-New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -PropertyType DWord -Value 0 -Force
+#New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -PropertyType DWord -Value 0 -Force
 
-# Gets the "MyDocuments" path for the current user since it can be local or remote
-$UserMyDocumentsPath = [Environment]::GetFolderPath('MyDocuments')
-
-$PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
-$PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
-#$WindowsTerminalSettingsDirectory = "$env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState"
-
-$PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
-#$PowerShellThemeTemplate = "$PSScriptRoot\windows_terminal\theme.omp.json"
-#$WindowsTerminalSettingsTemplate = "$PSScriptRoot\windows_terminal\settings.json"
 
 # Remove OneDrive directory
 Write-Host "Removing OneDrive directory"
-#Remove-Item "$env:USERPROFILE\OneDrive" -Recurse -Force
 cd $HOME
 rm OneDrive -r -force
 
-# Configure PowerShell
+ Configure PowerShell
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
+
+$UserMyDocumentsPath = [Environment]::GetFolderPath('MyDocuments')
+$PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
+$PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
+
+$PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"
+$env:PSModulePath = $env:PSModulePath -replace "\\OneDrive\\Documents\\WindowsPowerShell\\","\.powershell\"
 
 # Set documents path to user's local Documents folder
 $documentsPath = "$env:USERPROFILE\Documents"
