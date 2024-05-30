@@ -268,7 +268,7 @@ rm OneDrive -r -force
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
 
-$UserMyDocumentsPath = [Environment]::GetFolderPath('MyDocuments')
+$UserMyDocumentsPath = [System.Environment]::GetFolderPath('MyDocuments').Replace("OneDrive", "")
 $PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
 $PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
 
@@ -276,10 +276,11 @@ $PowerShellProfileTemplate = "$PSScriptRoot\$USERNAME\Documents\PowerShell\Micro
 $env:PSModulePath = $env:PSModulePath -replace "\\OneDrive\\Documents\\WindowsPowerShell\\","\.powershell\"
 
 # Set documents path to user's local Documents folder
-$documentsPath = "$env:USERPROFILE\Documents"
+$documentsPath = "$UserMyDocumentsPath"
 $powerShellProfileDir = "$documentsPath\PowerShell"
 
 # Output the chosen PowerShell profile directory
+$PROFILE = "$powerShellProfileDir\Microsoft.PowerShell_profile.ps1"
 Write-Host "PowerShell profile directory set to: $powerShellProfileDir"
 
 if (-not (Test-Path -Path $powerShellProfileDir)) {
