@@ -268,7 +268,9 @@ rm OneDrive -r -force
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
 
-$UserMyDocumentsPath = [System.Environment]::GetFolderPath('MyDocuments').Replace("OneDrive", "")
+# Get the "MyDocuments" path for the current user, excluding OneDrive
+$UserMyDocumentsPath = [System.Environment]::GetFolderPath('MyDocuments').Replace("OneDrive", "") + "\Documents"
+
 $PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
 $PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
 
@@ -320,7 +322,7 @@ Add-Content -Path $PROFILE -Value "`nfunction config { git --git-dir=`$env:USERP
 Add-Content -Path $PROFILE -Value "`n. $PROFILE"
 
 # Source the profile immediately to make the alias available
-. $PROFILE
+#. $PROFILE
 
 #echo '. "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"' >> $PROFILE
 
@@ -361,7 +363,7 @@ function install_dotfiles {
 
 install_dotfiles
 
-. $PROFILE
+#. $PROFILE
 
 # Install Chocolatey if not installed
 Write-Host "Installing Chocolatey"
