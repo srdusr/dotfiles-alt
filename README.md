@@ -37,6 +37,7 @@ Welcome, and make yourself at <b><i>$HOME</i></b>
   * **Icons:** Whitesur
   * **UI:** San Francisco
   * **Terminal:** JetBrains Mono
+
 - - -
 
 ### Installing onto a new system (bare git repository)
@@ -99,29 +100,6 @@ Remove-Item -Path "$HOME\dotfiles-master" -Recurse -Force; `
 Start-Process -FilePath "$HOME\install.bat"
 ```
 
-- - -
-
-## Dependencies
-
-- curl
-- git
-- clang
-- gcc
-- make
-- ninja
-- cmake
-- wmctrl
-- xdo
-- xdotool
-- ripgrep
-- fd
-- tmux
-- tree-sitter
-- vim
-- eww
-- jgmenu
-- xqp
-- zsh
 
 ---
 
