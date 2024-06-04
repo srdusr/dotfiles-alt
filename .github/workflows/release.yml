@@ -17,8 +17,8 @@ jobs:
           echo "Downloading dotfiles-main.zip..."
           curl -LOk https://github.com/srdusr/dotfiles/archive/main.zip
           ls -lh main.zip  # Log file size
-          unzip main.zip -d dotfiles
-          mv dotfiles/dotfiles-main dotfiles
+          unzip main.zip -d dotfiles-main
+          mv dotfiles-main/dotfiles-main dotfiles
           ls -lh dotfiles  # Log extracted files
 
       - name: Create zip file
