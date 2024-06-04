@@ -1,5 +1,13 @@
 # onedrive.ps1
 
+# Helper functions ------------------------
+function force-mkdir($path) {
+    if (!(Test-Path $path)) {
+        Write-Host "-- Creating full path to: " $path -ForegroundColor White -BackgroundColor DarkGreen
+        New-Item -ItemType Directory -Force -Path $path
+    }
+}
+
 # Kill OneDrive with fire ------------------------
 Write-Output "Kill OneDrive process"
 taskkill.exe /F /IM "OneDrive.exe"
@@ -65,4 +73,8 @@ New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\s
 Write-Host "Removing OneDrive directory"
 cd $HOME
 rm OneDrive -r -force
+
+# Prevents "Suggested Applications" returning
+force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
+Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content" "DisableWindowsConsumerFeatures" 1
 

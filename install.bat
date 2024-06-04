@@ -1,11 +1,4 @@
-::: ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
-::: ██╔══██╗██╔═══██╗╚══██╔══╝██╔════╝██║██║     ██╔════╝██╔════╝
-::: ██║  ██║██║   ██║   ██║   █████╗  ██║██║     █████╗  ███████╗
-::: ██║  ██║██║   ██║   ██║   ██╔══╝  ██║██║     ██╔══╝  ╚════██║
-::: ██████╔╝╚██████╔╝   ██║   ██║     ██║███████╗███████╗███████║
-::: ╚═════╝  ╚═════╝    ╚═╝   ╚═╝     ╚═╝╚══════╝╚══════╝╚══════╝
-:::
-for /f "delims=: tokens=*" %%A in ('findstr /b ::: "%~f0"') do @echo(%%A
+REM Installing Dotfiles
 
 powershell . $HOME\.config\powershell\Microsoft.PowerShell_profile.ps1
 powershell Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force

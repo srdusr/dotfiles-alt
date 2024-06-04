@@ -166,7 +166,7 @@ function setupShellEnvs {
     $configDir = (Join-Path $env:USERPROFILE '.config')
     New-Item -ItemType Directory -Path $configDir -ErrorAction SilentlyContinue | Out-Null
 
-    writeGitConfig (Join-Path $PSScriptRoot 'gitconfig.ini')
+    #writeGitConfig (Join-Path $PSScriptRoot 'gitconfig.ini')
 
     $sshDir = (Join-Path $env:USERPROFILE '.ssh')
     # ensure 1Password's identity agent is visible to OpenSSH; cannot have both config and socket on Windows
@@ -200,7 +200,7 @@ function main {
             }
             # continue with now-local bootstrap.ps1 from cloned repo:
             # still stick with desktop PS since PSCore is not necessarily installed yet
-            $script= (Join-Path $dotPath 'bootstrap.ps1')
+            $script= (Join-Path $dotPath '.config\powershell\bootstrap.ps1')
             Write-Host "Continue $script in child process"
             Start-Process -PassThru -NoNewWindow -FilePath "powershell.exe" -ArgumentList "-NoProfile -File $script setup" |
                 Wait-Process
