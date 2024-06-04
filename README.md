@@ -92,12 +92,16 @@ $ config checkout
 
 ```ps1
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; `
-Invoke-WebRequest "https://github.com/srdusr/dotfiles/archive/master.zip" `
+Invoke-WebRequest "https://github.com/srdusr/dotfiles/archive/main.zip" `
 -OutFile "$HOME\Downloads\dotfiles.zip"; `
 Expand-Archive -Path "$HOME\Downloads\dotfiles.zip" -DestinationPath "$HOME" -Force; `
-Move-Item -Path "$HOME\dotfiles-master\*" -Destination "$HOME" -Force; `
-Remove-Item -Path "$HOME\dotfiles-master" -Recurse -Force; `
+Move-Item -Path "$HOME\dotfiles-main\*" -Destination "$HOME" -Force; `
+Remove-Item -Path "$HOME\dotfiles-main" -Recurse -Force; `
 Start-Process -FilePath "$HOME\install.bat"
+
+
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
+irm 'https://raw.githubusercontent.com/srdusr/dotfiles/main/install.bat' | iex
 ```
 
 
