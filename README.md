@@ -50,13 +50,27 @@ $ echo ".cfg" >> .gitignore
 2. Clone this repo
 
 ```bash
+# bash
 $ git clone --bare https://github.com/srdusr/dotfiles.git $HOME/.cfg
+```
+
+```ps1
+# ps1 (Windows)
+# Clone the dotfiles repository into ~/.cfg (C:\Users\yourusername\.cfg)
+git clone --bare https://github.com/srdusr/dotfiles.git $env:USERPROFILE/.cfg
+git --git-dir=$HOME/.cfg --work-tree=$HOME checkout
 ```
 
 3. Set up the alias 'config'
 
 ```bash
+# bash
 $ alias config='git --git-dir=$HOME/.cfg --work-tree=$HOME'
+```
+
+```ps1
+# ps1 (Windows)
+echo '. "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"' > $PROFILE
 ```
 
 4. Set local configuration into .cfg to ignore untracked files
@@ -72,6 +86,20 @@ $ config checkout
 ```
 
 ---
+
+### Installing onto a new Windows system
+
+```ps1
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; `
+Invoke-WebRequest "https://github.com/srdusr/dotfiles/archive/master.zip" `
+-OutFile "$HOME\Downloads\dotfiles.zip"; `
+Expand-Archive -Path "$HOME\Downloads\dotfiles.zip" -DestinationPath "$HOME" -Force; `
+Move-Item -Path "$HOME\dotfiles-master\*" -Destination "$HOME" -Force; `
+Remove-Item -Path "$HOME\dotfiles-master" -Recurse -Force; `
+Start-Process -FilePath "$HOME\install.bat"
+```
+
+- - -
 
 ## Dependencies
 
