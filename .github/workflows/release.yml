@@ -32,7 +32,9 @@ jobs:
           ls -lh $HOME/dotfiles.zip # Verify existence after move (optional)
 
       - name: Clean up
-        run: rm -rf $HOME/temp-dotfiles
+        run: |
+          rm -rf $HOME/temp-dotfiles
+          echo $HOME
 
       - name: Create GitHub Release
         id: create_release
