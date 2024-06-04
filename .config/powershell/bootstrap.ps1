@@ -1,7 +1,8 @@
 # Requires -RunAsAdministrator
 
 # Set execution policy to remote signed
-Set-ExecutionPolicy RemoteSigned
+#Set-ExecutionPolicy RemoteSigned
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 # Set network category to private
 Set-NetConnectionProfile -NetworkCategory Private
@@ -11,9 +12,9 @@ $dotfiles_url = 'https://github.com/srdusr/dotfiles.git'
 $dotfiles_dir = "$HOME\.cfg"
 
 # Imports
-. .\initialize.ps1
-. .\ownership.ps1
-. .\onedrive.ps1
+. $HOME\.config\powershell\initialize.ps1
+. $HOME\.config\powershell\ownership.ps1
+. $HOME\.config\powershell\onedrive.ps1
 
 # Function to handle errors
 function handle_error {
@@ -93,71 +94,6 @@ foreach ($app in $apps) {
 force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content" "DisableWindowsConsumerFeatures" 1
 
-# Install Chocolatey if not installed
-Write-Host "Installing Chocolatey"
-Write-Host "----------------------------------------"
-
-Set-ExecutionPolicy Bypass -Scope Process -Force
-
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
-
-    # Check if Chocolatey installed successfully
-    if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
-        handle_error "Chocolatey installation failed."
-    }
-} else {
-    Write-Host "Chocolatey is already installed."
-}
-
-# Install Applications
-Write-Host "Installing Applications"
-Write-Host "----------------------------------------"
-
-# List of applications to install
-$apps = @(
-    "git",
-    "ripgrep",
-    "fd",
-    "sudo",
-    "win32yank",
-    "neovim",
-    "microsoft-windows-terminal",
-    "wsl",
-    "firefox",
-    #"spotify",
-    #"discord",
-    #"vscode",
-    "nodejs",
-    "bat",
-    "coreutils",
-    "delta",
-    "fnm",
-    "gh",
-    "less",
-    "lua",
-    "make",
-    "tokei",
-    "zoxide",
-)
-
-foreach ($app in $apps) {
-    # Check if the application is already installed
-    if (-not (choco list --local-only | Select-String -Pattern "^$app\s")) {
-        Write-Host "Installing $app"
-        choco install $app -y
-
-        if ($LASTEXITCODE -ne 0) {
-            handle_error "Installation of $app failed."
-        } else {
-            Write-Host "$app installed successfully."
-        }
-    } else {
-        Write-Host "$app is already installed."
-    }
-}
-
 # Configure PowerShell
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
@@ -196,6 +132,71 @@ Write-Host "Environment variable 'PowerShellProfileDir' set to: $powerShellProfi
 # Verify profile sourcing
 if (!(Test-Path -Path "$home\.config\powershell\Microsoft.PowerShell_profile.ps1")) {
     handle_error "PowerShell profile does not exist. Please create it at $home\.config\powershell\Microsoft.PowerShell_profile.ps1"
+}
+
+# Install Chocolatey if not installed
+Write-Host "Installing Chocolatey"
+Write-Host "----------------------------------------"
+
+Set-ExecutionPolicy Bypass -Scope Process -Force
+
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+    # Check if Chocolatey installed successfully
+    if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+        handle_error "Chocolatey installation failed."
+    }
+} else {
+    Write-Host "Chocolatey is already installed."
+}
+
+# Install Applications
+Write-Host "Installing Applications"
+Write-Host "----------------------------------------"
+
+# List of applications to install
+$apps = @(
+    "git",
+    "ripgrep",
+    "fd",
+    "sudo",
+    "win32yank",
+    "neovim",
+    "microsoft-windows-terminal",
+    "wsl",
+    "firefox",
+    #"spotify",
+    #"discord",
+    #"vscode",
+    "nodejs",
+    "bat",
+    #"coreutils",
+    #"delta",
+    #"fnm",
+    #"gh",
+    #"less",
+    #"lua",
+    #"make",
+    #"tokei",
+    #"zoxide"
+)
+
+foreach ($app in $apps) {
+    # Check if the application is already installed
+    if (-not (choco list --local-only | Select-String -Pattern "^$app\s")) {
+        Write-Host "Installing $app"
+        choco install $app -y
+
+        if ($LASTEXITCODE -ne 0) {
+            handle_error "Installation of $app failed."
+        } else {
+            Write-Host "$app installed successfully."
+        }
+    } else {
+        Write-Host "$app is already installed."
+    }
 }
 
 # Define the `config` alias in the current session
