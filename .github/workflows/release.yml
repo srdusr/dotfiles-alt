@@ -48,15 +48,23 @@ jobs:
           draft: false
           prerelease: false
 
-      - name: Capture upload URL
-        run: echo "##v1_${{ steps.create_release.outputs.upload_url }}" >> $GITHUB_ENV
+      - name: Create temporary file with upload URL
+        run: |
+          echo "##v1_https://uploads.github.com/repos/srdusr/dotfiles/releases/158822361/assets{?name,label}" > upload_url.txt
+
+      - name: Read upload URL from temporary file
+        id: read_upload_url
+        run: cat upload_url.txt
 
       - name: Upload zip to release
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ env.UPLOAD_URL }}
+          upload_url: ${{ steps.read_upload_url.outputs }}  # Read from the previous step's output
           asset_path: /home/runner/dotfiles.zip
           asset_name: dotfiles.zip
           asset_content_type: application/zip
+
+      - name: Clean up temporary file (optional)
+        run: rm upload_url.txt
