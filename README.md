@@ -92,7 +92,7 @@ $ config checkout
 
 ```ps1
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force; `
-$ProgressPreference = 'SilentlyContinue' `
+$ProgressPreference = 'SilentlyContinue'; `
 Invoke-WebRequest "https://github.com/srdusr/dotfiles/archive/main.zip" `
 -OutFile "$HOME\Downloads\dotfiles.zip"; `
 Expand-Archive -Path "$HOME\Downloads\dotfiles.zip" -DestinationPath "$HOME" -Force; `
