@@ -24,7 +24,10 @@ jobs:
       - name: Create zip file
         run: |
           cd $HOME/temp-dotfiles
-          zip -r $HOME/dotfiles.zip dotfiles
+          zip -r dotfiles.zip dotfiles
+
+      - name: Move zip file to home directory
+        run: mv $HOME/temp-dotfiles/dotfiles.zip $HOME/dotfiles.zip
 
       - name: Clean up
         run: rm -rf $HOME/temp-dotfiles
