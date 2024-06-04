@@ -14,9 +14,8 @@ jobs:
         run: |
           mkdir -p $HOME/temp-dotfiles
           cd $HOME/temp-dotfiles
-          curl -LOk https://github.com/srdusr/dotfiles/archive/dotfiles-main.zip
-          unzip dotfiles-main.zip
-          mv dotfiles-main dotfiles
+          curl -LOk https://github.com/srdusr/dotfiles/archive/main.zip
+          unzip main.zip -d dotfiles
 
       - name: Create zip file
         run: |
