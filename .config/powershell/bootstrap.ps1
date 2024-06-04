@@ -138,7 +138,7 @@ if (!(Test-Path -Path "$home\.config\powershell\Microsoft.PowerShell_profile.ps1
 Write-Host "Installing Chocolatey"
 Write-Host "----------------------------------------"
 
-Set-ExecutionPolicy Bypass -Scope Process -Force
+#Set-ExecutionPolicy Bypass -Scope Process -Force
 
 if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
