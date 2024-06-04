@@ -1,0 +1,47 @@
+name: Create Release
+
+on:
+  push:
+    tags:
+      - 'v*' # This triggers the workflow on version tags
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Clone dotfiles repository
+        run: git clone --bare https://github.com/srdusr/dotfiles.git $HOME/temp-dotfiles
+
+      - name: Create zip file
+        run: |
+          cd $HOME/temp-dotfiles
+          git archive --format=zip --output=$HOME/dotfiles.zip HEAD
+
+      - name: Clean up temporary clone
+        run: rm -rf $HOME/temp-dotfiles
+
+      - name: Create GitHub Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: Automatically generated release
+          draft: false
+          prerelease: false
+
+      - name: Upload zip to release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: $HOME/dotfiles.zip
+          asset_name: dotfiles.zip
+          asset_content_type: application/zip
