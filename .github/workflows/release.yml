@@ -27,7 +27,9 @@ jobs:
           zip -r dotfiles.zip dotfiles
 
       - name: Move zip file to home directory
-        run: mv $HOME/temp-dotfiles/dotfiles.zip $HOME/dotfiles.zip
+        run: |
+          mv $HOME/temp-dotfiles/dotfiles.zip $HOME/dotfiles.zip
+          ls -lh $HOME/dotfiles.zip  # Log file size to verify existence
 
       - name: Clean up
         run: rm -rf $HOME/temp-dotfiles
