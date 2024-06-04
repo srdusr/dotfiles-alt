@@ -17,6 +17,9 @@ jobs:
           curl -LOk https://github.com/srdusr/dotfiles/archive/main.zip
           unzip main.zip -d dotfiles
 
+      - name: List contents of extracted directory (for debugging)
+        run: ls -la $HOME/temp-dotfiles/dotfiles
+
       - name: Create zip file
         run: |
           cd $HOME/temp-dotfiles
