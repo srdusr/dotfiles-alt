@@ -1,10 +1,19 @@
 # Requires -RunAsAdministrator
 
+# Set execution policy to remote signed
+Set-ExecutionPolicy RemoteSigned
+
+# Set network category to private
+Set-NetConnectionProfile -NetworkCategory Private
+
 # Variables
-#$newUsername = "srdusr"
 $dotfiles_url = 'https://github.com/srdusr/dotfiles.git'
 $dotfiles_dir = "$HOME\.cfg"
-$oldUsername = $env:USERNAME
+
+# Imports
+. .\initialize.ps1
+. .\ownership.ps1
+. .\onedrive.ps1
 
 # Function to handle errors
 function handle_error {
@@ -48,122 +57,10 @@ $bloatware = @(
 # Helper functions ------------------------
 function force-mkdir($path) {
     if (!(Test-Path $path)) {
-        #Write-Host "-- Creating full path to: " $path -ForegroundColor White -BackgroundColor DarkGreen
+        Write-Host "-- Creating full path to: " $path -ForegroundColor White -BackgroundColor DarkGreen
         New-Item -ItemType Directory -Force -Path $path
     }
 }
-
-function Takeown-Registry($key) {
-    # TODO does not work for all root keys yet
-    switch ($key.split('\')[0]) {
-        "HKEY_CLASSES_ROOT" {
-            $reg = [Microsoft.Win32.Registry]::ClassesRoot
-            $key = $key.substring(18)
-        }
-        "HKEY_CURRENT_USER" {
-            $reg = [Microsoft.Win32.Registry]::CurrentUser
-            $key = $key.substring(18)
-        }
-        "HKEY_LOCAL_MACHINE" {
-            $reg = [Microsoft.Win32.Registry]::LocalMachine
-            $key = $key.substring(19)
-        }
-    }
-
-    # get administraor group
-    $admins = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-544")
-    $admins = $admins.Translate([System.Security.Principal.NTAccount])
-
-    # set owner
-    $key = $reg.OpenSubKey($key, "ReadWriteSubTree", "TakeOwnership")
-    $acl = $key.GetAccessControl()
-    $acl.SetOwner($admins)
-    $key.SetAccessControl($acl)
-
-    # set FullControl
-    $acl = $key.GetAccessControl()
-    $rule = New-Object System.Security.AccessControl.RegistryAccessRule($admins, "FullControl", "Allow")
-    $acl.SetAccessRule($rule)
-    $key.SetAccessControl($acl)
-}
-
-function Takeown-File($path) {
-    takeown.exe /A /F $path
-    $acl = Get-Acl $path
-
-    # get administraor group
-    $admins = New-Object System.Security.Principal.SecurityIdentifier("S-1-5-32-544")
-    $admins = $admins.Translate([System.Security.Principal.NTAccount])
-
-    # add NT Authority\SYSTEM
-    $rule = New-Object System.Security.AccessControl.FileSystemAccessRule($admins, "FullControl", "None", "None", "Allow")
-    $acl.AddAccessRule($rule)
-
-    Set-Acl -Path $path -AclObject $acl
-}
-
-function Takeown-Folder($path) {
-    Takeown-File $path
-    foreach ($item in Get-ChildItem $path) {
-        if (Test-Path $item -PathType Container) {
-            Takeown-Folder $item.FullName
-        }
-        else {
-            Takeown-File $item.FullName
-        }
-    }
-}
-
-function Elevate-Privileges {
-    param($Privilege)
-    $Definition = @"
-    using System;
-    using System.Runtime.InteropServices;
-
-    public class AdjPriv {
-        [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
-            internal static extern bool AdjustTokenPrivileges(IntPtr htok, bool disall, ref TokPriv1Luid newst, int len, IntPtr prev, IntPtr rele);
-
-        [DllImport("advapi32.dll", ExactSpelling = true, SetLastError = true)]
-            internal static extern bool OpenProcessToken(IntPtr h, int acc, ref IntPtr phtok);
-
-        [DllImport("advapi32.dll", SetLastError = true)]
-            internal static extern bool LookupPrivilegeValue(string host, string name, ref long pluid);
-
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
-            internal struct TokPriv1Luid {
-                public int Count;
-                public long Luid;
-                public int Attr;
-            }
-
-        internal const int SE_PRIVILEGE_ENABLED = 0x00000002;
-        internal const int TOKEN_QUERY = 0x00000008;
-        internal const int TOKEN_ADJUST_PRIVILEGES = 0x00000020;
-
-        public static bool EnablePrivilege(long processHandle, string privilege) {
-            bool retVal;
-            TokPriv1Luid tp;
-            IntPtr hproc = new IntPtr(processHandle);
-            IntPtr htok = IntPtr.Zero;
-            retVal = OpenProcessToken(hproc, TOKEN_ADJUST_PRIVILEGES | TOKEN_QUERY, ref htok);
-            tp.Count = 1;
-            tp.Luid = 0;
-            tp.Attr = SE_PRIVILEGE_ENABLED;
-            retVal = LookupPrivilegeValue(null, privilege, ref tp.Luid);
-            retVal = AdjustTokenPrivileges(htok, false, ref tp, 0, IntPtr.Zero, IntPtr.Zero);
-            return retVal;
-        }
-    }
-"@
-    $ProcessHandle = (Get-Process -id $pid).Handle
-    $type = Add-Type $definition -PassThru
-    $type[0]::EnablePrivilege($processHandle, $Privilege)
-}
-
-# Elevate so I can run everything ------------------------
-Write-Output "Elevating priviledges for this process"
-do { } until (Elevate-Privileges SeTakeOwnershipPrivilege)
 
 # Remove Features ------------------------
 foreach ($bloat in $bloatware) {
@@ -182,7 +79,6 @@ foreach ($bloat in $bloatware) {
    }
 }
 
-
 # Remove default apps and bloat ------------------------
 Write-Output "Uninstalling default apps"
 foreach ($app in $apps) {
@@ -197,74 +93,72 @@ foreach ($app in $apps) {
 force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
 Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content" "DisableWindowsConsumerFeatures" 1
 
-# Kill OneDrive with fire ------------------------
-Write-Output "Kill OneDrive process"
-taskkill.exe /F /IM "OneDrive.exe"
-taskkill.exe /F /IM "explorer.exe"
+# Install Chocolatey if not installed
+Write-Host "Installing Chocolatey"
+Write-Host "----------------------------------------"
 
-Write-Output "Remove OneDrive"
-if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
-    & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
-}
-if (Test-Path "$env:systemroot\SysWOW64\OneDriveSetup.exe") {
-    & "$env:systemroot\SysWOW64\OneDriveSetup.exe" /uninstall
-}
+Set-ExecutionPolicy Bypass -Scope Process -Force
 
-Write-Output "Removing OneDrive leftovers"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:localappdata\Microsoft\OneDrive"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:programdata\Microsoft OneDrive"
-Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:systemdrive\OneDriveTemp"
-# check if directory is empty before removing:
-If ((Get-ChildItem "$env:userprofile\OneDrive" -Recurse | Measure-Object).Count -eq 0) {
-    Remove-Item -Recurse -Force -ErrorAction SilentlyContinue "$env:userprofile\OneDrive"
+if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
+    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+
+    # Check if Chocolatey installed successfully
+    if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
+        handle_error "Chocolatey installation failed."
+    }
+} else {
+    Write-Host "Chocolatey is already installed."
 }
 
-Write-Output "Disable OneDrive via Group Policies"
-force-mkdir "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
-Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
+# Install Applications
+Write-Host "Installing Applications"
+Write-Host "----------------------------------------"
 
-Write-Output "Remove Onedrive from explorer sidebar"
-New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
-force-mkdir "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-force-mkdir "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
-Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-Remove-PSDrive "HKCR"
+# List of applications to install
+$apps = @(
+    "git",
+    "ripgrep",
+    "fd",
+    "sudo",
+    "win32yank",
+    "neovim",
+    "microsoft-windows-terminal",
+    "wsl",
+    "firefox",
+    #"spotify",
+    #"discord",
+    #"vscode",
+    "nodejs",
+    "bat",
+    "coreutils",
+    "delta",
+    "fnm",
+    "gh",
+    "less",
+    "lua",
+    "make",
+    "tokei",
+    "zoxide",
+)
 
-# Thank you Matthew Israelsson
-Write-Output "Removing run hook for new users"
-reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
-reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
-reg unload "hku\Default"
+foreach ($app in $apps) {
+    # Check if the application is already installed
+    if (-not (choco list --local-only | Select-String -Pattern "^$app\s")) {
+        Write-Host "Installing $app"
+        choco install $app -y
 
-Write-Output "Removing startmenu entry"
-Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
-
-Write-Output "Removing scheduled task"
-Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive*' -ea SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
-
-Write-Output "Restarting explorer"
-Start-Process "explorer.exe"
-
-Write-Output "Waiting for explorer to complete loading"
-Start-Sleep 10
-
-Write-Output "Removing additional OneDrive leftovers"
-foreach ($item in (Get-ChildItem "$env:WinDir\WinSxS\*onedrive*")) {
-    Takeown-Folder $item.FullName
-    Remove-Item -Recurse -Force $item.FullName
+        if ($LASTEXITCODE -ne 0) {
+            handle_error "Installation of $app failed."
+        } else {
+            Write-Host "$app installed successfully."
+        }
+    } else {
+        Write-Host "$app is already installed."
+    }
 }
 
-# As a last step, disable UAC ------------------------
-#New-ItemProperty -Path HKLM:Software\Microsoft\Windows\CurrentVersion\policies\system -Name EnableLUA -PropertyType DWord -Value 0 -Force
-
-
-# Remove OneDrive directory
-Write-Host "Removing OneDrive directory"
-cd $HOME
-rm OneDrive -r -force
-
- Configure PowerShell
+# Configure PowerShell
 Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
 
@@ -325,6 +219,23 @@ Add-Content -Path "$HOME\.gitignore" -Value ".config/powershell/bootstrap.ps1"
 
 #echo '. "$HOME\Documents\PowerShell\Microsoft.PowerShell_profile.ps1"' >> $PROFILE
 
+# Create symbolik links
+Write-Host "Create symbolik links"
+Write-Host "----------------------------------------"
+
+# Visual Studio Code settings.json
+New-Item -Force -ItemType SymbolicLink $HOME\AppData\Roaming\Code\User\ -Name settings.json -Value $HOME\.config\Code\User\settings.json
+
+# Visual Studio Code keybindings
+New-Item -Force -ItemType SymbolicLink $HOME\AppData\Roaming\Code\User\ -Name keybindings.json -Value $HOME\.config\Code\User\keybindings.json
+
+
+# Update the current session environment variables
+Write-Host "Setting environment variables" -ForegroundColor Cyan
+[Environment]::SetEnvironmentVariable("HOME", "$env:USERPROFILE", "User")
+[Environment]::SetEnvironmentVariable("LC_ALL", "C.UTF-8", "User")
+Update-SessionEnvironment
+
 # Function to install dotfiles
 function install_dotfiles {
     if (Test-Path -Path $dotfiles_dir) {
@@ -364,50 +275,25 @@ install_dotfiles
 
 #. $PROFILE
 
-# Install Chocolatey if not installed
-Write-Host "Installing Chocolatey"
-Write-Host "----------------------------------------"
+# Install python
+Write-Host "Updating python packages" -ForegroundColor Cyan
+python -m pip install --upgrade pip
+pip install --upgrade black flake8
 
-Set-ExecutionPolicy Bypass -Scope Process -Force
+# Enable WSL feature
+dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
+Write-Host "Enable WSL feature"
 
-if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
-    [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.ServicePointManager]::SecurityProtocol -bor 3072
-    Invoke-Expression ((New-Object System.Net.WebClient).DownloadString('https://community.chocolatey.org/install.ps1'))
+# Enable Virtual Machine feature
+dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /norestart
+Write-Host "Enable Virtual Machine feature"
 
-    # Check if Chocolatey installed successfully
-    if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
-        handle_error "Chocolatey installation failed."
-    }
-} else {
-    Write-Host "Chocolatey is already installed."
-}
-
-# Install Applications
-Write-Host "Installing Applications"
-Write-Host "----------------------------------------"
-
-# Define the list of applications to install
-$apps = @("ripgrep", "fd", "sudo", "win32yank", "neovim", "microsoft-windows-terminal")
-
-foreach ($app in $apps) {
-    # Check if the application is already installed
-    if (-not (choco list --local-only | Select-String -Pattern "^$app\s")) {
-        Write-Host "Installing $app"
-        choco install $app -y
-
-        if ($LASTEXITCODE -ne 0) {
-            handle_error "Installation of $app failed."
-        } else {
-            Write-Host "$app installed successfully."
-        }
-    } else {
-        Write-Host "$app is already installed."
-    }
-}
-
-## WSL
-#Write-Host "Configuring WSL"
+# WSL
+Write-Host "Configuring WSL"
 #wsl --install -d Ubuntu
+# setup wsl
+wsl --set-default-version 2
+wsl -s Ubuntu
 
 ## Function to install SSH
 #function install_ssh {
@@ -466,7 +352,6 @@ if (Test-Path -Path $windowsTerminalSettingsPath) {
 # Create a hard link to the settings.json file in .config\windows-terminal
 New-Item -ItemType HardLink -Force -Path $windowsTerminalSettingsPath -Target $windowsTerminalConfigPath
 
-
 # Registry Tweaks
 Write-Host "Registry Tweaks"
 Write-Host "----------------------------------------"
@@ -486,26 +371,41 @@ Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Explorer
 # Set Windows to use UTC time instead of local time for system clock
 Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\TimeZoneInformation" -Name RealTimeIsUniversal -Value 1
 
-## Function to disable the Windows key
-#function Disable-WindowsKey {
-#    $scancodeMap = @(
-#        0x00000000, 0x00000000, 0x00000003, 0xE05B0000, 0xE05C0000, 0x00000000
-#    )
-#
-#    $binaryValue = New-Object byte[] ($scancodeMap.Length * 4)
-#    [System.Buffer]::BlockCopy($scancodeMap, 0, $binaryValue, 0, $binaryValue.Length)
-#
-#    Set-ItemProperty -Path "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout" -Name "Scancode Map" -Value $binaryValue
-#
-#    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
-#}
-#
-## Check if running as Administrator and call the function
-#if (Test-IsAdmin) {
-#    Disable-WindowsKey
-#} else {
-#    Write-Output "You need to run this script as Administrator to disable the Windows key."
-#}
+# Function to disable the Windows key
+function Disable-WindowsKey {
+    $regPath = "HKLM:\SYSTEM\CurrentControlSet\Control\Keyboard Layout"
+    $regName = "Scancode Map"
+
+    # Binary data to disable the Windows key
+    $binaryValue = [byte[]](
+        0x00, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x00, 0x00,
+        0x03, 0x00, 0x00, 0x00,
+        0x00, 0x00, 0x5B, 0xE0,
+        0x00, 0x00, 0x5C, 0xE0,
+        0x00, 0x00, 0x00, 0x00
+    )
+
+    # Create the registry key if it doesn't exist
+    if (-not (Test-Path $regPath)) {
+        New-Item -Path $regPath -Force | Out-Null
+    }
+
+    # Set the Scancode Map value
+    Set-ItemProperty -Path $regPath -Name $regName -Value $binaryValue
+
+    Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
+}
+
+# Check if running as Administrator and call the function
+if (Test-IsAdmin) {
+    Disable-WindowsKey
+} else {
+    Write-Output "You need to run this script as Administrator to disable the Windows key."
+}
+
+Write-Host "Bootstrap script completed."
+
 # Restart to apply changes
 #Write-Host "Restarting system to apply changes..."
 #Restart-Computer -Force
