@@ -14,11 +14,12 @@ jobs:
         run: |
           mkdir -p $HOME/temp-dotfiles
           cd $HOME/temp-dotfiles
+          echo "Downloading dotfiles-main.zip..."
           curl -LOk https://github.com/srdusr/dotfiles/archive/main.zip
+          ls -lh main.zip  # Log file size
           unzip main.zip -d dotfiles
-
-      - name: List contents of extracted directory (for debugging)
-        run: ls -la $HOME/temp-dotfiles/dotfiles
+          mv dotfiles/dotfiles-main dotfiles
+          ls -lh dotfiles  # Log extracted files
 
       - name: Create zip file
         run: |
