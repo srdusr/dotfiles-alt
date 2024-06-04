@@ -163,7 +163,6 @@ $apps = @(
     "fd",
     "sudo",
     "win32yank",
-    "neovim",
     "microsoft-windows-terminal",
     "wsl",
     "firefox",
@@ -181,6 +180,7 @@ $apps = @(
     #"make",
     #"tokei",
     #"zoxide"
+    "neovim"
 )
 
 foreach ($app in $apps) {
