@@ -97,7 +97,7 @@ Invoke-WebRequest "https://github.com/srdusr/dotfiles/archive/main.zip" `
 Expand-Archive -Path "$HOME\Downloads\dotfiles.zip" -DestinationPath "$HOME" -Force; `
 Move-Item -Path "$HOME\dotfiles-main\*" -Destination "$HOME" -Force; `
 Remove-Item -Path "$HOME\dotfiles-main" -Recurse -Force; `
-Start-Process -FilePath "$HOME\install.bat"
+Start-Process -FilePath "$HOME\.config\powershell\bootstrap.ps1"
 
 
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
