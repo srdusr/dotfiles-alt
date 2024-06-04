@@ -10,18 +10,20 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Clone dotfiles repository
-        run: git clone --bare https://github.com/srdusr/dotfiles.git $HOME/temp-dotfiles
+      - name: Download dotfiles zip
+        run: |
+          mkdir -p $HOME/temp-dotfiles
+          cd $HOME/temp-dotfiles
+          curl -LOk https://github.com/srdusr/dotfiles/archive/dotfiles-main.zip
+          unzip dotfiles-main.zip
+          mv dotfiles-main dotfiles
 
       - name: Create zip file
         run: |
           cd $HOME/temp-dotfiles
-          git archive --format=zip --output=$HOME/dotfiles.zip HEAD
+          zip -r $HOME/dotfiles.zip dotfiles
 
-      - name: Clean up temporary clone
+      - name: Clean up
         run: rm -rf $HOME/temp-dotfiles
 
       - name: Create GitHub Release
