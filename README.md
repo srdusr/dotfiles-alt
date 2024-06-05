@@ -98,11 +98,11 @@ Invoke-WebRequest "https://github.com/srdusr/dotfiles/archive/main.zip" `
 Expand-Archive -Path "$HOME\Downloads\dotfiles.zip" -DestinationPath "$HOME" -Force; `
 Move-Item -Path "$HOME\dotfiles-main\*" -Destination "$HOME" -Force; `
 Remove-Item -Path "$HOME\dotfiles-main" -Recurse -Force; `
-. "$HOME\.config\powershell\bootstrap.ps1"
+. "$HOME\install.bat"
 
 
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-irm 'https://raw.githubusercontent.com/srdusr/dotfiles/main/install.bat' | iex
+irm 'https://raw.githubusercontent.com/srdusr/dotfiles/main/.config/powershell/bootstrap.ps1' | iex
 ```
 
 
