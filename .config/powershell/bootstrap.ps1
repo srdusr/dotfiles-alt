@@ -175,7 +175,7 @@ New-Item -Force -ItemType SymbolicLink $HOME\AppData\Roaming\Code\User\ -Name ke
 Write-Host "Setting environment variables" -ForegroundColor Cyan
 [Environment]::SetEnvironmentVariable("HOME", "$env:USERPROFILE", "User")
 [Environment]::SetEnvironmentVariable("LC_ALL", "C.UTF-8", "User")
-Update-SessionEnvironment
+#Update-SessionEnvironment
 
 # Function to install dotfiles
 function install_dotfiles {
@@ -219,7 +219,7 @@ install_dotfiles
 # Install python
 Write-Host "Updating python packages" -ForegroundColor Cyan
 python -m pip install --upgrade pip
-pip install --upgrade black flake8
+#pip install --upgrade black flake8
 
 # Enable WSL feature
 dism.exe /online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart
@@ -230,11 +230,11 @@ dism.exe /online /enable-feature /featurename:VirtualMachinePlatform /all /nores
 Write-Host "Enable Virtual Machine feature"
 
 # WSL
-Write-Host "Configuring WSL"
+#Write-Host "Configuring WSL"
 #wsl --install -d Ubuntu
 # setup wsl
-wsl --set-default-version 2
-wsl -s Ubuntu
+#wsl --set-default-version 2
+#wsl -s Ubuntu
 
 ## Function to install SSH
 #function install_ssh {
@@ -287,7 +287,7 @@ if (Test-Path -Path $windowsTerminalSettingsPath) {
     # Backup existing settings.json
     Move-Item -Force $windowsTerminalSettingsPath "$windowsTerminalSettingsPath.old"
 } else {
-    Write-Host "Windows Terminal settings.json not found."
+    Write-Host "Windows Terminal settings.json not found, no need to backup."
 }
 
 # Create a hard link to the settings.json file in .config\windows-terminal
@@ -338,12 +338,7 @@ function Disable-WindowsKey {
     Write-Output "Windows key has been disabled. Please restart your computer for the changes to take effect."
 }
 
-# Check if running as Administrator and call the function
-if (Test-IsAdmin) {
-    Disable-WindowsKey
-} else {
-    Write-Output "You need to run this script as Administrator to disable the Windows key."
-}
+Disable-WindowsKey
 
 Write-Host "Bootstrap script completed."
 
