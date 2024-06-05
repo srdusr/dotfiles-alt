@@ -81,7 +81,6 @@ function cloneDotfiles {
     & git.exe config --global user.name $userName
     & git.exe config --global user.email $email
 
-    & git clone --bare $originGitHub $dotPath
 
     function global:config {
         git --git-dir="$dotPath" --work-tree="$env:USERPROFILE" $args
@@ -93,11 +92,11 @@ function cloneDotfiles {
         config pull | Out-Null
         $update = $true
     } else {
-        git clone --bare $dotfiles_url $dotfiles_dir | Out-Null
+        git clone --bare $originGitHub $dotPath | Out-Null
         $update = $false
     }
 
-    $std_err_output = config checkout 2>&1
+    $std_err_output = config checkout 1>&1
 
     if ($std_err_output -match "following untracked working tree files would be overwritten") {
         if (-not $update) {
@@ -111,7 +110,7 @@ function cloneDotfiles {
         config reset --hard main | Out-Null
         config checkout -f
         if ($?) {
-            Write-Host "Successfully imported $dotfiles_dir."
+            Write-Host "Successfully imported $dotPath."
         } else {
             handle_error "Mission failed."
         }
