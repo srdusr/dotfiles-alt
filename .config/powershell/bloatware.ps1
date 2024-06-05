@@ -1,4 +1,4 @@
-# onedrive.ps1
+# bloatware.ps1
 
 # Helper functions ------------------------
 function force-mkdir($path) {
@@ -7,6 +7,57 @@ function force-mkdir($path) {
         New-Item -ItemType Directory -Force -Path $path
     }
 }
+
+$bloatware = @(
+    #"Anytime"
+    "BioEnrollment"
+    #"Browser"
+    "ContactSupport"
+    "Cortana"
+    #"Defender"
+    "Feedback"
+    "Flash"
+    #"Gaming"	# Breaks Xbox Live Account Login
+    #"Holo"
+    #"InternetExplorer"
+    "Maps"
+    #"MiracastView"
+    "OneDrive"
+    #"SecHealthUI"
+    "Wallet"
+    #"Xbox"     # Causes a bootloop since upgrade 1511?
+)
+
+# Remove Features ------------------------
+foreach ($bloat in $bloatware) {
+   Write-Output "Removing packages containing $bloat"
+   $pkgs = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" |
+       Where-Object Name -Like "*$bloat*")
+
+   foreach ($pkg in $pkgs) {
+       $pkgname = $pkg.Name.split('\')[-1]
+       Takeown-Registry($pkg.Name)
+       Takeown-Registry($pkg.Name + "\Owners")
+       Set-ItemProperty -Path ("HKLM:" + $pkg.Name.Substring(18)) -Name Visibility -Value 1
+       New-ItemProperty -Path ("HKLM:" + $pkg.Name.Substring(18)) -Name DefVis -PropertyType DWord -Value 2
+       Remove-Item      -Path ("HKLM:" + $pkg.Name.Substring(18) + "\Owners")
+       dism.exe /Online /Remove-Package /PackageName:$pkgname /NoRestart
+   }
+}
+
+# Remove default apps and bloat ------------------------
+Write-Output "Uninstalling default apps"
+foreach ($app in $apps) {
+   Write-Output "Trying to remove $app"
+   Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
+   Get-AppXProvisionedPackage -Online |
+   Where-Object DisplayName -EQ $app |
+   Remove-AppxProvisionedPackage -Online
+}
+
+# Prevents "Suggested Applications" returning
+force-mkdir "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content"
+Set-ItemProperty "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content" "DisableWindowsConsumerFeatures" 1
 
 # Kill OneDrive with fire ------------------------
 Write-Output "Kill OneDrive process"
