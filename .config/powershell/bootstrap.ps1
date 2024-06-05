@@ -1,7 +1,6 @@
 # Requires -RunAsAdministrator
 
 # Set execution policy to remote signed
-#Set-ExecutionPolicy RemoteSigned
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 
 # Set network category to private
