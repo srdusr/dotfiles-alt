@@ -3,46 +3,36 @@
     Bootstrap Windows command prompts (cmd, PS, PSCore) with my dotfiles and apps.
 
     .DESCRIPTION
-    to bootstrap directly from github, run these 2 cmdlets in a PowerShell prompt:
+    To bootstrap directly from GitHub, run these 2 cmdlets in a PowerShell prompt:
     > Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
-    > irm 'https://raw.githubusercontent.com/davidjenni/dotfiles/main/bootstrap.ps1' | iex
+    > irm 'https://raw.githubusercontent.com/srdusr/dotfiles/main/bootstrap.ps1' | iex
 #>
 [CmdletBinding()]
 param (
     [ValidateSet('clone', 'setup', 'apps', 'env', IgnoreCase = $true)]
     [Parameter(Position = 0)] [string]
-    # verb that indicates stage:
-    #  clone:       clone the dotfiles repo and continue with 'setup' etc.
-    #  setup:       setup PS, package managers, git. Includes 'apps' and 'env'.
-    #  apps:        install apps via winget and scoop
-    #  env:         setups consoles and configurations for git, neovim, PowerShell etc.
     $verb = 'clone',
     [Parameter()] [string]
-    # user name for git commits, defaults to '$env:USERNAME@$env:COMPUTERNAME'
     $userName = $null,
     [Parameter()] [string]
-    # email address for git commits, defaults to existing git config or prompts for input
     $email = $null,
     [Parameter()] [switch]
-    # in most cases, do not run this script elevated; mostly needed in automation like PR loop
     $runAsAdmin = $false
 )
 
 $ErrorActionPreference = 'Stop'
 
-$originGitHub='https://github.com/srdusr/dotfiles.git'
-$dotPath=(Join-Path $env:USERPROFILE 'dotfiles')
+$originGitHub = 'https://github.com/srdusr/dotfiles.git'
+$dotPath = (Join-Path $env:USERPROFILE '.cfg')
 
-# should be the default on all Win10+, but just in case...
-[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor
-                                              [Net.SecurityProtocolType]::Tls12
+# Ensure Tls12
+[Net.ServicePointManager]::SecurityProtocol = [Net.ServicePointManager]::SecurityProtocol -bor [Net.SecurityProtocolType]::Tls12
 
 function ensureLocalGit {
     if (Get-Command 'git' -ErrorAction SilentlyContinue) {
         return
     }
 
-    # bootstrap with a local git to avoid early elevating for winget and the git installer:
     $localGitFolder = (Join-Path $env:USERPROFILE (Join-Path "Downloads" "localGit"))
     Write-Host "Installing ad-hoc git into $localGitFolder..."
 
@@ -52,7 +42,6 @@ function ensureLocalGit {
         Select-Object -ExpandProperty 'browser_download_url'
     $localGitZip = (Join-Path $localGitFolder "MinGit.zip")
     New-Item -ItemType Directory -Path $localGitFolder -Force | Out-Null
-    # Invoke-RestMethod with its progress bar is about 10x slower than WebClient.DownloadFile...
     (New-Object Net.WebClient).DownloadFile($gitUrl, $localGitZip)
     Expand-Archive -Path $localGitZip -DestinationPath $localGitFolder -Force
 
@@ -74,8 +63,8 @@ function cloneDotfiles {
     if (-not $userName -or $userName -eq '') {
         $userName = (& git config --global --get user.name)
     }
-    if (-not $username -or $username -eq '') {
-        $username = "$env:USERNAME@$env:COMPUTERNAME"
+    if (-not $userName -or $userName -eq '') {
+        $userName = "$env:USERNAME@$env:COMPUTERNAME"
     }
 
     if (-not $email -or $email -eq '') {
@@ -90,10 +79,22 @@ function cloneDotfiles {
     }
 
     & git.exe config --global user.name $userName
-    # https://docs.github.com/en/account-and-profile/setting-up-and-managing-your-personal-account-on-github/managing-email-preferences/setting-your-commit-email-address
     & git.exe config --global user.email $email
 
-    & git clone $originGitHub $dotPath
+    & git clone --bare $originGitHub $dotPath
+
+    function global:config {
+        git --git-dir="$dotPath" --work-tree="$env:USERPROFILE" $args
+    }
+
+    Add-Content -Path "$env:USERPROFILE\.gitignore" -Value ".cfg"
+    $std_err_output = config checkout 2>&1
+    if ($std_err_output -match "following untracked working tree files would be overwritten") {
+        Write-Warning "Some untracked files will be overwritten. Aborting."
+        return 5
+    }
+
+    config config --local status.showUntrackedFiles no
     return 0
 }
 
@@ -110,7 +111,6 @@ function writeGitConfig {
         [Parameter(Mandatory = $true)] [string] $configIniFile
     )
 
-    # do a one-off save for the formerly symlinked .gitconfig:
     if ((Test-Path (Join-Path $env:USERPROFILE '.gitconfig')) -and -not (Test-Path (Join-Path $env:USERPROFILE '.gitconfig.bak'))) {
         $userName = (& git config --global --get user.name)
         $email = (& git config --global --get user.email)
@@ -134,8 +134,8 @@ function writeGitConfig {
 }
 
 function setupShellEnvs {
-    Write-Host "setting cmd console properties:"
-    $consolePath='HKCU\Console'
+    Write-Host "Setting cmd console properties:"
+    $consolePath = 'HKCU\Console'
     & reg add $consolePath /v QuickEdit         /d 0x1              /t REG_DWORD /f | Out-Null
     & reg add $consolePath /v WindowSize        /d 0x00320078       /t REG_DWORD /f | Out-Null
     & reg add $consolePath /v ScreenBufferSize  /d 0x23280078       /t REG_DWORD /f | Out-Null
@@ -144,36 +144,17 @@ function setupShellEnvs {
     & reg add $consolePath /v FaceName          /d "Hack Nerd Font Mono" /t REG_SZ  /f | Out-Null
     & reg add $consolePath /v FontSize          /d 0x00100000       /t REG_DWORD /f | Out-Null
 
-    $win32rc=(Join-Path $PSScriptRoot (Join-Path 'win' 'win32-rc.cmd'))
-    Write-Host "setting up cmd autorun: $win32rc"
+    $win32rc = (Join-Path $PSScriptRoot (Join-Path 'win' 'win32-rc.cmd'))
+    Write-Host "Setting up cmd autorun: $win32rc"
     & reg add "HKCU\Software\Microsoft\Command Processor" /v AutoRun /t REG_SZ /d $win32rc /f | Out-Null
 
-    # TODO: needs elevation
-    # Write-Host "remap CapsLock to LeftCtrl key:"
-    # # see http://www.experts-exchange.com/OS/Microsoft_Operating_Systems/Windows/A_2155-Keyboard-Remapping-CAPSLOCK-to-Ctrl-and-Beyond.html
-    # # http://msdn.microsoft.com/en-us/windows/hardware/gg463447.aspx
-    # & reg add "HKLM\SYSTEM\CurrentControlSet\Control\Keyboard Layout" /v "Scancode Map" /d 0000000000000000020000001D003A0000000000 /t REG_BINARY /f | Out-Null
-    # Write-Host "CapsLock remapped, will be effective after next system reboot."
-
-    # TODO: initialize Terminal, but its .json file won't exist until after the first launch
-    # $env:LOCALAPPDATA\Packages\Microsoft.WindowsTerminal_8wekyb3d8bbwe\LocalState\settings.json
-
-    # can't use on WinPS, too many at-work scripts fail
-    # $psProfile = (& powershell -NoProfile -Command '$PROFILE.CurrentUserAllHosts')
-    # copyFile (Join-Path 'win' 'profile.ps1') $psProfile
-
-    Write-Host "configuring user home dir..."
+    Write-Host "Configuring user home dir..."
     $configDir = (Join-Path $env:USERPROFILE '.config')
     New-Item -ItemType Directory -Path $configDir -ErrorAction SilentlyContinue | Out-Null
 
-    #writeGitConfig (Join-Path $PSScriptRoot 'gitconfig.ini')
-
     $sshDir = (Join-Path $env:USERPROFILE '.ssh')
-    # ensure 1Password's identity agent is visible to OpenSSH; cannot have both config and socket on Windows
-    # https://developer.1password.com/docs/ssh/agent/advanced#windows
-    # https://developer.1password.com/docs/ssh/get-started/#step-4-configure-your-ssh-or-git-client
     Remove-Item (Join-Path $sshDir 'config') -ErrorAction SilentlyContinue -Force | Out-Null
-    $openSsh=((Join-Path $env:windir 'System32\OpenSSH\ssh.exe').Replace("\", "/"))
+    $openSsh = ((Join-Path $env:windir 'System32\OpenSSH\ssh.exe').Replace("\", "/"))
     & git config --global core.sshCommand $openSsh
 }
 
@@ -187,8 +168,7 @@ function main {
         'clone' {
             Write-Host
             if (Test-Path (Join-Path $dotPath '.git')) {
-                Write-Host "local git repo already exists, skipping."
-                # continue in-proc:
+                Write-Host "Local git repo already exists, skipping."
                 main setup
                 return
             }
@@ -198,12 +178,10 @@ function main {
                 Write-Error "Cloning dotfiles failed, aborting."
                 return
             }
-            # continue with now-local bootstrap.ps1 from cloned repo:
-            # still stick with desktop PS since PSCore is not necessarily installed yet
-            $script= (Join-Path $dotPath '.config\powershell\bootstrap.ps1')
+
+            $script = (Join-Path $dotPath '.config\powershell\bootstrap.ps1')
             Write-Host "Continue $script in child process"
-            Start-Process -PassThru -NoNewWindow -FilePath "powershell.exe" -ArgumentList "-NoProfile -File $script setup" |
-                Wait-Process
+            Start-Process -PassThru -NoNewWindow -FilePath "powershell.exe" -ArgumentList "-NoProfile -File $script setup" | Wait-Process
         }
 
         'setup' {
