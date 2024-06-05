@@ -88,13 +88,37 @@ function cloneDotfiles {
     }
 
     Add-Content -Path "$env:USERPROFILE\.gitignore" -Value ".cfg"
-    $std_err_output = config checkout 2>&1
-    if ($std_err_output -match "following untracked working tree files would be overwritten") {
-        Write-Warning "Some untracked files will be overwritten. Aborting."
-        return 5
+
+    if (Test-Path -Path $dotfiles_dir) {
+        config pull | Out-Null
+        $update = $true
+    } else {
+        git clone --bare $dotfiles_url $dotfiles_dir | Out-Null
+        $update = $false
     }
 
+    $std_err_output = config checkout 2>&1
+
+    if ($std_err_output -match "following untracked working tree files would be overwritten") {
+        if (-not $update) {
+            config checkout | Out-Null
+        }
+    }
     config config --local status.showUntrackedFiles no
+
+    if ($update -or (Read-Host "Do you want to overwrite existing files and continue with the dotfiles setup? [Y/n]" -eq "Y")) {
+        config fetch origin main:main | Out-Null
+        config reset --hard main | Out-Null
+        config checkout -f
+        if ($?) {
+            Write-Host "Successfully imported $dotfiles_dir."
+        } else {
+            handle_error "Mission failed."
+        }
+    } else {
+        handle_error "Aborted by user. Exiting..."
+    }
+
     return 0
 }
 
