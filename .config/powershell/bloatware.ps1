@@ -144,18 +144,15 @@ If ((Get-ChildItem "$env:userprofile\OneDrive" -Recurse | Measure-Object).Count 
 }
 
 Write-Output "Disable OneDrive via Group Policies"
-if (Check-RegistryKeyExists -KeyPath "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive") {
-    Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
-}
+force-mkdir "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive"
+Set-ItemProperty "HKLM:\SOFTWARE\Wow6432Node\Policies\Microsoft\Windows\OneDrive" "DisableFileSyncNGSC" 1
 
-Write-Output "Remove OneDrive from explorer sidebar"
+Write-Output "Remove Onedrive from explorer sidebar"
 New-PSDrive -PSProvider "Registry" -Root "HKEY_CLASSES_ROOT" -Name "HKCR"
-if (Check-RegistryKeyExists -KeyPath "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}") {
-    Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-}
-if (Check-RegistryKeyExists -KeyPath "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}") {
-    Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
-}
+force-mkdir "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+Set-ItemProperty "HKCR:\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
+force-mkdir "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}"
+Set-ItemProperty "HKCR:\Wow6432Node\CLSID\{018D5C66-4533-4307-9B53-224DE2ED1FE6}" "System.IsPinnedToNameSpaceTree" 0
 Remove-PSDrive "HKCR"
 
 # Thank you Matthew Israelsson
@@ -164,7 +161,7 @@ reg load "hku\Default" "C:\Users\Default\NTUSER.DAT"
 reg delete "HKEY_USERS\Default\SOFTWARE\Microsoft\Windows\CurrentVersion\Run" /v "OneDriveSetup" /f
 reg unload "hku\Default"
 
-Write-Output "Removing start menu entry"
+Write-Output "Removing startmenu entry"
 Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
 
 Write-Output "Removing scheduled task"
