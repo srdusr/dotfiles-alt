@@ -37,7 +37,7 @@ if (-not (Test-IsAdmin)) {
 
 # Imports
 . $HOME\.config\powershell\initialize.ps1
-. $HOME\.config\powershell\ownership.ps1
+#. $HOME\.config\powershell\ownership.ps1
 . $HOME\.config\powershell\bloatware.ps1
 
 # Configure PowerShell
@@ -115,7 +115,6 @@ $apps = @(
     "bat",
     "7zip",
     "python",
-    "neofetch",
     "adobereader",
     "javaruntime",
     "autohotkey",
