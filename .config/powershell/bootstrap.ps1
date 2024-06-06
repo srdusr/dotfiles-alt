@@ -21,6 +21,7 @@ function handle_error {
 New-Item -Path $Env:USERPROFILE\Logs -ItemType directory -Force
 Start-Transcript -Path $Env:USERPROFILE\Logs\Bootstrap.log
 $ErrorActionPreference = 'SilentlyContinue'
+Write-Host "Bootstrap.log generated in Logs\"
 
 # Function to check if the current session is elevated
 function Test-IsAdmin {

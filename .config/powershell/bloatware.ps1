@@ -1,5 +1,7 @@
 # bloatware.ps1
 
+. $HOME\.config\powershell\ownership.ps1
+
 # Check if Registry key exists
 function Check-RegistryKeyExists {
     param(
@@ -61,15 +63,15 @@ foreach ($bloat in $bloatware) {
     }
 }
 
-# Remove default apps and bloat ------------------------
-Write-Output "Uninstalling default apps"
-foreach ($app in $apps) {
-    Write-Output "Trying to remove $app"
-    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
-    Get-AppXProvisionedPackage -Online |
-    Where-Object DisplayName -EQ $app |
-    Remove-AppxProvisionedPackage -Online
-}
+## Remove default apps and bloat ------------------------
+#Write-Output "Uninstalling default apps"
+#foreach ($app in $apps) {
+#    Write-Output "Trying to remove $app"
+#    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
+#    Get-AppXProvisionedPackage -Online |
+#    Where-Object DisplayName -EQ $app |
+#    Remove-AppxProvisionedPackage -Online
+#}
 
 # Prevents "Suggested Applications" returning
 if (Check-RegistryKeyExists -KeyPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content") {
@@ -104,6 +106,7 @@ OpenSubKey('SOFTWARE\Microsoft', $true)
 $edgeUWP = "$env:SystemRoot\SystemApps\Microsoft.MicrosoftEdge_8wekyb3d8bbwe"
 $uninstallRegKey = $microsoft.OpenSubKey('Windows\CurrentVersion\Uninstall\Microsoft Edge')
 $uninstallString = $uninstallRegKey.GetValue('UninstallString') + ' --force-uninstall'
+Write-Host "Removed Microsoft Edge"
 
 $edgeClient = $microsoft.OpenSubKey('EdgeUpdate\ClientState\{56EB18F8-B008-4CBD-B6D2-8C97FE7E9062}', $true)
 if ($null -ne $edgeClient.GetValue('experiment_control_labels')) {
@@ -176,6 +179,14 @@ Start-Sleep 10
 Write-Output "Removing additional OneDrive leftovers"
 foreach ($item in (Get-ChildItem "$env:WinDir\WinSxS\*onedrive*")) {
     Takeown-Folder $item.FullName
+
+    # Grant full control to administrators
+    $acl = Get-Acl $item.FullName
+    $ar = New-Object System.Security.AccessControl.FileSystemAccessRule("Administrators", "FullControl", "Allow")
+    $acl.SetAccessRule($ar)
+    Set-Acl $item.FullName $acl
+
+    # Remove the item
     Remove-Item -Recurse -Force $item.FullName
 }
 
