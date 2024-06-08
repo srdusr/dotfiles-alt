@@ -339,7 +339,17 @@ Write-Output "Removing startmenu entry"
 Remove-Item -Force -ErrorAction SilentlyContinue "$env:userprofile\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\OneDrive.lnk"
 
 Write-Output "Removing scheduled task"
-Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive*' -ea SilentlyContinue | Unregister-ScheduledTask -Confirm:$false
+$scheduledTasks = Get-ScheduledTask -TaskPath '\' -TaskName 'OneDrive*' -ErrorAction SilentlyContinue
+if ($scheduledTasks) {
+    try {
+        $scheduledTasks | Unregister-ScheduledTask -Confirm:$false
+        Write-Output "OneDrive scheduled tasks removed."
+    } catch {
+        Write-Warning "Failed to unregister scheduled tasks: $_"
+    }
+} else {
+    Write-Output "No OneDrive scheduled tasks found."
+}
 
 Write-Output "Restarting explorer"
 Start-Process "explorer.exe"
