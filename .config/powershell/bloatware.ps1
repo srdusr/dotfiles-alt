@@ -1,5 +1,96 @@
 # bloatware.ps1
 
+$bloatware = @(
+    #"Anytime"
+    "BioEnrollment"
+    #"Browser"
+    "ContactSupport"
+    "Cortana"
+    #"Defender"
+    "Feedback"
+    "Flash"
+    #"Gaming"    # Breaks Xbox Live Account Login
+    #"Holo"
+    #"InternetExplorer"
+    "Maps"
+    #"MiracastView"
+    "OneDrive"
+    #"SecHealthUI"
+    "Wallet"
+    #"Xbox"     # Causes a bootloop since upgrade 1511?
+)
+
+$apps = @(
+    # default Windows 10 apps
+    #"Microsoft.3DBuilder"
+    "Microsoft.Appconnector"
+    "Microsoft.BingFinance"
+    "Microsoft.BingNews"
+    "Microsoft.BingSports"
+    "Microsoft.BingTranslator"
+    "Microsoft.BingWeather"
+    #"Microsoft.FreshPaint"
+    #"Microsoft.Microsoft3DViewer"
+    "Microsoft.MicrosoftOfficeHub"
+    "Microsoft.MicrosoftSolitaireCollection"
+    "Microsoft.MicrosoftPowerBIForWindows"
+    "Microsoft.MinecraftUWP"
+    #"Microsoft.MicrosoftStickyNotes"
+    #"Microsoft.NetworkSpeedTest"
+    "Microsoft.Office.OneNote"
+    #"Microsoft.OneConnect"
+    "Microsoft.People"
+    #"Microsoft.Print3D"
+    "Microsoft.SkypeApp"
+    "Microsoft.Wallet"
+    #"Microsoft.Windows.Photos"
+    #"Microsoft.WindowsAlarms"
+    #"Microsoft.WindowsCalculator"
+    "Microsoft.WindowsCamera"
+    "microsoft.windowscommunicationsapps"
+    "Microsoft.WindowsMaps"
+    "Microsoft.WindowsPhone"
+    "Microsoft.WindowsSoundRecorder"
+    "Microsoft.WindowsStore"
+    #"Microsoft.XboxApp"
+    #"Microsoft.XboxGameOverlay"
+    #"Microsoft.XboxIdentityProvider"
+    #"Microsoft.XboxSpeechToTextOverlay"
+    "Microsoft.ZuneMusic"
+    "Microsoft.ZuneVideo"
+
+    # Threshold 2 apps
+    "Microsoft.CommsPhone"
+    "Microsoft.ConnectivityStore"
+    "Microsoft.GetHelp"
+    "Microsoft.Getstarted"
+    "Microsoft.Messaging"
+    "Microsoft.Office.Sway"
+    "Microsoft.OneConnect"
+    "Microsoft.WindowsFeedbackHub"
+
+    #Redstone apps
+    "Microsoft.BingFoodAndDrink"
+    "Microsoft.BingTravel"
+    "Microsoft.BingHealthAndFitness"
+    "Microsoft.WindowsReadingList"
+
+    # non-Microsoft
+    "king.com.CandyCrushSaga"
+    "king.com.CandyCrushSodaSaga"
+    "king.com.*"
+    "Facebook.Facebook"
+
+    # apps which cannot be removed using Remove-AppxPackage
+    #"Microsoft.BioEnrollment"
+    #"Microsoft.MicrosoftEdge"
+    #"Microsoft.Windows.Cortana"
+    #"Microsoft.WindowsFeedback"
+    #"Microsoft.XboxGameCallableUI"
+    #"Microsoft.XboxIdentityProvider"
+    #"Windows.ContactSupport"
+)
+
 # Check if Registry key exists
 function Check-RegistryKeyExists {
     param(
@@ -132,26 +223,6 @@ function Elevate-Privileges {
     $type[0]::EnablePrivilege($processHandle, $Privilege)
 }
 
-$bloatware = @(
-    #"Anytime"
-    "BioEnrollment"
-    #"Browser"
-    "ContactSupport"
-    "Cortana"
-    #"Defender"
-    "Feedback"
-    "Flash"
-    #"Gaming"    # Breaks Xbox Live Account Login
-    #"Holo"
-    #"InternetExplorer"
-    "Maps"
-    #"MiracastView"
-    "OneDrive"
-    #"SecHealthUI"
-    "Wallet"
-    #"Xbox"     # Causes a bootloop since upgrade 1511?
-)
-
 # Remove Features ------------------------
 foreach ($bloat in $bloatware) {
     Write-Output "Removing packages containing $bloat"
@@ -169,15 +240,15 @@ foreach ($bloat in $bloatware) {
     }
 }
 
-## Remove default apps and bloat ------------------------
-#Write-Output "Uninstalling default apps"
-#foreach ($app in $apps) {
-#    Write-Output "Trying to remove $app"
-#    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
-#    Get-AppXProvisionedPackage -Online |
-#    Where-Object DisplayName -EQ $app |
-#    Remove-AppxProvisionedPackage -Online
-#}
+# Remove default apps and bloat ------------------------
+Write-Output "Uninstalling default apps"
+foreach ($app in $apps) {
+    Write-Output "Trying to remove $app"
+    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppXProvisionedPackage -Online |
+    Where-Object DisplayName -EQ $app |
+    Remove-AppxProvisionedPackage -Online
+}
 
 # Prevents "Suggested Applications" returning
 if (Check-RegistryKeyExists -KeyPath "HKLM:\SOFTWARE\Policies\Microsoft\Windows\Cloud Content") {
@@ -234,7 +305,7 @@ Write-Output "Edge should now be uninstalled!"
 Write-Output "Kill OneDrive process"
 taskkill.exe /F /IM "OneDrive.exe"
 taskkill.exe /F /IM "explorer.exe"
-
+Stop-Process -Name OneDrive -Force
 Write-Output "Remove OneDrive"
 if (Test-Path "$env:systemroot\System32\OneDriveSetup.exe") {
     & "$env:systemroot\System32\OneDriveSetup.exe" /uninstall
@@ -285,7 +356,16 @@ Start-Sleep 10
 Write-Output "Removing additional OneDrive leftovers"
 foreach ($item in (Get-ChildItem "$env:WinDir\WinSxS\*onedrive*")) {
     Takeown-Folder $item.FullName
-    Remove-Item -Recurse -Force $item.FullName
+    try {
+        Remove-Item -Recurse -Force -ErrorAction Continue -ErrorVariable RemoveError $item.FullName
+        if ($RemoveError) {
+            Write-Warning "Failed to remove $($item.FullName): $($RemoveError.Exception.Message)"
+        } else {
+            Write-Output "Successfully removed: $($item.FullName)"
+        }
+    } catch {
+        Write-Warning "Failed to remove $($item.FullName): $_"
+    }
 }
 
 # As a last step, disable UAC ------------------------
