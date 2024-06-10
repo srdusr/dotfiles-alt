@@ -71,76 +71,6 @@ prompt_user() {
     esac
 }
 
-function _spinner() {
-    # $1 start/stop
-    #
-    # on start: $2 display message
-    # on stop : $2 process exit status
-    #           $3 spinner function pid (supplied from stop_spinner)
-    local on_success="✔"
-    local on_fail="✘"
-    local white="\e[1;37m"
-    local green="\e[1;32m"
-    local red="\e[1;31m"
-    local nc="\e[0m"
-
-    case $1 in
-    start)
-        # calculate the column where spinner and status msg will be displayed
-        let column="$(tput cols)-${#2}"-8
-        # display message and position the cursor in $column column
-        echo -ne "${2}"
-        printf "%${column}s"
-
-        # start spinner
-        i=1
-        sp="\\|/-"
-        delay=${SPINNER_DELAY:-0.15}
-
-        while :; do
-            i=$((i + 1))
-            printf "\b${sp:${i}%${#sp}:1}"
-            sleep "$delay"
-        done
-        ;;
-    stop)
-        if [[ -z ${3} ]]; then
-            echo "spinner is not running.."
-            exit 1
-        fi
-
-        kill "$3" >/dev/null 2>&1
-
-        # inform the user uppon success or failure
-        echo -en "\b["
-        if [[ $2 -eq 0 ]]; then
-            echo -en "${green}${on_success}${nc}"
-        else
-            echo -en "${red}${on_fail}${nc}"
-        fi
-        echo -e "]"
-        ;;
-    *)
-        echo "invalid argument, try {start/stop}"
-        exit 1
-        ;;
-    esac
-}
-
-function start_spinner {
-    # $1 : msg to display
-    _spinner "start" "${1}" &
-    # set global spinner pid
-    _sp_pid=$!
-    disown
-}
-
-function stop_spinner {
-    # $1 : command exit status
-    _spinner "stop" "$1" "$_sp_pid"
-    unset _sp_pid
-}
-
 # Function to temporarily unset GIT_WORK_TREE
 function git_without_work_tree() {
     # Check if the current directory is a Git repository
@@ -186,14 +116,14 @@ check_privilege_tools() {
         case $continue_choice in
         [Yy] | [Yy][Ee][Ss]) ;;
         [Nn] | [Nn][Oo]) exit ;;
-        *) handle_error "Invalid choice. Exiting.." && exit ;;
+        *) handle_error "Invalid choice. Exiting..." && exit ;;
         esac
     fi
 }
 
 # Function to set locale to en_US.UTF-8
 set_locale() {
-    echo "Setting locale to en_US.UTF-8.."
+    echo "Setting locale to en_US.UTF-8..."
     if ! "$PRIVILEGE_TOOL" localectl set-locale LANG=en_US.UTF-8; then
         handle_error "Failed to set locale to en_US.UTF-8"
     fi
@@ -213,21 +143,21 @@ install_zsh_plugins() {
     mkdir -p "$zsh_plugins_dir"
 
     if [ ! -d "$zsh_plugins_dir/zsh-you-should-use" ]; then
-        echo "Installing zsh-you-should-use.."
+        echo "Installing zsh-you-should-use..."
         git clone https://github.com/MichaelAquilina/zsh-you-should-use.git "$zsh_plugins_dir/zsh-you-should-use"
     else
         echo "zsh-you-should-use is already installed."
     fi
 
     if [ ! -d "$zsh_plugins_dir/zsh-syntax-highlighting" ]; then
-        echo "Installing zsh-syntax-highlighting.."
+        echo "Installing zsh-syntax-highlighting..."
         git clone https://github.com/zsh-users/zsh-syntax-highlighting.git "$zsh_plugins_dir/zsh-syntax-highlighting"
     else
         echo "zsh-syntax-highlighting is already installed."
     fi
 
     if [ ! -d "$zsh_plugins_dir/zsh-autosuggestions" ]; then
-        echo "Installing zsh-autosuggestions.."
+        echo "Installing zsh-autosuggestions..."
         git clone https://github.com/zsh-users/zsh-autosuggestions.git "$zsh_plugins_dir/zsh-autosuggestions"
     else
         echo "zsh-autosuggestions is already installed."
@@ -271,10 +201,8 @@ install_dotfiles() {
     if prompt_user "Do you want to overwrite existing files and continue with the dotfiles setup?"; then
         config fetch origin main:main
 
-        echo "Resetting the local branch to match the main branch in the remote repository.."
         config reset --hard main
 
-        echo "Proceeding with the dotfiles setup.."
         config checkout -f
         if [ $? -eq 0 ]; then
             echo "Successfully backed up conflicting dotfiles in $dotfiles_dir-backup/ and imported $dotfiles_dir."
@@ -283,7 +211,7 @@ install_dotfiles() {
         fi
     else
         # User chose not to overwrite existing files
-        handle_error "Aborted by user. Exiting.."
+        handle_error "Aborted by user. Exiting..."
     fi
 }
 
@@ -403,7 +331,7 @@ _distro_detect() {
         _distro="$user_package_manager"
         return
     else
-        _error "Specified package manager '$user_package_manager' not found. Exiting.."
+        _error "Specified package manager '$user_package_manager' not found. Exiting..."
         exit 1
     fi
 }
@@ -419,7 +347,7 @@ user_dirs() {
         # Check if ~/.config/user-dirs.dirs exists
         config_dirs_file="$HOME/.config/user-dirs.dirs"
         if [ -f "$config_dirs_file" ]; then
-            echo "Config file $config_dirs_file exists. Proceeding.."
+            echo "Config file $config_dirs_file exists. Proceeding..."
         else
             echo "Error: Config file $config_dirs_file not found. Please check your configuration."
             exit 1
@@ -435,7 +363,7 @@ user_dirs() {
                 if [[ ! "$OSTYPE" == "darwin"* ]]; then
                     # Check if the config file exists
                     if [ -f "$config_file" ]; then
-                        echo "Changing directory names from uppercase to lowercase.."
+                        echo "Changing directory names from uppercase to lowercase..."
 
                         # Read the lines from the config file and process them
                         while read -r line; do
@@ -477,7 +405,7 @@ user_dirs() {
                 if [[ ! "$OSTYPE" == "darwin"* ]]; then
                     # Check if the config file exists
                     if [ -f "$config_file" ]; then
-                        echo "Changing directory names from lowercase to uppercase.."
+                        echo "Changing directory names from lowercase to uppercase..."
 
                         # Read the lines from the config file and process them
                         while read -r line; do
@@ -557,6 +485,23 @@ linux_update_system() {
 linux_install_packages() {
     local failed_packages=()
     local any_failures=false # Flag to track if any packages failed to install
+    local packages_file="packages.yml"
+
+    # Check if yq is available
+    if ! command -v yq &>/dev/null; then
+        echo "Error: yq (YAML parser) is not installed or not found."
+        return 1
+    fi
+
+    # Read package names from packages.yml under PackageManager
+    local packages=()
+    if [[ -f "$packages_file" ]]; then
+        #packages=($(yq '.PackageManager[]' "$packages_file" 2>/dev/null))
+        packages=("$(grep 'PackageManager:' -A 1 "$packages_file" | grep -v 'PackageManager:' | grep -v 'common' | grep -v 'rust' | grep -v 'linux' | grep -v 'windows' | grep -v 'macos' | awk '{$1=$1};1' | sed 's/\- //g')")
+    else
+        echo "Error: packages.yml not found."
+        return 1
+    fi
 
     # Read the package manager type detected by _distro_detect()
     case "$_distro" in
@@ -574,125 +519,105 @@ linux_install_packages() {
         install_yay
 
         # Installation using Pacman
-        while IFS= read -r package; do
-            # Skip empty lines
-            if [[ -z "$package" ]]; then
-                continue
-            fi
-
+        for package in "${packages[@]}"; do
             if ! pacman -Q "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" pacman -S --noconfirm "$package"; then
                     failed_packages+=("$package")
                     any_failures=true # Set flag to true if any package fails to install
                 fi
             fi
-        done <packages.txt
-
-        if [[ "$any_failures" = "true" ]]; then
-            echo "Failed to install the following packages:"
-            for package in "${failed_packages[@]}"; do
-                if ! pacman -Q "$package" &>/dev/null && ! yay -Q "$package" &>/dev/null; then
-                    if [[ -x "$(command -v yay)" ]]; then
-                        echo "Trying to install $package from AUR using yay.."
-                        if yay -S --noconfirm "$package"; then
-                            echo "Successfully installed $package from AUR."
-                        else
-                            echo "Failed to install $package from AUR."
-                        fi
-                    else
-                        echo "Failed to install $package using the default package manager."
-                    fi
-                fi
-            done
-        else
-            echo "All packages installed successfully."
-        fi
+        done
         ;;
     "DPKG")
         # Try installing packages with dpkg
-        while IFS= read -r package; do
+        for package in "${packages[@]}"; do
             if ! dpkg-query -W "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" apt-get install -y "$package"; then
                     failed_packages+=("$package")
                     any_failures=true # Set flag to true if any package fails to install
                 fi
             fi
-        done <packages.txt
-
-        if "$any_failures"; then
-            echo "Failed to install the following packages:"
-            printf '%s\n' "${failed_packages[@]}"
-        else
-            echo "All packages installed successfully."
-        fi
+        done
         ;;
     "YUM")
         # Try installing packages with yum
-        while IFS= read -r package; do
+        for package in "${packages[@]}"; do
             if ! rpm -q "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" yum install -y "$package"; then
                     failed_packages+=("$package")
                     any_failures=true # Set flag to true if any package fails to install
                 fi
             fi
-        done <packages.txt
-
-        if "$any_failures"; then
-            echo "Failed to install the following packages:"
-            printf '%s\n' "${failed_packages[@]}"
-        else
-            echo "All packages installed successfully."
-        fi
+        done
         ;;
     "ZYPPER")
         # Try installing packages with zypper
-        while IFS= read -r package; do
+        for package in "${packages[@]}"; do
             if ! rpm -q "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" zypper --non-interactive install "$package"; then
                     failed_packages+=("$package")
                     any_failures=true # Set flag to true if any package fails to install
                 fi
             fi
-        done <packages.txt
-
-        if "$any_failures"; then
-            echo "Failed to install the following packages:"
-            printf '%s\n' "${failed_packages[@]}"
-        else
-            echo "All packages installed successfully."
-        fi
+        done
         ;;
     "PORTAGE")
         # Try installing packages with emerge
-        while IFS= read -r package; do
+        for package in "${packages[@]}"; do
             if ! equery list "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
                     failed_packages+=("$package")
                     any_failures=true # Set flag to true if any package fails to install
                 fi
             fi
-        done <packages.txt
-
-        if "$any_failures"; then
-            echo "Failed to install the following packages:"
-            printf '%s\n' "${failed_packages[@]}"
-        else
-            echo "All packages installed successfully."
-        fi
+        done
         ;;
     *)
         echo "Package manager not supported."
+        return 1
         ;;
     esac
+
+    # Check if any packages failed to install
+    if "$any_failures"; then
+        echo "Failed to install the following packages:"
+        printf '%s\n' "${failed_packages[@]}"
+        return 1
+    else
+        echo "All packages installed successfully."
+        return 0
+    fi
 }
 
-# Install Rust using rustup
+# Install Rust using rustup and install Rust packages from packages.yml
 install_rust() {
     if command -v "rustup" &>/dev/null; then
-        echo "Installing Rust using rustup.."
+        echo "Installing Rust using rustup..."
         CARGO_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/cargo RUSTUP_HOME=${XDG_DATA_HOME:-$HOME/.local/share}/rustup bash -c 'curl https://sh.rustup.rs -sSf | sh -s -- -y'
     else
         echo "Rust is already installed."
+    fi
+
+    # Read Rust-specific packages from packages.yml under the 'rust' section
+    local rust_packages=()
+    if [[ -f "$packages_file" ]]; then
+        #rust_packages=($(yq '.rust[]' "$packages_file" 2>/dev/null))
+        rust_packages=("$(grep 'rust:' -A 1 "$packages_file" | grep -v 'rust:' | grep -vE '^\s*$' | sed 's/^\s*-\s*//')")
+    else
+        echo "Error: packages.yml not found."
+        return 1
+    fi
+
+    # Install Rust packages using cargo if rust is installed
+    if command -v "cargo" &>/dev/null; then
+        for package in "${rust_packages[@]}"; do
+            if ! cargo install "$package"; then
+                echo "Failed to install Rust package: $package"
+                return 1
+            fi
+        done
+    else
+        echo "Cargo not found. Rust packages installation skipped."
     fi
 }
 
@@ -713,7 +638,7 @@ install_nvm() {
     fi
     # Source NVM script to enable it in the current shell
     if [ -s "$NVM_DIR/nvm.sh" ]; then
-        echo "Sourcing NVM script.."
+        echo "Sourcing NVM script..."
         . "$NVM_DIR/nvm.sh"
     else
         echo "NVM script not found. Make sure installation was successful."
@@ -739,7 +664,7 @@ install_node() {
         return
     fi
 
-    echo "Installing Node.js.."
+    echo "Installing Node.js..."
     # Set up environment variables for Node.js installation
     export NVM_NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
     export NODEJS_ORG_MIRROR=https://npm.taobao.org/mirrors/node/
@@ -767,7 +692,7 @@ install_yarn() {
         rm -rf "$HOME/.yarn"
     fi
 
-    echo "Installing Yarn.."
+    echo "Installing Yarn..."
     # Install Yarn using npm
     curl -o- -L https://yarnpkg.com/install.sh | bash
     echo "Yarn installation completed successfully."
@@ -870,7 +795,7 @@ windows_specific_steps() {
 
 # Main Installation
 main_installation() {
-    echo "Starting main installation.."
+    echo "Starting main installation..."
 
     case "$OSTYPE" in
     linux-gnu*)
@@ -895,10 +820,8 @@ main() {
     echo "Log File for Dotfiles Installation" >"$LOG_FILE"
     check_download_dependencies
     check_os
-    #start_spinner
     main_installation
     handle_complete "Installation completed successfully."
-    #stop_spinner
 }
 
 main "$@"
