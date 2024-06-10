@@ -1,0 +1,193 @@
+common: []
+
+PackageManager:
+  - git
+  - curl
+  - wget
+  - zsh
+  - bash
+  - clang
+  - gcc
+  - make
+  - cmake
+  - go
+  - ninja
+  - ripgrep
+  - fd
+  - tree-sitter
+  - python3
+  - python-pip
+  - python-virtualenvwrapper
+  - fzf
+  - tmux
+  - neovim
+  - wezterm
+  - openssh
+  - wmctrl
+  - xdo
+  - xdotool
+  - xbindkeys
+  - ncdu
+  - fcitx
+  - rsync
+  - net-tools
+  - xorg-server
+  - wayland
+  - reflector
+  - firefox
+  - udiskie
+  - pulseaudio
+  - pulseaudio-alsa
+  - pavucontrol
+  - picom
+  - rofi
+  - jgmenu
+  - hyprland
+  - eww
+  - bspwm
+  - polybar
+  - mpv
+  - discord
+  - xf86-input-synaptics
+  - nnn
+  - ranger
+  - qbittorrent
+  - obs-studio
+  - tlp
+  - unzip
+  - unrar
+  - p7zip
+  - xqp
+  - bashtop
+  - xsel
+  - aylurs-gtk-shell-git
+  - brightnessctl
+  - bun-bin
+  - dart-sass
+  - gnome-bluetooth-3.0
+  - hyprpicker
+  - libdbusmenu-gtk3
+  - slurp
+  - swappy
+  - swww
+  - wayshot
+  - wf-recorder
+  - wl-clipboard
+  # - asusctl           #*cli controls for asus laptops
+  # - supergfxctl       #*gpu switching for asus laptops
+
+rust:
+  - matugen
+
+linux: []
+
+windows:
+  - git
+  - ripgrep
+  - fd
+  - sudo
+  - win32yank
+  - microsoft-windows-terminal
+  - wsl
+  - firefox
+  - setdefaultbrowser
+  - nodejs
+  - bat
+  - 7zip
+  - python
+  - javaruntime
+  - autohotkey
+  - bitwarden
+  - notepadplusplus
+  - neovim
+
+bloatware:
+  # - Anytime
+  - BioEnrollment
+  # - Browser
+  - ContactSupport
+  - Cortana
+  # - Defender
+  - Feedback
+  - Flash
+  # - Gaming    # Breaks Xbox Live Account Login
+  # - Holo
+  # - InternetExplorer
+  - Maps
+  # - MiracastView
+  - OneDrive
+  # - SecHealthUI
+  - Wallet
+  # - Xbox     # Causes a bootloop since upgrade 1511?
+
+default:
+  # default Windows 10 apps
+  # - Microsoft.3DBuilder
+  - Microsoft.Appconnector
+  - Microsoft.BingFinance
+  - Microsoft.BingNews
+  - Microsoft.BingSports
+  - Microsoft.BingTranslator
+  - Microsoft.BingWeather
+  # - Microsoft.FreshPaint
+  # - Microsoft.Microsoft3DViewer
+  - Microsoft.MicrosoftOfficeHub
+  - Microsoft.MicrosoftSolitaireCollection
+  - Microsoft.MicrosoftPowerBIForWindows
+  - Microsoft.MinecraftUWP
+  # - Microsoft.MicrosoftStickyNotes
+  # - Microsoft.NetworkSpeedTest
+  - Microsoft.Office.OneNote
+  # - Microsoft.OneConnect
+  - Microsoft.People
+  # - Microsoft.Print3D
+  - Microsoft.SkypeApp
+  - Microsoft.Wallet
+  # - Microsoft.Windows.Photos
+  # - Microsoft.WindowsAlarms
+  # - Microsoft.WindowsCalculator
+  - Microsoft.WindowsCamera
+  - microsoft.windowscommunicationsapps
+  - Microsoft.WindowsMaps
+  - Microsoft.WindowsPhone
+  - Microsoft.WindowsSoundRecorder
+  - Microsoft.WindowsStore
+  # - Microsoft.XboxApp
+  # - Microsoft.XboxGameOverlay
+  # - Microsoft.XboxIdentityProvider
+  # - Microsoft.XboxSpeechToTextOverlay
+  - Microsoft.ZuneMusic
+  - Microsoft.ZuneVideo
+
+  # Threshold 2 apps
+  - Microsoft.CommsPhone
+  - Microsoft.ConnectivityStore
+  - Microsoft.GetHelp
+  - Microsoft.Getstarted
+  - Microsoft.Messaging
+  - Microsoft.Office.Sway
+  - Microsoft.OneConnect
+  - Microsoft.WindowsFeedbackHub
+
+  # Redstone apps
+  - Microsoft.BingFoodAndDrink
+  - Microsoft.BingTravel
+  - Microsoft.BingHealthAndFitness
+  - Microsoft.WindowsReadingList
+
+  # non-Microsoft
+  - king.com.CandyCrushSaga
+  - king.com.CandyCrushSodaSaga
+  - king.com.*
+  - Facebook.Facebook
+
+  # apps which cannot be removed using Remove-AppxPackage
+  # - Microsoft.BioEnrollment
+  # - Microsoft.MicrosoftEdge
+  # - Microsoft.Windows.Cortana
+  # - Microsoft.WindowsFeedback
+  # - Microsoft.XboxGameCallableUI
+  # - Microsoft.XboxIdentityProvider
+  # - Windows.ContactSupport
+
+macos: []
