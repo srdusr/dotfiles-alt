@@ -100,43 +100,29 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 Write-Host "Installing Applications"
 Write-Host "----------------------------------------"
 
-# List of applications to install
-$apps = @(
-    "git",
-    "ripgrep",
-    "fd",
-    "sudo",
-    "win32yank",
-    "microsoft-windows-terminal",
-    "wsl",
-    "firefox",
-    "setdefaultbrowser",
-    "nodejs",
-    "bat",
-    "7zip",
-    "python",
-    "adobereader",
-    "javaruntime",
-    "autohotkey",
-    "bitwarden",
-    "notepadplusplus",
-    "neovim"
-)
+# Load packages.yml
+$packagesFile = "$HOME\packages.yml"
+$packages = Get-Content $packagesFile | ConvertFrom-Yaml
 
-foreach ($app in $apps) {
-    # Check if the application is already installed
-    if (-not (choco list --local-only | Select-String -Pattern "^$app\s")) {
-        Write-Host "Installing $app"
-        choco install $app -y
+# Ensure 'windows' section exists and has applications listed
+if ($packages.windows) {
+    foreach ($app in $packages.windows) {
+        # Check if the application is already installed
+        if (-not (choco list --local-only | Select-String -Pattern "^$app\s")) {
+            Write-Host "Installing $app"
+            choco install $app -y
 
-        if ($LASTEXITCODE -ne 0) {
-            handle_error "Installation of $app failed."
+            if ($LASTEXITCODE -ne 0) {
+                handle_error "Installation of $app failed."
+            } else {
+                Write-Host "$app installed successfully."
+            }
         } else {
-            Write-Host "$app installed successfully."
+            Write-Host "$app is already installed."
         }
-    } else {
-        Write-Host "$app is already installed."
     }
+} else {
+    Write-Host "No applications specified under the 'windows' section in $packagesFile."
 }
 
 # Set Chrome as default browser ------------------------
