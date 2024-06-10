@@ -1,95 +1,20 @@
 # bloatware.ps1
 
-$bloatware = @(
-    #"Anytime"
-    "BioEnrollment"
-    #"Browser"
-    "ContactSupport"
-    "Cortana"
-    #"Defender"
-    "Feedback"
-    "Flash"
-    #"Gaming"    # Breaks Xbox Live Account Login
-    #"Holo"
-    #"InternetExplorer"
-    "Maps"
-    #"MiracastView"
-    "OneDrive"
-    #"SecHealthUI"
-    "Wallet"
-    #"Xbox"     # Causes a bootloop since upgrade 1511?
-)
+# Load YAML module if not already loaded
+if (-not (Get-Module -Name PowerShellYaml -ErrorAction SilentlyContinue)) {
+    Install-Module -Name PowerShellYaml -Force -Scope CurrentUser
+}
+Import-Module PowerShellYaml
 
-#$apps = @(
-#    # default Windows 10 apps
-#    #"Microsoft.3DBuilder"
-#    "Microsoft.Appconnector"
-#    "Microsoft.BingFinance"
-#    "Microsoft.BingNews"
-#    "Microsoft.BingSports"
-#    "Microsoft.BingTranslator"
-#    "Microsoft.BingWeather"
-#    #"Microsoft.FreshPaint"
-#    #"Microsoft.Microsoft3DViewer"
-#    "Microsoft.MicrosoftOfficeHub"
-#    "Microsoft.MicrosoftSolitaireCollection"
-#    "Microsoft.MicrosoftPowerBIForWindows"
-#    "Microsoft.MinecraftUWP"
-#    #"Microsoft.MicrosoftStickyNotes"
-#    #"Microsoft.NetworkSpeedTest"
-#    "Microsoft.Office.OneNote"
-#    #"Microsoft.OneConnect"
-#    "Microsoft.People"
-#    #"Microsoft.Print3D"
-#    "Microsoft.SkypeApp"
-#    "Microsoft.Wallet"
-#    #"Microsoft.Windows.Photos"
-#    #"Microsoft.WindowsAlarms"
-#    #"Microsoft.WindowsCalculator"
-#    "Microsoft.WindowsCamera"
-#    "microsoft.windowscommunicationsapps"
-#    "Microsoft.WindowsMaps"
-#    "Microsoft.WindowsPhone"
-#    "Microsoft.WindowsSoundRecorder"
-#    "Microsoft.WindowsStore"
-#    #"Microsoft.XboxApp"
-#    #"Microsoft.XboxGameOverlay"
-#    #"Microsoft.XboxIdentityProvider"
-#    #"Microsoft.XboxSpeechToTextOverlay"
-#    "Microsoft.ZuneMusic"
-#    "Microsoft.ZuneVideo"
-#
-#    # Threshold 2 apps
-#    "Microsoft.CommsPhone"
-#    "Microsoft.ConnectivityStore"
-#    "Microsoft.GetHelp"
-#    "Microsoft.Getstarted"
-#    "Microsoft.Messaging"
-#    "Microsoft.Office.Sway"
-#    "Microsoft.OneConnect"
-#    "Microsoft.WindowsFeedbackHub"
-#
-#    #Redstone apps
-#    "Microsoft.BingFoodAndDrink"
-#    "Microsoft.BingTravel"
-#    "Microsoft.BingHealthAndFitness"
-#    "Microsoft.WindowsReadingList"
-#
-#    # non-Microsoft
-#    "king.com.CandyCrushSaga"
-#    "king.com.CandyCrushSodaSaga"
-#    "king.com.*"
-#    "Facebook.Facebook"
-#
-#    # apps which cannot be removed using Remove-AppxPackage
-#    #"Microsoft.BioEnrollment"
-#    #"Microsoft.MicrosoftEdge"
-#    #"Microsoft.Windows.Cortana"
-#    #"Microsoft.WindowsFeedback"
-#    #"Microsoft.XboxGameCallableUI"
-#    #"Microsoft.XboxIdentityProvider"
-#    #"Windows.ContactSupport"
-#)
+# Define the path to the packages.yml file
+$packagesFile = "$HOME\packages.yml"
+
+# Read the YAML file
+$packagesData = Get-YamlData -Path $packagesFile
+
+# Define bloatware and default apps
+$bloatware = $packagesData.bloatware
+$defaultApps = $packagesData.default
 
 # Check if Registry key exists
 function Check-RegistryKeyExists {
@@ -149,6 +74,16 @@ function Takeown-Registry($key) {
     $key.SetAccessControl($acl)
 }
 
+# Function to take ownership of registry keys
+function Takeown-Registry($keyPath) {
+    $regKey = [Microsoft.Win32.Registry]::LocalMachine.OpenSubKey($keyPath, [Microsoft.Win32.RegistryKeyPermissionCheck]::ReadWriteSubTree, [System.Security.AccessControl.RegistryRights]::TakeOwnership)
+    $acl = $regKey.GetAccessControl()
+    $acl.SetOwner([System.Security.Principal.NTAccount]"Administrators")
+    $regKey.SetAccessControl($acl)
+    $regKey.Close()
+}
+
+# Remove Features
 function Takeown-File($path) {
     takeown.exe /A /F $path
     $acl = Get-Acl $path
@@ -226,29 +161,26 @@ function Elevate-Privileges {
 # Remove Features ------------------------
 foreach ($bloat in $bloatware) {
     Write-Output "Removing packages containing $bloat"
-    $pkgs = (Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" |
-        Where-Object Name -Like "*$bloat*")
+    $pkgs = Get-ChildItem "HKLM:\SOFTWARE\Microsoft\Windows\CurrentVersion\Component Based Servicing\Packages" | Where-Object Name -Like "*$bloat*"
 
     foreach ($pkg in $pkgs) {
-        $pkgname = $pkg.Name.split('\')[-1]
-        Takeown-Registry($pkg.Name)
-        Takeown-Registry($pkg.Name + "\Owners")
+        $pkgname = $pkg.Name.Split('\')[-1]
+        Takeown-Registry $pkg.Name
+        Takeown-Registry ($pkg.Name + "\Owners")
         Set-ItemProperty -Path ("HKLM:" + $pkg.Name.Substring(18)) -Name Visibility -Value 1
         New-ItemProperty -Path ("HKLM:" + $pkg.Name.Substring(18)) -Name DefVis -PropertyType DWord -Value 2
-        Remove-Item      -Path ("HKLM:" + $pkg.Name.Substring(18) + "\Owners")
+        Remove-Item -Path ("HKLM:" + $pkg.Name.Substring(18) + "\Owners")
         dism.exe /Online /Remove-Package /PackageName:$pkgname /NoRestart
     }
 }
 
-## Remove default apps and bloat ------------------------
-#Write-Output "Uninstalling default apps"
-#foreach ($app in $apps) {
-#    Write-Output "Trying to remove $app"
-#    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
-#    Get-AppXProvisionedPackage -Online |
-#    Where-Object DisplayName -EQ $app |
-#    Remove-AppxProvisionedPackage -Online
-#}
+# Remove default apps and bloat
+Write-Output "Uninstalling default apps"
+foreach ($app in $defaultApps) {
+    Write-Output "Trying to remove $app"
+    Get-AppxPackage -Name $app -AllUsers | Remove-AppxPackage -AllUsers
+    Get-AppXProvisionedPackage -Online | Where-Object DisplayName -EQ $app | Remove-AppxProvisionedPackage -Online
+}
 
 # Disable Microsoft Edge sidebar
 $RegistryPath = 'HKLM:\SOFTWARE\Policies\Microsoft\Edge'
