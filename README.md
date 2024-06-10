@@ -88,6 +88,21 @@ $ config checkout
 
 ---
 
+### Installing onto a new Unix/Linux system
+
+```bash
+wget -q "https://github.com/srdusr/dotfiles/archive/main.zip" -O "$HOME/Downloads/dotfiles.zip"
+mkdir -p "$HOME/dotfiles-main"
+tar -xf "$HOME/Downloads/dotfiles.zip" -C "$HOME/dotfiles-main" --strip-components=1
+mv -f "$HOME/dotfiles-main/"* "$HOME"
+rm -rf "$HOME/dotfiles-main"
+chmod +x "$HOME/install.sh"
+rm "$HOME/Downloads/dotfiles.zip"
+$HOME/install.sh
+```
+
+---
+
 ### Installing onto a new Windows system
 
 ```ps1
@@ -104,7 +119,6 @@ Remove-Item -Path "$HOME\dotfiles-main" -Recurse -Force; `
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser -Force
 irm 'https://raw.githubusercontent.com/srdusr/dotfiles/main/.config/powershell/bootstrap.ps1' | iex
 ```
-
 
 ---
 
