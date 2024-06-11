@@ -1,5 +1,10 @@
 #!/usr/bin/env bash
 
+# TODO: Ask user what services to enable/start depending on init system
+# TODO: Move files to etc
+# TODO: Implement Interactive
+# TODO: Implement checklist
+
 #======================================
 # Variables
 #======================================
