@@ -1,20 +1,12 @@
 # bloatware.ps1
 
-# Load YAML module if not already loaded
-if (-not (Get-Module -Name PowerShellYaml -ErrorAction SilentlyContinue)) {
-    Install-Module -Name PowerShellYaml -Force -Scope CurrentUser
-}
-Import-Module PowerShellYaml
+# Define the path to the YAML file
+$yamlFilePath = "$HOME\packages.yml"
 
-# Define the path to the packages.yml file
-$packagesFile = "$HOME\packages.yml"
-
-# Read the YAML file
-$packagesData = Get-YamlData -Path $packagesFile
-
-# Define bloatware and default apps
-$bloatware = $packagesData.bloatware
-$defaultApps = $packagesData.default
+# Parse the YAML file
+$packages = ConvertFrom-Yaml -Path $yamlFilePath
+$bloatware = $packages.bloatware
+$defaultApps = $packages.defaultApps
 
 # Check if Registry key exists
 function Check-RegistryKeyExists {
