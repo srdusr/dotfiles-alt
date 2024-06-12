@@ -1,5 +1,15 @@
 # bloatware.ps1
 
+# Check if the powershell-yaml module is installed, if not, install it
+if (-not (Get-Module powershell-yaml -ListAvailable)) {
+    $policy = Get-PSRepository -Name 'PSGallery' | Select-Object -ExpandProperty InstallationPolicy
+    Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
+    Install-Module powershell-yaml
+    Set-PSRepository -Name 'PSGallery' -InstallationPolicy $policy
+}
+
+Import-Module powershell-yaml
+
 # Define the path to the YAML file
 $yamlFilePath = "$HOME\packages.yml"
 

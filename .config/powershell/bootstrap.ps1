@@ -45,7 +45,7 @@ Write-Host "Configuring PowerShell"
 Write-Host "----------------------------------------"
 
 # Get the "MyDocuments" path for the current user, excluding OneDrive
-$UserMyDocumentsPath = [System.Environment]::GetFolderPath('MyDocuments').Replace("OneDrive", "") + "\Documents"
+$UserMyDocumentsPath = [System.Environment]::GetFolderPath('MyDocuments').Replace("OneDrive", "")
 
 $PowerShellProfileDirectory = "$UserMyDocumentsPath\PowerShell"
 $PowerShellLegacySymlink = "$UserMyDocumentsPath\WindowsPowerShell"
@@ -99,6 +99,16 @@ if (-not (Get-Command choco -ErrorAction SilentlyContinue)) {
 # Install Applications
 Write-Host "Installing Applications"
 Write-Host "----------------------------------------"
+
+# Check if the powershell-yaml module is installed, if not, install it
+if (-not (Get-Module powershell-yaml -ListAvailable)) {
+    $policy = Get-PSRepository -Name 'PSGallery' | Select-Object -ExpandProperty InstallationPolicy
+    Set-PSRepository -Name 'PSGallery' -InstallationPolicy Trusted
+    Install-Module powershell-yaml
+    Set-PSRepository -Name 'PSGallery' -InstallationPolicy $policy
+}
+
+Import-Module powershell-yaml
 
 # Load packages.yml
 $packagesFile = "$HOME\packages.yml"
