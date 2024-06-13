@@ -37,8 +37,7 @@ if (-not (Test-IsAdmin)) {
 
 # Imports
 . $HOME\.config\powershell\initialize.ps1
-#. $HOME\.config\powershell\ownership.ps1
-#. $HOME\.config\powershell\bloatware.ps1
+. $HOME\.config\powershell\bloatware.ps1
 
 # Configure PowerShell
 Write-Host "Configuring PowerShell"
@@ -155,18 +154,19 @@ refreshenv
 
 # Add Git to PATH if it's installed via Chocolatey
 Write-Host "Checking for Git installation"
-$gitPath = "C:\Program Files\Git\cmd"
-if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
-    if (Test-Path $gitPath) {
-        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$gitPath", [System.EnvironmentVariableTarget]::Machine)
-        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$gitPath", [System.EnvironmentVariableTarget]::User)
-        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$gitPath", [System.EnvironmentVariableTarget]::Process)
-        Write-Host "Git path added to environment variables."
+$gitBinPath = "C:\Program Files\Git\bin"
+$gitCmdPath = "C:\Program Files\Git\cmd"
+$gitPaths = @($gitBinPath, $gitCmdPath)
+
+foreach ($path in $gitPaths) {
+    if (Test-Path $path) {
+        Write-Host "Adding $path to PATH"
+        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$path", [System.EnvironmentVariableTarget]::Machine)
+        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$path", [System.EnvironmentVariableTarget]::User)
+        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$path", [System.EnvironmentVariableTarget]::Process)
     } else {
-        handle_error "Git is not installed or not found in the default path."
+        Write-Host "$path does not exist."
     }
-} else {
-    Write-Host "Git is already installed and available in PATH."
 }
 
 # Check if Git is installed
@@ -174,7 +174,7 @@ Write-Host "Checking for Git installation"
 if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
     handle_error "Git is not installed or not found in PATH after installation."
 } else {
-    Write-Host "Git is already installed."
+    Write-Host "Git is installed and available in PATH."
 }
 
 # Define the `config` alias in the current session
