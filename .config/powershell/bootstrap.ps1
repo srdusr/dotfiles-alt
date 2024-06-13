@@ -38,7 +38,7 @@ if (-not (Test-IsAdmin)) {
 # Imports
 . $HOME\.config\powershell\initialize.ps1
 #. $HOME\.config\powershell\ownership.ps1
-. $HOME\.config\powershell\bloatware.ps1
+#. $HOME\.config\powershell\bloatware.ps1
 
 # Configure PowerShell
 Write-Host "Configuring PowerShell"
@@ -144,7 +144,38 @@ SetDefaultBrowser firefox
 
 # Refresh the environment variables
 Write-Host "Refreshing environment variables"
+
+# Update the current session environment variables
+Write-Host "Setting environment variables" -ForegroundColor Cyan
+$env:Path = [System.Environment]::GetEnvironmentVariable("Path","Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path","User")
+[System.Environment]::SetEnvironmentVariable("Path", $env:Path, [System.EnvironmentVariableTarget]::Process)
+[Environment]::SetEnvironmentVariable("HOME", "$env:USERPROFILE", "User")
+[Environment]::SetEnvironmentVariable("LC_ALL", "C.UTF-8", "User")
 refreshenv
+
+# Add Git to PATH if it's installed via Chocolatey
+Write-Host "Checking for Git installation"
+$gitPath = "C:\Program Files\Git\cmd"
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    if (Test-Path $gitPath) {
+        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$gitPath", [System.EnvironmentVariableTarget]::Machine)
+        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$gitPath", [System.EnvironmentVariableTarget]::User)
+        [System.Environment]::SetEnvironmentVariable("Path", "$env:Path;$gitPath", [System.EnvironmentVariableTarget]::Process)
+        Write-Host "Git path added to environment variables."
+    } else {
+        handle_error "Git is not installed or not found in the default path."
+    }
+} else {
+    Write-Host "Git is already installed and available in PATH."
+}
+
+# Check if Git is installed
+Write-Host "Checking for Git installation"
+if (-not (Get-Command git -ErrorAction SilentlyContinue)) {
+    handle_error "Git is not installed or not found in PATH after installation."
+} else {
+    Write-Host "Git is already installed."
+}
 
 # Define the `config` alias in the current session
 function global:config {
@@ -165,11 +196,6 @@ New-Item -Force -ItemType SymbolicLink $HOME\AppData\Roaming\Code\User\ -Name se
 
 # Visual Studio Code keybindings
 New-Item -Force -ItemType SymbolicLink $HOME\AppData\Roaming\Code\User\ -Name keybindings.json -Value $HOME\.config\Code\User\keybindings.json
-
-# Update the current session environment variables
-Write-Host "Setting environment variables" -ForegroundColor Cyan
-[Environment]::SetEnvironmentVariable("HOME", "$env:USERPROFILE", "User")
-[Environment]::SetEnvironmentVariable("LC_ALL", "C.UTF-8", "User")
 
 # Function to install dotfiles
 function install_dotfiles {
@@ -358,7 +384,7 @@ function Disable-WindowsKey {
     Write-Output "Windows key has been disabled from opening the start menu. Please restart your computer for the changes to take effect."
 }
 
-Disable-WindowsKey
+#Disable-WindowsKey
 
 Write-Host "Bootstrap script completed."
 Write-Host "Please Restart."
