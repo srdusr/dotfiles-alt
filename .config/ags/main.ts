@@ -1,0 +1,47 @@
+import "lib/session"
+import "style/style"
+import init from "lib/init"
+import options from "options"
+import Bar from "widget/bar/Bar"
+import Launcher from "widget/launcher/Launcher"
+import NotificationPopups from "widget/notifications/NotificationPopups"
+import OSD from "widget/osd/OSD"
+import Overview from "widget/overview/Overview"
+import PowerMenu from "widget/powermenu/PowerMenu"
+import ScreenCorners from "widget/bar/ScreenCorners"
+import SettingsDialog from "widget/settings/SettingsDialog"
+import Verification from "widget/powermenu/Verification"
+import { forMonitors } from "lib/utils"
+import { setupQuickSettings } from "widget/quicksettings/QuickSettings"
+import { setupDateMenu } from "widget/datemenu/DateMenu"
+//import Dock from "widget/dock/Dock";
+import FloatingDock from "widget/dock/FloatingDock"
+import ToolBoxDock from "widget/dock/ToolBoxDock"
+
+App.config({
+  onConfigParsed: () => {
+    setupQuickSettings()
+    setupDateMenu()
+    init()
+  },
+  closeWindowDelay: {
+    "launcher": options.transition.value,
+    "overview": options.transition.value,
+    "quicksettings": options.transition.value,
+    "datemenu": options.transition.value,
+  },
+  windows: () => [
+    ...forMonitors(Bar),
+    //...forMonitors(Dock),
+    ...forMonitors(FloatingDock),
+    //...forMonitors(ToolBoxDock),
+    ...forMonitors(NotificationPopups),
+    ...forMonitors(ScreenCorners),
+    ...forMonitors(OSD),
+    Launcher(),
+    Overview(),
+    PowerMenu(),
+    SettingsDialog(),
+    Verification(),
+  ],
+})
