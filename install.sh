@@ -755,7 +755,7 @@ linux_specific_steps() {
     user_dirs
     _distro_detect
     check_privilege_tools
-    set_locale
+    #set_locale
     submodules
     change_dir_names
     linux_update_system
