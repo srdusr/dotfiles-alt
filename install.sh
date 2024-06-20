@@ -548,7 +548,7 @@ linux_update_system() {
 linux_install_packages() {
     local failed_packages=()
     local any_failures=false # Flag to track if any packages failed to install
-    local packages_file="packages.yml"
+    local packages_file="$HOME/packages.yml"
 
     # Check if yq is available
     if ! command -v yq &>/dev/null; then
@@ -667,8 +667,8 @@ install_rust() {
     # Read Rust-specific packages from packages.yml under the 'rust' section
     local rust_packages=()
     if [[ -f "$packages_file" ]]; then
-        #rust_packages=($(yq '.rust[]' "$packages_file" 2>/dev/null))
-        rust_packages=("$(grep 'rust:' -A 1 "$packages_file" | grep -v 'rust:' | grep -vE '^\s*$' | sed 's/^\s*-\s*//')")
+        rust_packages=("$(yq '.rust[]' "$packages_file" 2>/dev/null)")
+        #rust_packages=("$(grep 'rust:' -A 1 "$packages_file" | grep -v 'rust:' | grep -vE '^\s*$' | sed 's/^\s*-\s*//')")
     else
         echo "Error: packages.yml not found."
         return 1
