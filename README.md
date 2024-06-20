@@ -91,13 +91,13 @@ $ config checkout
 ### Installing onto a new Unix/Linux system
 
 ```bash
-wget -q "https://github.com/srdusr/dotfiles/archive/main.zip" -O "$HOME/Downloads/dotfiles.zip"
+wget -q "https://github.com/srdusr/dotfiles/archive/main.tar.gz" -O "$HOME/Downloads/dotfiles.tar.gz"
 mkdir -p "$HOME/dotfiles-main"
-tar -xf "$HOME/Downloads/dotfiles.zip" -C "$HOME/dotfiles-main" --strip-components=1
+tar -xf "$HOME/Downloads/dotfiles.tar.gz" -C "$HOME/dotfiles-main" --strip-components=1
 mv -f "$HOME/dotfiles-main/"* "$HOME"
 rm -rf "$HOME/dotfiles-main"
 chmod +x "$HOME/install.sh"
-rm "$HOME/Downloads/dotfiles.zip"
+rm "$HOME/Downloads/dotfiles.tar.gz"
 $HOME/install.sh
 ```
 
