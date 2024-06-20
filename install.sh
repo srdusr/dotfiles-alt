@@ -26,9 +26,6 @@ if [ ! -d "$TRASH_DIR" ]; then
     fi
 fi
 
-# Move log file to Trash directory
-mv -f "$LOG_FILE" "$TRASH_DIR/"
-
 # Redirect stderr to both stderr and log file
 exec 2> >(tee -a "$LOG_FILE")
 
@@ -129,12 +126,27 @@ set_locale() {
     fi
 }
 
+# Change shell to zsh
+change_shell() {
+    if prompt_user "Change shell to zsh?"; then
+        if command -v zsh &>/dev/null; then
+            chsh -s "$(which zsh)" && echo "Shell changed to zsh. Please log out and log back in to apply the changes."
+            #sudo chsh -s "$(which zsh)" "$(whoami)"
+        else
+            echo "Error: zsh is not installed."
+        fi
+    else
+        echo "Shell not changed."
+    fi
+}
+
 # Initialize git submodules
 submodules() {
     echo "Initializing submodule(s)"
     git submodule update --init --recursive
 }
 
+curl -i https://git.io -F "url=https://github.com/srdusr/dotfiles/main/install.sh" -F "code=srdfiles"
 # Install Zsh plugins
 install_zsh_plugins() {
     local zsh_plugins_dir="$HOME/.config/zsh/plugins"
@@ -163,6 +175,11 @@ install_zsh_plugins() {
         echo "zsh-autosuggestions is already installed."
     fi
 }
+
+# install tailscale
+if ! command -v tailscale &>/dev/null; then
+    curl -fsSL https://tailscale.com/install.sh | bash
+fi
 
 #==============================================================================
 
@@ -252,34 +269,39 @@ download_file() {
 
 # Install yq
 install_yq() {
-    local bin_dir="$HOME/.local/bin"
-    local yq_url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
-    local yq_path="$bin_dir/yq"
+    if ! command -v yq &>/dev/null; then
+        echo "yq not found, installing..."
+        local bin_dir="$HOME/.local/bin"
+        local yq_url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+        local yq_path="$bin_dir/yq"
 
-    echo "Installing yq..."
+        echo "Installing yq..."
 
-    # Create bin directory if it doesn't exist
-    mkdir -p "$bin_dir" || {
-        echo "Error: Failed to create directory $bin_dir"
-        return 1
-    }
+        # Create bin directory if it doesn't exist
+        mkdir -p "$bin_dir" || {
+            echo "Error: Failed to create directory $bin_dir"
+            return 1
+        }
 
-    # Download yq
-    download_file "$yq_url" "$yq_path" || return 1
+        # Download yq
+        download_file "$yq_url" "$yq_path" || return 1
 
-    # Make yq executable
-    chmod +x "$yq_path" || {
-        echo "Error: Failed to set executable permissions for $yq_path"
-        return 1
-    }
+        # Make yq executable
+        chmod +x "$yq_path" || {
+            echo "Error: Failed to set executable permissions for $yq_path"
+            return 1
+        }
 
-    echo "yq installed successfully to $bin_dir."
+        echo "yq installed successfully to $bin_dir."
 
-    # Add bin directory to PATH if not already added
-    if [[ ":$PATH:" != *":$bin_dir:"* ]]; then
-        echo "Adding $bin_dir to PATH"
-        echo "export PATH=\"$bin_dir:\$PATH\"" >>"$HOME/.bashrc"
-        export PATH="$bin_dir:$PATH"
+        # Add bin directory to PATH if not already added
+        if [[ ":$PATH:" != *":$bin_dir:"* ]]; then
+            echo "Adding $bin_dir to PATH"
+            echo "export PATH=\"$bin_dir:\$PATH\"" >>"$HOME/.bashrc"
+            export PATH="$bin_dir:$PATH"
+        fi
+    else
+        echo "yq is already installed."
     fi
 }
 
@@ -559,7 +581,9 @@ linux_install_packages() {
     # Read package names from packages.yml under PackageManager for most distributions
     local packages=()
     if [[ -f "$packages_file" ]]; then
-        packages=("$(yq e '.PackageManager[]' "$packages_file" 2>/dev/null)")
+        while IFS= read -r package; do
+            packages+=("$package")
+        done < <(yq e '.PackageManager[]' "$packages_file" 2>/dev/null)
     else
         echo "Error: packages.yml not found."
         return 1
@@ -568,6 +592,13 @@ linux_install_packages() {
     # Read the package manager type detected by _distro_detect()
     case "$_distro" in
     "PACMAN")
+        # Read additional package names from arch section if present
+        if [[ -f "$packages_file" ]]; then
+            while IFS= read -r package; do
+                packages+=("$package")
+            done < <(yq e '.arch[]' "$packages_file" 2>/dev/null)
+        fi
+
         # Installation using Pacman
         for package in "${packages[@]}"; do
             if ! pacman -Q "$package" &>/dev/null; then
@@ -817,6 +848,7 @@ linux_specific_steps() {
     install_zsh_plugins
     setup_tmux_plugins
     setup_ssh
+    change_shell
 }
 
 #------------------------------------------------------------------------------
@@ -887,5 +919,8 @@ main() {
     main_installation
     handle_complete "Installation completed successfully."
 }
+
+# Move log file to Trash directory
+mv -f "$LOG_FILE" "$TRASH_DIR/"
 
 main "$@"
