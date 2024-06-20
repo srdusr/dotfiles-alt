@@ -5,9 +5,14 @@ PackageManager:
   - curl
   - wget
   - zsh
+  - zsh-completions
   - bash
+  - bash-completion
   - clang
   - gcc
+  - meson
+  - llvm
+  - gdb
   - make
   - cmake
   - go
@@ -18,9 +23,19 @@ PackageManager:
   - python3
   - python-pip
   - python-virtualenvwrapper
+  - time
+  - ufw
+  - jq
   - fzf
-  - tmux
+  - man-pages
+  - sudo
+  - doas
+  - bc
+  - man-db
+  - emacs
+  - vim
   - neovim
+  - tmux
   - wezterm
   - openssh
   - wmctrl
@@ -31,31 +46,51 @@ PackageManager:
   - fcitx
   - rsync
   - net-tools
+  - xorg
   - xorg-server
   - wayland
+  - xorg-xwayland
+  - xclip
+  - xterm
+  - xdg-user-dirs
+  - gtk
+  - dunst
+  - clamav
   - reflector
   - firefox
   - udiskie
-  - pulseaudio
-  - pulseaudio-alsa
-  - pavucontrol
+  - powertop
+  - iftop
+  - iotop
+  - atop
+  - btop
+  - bashtop
+  - htop-vim
+  # - pulseaudio
+  # - pulseaudio-alsa
+  # - pavucontrol
   - picom
   - rofi
+  - wofi
+  - pkgfile
   - jgmenu
   - hyprland
   - eww
   - bspwm
+  - sxhkd
   - polybar
   - mpv
   - discord
+  - libinput
+  - xf86-input-libinput
   - xf86-input-synaptics
   - nnn
   - ranger
   - qbittorrent
   - obs-studio
   - tlp
-  - unzip
   - unrar
+  - unzip
   - p7zip
   - xqp
   - bashtop
@@ -73,13 +108,221 @@ PackageManager:
   - wayshot
   - wf-recorder
   - wl-clipboard
+  - networkmanager
+  - ntpsec
+  - wpa_applicant
+  - iwd
+  - nemo
+  - mpd
+  - wireplumber
+  - pipewire
+  - ncmpcpp
+  - ffmpeg
+  - xdg-desktop-portal-wlr
+  - hwinfo
+  - readline
+  - imagemagick
+  - gjs
+  - sysstat
+  - blueman
+  - bluez
+  - bluez-lib
+  - bluez-tools
+  - bluez-utils
+  - cabextract
+  - wine
+  - winetricks
+  - steam
+  - steam-fonts
+  - libvirt
+  - qemu-full
+  - smartmontools
+  - hdparm
+  - acpi
+  - dosfstools
+  - ntfs-3g
+  - nfs-utils
+  - parted
+  - gparted
+  - cups
   # - asusctl           #*cli controls for asus laptops
   # - supergfxctl       #*gpu switching for asus laptops
+  # - nvidia
+  # - opencl-nvidia
+  # - nvidia-dkms
+  # - nvidia-settings
 
 rust:
   - matugen
 
 linux: []
+arch:
+  - dkms
+  - linux
+  - linux-headers
+  - linux-tools
+  - base-devel
+  - bind-tools
+  - nvme-cli
+  - vulkan-devel
+  - lm_sensors
+debian/ubuntu:
+fedora:
+gentoo:
+  - dev-vcs/git
+  - net-misc/curl
+  - net-misc/wget
+  - app-shells/zsh
+  - app-shells/zsh-completions
+  - app-shells/bash
+  - app-shells/bash-completion
+  - sys-devel/clang
+  - sys-devel/gcc
+  - dev-util/meson
+  - sys-devel/llvm
+  - sys-devel/gdb
+  - sys-devel/make
+  - dev-util/cmake
+  - dev-lang/go
+  - dev-util/ninja
+  - sys-apps/ripgrep
+  - sys-apps/fd
+  - dev-libs/tree-sitter
+  - dev-lang/python
+  - dev-python/pip
+  - dev-python/virtualenvwrapper
+  - sys-apps/time
+  - net-firewall/ufw
+  - app-misc/jq
+  - app-misc/fzf
+  - sys-apps/man-pages
+  - app-admin/sudo
+  - app-admin/doas
+  - sys-apps/bc
+  - sys-apps/man-db
+  - app-editors/emacs
+  - app-editors/vim
+  - app-editors/neovim
+  - app-misc/tmux
+  - x11-terms/wezterm
+  - net-misc/openssh
+  - x11-misc/wmctrl
+  - x11-misc/xdo
+  - x11-misc/xdotool
+  - x11-misc/xbindkeys
+  - sys-fs/ncdu
+  - app-i18n/fcitx
+  - net-misc/rsync
+  - net-misc/net-tools
+  - x11-base/xorg-server
+  - gui-libs/wayland
+  - x11-apps/xwayland
+  - x11-misc/xclip
+  - x11-terms/xterm
+  - x11-misc/xdg-user-dirs
+  - x11-libs/gtk+
+  - x11-misc/dunst
+  - app-antivirus/clamav
+  - sys-apps/reflector
+  - www-client/firefox
+  - sys-fs/udiskie
+  - sys-power/powertop
+  - sys-process/iftop
+  - sys-process/iotop
+  - sys-process/atop
+  - sys-process/btop
+  - sys-process/bashtop
+  - sys-process/htop
+  # - media-sound/pulseaudio
+  # - media-sound/pulseaudio-alsa
+  # - media-sound/pavucontrol
+  - x11-misc/picom
+  - x11-misc/rofi
+  - gui-apps/wofi
+  - sys-apps/pkgfile
+  - gui-apps/jgmenu
+  - gui-wm/hyprland
+  - gui-apps/eww
+  - x11-wm/bspwm
+  - x11-misc/sxhkd
+  - x11-misc/polybar
+  - media-video/mpv
+  - net-im/discord
+  - x11-libs/libinput
+  - x11-drivers/xf86-input-libinput
+  - x11-drivers/xf86-input-synaptics
+  - app-misc/nnn
+  - app-misc/ranger
+  - net-p2p/qbittorrent
+  - media-video/obs-studio
+  - app-laptop/tlp
+  - app-arch/unrar
+  - app-arch/unzip
+  - app-arch/p7zip
+  - xqp
+  - x11-misc/xsel
+  - dev-util/aylurs-gtk-shell-git
+  - sys-apps/brightnessctl
+  - dev-util/bun-bin
+  - dev-util/dart-sass
+  - gnome-extra/gnome-bluetooth-3.0
+  - gui-apps/hyprpicker
+  - x11-libs/libdbusmenu-gtk3
+  - gui-apps/slurp
+  - gui-apps/swappy
+  - gui-apps/swww
+  - gui-apps/wayshot
+  - media-video/wf-recorder
+  - sys-apps/wl-clipboard
+  - net-misc/networkmanager
+  - net-misc/ntpsec
+  - net-wireless/wpa_supplicant
+  - net-wireless/iwd
+  - gnome-extra/nemo
+  - media-sound/mpd
+  - media-video/wireplumber
+  - media-video/pipewire
+  - media-sound/ncmpcpp
+  - media-video/ffmpeg
+  - gui-libs/xdg-desktop-portal-wlr
+  - sys-apps/hwinfo
+  - sys-libs/readline
+  - media-gfx/imagemagick
+  - dev-libs/gjs
+  - sys-apps/sysstat
+  - net-wireless/blueman
+  - net-wireless/bluez
+  - net-wireless/bluez-lib
+  - net-wireless/bluez-tools
+  - net-wireless/bluez-utils
+  - app-arch/cabextract
+  - app-emulation/wine
+  - app-emulation/winetricks
+  - games-util/steam
+  - games-util/steam-fonts
+  - app-emulation/libvirt
+  - app-emulation/qemu
+  - sys-apps/smartmontools
+  - sys-apps/hdparm
+  - sys-power/acpi
+  - sys-fs/dosfstools
+  - sys-fs/ntfs3g
+  - net-fs/nfs-utils
+  - sys-block/parted
+  - sys-block/gparted
+  - net-print/cups
+  # - sys-apps/asusctl           #*cli controls for asus laptops
+  # - sys-apps/supergfxctl       #*gpu switching for asus laptops
+  # - x11-drivers/nvidia-drivers
+  # - dev-util/opencl-nvidia
+  # - x11-drivers/nvidia-dkms
+  # - x11-drivers/nvidia-settings
+
+fonts:
+  - ttf-hack
+  - ttf-nerd-fonts-symbols-mono
+  - ttf-font-awesome
+  - ttf-dejavu
 
 windows:
   - git
