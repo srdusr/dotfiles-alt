@@ -547,8 +547,8 @@ linux_update_system() {
 
 linux_install_packages() {
     local failed_packages=()
-    local any_failures=false # Flag to track if any packages failed to install
-    local packages_file="$HOME/packages.yml"
+    local any_failures=false
+    local packages_file="packages.yml"
 
     # Check if yq is available
     if ! command -v yq &>/dev/null; then
@@ -566,26 +566,17 @@ linux_install_packages() {
     fi
 
     # Read the package manager type detected by _distro_detect()
+    echo "Detected distribution: $_distro"
+    echo "Packages to install: ${packages[@]}"
+
     case "$_distro" in
     "PACMAN")
-        function install_yay {
-            if [[ -x $(command -v yay) ]]; then
-                return
-            fi
-            git clone https://aur.archlinux.org/yay.git
-            cd yay || exit
-            makepkg -si
-            cd ..
-            rm -rf yay
-        }
-        install_yay
-
         # Installation using Pacman
         for package in "${packages[@]}"; do
             if ! pacman -Q "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" pacman -S --noconfirm "$package"; then
                     failed_packages+=("$package")
-                    any_failures=true # Set flag to true if any package fails to install
+                    any_failures=true
                 fi
             fi
         done
@@ -596,7 +587,7 @@ linux_install_packages() {
             if ! dpkg-query -W "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" apt-get install -y "$package"; then
                     failed_packages+=("$package")
-                    any_failures=true # Set flag to true if any package fails to install
+                    any_failures=true
                 fi
             fi
         done
@@ -607,7 +598,7 @@ linux_install_packages() {
             if ! rpm -q "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" yum install -y "$package"; then
                     failed_packages+=("$package")
-                    any_failures=true # Set flag to true if any package fails to install
+                    any_failures=true
                 fi
             fi
         done
@@ -618,7 +609,7 @@ linux_install_packages() {
             if ! rpm -q "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" zypper --non-interactive install "$package"; then
                     failed_packages+=("$package")
-                    any_failures=true # Set flag to true if any package fails to install
+                    any_failures=true
                 fi
             fi
         done
@@ -627,24 +618,22 @@ linux_install_packages() {
         # Try installing packages with emerge for Gentoo
         local gentoo_packages=("$(yq e '.linux.gentoo[]' "$packages_file" 2>/dev/null | grep -v '^$')")
         for package in "${gentoo_packages[@]}"; do
-            if [ "$package" != "" ]; then # Check if package name is not empty
+            if [ "$package" != "" ]; then
                 if ! equery list "$package" &>/dev/null; then
                     if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
                         failed_packages+=("$package")
-                        any_failures=true # Set flag to true if any package fails to install
+                        any_failures=true
                     fi
                 fi
             fi
         done
         ;;
-
     *)
         echo "Package manager not supported."
         return 1
         ;;
     esac
 
-    # Check if any packages failed to install
     if "$any_failures"; then
         echo "Failed to install the following packages:"
         printf '%s\n' "${failed_packages[@]}"
