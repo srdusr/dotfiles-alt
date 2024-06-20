@@ -1,10 +1,5 @@
 #!/usr/bin/env bash
 
-# TODO: Ask user what services to enable/start depending on init system
-# TODO: Move files to etc
-# TODO: Implement Interactive
-# TODO: Implement checklist
-
 #======================================
 # Variables
 #======================================
@@ -512,11 +507,10 @@ linux_install_packages() {
         return 1
     fi
 
-    # Read package names from packages.yml under PackageManager
+    # Read package names from packages.yml under PackageManager for most distributions
     local packages=()
     if [[ -f "$packages_file" ]]; then
-        #packages=($(yq '.PackageManager[]' "$packages_file" 2>/dev/null))
-        packages=("$(grep 'PackageManager:' -A 1 "$packages_file" | grep -v 'PackageManager:' | grep -v 'common' | grep -v 'rust' | grep -v 'linux' | grep -v 'windows' | grep -v 'macos' | awk '{$1=$1};1' | sed 's/\- //g')")
+        packages=("$(yq e '.PackageManager[]' "$packages_file" 2>/dev/null)")
     else
         echo "Error: packages.yml not found."
         return 1
@@ -581,8 +575,9 @@ linux_install_packages() {
         done
         ;;
     "PORTAGE")
-        # Try installing packages with emerge
-        for package in "${packages[@]}"; do
+        # Try installing packages with emerge for Gentoo
+        local gentoo_packages=("$(yq e '.linux.gentoo[]' "$packages_file" 2>/dev/null)")
+        for package in "${gentoo_packages[@]}"; do
             if ! equery list "$package" &>/dev/null; then
                 if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
                     failed_packages+=("$package")
