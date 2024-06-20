@@ -174,8 +174,22 @@ install_zsh_plugins() {
 #======================================
 # Common Sources/Dependencies
 #======================================
+
+# Install yq
+install_yq() {
+    echo "Installing yq..."
+    if [ "$DOWNLOAD_COMMAND" == "wget" ]; then
+        wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+    elif [ "$DOWNLOAD_COMMAND" == "curl" ]; then
+        curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
+    fi
+    chmod +x /usr/local/bin/yq
+    echo "yq installed successfully."
+}
+
 echo "$dotfiles_dir" >>.gitignore
 echo "install.sh" >>.gitignore
+
 # Dotfiles
 function config {
     git --git-dir="$dotfiles_dir"/ --work-tree="$HOME" "$@"
@@ -750,6 +764,7 @@ linux_specific_steps() {
     submodules
     change_dir_names
     linux_update_system
+    install_yq
     install_rust
     install_nvm
     install_node
