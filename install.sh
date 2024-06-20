@@ -803,7 +803,7 @@ linux_specific_steps() {
     submodules
     change_dir_names
     #linux_update_system
-    #install_yq
+    install_yq
     #install_rust
     #install_nvm
     #install_node
