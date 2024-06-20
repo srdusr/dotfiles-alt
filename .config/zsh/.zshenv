@@ -2,6 +2,14 @@
 export PATH=$HOME/.bin:$HOME/.local/bin:$HOME/.scripts:$HOME/.scripts/test:/usr/local/bin:/sbin:/usr/sbin:$PATH
 export PATH="/data/data/com.termux/files/usr/local/bin:$PATH"
 
+if [ -d "$HOME/.scripts" ]; then
+    for d in "$HOME/.scripts"/*; do
+        [ -d "$d" ] && PATH="$PATH:$d"
+    done
+fi
+
+#export PATH
+
 export TERM=xterm-256color
 # Skip the not really helpful global compinit
 skip_global_compinit=1
@@ -142,6 +150,8 @@ export NVIM_TUI_ENABLE_TRUE_COLOR=1
 # Fzf
 export FZF_DEFAULT_COMMAND="rg --files --hidden --glob '!{node_modules/*,.git/*}'"
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
+export FZF_DEFAULT_OPTS='-m --height 50% --border'
+
 
 # enable git scripts
 export DEVELOPMENT_DIRECTORY="$HOME/code"
@@ -213,6 +223,11 @@ export GOPATH="${XDG_DATA_HOME:-$HOME/.local/share}/go"
 
 
 # Javascript
+# NVM
+export NVM_DIR="$HOME/.config/nvm"
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+#[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+
 # global node installs (gross)
 [[ -d "$XDG_DATA_HOME/node/bin" ]] && path=($XDG_DATA_HOME/node/bin $path)
 export NODE_REPL_HISTORY="$XDG_DATA_HOME"/node_repl_history
@@ -223,8 +238,6 @@ export NPM_CONFIG_USERCONFIG=$XDG_CONFIG_HOME/npm/npmrc
 #export NPM_CONFIG_INIT_LICENSE='GPL-3.0'
 #export NPM_CONFIG_INIT_VERSION='0.0.0'
 #export NPM_CONFIG_SIGN_GIT_TAG='true'
-export NVM_DIR="$HOME/.config/nvm"
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
 
 # Yarn
 #if command -v yarn >/dev/null 2>&1; then
