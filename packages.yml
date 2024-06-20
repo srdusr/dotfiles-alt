@@ -154,7 +154,6 @@ PackageManager:
 rust:
   - matugen
 
-linux: []
 arch:
   - dkms
   - linux

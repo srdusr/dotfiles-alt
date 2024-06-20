@@ -566,9 +566,6 @@ linux_install_packages() {
     fi
 
     # Read the package manager type detected by _distro_detect()
-    echo "Detected distribution: $_distro"
-    echo "Packages to install: ${packages[@]}"
-
     case "$_distro" in
     "PACMAN")
         # Installation using Pacman
@@ -616,7 +613,7 @@ linux_install_packages() {
         ;;
     "PORTAGE")
         # Try installing packages with emerge for Gentoo
-        local gentoo_packages=("$(yq e '.linux.gentoo[]' "$packages_file" 2>/dev/null | grep -v '^$')")
+        local gentoo_packages=("$(yq e '.gentoo[]' "$packages_file" 2>/dev/null)")
         for package in "${gentoo_packages[@]}"; do
             if [ "$package" != "" ]; then
                 if ! equery list "$package" &>/dev/null; then
@@ -634,6 +631,7 @@ linux_install_packages() {
         ;;
     esac
 
+    # Check if any packages failed to install
     if "$any_failures"; then
         echo "Failed to install the following packages:"
         printf '%s\n' "${failed_packages[@]}"
