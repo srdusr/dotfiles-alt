@@ -802,12 +802,12 @@ linux_specific_steps() {
     #set_locale
     submodules
     change_dir_names
-    linux_update_system
-    install_yq
-    install_rust
-    install_nvm
-    install_node
-    install_yarn
+    #linux_update_system
+    #install_yq
+    #install_rust
+    #install_nvm
+    #install_node
+    #install_yarn
     linux_install_packages
     install_zsh_plugins
     setup_tmux_plugins
