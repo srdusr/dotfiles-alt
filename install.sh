@@ -169,19 +169,6 @@ install_zsh_plugins() {
 #======================================
 # Common Sources/Dependencies
 #======================================
-
-# Install yq
-install_yq() {
-    echo "Installing yq..."
-    if [ "$DOWNLOAD_COMMAND" == "wget" ]; then
-        wget -O /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-    elif [ "$DOWNLOAD_COMMAND" == "curl" ]; then
-        curl -Lo /usr/local/bin/yq https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64
-    fi
-    chmod +x /usr/local/bin/yq
-    echo "yq installed successfully."
-}
-
 echo "$dotfiles_dir" >>.gitignore
 echo "install.sh" >>.gitignore
 
@@ -239,6 +226,60 @@ check_download_dependencies() {
         DOWNLOAD_COMMAND="curl"
     else
         handle_error "Neither wget nor curl found. Please install one of them to continue!"
+    fi
+}
+
+# Download a file using wget or curl
+download_file() {
+    local url="$1"
+    local output="$2"
+
+    if [ "$DOWNLOAD_COMMAND" = "wget" ]; then
+        if ! wget -q --show-progress -O "$output" "$url"; then
+            handle_error "Download failed. Exiting..."
+            exit 1
+        fi
+    elif [ "$DOWNLOAD_COMMAND" = "curl" ]; then
+        if ! curl --progress-bar -# -o "$output" "$url"; then
+            handle_error "Download failed. Exiting..."
+            exit 1
+        fi
+    else
+        echo "Unsupported download command: $DOWNLOAD_COMMAND"
+        exit 1
+    fi
+}
+
+# Install yq
+install_yq() {
+    local bin_dir="$HOME/.local/bin"
+    local yq_url="https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64"
+    local yq_path="$bin_dir/yq"
+
+    echo "Installing yq..."
+
+    # Create bin directory if it doesn't exist
+    mkdir -p "$bin_dir" || {
+        echo "Error: Failed to create directory $bin_dir"
+        return 1
+    }
+
+    # Download yq
+    download_file "$yq_url" "$yq_path" || return 1
+
+    # Make yq executable
+    chmod +x "$yq_path" || {
+        echo "Error: Failed to set executable permissions for $yq_path"
+        return 1
+    }
+
+    echo "yq installed successfully to $bin_dir."
+
+    # Add bin directory to PATH if not already added
+    if [[ ":$PATH:" != *":$bin_dir:"* ]]; then
+        echo "Adding $bin_dir to PATH"
+        echo "export PATH=\"$bin_dir:\$PATH\"" >>"$HOME/.bashrc"
+        export PATH="$bin_dir:$PATH"
     fi
 }
 
@@ -472,6 +513,13 @@ user_dirs() {
 
 # Update system
 linux_update_system() {
+    # Prompt the user if they want to update the system
+    prompt_user "Do you want to update the system?" Y || {
+        echo "System update skipped."
+        return
+    }
+
+    # Continue with system update based on detected package manager
     case "$_distro" in
     "PACMAN")
         "$PRIVILEGE_TOOL" pacman -Syyy && "$PRIVILEGE_TOOL" pacman -Syu --noconfirm
@@ -490,6 +538,7 @@ linux_update_system() {
         ;;
     *)
         echo "Package manager not supported."
+        return 1
         ;;
     esac
 }
