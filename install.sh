@@ -625,16 +625,19 @@ linux_install_packages() {
         ;;
     "PORTAGE")
         # Try installing packages with emerge for Gentoo
-        local gentoo_packages=("$(yq e '.linux.gentoo[]' "$packages_file" 2>/dev/null)")
+        local gentoo_packages=("$(yq e '.linux.gentoo[]' "$packages_file" 2>/dev/null | grep -v '^$')")
         for package in "${gentoo_packages[@]}"; do
-            if ! equery list "$package" &>/dev/null; then
-                if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
-                    failed_packages+=("$package")
-                    any_failures=true # Set flag to true if any package fails to install
+            if [ "$package" != "" ]; then # Check if package name is not empty
+                if ! equery list "$package" &>/dev/null; then
+                    if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
+                        failed_packages+=("$package")
+                        any_failures=true # Set flag to true if any package fails to install
+                    fi
                 fi
             fi
         done
         ;;
+
     *)
         echo "Package manager not supported."
         return 1
