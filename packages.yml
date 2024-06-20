@@ -4,6 +4,7 @@ PackageManager:
   - git
   - curl
   - wget
+  - yq
   - zsh
   - zsh-completions
   - bash
@@ -11,7 +12,7 @@ PackageManager:
   - clang
   - gcc
   - meson
-  - llvm
+  # - llvm
   - gdb
   - make
   - cmake
@@ -170,6 +171,7 @@ gentoo:
   - dev-vcs/git
   - net-misc/curl
   - net-misc/wget
+  - app-misc/yq
   - app-shells/zsh
   - app-shells/zsh-completions
   - app-shells/bash
@@ -177,7 +179,7 @@ gentoo:
   - sys-devel/clang
   - sys-devel/gcc
   - dev-util/meson
-  - sys-devel/llvm
+  # - sys-devel/llvm
   - sys-devel/gdb
   - sys-devel/make
   - dev-util/cmake
@@ -186,7 +188,7 @@ gentoo:
   - sys-apps/ripgrep
   - sys-apps/fd
   - dev-libs/tree-sitter
-  - dev-lang/python
+  # - dev-lang/python
   - dev-python/pip
   - dev-python/virtualenvwrapper
   - sys-apps/time
@@ -213,6 +215,7 @@ gentoo:
   - net-misc/rsync
   - net-misc/net-tools
   - x11-base/xorg-server
+  - x11-base/xorg-drivers
   - gui-libs/wayland
   - x11-apps/xwayland
   - x11-misc/xclip
@@ -222,7 +225,7 @@ gentoo:
   - x11-misc/dunst
   - app-antivirus/clamav
   - sys-apps/reflector
-  - www-client/firefox
+  - www-client/firefox-bin
   - sys-fs/udiskie
   - sys-power/powertop
   - sys-process/iftop

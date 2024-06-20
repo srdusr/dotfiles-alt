@@ -26,6 +26,9 @@ if [ ! -d "$TRASH_DIR" ]; then
     fi
 fi
 
+# Move log file to Trash directory
+mv -f "$LOG_FILE" "$TRASH_DIR/"
+
 # Redirect stderr to both stderr and log file
 exec 2> >(tee -a "$LOG_FILE")
 
@@ -175,11 +178,6 @@ install_zsh_plugins() {
         echo "zsh-autosuggestions is already installed."
     fi
 }
-
-# install tailscale
-if ! command -v tailscale &>/dev/null; then
-    curl -fsSL https://tailscale.com/install.sh | bash
-fi
 
 #==============================================================================
 
@@ -819,6 +817,12 @@ setup_tmux_plugins() {
     fi
 }
 
+install_tailscale() {
+    if ! command -v tailscale &>/dev/null; then
+        curl -fsSL https://tailscale.com/install.sh | bash
+    fi
+}
+
 setup_ssh() {
     SSH_DIR="$HOME/.ssh"
     if ! [[ -f "$SSH_DIR/authorized_keys" ]]; then
@@ -844,6 +848,7 @@ linux_specific_steps() {
     #install_nvm
     #install_node
     #install_yarn
+    install_tailscale
     linux_install_packages
     install_zsh_plugins
     setup_tmux_plugins
@@ -919,8 +924,5 @@ main() {
     main_installation
     handle_complete "Installation completed successfully."
 }
-
-# Move log file to Trash directory
-mv -f "$LOG_FILE" "$TRASH_DIR/"
 
 main "$@"
