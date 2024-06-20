@@ -613,7 +613,12 @@ linux_install_packages() {
         ;;
     "PORTAGE")
         # Try installing packages with emerge for Gentoo
-        local gentoo_packages=("$(yq e '.gentoo[]' "$packages_file" 2>/dev/null)")
+        if [[ -f "$packages_file" ]]; then
+            gentoo_packages=("$(yq e '.gentoo[]' "$packages_file" 2>/dev/null)")
+        else
+            echo "Error: packages.yml not found."
+            return 1
+        fi
         for package in "${gentoo_packages[@]}"; do
             if [ "$package" != "" ]; then
                 if ! equery list "$package" &>/dev/null; then
