@@ -7,12 +7,16 @@
 #fi
 
 # Default session to be executed
+unset DISPLAY XAUTHORITY
 session=""
+
+#pgrep bspwm || startx "$HOME"/.config/X11/.xinitrc
+#startx "$HOME"/.config/X11/.xinitrc
 
 # Function to display and start the selected session
 display() {
     # Default list of sessions in priority order
-    default_sessions=("Hyprland" "bspwm" "sway" "i3")
+    default_sessions=("Hyprland" "bspwm" "sway")
 
     # Check conditions and set session command
     if [ "$DISPLAY" = "" ] && [ "$XDG_VTNR" -eq 1 ]; then
@@ -23,8 +27,13 @@ display() {
 
         if [ "$session" != "" ]; then
             case "$session" in
-                bspwm | i3)
-                    session="startx /usr/bin/$session"
+                bspwm )
+                    export XDG_SESSION_TYPE="x11"
+                    session="startx /usr/bin/bspwm"
+                    #session="pgrep bspwm || startx $HOME/.config/X11/.xinitrc"
+                    #session="pgrep bspwm || (unset DISPLAY XAUTHORITY; startx $HOME/.config/X11/.xinitrc)"
+                    #session="startx /home/srdusr/.config/X11/.xinitrc"
+                    #session="exec bspwm -name login"
                     ;;
                 Hyprland | sway)
                     session="exec $session"
@@ -39,8 +48,13 @@ display() {
             for wm in "${default_sessions[@]}"; do
                 if command -v "$wm" >/dev/null 2>&1; then
                     case "$wm" in
-                        bspwm | i3)
+                        bspwm )
+                            export XDG_SESSION_TYPE="x11"
                             session="startx /usr/bin/$wm"
+                            #session="pgrep bspwm || startx $HOME/.config/X11/.xinitrc"
+                            #session="pgrep bspwm || (unset DISPLAY XAUTHORITY; startx $HOME/.config/X11/.xinitrc)"
+                            #session="startx /home/srdusr/.config/X11/.xinitrc"
+                            #session="exec bspwm -name login"
                             break
                             ;;
                         Hyprland | sway)
