@@ -617,7 +617,7 @@ linux_install_packages() {
         for package in "${gentoo_packages[@]}"; do
             if [ "$package" != "" ]; then
                 if ! equery list "$package" &>/dev/null; then
-                    if ! "$PRIVILEGE_TOOL" emerge --ask "$package"; then
+                    if ! "$PRIVILEGE_TOOL" emerge "$package"; then
                         failed_packages+=("$package")
                         any_failures=true
                     fi
