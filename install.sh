@@ -149,7 +149,6 @@ submodules() {
     git submodule update --init --recursive
 }
 
-curl -i https://git.io -F "url=https://github.com/srdusr/dotfiles/main/install.sh" -F "code=srdfiles"
 # Install Zsh plugins
 install_zsh_plugins() {
     local zsh_plugins_dir="$HOME/.config/zsh/plugins"
