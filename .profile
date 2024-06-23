@@ -36,7 +36,8 @@ display() {
                     #session="exec bspwm -name login"
                     ;;
                 Hyprland | sway)
-                    session="exec $session"
+                    #session="exec $session"
+                    session="dbus-run-session $session"
                     ;;
                 *)
                     echo "Session $session is not supported."
@@ -58,7 +59,8 @@ display() {
                             break
                             ;;
                         Hyprland | sway)
-                            session="exec $wm"
+                            #session="exec $wm"
+                            session="dbus-run-session $wm"
                             break
                             ;;
                     esac
@@ -88,7 +90,7 @@ zsh() {
 
 # GnuPG
 gnupg() {
-    if ! systemctl --quiet --user is-active gpg-agent.socket && command -v gpg-agent >/dev/null 2>&1; then
+    if ! pgrep -x "gpg-agent" >/dev/null 2>&1 && command -v gpg-agent >/dev/null 2>&1; then
         echo 'Launching GPG agent...'
         eval "$(gpg-agent --daemon)"
     fi
