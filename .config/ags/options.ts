@@ -1,7 +1,7 @@
 import { opt, mkOptions } from 'lib/option';
 import { distro } from 'lib/variables';
 import { icon } from 'lib/utils';
-import { icons } from "assets"
+import { icons } from 'assets';
 import icons from 'lib/icons';
 //import Dock from "./widgets/dock/index.js";
 
@@ -9,6 +9,7 @@ const options = mkOptions(OPTIONS, {
   autotheme: opt(false),
 
   wallpaper: {
+    enable: opt(false),
     resolution: opt<import('service/wallpaper').Resolution>(1920),
     market: opt<import('service/wallpaper').Market>('random'),
   },
@@ -66,7 +67,7 @@ const options = mkOptions(OPTIONS, {
   bar: {
     flatButtons: opt(true),
     position: opt<'top' | 'bottom'>('top'),
-    corners: opt(true),
+    corners: opt(false),
     layout: {
       start: opt<Array<import('widget/bar/Bar').BarWidget>>([
         'launcher',
@@ -77,7 +78,7 @@ const options = mkOptions(OPTIONS, {
       ]),
       center: opt<Array<import('widget/bar/Bar').BarWidget>>(['date']),
       end: opt<Array<import('widget/bar/Bar').BarWidget>>([
-        "media",
+        'media',
         'expander',
         //"colorpicker",
         'screenrecord',
@@ -141,40 +142,29 @@ const options = mkOptions(OPTIONS, {
     },
   },
 
-
   dock: {
-    iconSize: opt(34),
+    iconSize: opt(44),
     pinnedApps: opt([
-      "nemo",
-      "firefox",
-      "qbittorrent",
-      "vlc",
-      "spotify",
-      "viewnior",
-      "lutris",
-      "steam",
-      "discord",
-      "code-oss",
-      "obsidian",
+      'nemo',
+      'firefox',
+      'mullvad',
+      'qbittorrent',
+      'com.obsproject.Studio',
+      'vlc',
+      'spotify',
+      //"viewnior",
+      //"phototonic",
+      'gthumb',
+      'nomachine',
+      'lutris',
+      'steam',
+      'discord',
+      'vscode',
+      'wezterm',
+      'obsidian',
     ]),
     toolbox: {
-      icons: [
-        opt(icon(icons.ui.tbox_close)),
-        opt(icon(icons.ui.tbox_appkill)),
-        opt(icon(icons.ui.tbox_rotate)),
-        opt(icon(icons.ui.tbox_workspaceprev)),
-        opt(icon(icons.ui.tbox_workspacenext)),
-        opt(icon(icons.ui.tbox_moveleft)),
-        opt(icon(icons.ui.tbox_moveright)),
-        opt(icon(icons.ui.tbox_moveup)),
-        opt(icon(icons.ui.tbox_movedown)),
-        opt(icon(icons.ui.tbox_swapnext)),
-        opt(icon(icons.ui.tbox_split)),
-        opt(icon(icons.ui.tbox_float)),
-        opt(icon(icons.ui.tbox_pinned)),
-        opt(icon(icons.ui.tbox_fullscreen)),
-        opt(icon(icons.ui.tbox_osk)),
-      ]
+      icons: [opt(icon(icons.ui.tbox_close)), opt(icon(icons.ui.tbox_appkill)), opt(icon(icons.ui.tbox_rotate)), opt(icon(icons.ui.tbox_workspaceprev)), opt(icon(icons.ui.tbox_workspacenext)), opt(icon(icons.ui.tbox_moveleft)), opt(icon(icons.ui.tbox_moveright)), opt(icon(icons.ui.tbox_moveup)), opt(icon(icons.ui.tbox_movedown)), opt(icon(icons.ui.tbox_swapnext)), opt(icon(icons.ui.tbox_split)), opt(icon(icons.ui.tbox_float)), opt(icon(icons.ui.tbox_pinned)), opt(icon(icons.ui.tbox_fullscreen)), opt(icon(icons.ui.tbox_osk))],
     },
   },
   launcher: {
@@ -190,7 +180,7 @@ const options = mkOptions(OPTIONS, {
     apps: {
       iconSize: opt(62),
       max: opt(6),
-      favorites: opt([['firefox', 'nemo', 'org.gnome.Calendar', 'obsidian', 'discord', 'spotify']]),
+      favorites: opt([['firefox', 'nemo', 'obsidian', 'discord', 'spotify']]),
     },
   },
 
@@ -201,10 +191,13 @@ const options = mkOptions(OPTIONS, {
   },
 
   powermenu: {
-    sleep: opt('systemctl suspend'),
-    reboot: opt('systemctl reboot'),
+    //sleep: opt('systemctl suspend'),
+    sleep: opt('loginctl suspend'),
+    //reboot: opt('reboot'),
+    reboot: opt('loginctl reboot'),
     logout: opt('pkill Hyprland'),
-    shutdown: opt('shutdown now'),
+    //shutdown: opt('shutdown now'),
+    shutdown: opt('loginctl poweroff'),
     layout: opt<'line' | 'box'>('line'),
     labels: opt(true),
   },
@@ -216,7 +209,8 @@ const options = mkOptions(OPTIONS, {
     },
     width: opt(380),
     position: opt<'left' | 'center' | 'right'>('right'),
-    networkSettings: opt('gtk-launch gnome-control-center'),
+    networkSettings: opt('gtk-launch nm-connection-editor'),
+    //networkSettings: opt('gtk-launch gnome-control-center'),
     media: {
       monochromeIcon: opt(true),
       coverSize: opt(100),
@@ -251,13 +245,13 @@ const options = mkOptions(OPTIONS, {
 
   notifications: {
     position: opt<Array<'top' | 'bottom' | 'left' | 'right'>>(['top', 'right']),
-    blacklist: opt([""]),
+    blacklist: opt(['']),
     //blacklist: opt(["Spotify"]),
     width: opt(440),
   },
 
   hyprland: {
-    gaps: opt(0.5),
+    gaps: opt(2.4),
     inactiveBorder: opt('333333ff'),
     gapsWhenOnly: opt(false),
   },
