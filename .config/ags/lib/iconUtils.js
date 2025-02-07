@@ -5,7 +5,6 @@ function fileExists(filePath) {
   return file.query_exists(null);
 }
 
-//计算多个数组的笛卡尔积
 function cartesianProduct(arrays) {
   if (arrays.length === 0) {
     return [[]];
@@ -22,11 +21,10 @@ function cartesianProduct(arrays) {
   }
   return result;
 }
-
+import { HOME } from '../utils.ts';
 export const find_icon = app_class => {
-  //主题路径 x 可能的尺寸大小 x apps x app的名称 x icon文件类型
   const themPath = [
-    ['/usr/share/icons/WhiteSur/', '/usr/share/icons/WhiteSur-dark/'],
+    [`${HOME}/.local/share/icons/WhiteSur/`, `${HOME}/.local/share//icons/WhiteSur-dark/`],
     ['512x512/', '128x128/', '64x64/', '96x96/', '72x72/', '48x48/', '36x36/'],
     ['apps/', ''],
     [app_class + '.png', app_class + '.svg', app_class + '.xpm'],
