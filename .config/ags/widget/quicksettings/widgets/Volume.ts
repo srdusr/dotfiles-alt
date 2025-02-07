@@ -11,7 +11,18 @@ const VolumeIndicator = (type: Type = "speaker") => Widget.Button({
   on_clicked: () => audio[type].is_muted = !audio[type].is_muted,
   child: Widget.Icon({
     icon: audio[type].bind("icon_name")
-      .as(i => icon(i || "", icons.audio.mic.high)),
+      .as(i => icon(i || "", icons.audio.volume.medium)),
+    tooltipText: audio[type].bind("volume")
+      .as(vol => `Volume: ${Math.floor(vol * 100)}%`),
+  }),
+})
+
+const micIndicator = (type: Type = "microphone") => Widget.Button({
+  vpack: "center",
+  on_clicked: () => audio[type].is_muted = !audio[type].is_muted,
+  child: Widget.Icon({
+    icon: audio[type].bind("icon_name")
+      .as(i => icon(i || "", icons.audio.mic.medium)),
     tooltipText: audio[type].bind("volume")
       .as(vol => `Volume: ${Math.floor(vol * 100)}%`),
   }),
@@ -51,7 +62,7 @@ export const Microhone = () => Widget.Box({
   class_name: "slider horizontal",
   visible: audio.bind("recorders").as(a => a.length > 0),
   children: [
-    VolumeIndicator("microphone"),
+    micIndicator("microphone"),
     VolumeSlider("microphone"),
   ],
 })
