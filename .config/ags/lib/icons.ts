@@ -25,7 +25,8 @@ export default {
     executable: "application-x-executable",
     notification: "dialog-information-symbolic",
     video: "video-x-generic-symbolic",
-    audio: "audio-x-generic-symbolic",
+    // audio: "audio-x-generic-symbolic",
+    audio: "audio-volume-medium-symbolic",
   },
   ui: {
     close: "window-close-symbolic",
