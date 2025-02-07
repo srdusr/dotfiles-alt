@@ -48,8 +48,13 @@ alias wallset='feh --bg-fill'
 
 PS1=$p
 
+bind -m vi-command 'Control-l: clear-screen'
+bind -m vi-insert 'Control-l: clear-screen'
+
+export EDITOR="nvim"
 # pfetch
 
 #export NVM_DIR="$HOME/.local/share/nvm"
 #[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
 #[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+export PATH="/home/srdusr/.local/bin:$PATH"
