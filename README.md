@@ -1,4 +1,5 @@
 # Dotfiles
+
 <pre>
 <p align="center">
 ██████╗  ██████╗ ████████╗███████╗██╗██╗     ███████╗███████╗
@@ -14,31 +15,28 @@
 Welcome, and make yourself at <b><i>$HOME</i></b>
 </h3>
 
-![1](assets/desktop.jpg)  
+![1](assets/desktop.jpg)
 
 > NOTE: Primarily for Linux but currently under work to make this as agnostic/cross-platform as possible
 
-- - -
+---
 
 ## Details
 
-- **OS:** [Arch Linux](https://archlinux.org)
-- **WM:** [bspwm](https://github.com/baskerville/bspwm)
-- **Compositor:** [picom](https://github.com/yshui/picom)
-- **Widgets:** [eww](https://github.com/elkowar/eww)
-- Bar: [polybar](https://github.com/polybar/polybar)
+- **OS:** [Gentoo Hardened](https://www.gentoo.org)
+- **WM/Compositor:** [hyprland](https://hyprland.org)
+- **Widgets:** [ags](https://aylur.github.io/ags)
 - **Shell:** [zsh](https://zsh.org)
 - **Terminal:** [wezterm](https://https://wezfurlong.org/wezterm)
 - **Multiplexer:** [tmux](https://github.com/tmux/tmux/wiki)
 - **Editor:** [neovim](https://neovim.io)
   - **Config:** [nvim](https://github.com/srdusr/nvim)
-- **Application Launcher:** [rofi](https://github.com/davatorium/rofi)
 - **Fonts:**
-  * **Icons:** Whitesur
-  * **UI:** San Francisco
-  * **Terminal:** JetBrains Mono
+  - **Icons:** Whitesur
+  - **UI:** San Francisco
+  - **Terminal:** JetBrains Mono
 
-- - -
+---
 
 ### Installing onto a new system (bare git repository)
 
@@ -204,6 +202,8 @@ $ git submodule update --init --recursive
 $ ./get-deps
 $ cargo build --release
 $ cargo run --release --bin wezterm -- start
+$ sudo install wezterm wezterm-gui wezterm-mux-server strip-ansi-escapes /usr/local/bin
+
 ```
 
 ---
@@ -275,6 +275,7 @@ $ cargo run --release --bin wezterm -- start
 ### Gnome Custom Settings
 
 - Run gnome custom settings script, located at `~/.scripts`:
+
 ```bash
 $ gsettings.sh
 ```
@@ -694,4 +695,4 @@ $ sdkmanager --licenses
   git config --global user.name "Firstname Lastname"
   git config --global user.email "your_email@example.com"
   ```
-</details>
+  </details>
